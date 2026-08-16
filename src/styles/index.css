@@ -1,0 +1,383 @@
+@import './tokens.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ==========================================================================
+   Base
+   ========================================================================== */
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    /* Lenis drives scrolling; native smooth would fight it. */
+    scroll-behavior: auto;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    margin: 0;
+    background-color: var(--bg);
+    color: var(--fg);
+    font-family: var(--font-body);
+    font-size: var(--fs-body);
+    line-height: 1.65;
+    font-synthesis-weight: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: clip;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    margin: 0;
+    text-wrap: balance;
+  }
+
+  p {
+    margin: 0;
+    text-wrap: pretty;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  img,
+  svg,
+  video,
+  canvas {
+    display: block;
+    max-width: 100%;
+  }
+
+  button {
+    font: inherit;
+    color: inherit;
+  }
+
+  /* Visible, branded focus ring everywhere. Never remove the outline. */
+  :focus-visible {
+    outline: 2px solid rgb(var(--c-accent));
+    outline-offset: 3px;
+    border-radius: 3px;
+  }
+
+  ::selection {
+    background: rgb(var(--c-accent));
+    color: rgb(var(--c-ink));
+  }
+
+  /* Light hero: the header's palette is light-on-dark, so over a bone surface
+     its wordmark and nav vanish. Rather than maintain a second colour scheme
+     for it, give it its scrolled treatment from the start. A dark blurred bar
+     over a light hero reads as deliberate, and every existing colour still
+     works. Set by whichever hero declares itself light. */
+  [data-hero-tone='light'] [data-site-header] {
+    background-color: rgb(var(--c-ink) / 0.72);
+    backdrop-filter: blur(24px);
+    border-bottom-color: rgb(255 255 255 / 0.1);
+  }
+
+  /* Lenis */
+  html.lenis,
+  html.lenis body {
+    height: auto;
+  }
+  .lenis.lenis-smooth {
+    scroll-behavior: auto !important;
+  }
+  .lenis.lenis-stopped {
+    overflow: hidden;
+  }
+}
+
+/* ==========================================================================
+   Components
+   ========================================================================== */
+@layer components {
+  /* Page shell: consistent gutters and max width for every section. */
+  .shell {
+    width: 100%;
+    max-width: var(--maxw);
+    margin-inline: auto;
+    padding-inline: var(--gutter);
+  }
+
+  /* Small caps label used above every section heading. */
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-family: var(--font-body);
+    font-size: var(--fs-eyebrow);
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgb(var(--c-accent));
+  }
+  .eyebrow::before {
+    content: '';
+    inline-size: 1.75rem;
+    block-size: 1px;
+    background: currentColor;
+    opacity: 0.6;
+  }
+
+  /* Hairline rule that matches the current surface. */
+  .rule {
+    border: 0;
+    block-size: 1px;
+    background: var(--hairline);
+  }
+
+  /* --- Buttons ---------------------------------------------------------- */
+  .btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    padding: 1rem 1.6rem;
+    border-radius: var(--r-pill);
+    font-weight: 700;
+    font-size: 0.95rem;
+    letter-spacing: -0.01em;
+    line-height: 1;
+    white-space: nowrap;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition:
+      background-color var(--dur-fast) var(--ease-out-expo),
+      color var(--dur-fast) var(--ease-out-expo),
+      border-color var(--dur-fast) var(--ease-out-expo),
+      box-shadow var(--dur-fast) var(--ease-out-expo);
+    will-change: transform;
+  }
+
+  .btn-primary {
+    background: rgb(var(--c-accent));
+    color: rgb(var(--c-ink));
+    box-shadow: var(--shadow-accent);
+  }
+  .btn-primary:hover {
+    background: rgb(var(--c-accent-300));
+  }
+
+  .btn-ghost {
+    /* Not fully transparent: this button sits over photography and over the
+       hero's thermal lens, where a bright hot spot would otherwise leave white
+       label text with almost no contrast. */
+    background: rgb(10 10 11 / 0.38);
+    color: rgb(var(--c-bone));
+    border-color: var(--hairline-strong);
+    backdrop-filter: blur(6px);
+  }
+  .btn-ghost:hover {
+    border-color: rgb(var(--c-accent));
+    color: rgb(var(--c-accent));
+  }
+
+  .btn-ink {
+    background: rgb(var(--c-ink));
+    color: rgb(var(--c-bone));
+  }
+  .btn-ink:hover {
+    background: rgb(var(--c-ink-700));
+  }
+
+  .btn-outline-ink {
+    background: transparent;
+    color: rgb(var(--c-ink));
+    border-color: rgb(10 10 11 / 0.28);
+  }
+  .btn-outline-ink:hover {
+    background: rgb(10 10 11 / 0.06);
+    border-color: rgb(var(--c-ink));
+  }
+
+  /* Text link with an underline that wipes in from the left. */
+  .link-wipe {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+  }
+  .link-wipe::after {
+    content: '';
+    position: absolute;
+    inset-inline: 0;
+    bottom: -3px;
+    block-size: 1px;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform var(--dur-base) var(--ease-out-expo);
+  }
+  .link-wipe:hover::after,
+  .link-wipe:focus-visible::after {
+    transform: scaleX(1);
+  }
+
+  /* Card surface on the dark base. */
+  .card {
+    position: relative;
+    background: rgb(var(--c-ink-800));
+    border: 1px solid var(--hairline);
+    border-radius: var(--r-lg);
+    overflow: hidden;
+    transition:
+      border-color var(--dur-base) var(--ease-out-expo),
+      background-color var(--dur-base) var(--ease-out-expo);
+  }
+  .card:hover {
+    border-color: var(--hairline-strong);
+    background: rgb(var(--c-ink-700));
+  }
+}
+
+/* ==========================================================================
+   Utilities
+   ========================================================================== */
+@layer utilities {
+  /* Accessible skip link, visible only when focused. */
+  .skip-link {
+    position: fixed;
+    top: 0.75rem;
+    left: 0.75rem;
+    z-index: 200;
+    padding: 0.75rem 1.15rem;
+    border-radius: var(--r-pill);
+    background: rgb(var(--c-accent));
+    color: rgb(var(--c-ink));
+    font-weight: 700;
+    transform: translateY(-160%);
+    transition: transform var(--dur-fast) var(--ease-out-expo);
+  }
+  .skip-link:focus-visible {
+    transform: translateY(0);
+  }
+
+  /* Each headline line sits in an overflow-hidden mask; GSAP moves the inner
+     span up from below for a clip-style reveal. */
+  .line-mask {
+    display: block;
+    overflow: hidden;
+    padding-bottom: 0.08em;
+    margin-bottom: -0.08em;
+  }
+  .line-inner {
+    display: block;
+    will-change: transform;
+  }
+
+  /* Draft dashes flowing through the open cavity. CSS rather than a tween,
+     because it runs forever and has nothing to do with scroll progress. The
+     global reduced-motion block stops it. */
+  @keyframes cav-flow {
+    to {
+      stroke-dashoffset: -34;
+    }
+  }
+  .cav-flow {
+    animation: cav-flow 1.1s linear infinite;
+  }
+
+  .cav-axis {
+    font-family: var(--font-body);
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+  }
+
+  .cav-stamp-text {
+    font-family: var(--font-body);
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+  }
+
+  /* Knockout headline. Lives on an SVG <text> inside a mask, so it is sized
+     here rather than with a Tailwind font-size utility: SVG geometry does not
+     take the same properties. Deliberately enormous, because footage has to
+     read inside the counters of the letters to be worth doing at all. */
+  .hero-knockout-text {
+    font-family: var(--font-display);
+    font-weight: 700;
+    /* Capped well below what the width alone allows. At full size the two
+       lines swallowed the middle of the viewport and the subhead landed on
+       top of them. */
+    font-size: clamp(2.75rem, 12.5vw, 11rem);
+    letter-spacing: -0.045em;
+  }
+
+  .text-stroke {
+    -webkit-text-stroke: 1px rgb(var(--c-bone) / 0.28);
+    color: transparent;
+  }
+
+  .text-gradient-accent {
+    background: linear-gradient(96deg, rgb(var(--c-accent)) 0%, rgb(var(--c-accent-300)) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* Fades the edges of marquees / scrollers back into the page. */
+  .mask-edges {
+    -webkit-mask-image: linear-gradient(
+      to right,
+      transparent,
+      #000 8%,
+      #000 92%,
+      transparent
+    );
+    mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
+  }
+
+  .grain::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.35;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    scrollbar-width: none;
+  }
+}
+
+/* ==========================================================================
+   Reduced motion global gate. JS animations are additionally gated by the
+   useReducedMotion hook; this is the CSS backstop.
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}

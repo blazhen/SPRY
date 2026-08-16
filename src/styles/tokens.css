@@ -1,0 +1,84 @@
+/* ============================================================================
+   Spray It Solutions brand tokens
+   Single source of truth. These custom properties are mapped into the Tailwind
+   theme (see tailwind.config.js) so `bg-ink`, `text-accent` etc. all resolve
+   back to here. Change a value once, it changes everywhere.
+
+   NOTE FOR CLIENT: --accent is an inferred brand colour (warm "energy" amber).
+   Swap this single hex for the official SprayIT brand orange when supplied.
+   ========================================================================== */
+
+:root {
+  /* ---- Core palette --------------------------------------------------- */
+  /* Dark depth ladder. Four rungs, each clearly a step above the last, so a
+     section, a card on that section and that card's hover state never land on
+     the same value. Sections alternate between `ink` and `surface`; cards sit
+     on `ink-800` and lift to `ink-700`. */
+  --c-ink: 10 10 11; /* #0A0A0B  deepest ground, and the page base */
+  --c-surface: 17 17 21; /* #111115  alternate section ground */
+  --c-ink-800: 26 26 31; /* #1A1A1F  card surface */
+  --c-ink-700: 36 36 42; /* #24242A  card hover */
+  --c-ink-600: 48 48 55; /* #303037  hairline / border on dark */
+
+  --c-bone: 245 242 237; /* #F5F2ED  clean off-white */
+  --c-bone-200: 228 223 214; /* #E4DFD6  muted off-white */
+  --c-bone-400: 168 163 154; /* #A8A39A  body text on dark */
+
+  --c-accent: 255 90 31; /* #FF5A1F  energetic warm amber, primary accent */
+  --c-accent-600: 224 68 13; /* #E0440D  pressed / hover */
+  --c-accent-300: 255 160 74; /* #FFA04A  gradient partner, ember */
+  --c-accent-100: 255 214 189; /* #FFD6BD  tint on dark */
+
+  /* ---- Semantic aliases ----------------------------------------------- */
+  --bg: rgb(var(--c-ink));
+  --fg: rgb(var(--c-bone));
+  --muted: rgb(var(--c-bone-400));
+  --hairline: rgb(255 255 255 / 0.1);
+  --hairline-strong: rgb(255 255 255 / 0.18);
+  --hairline-ink: rgb(10 10 11 / 0.12);
+
+  /* ---- Type ------------------------------------------------------------ */
+  --font-display: 'Clash Display', 'Satoshi', ui-sans-serif, system-ui, sans-serif;
+  --font-body: 'Satoshi', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  /* Fluid display scale. Tight leading on display, comfortable on body. */
+  --fs-mega: clamp(3.5rem, 13vw, 13rem);
+
+  /* Display sizes track viewport HEIGHT as well as width.
+     A wide-but-short monitor (say 1900x900) has plenty of horizontal room, so a
+     width-only clamp returns a headline tall enough to push the CTAs, or a
+     pinned section's lower half, off screen. Taking min() of a vw and a vh term
+     means the type shrinks on short viewports and these blocks keep fitting. */
+  --fs-display: clamp(2.5rem, min(6.4vw, 9.5vh), 6.25rem);
+  --fs-h1: clamp(2.5rem, min(6vw, 8.5vh), 5.5rem);
+  --fs-h2: clamp(2rem, min(4.6vw, 7vh), 4.25rem);
+  --fs-h3: clamp(1.5rem, 2.6vw, 2.5rem);
+  --fs-h4: clamp(1.25rem, 1.7vw, 1.6rem);
+  --fs-lead: clamp(1.05rem, 1.35vw, 1.375rem);
+  --fs-body: clamp(1rem, 1.05vw, 1.0625rem);
+  --fs-small: 0.875rem;
+  --fs-eyebrow: 0.75rem;
+
+  /* ---- Space / rhythm --------------------------------------------------- */
+  --section-y: clamp(5rem, 11vh, 10rem);
+  --gutter: clamp(1.25rem, 4vw, 4.5rem);
+  --maxw: 96rem;
+  --header-h: 4.75rem;
+
+  /* ---- Motion ----------------------------------------------------------- */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out-quart: cubic-bezier(0.76, 0, 0.24, 1);
+  --dur-fast: 240ms;
+  --dur-base: 480ms;
+  --dur-slow: 900ms;
+
+  /* ---- Radii / elevation ------------------------------------------------ */
+  --r-sm: 6px;
+  --r-md: 12px;
+  --r-lg: 22px;
+  --r-xl: 34px;
+  --r-pill: 999px;
+
+  --shadow-lift: 0 24px 60px -24px rgb(0 0 0 / 0.65);
+  --shadow-accent: 0 20px 60px -20px rgb(var(--c-accent) / 0.55);
+}
