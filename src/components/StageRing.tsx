@@ -138,7 +138,7 @@ export default function StageRing({ stages, label }: StageRingProps) {
   }, [reduced])
 
   const card = (stage: RingStage) => (
-    <div className="flex h-full flex-col rounded-lg border border-white/10 bg-ink-800 p-6">
+    <div className="flex h-full flex-col rounded-lg border border-line/10 bg-ink-800 p-6">
       <span className="font-display text-h4 font-semibold leading-none text-accent">
         {stage.figure}
       </span>
@@ -197,8 +197,8 @@ export default function StageRing({ stages, label }: StageRingProps) {
                     aria-hidden="true"
                     className="absolute inset-0 [backface-visibility:hidden] [transform:rotateY(180deg)]"
                   >
-                    <div className="flex h-full flex-col items-center justify-center rounded-lg border border-white/10 bg-ink-800">
-                      <span className="font-display text-[3rem] font-semibold leading-none text-white/10">
+                    <div className="flex h-full flex-col items-center justify-center rounded-lg border border-line/10 bg-ink-800">
+                      <span className="font-display text-[3rem] font-semibold leading-none text-line/10">
                         {stage.figure}
                       </span>
                       <span className="mt-2 text-eyebrow font-bold uppercase tracking-[0.2em] text-bone-400">

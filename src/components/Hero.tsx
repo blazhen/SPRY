@@ -253,7 +253,7 @@ export default function Hero() {
       {/* ---------- Thermal HUD ---------- */}
       <div
         data-hero-hud
-        className="pointer-events-none absolute right-[var(--gutter)] top-[calc(var(--header-h)+1.5rem)] z-10 hidden w-56 rounded-lg border border-white/12 bg-ink/60 p-4 backdrop-blur-xl md:block"
+        className="pointer-events-none absolute right-[var(--gutter)] top-[calc(var(--header-h)+1.5rem)] z-10 hidden w-56 rounded-lg border border-line/12 bg-ink/60 p-4 backdrop-blur-xl md:block"
       >
         <p className="flex items-center gap-2 text-eyebrow font-bold uppercase tracking-[0.18em] text-bone">
           <span className="size-1.5 animate-pulse rounded-full bg-accent" aria-hidden="true" />
@@ -325,12 +325,12 @@ export default function Hero() {
                 <Stars label={hero.trust.ratingLabel} />
                 <span className="font-semibold text-bone">5.0</span>
               </span>
-              <span className="hidden h-4 w-px bg-white/20 sm:block" aria-hidden="true" />
+              <span className="hidden h-4 w-px bg-line/20 sm:block" aria-hidden="true" />
               <span className="inline-flex items-center gap-2 font-semibold text-bone">
                 <TrendingDown className="size-4 text-accent" aria-hidden="true" />
                 {hero.trust.stat}
               </span>
-              <span className="hidden h-4 w-px bg-white/20 sm:block" aria-hidden="true" />
+              <span className="hidden h-4 w-px bg-line/20 sm:block" aria-hidden="true" />
               <span>{hero.trust.provenance}</span>
             </div>
           </div>
@@ -339,7 +339,7 @@ export default function Hero() {
           <div className="lg:col-span-4 lg:col-start-9 lg:justify-self-end">
             <figure
               data-hero-stat
-              className="w-full max-w-sm rounded-xl border border-white/12 bg-ink/55 p-6 backdrop-blur-xl sm:p-7"
+              className="w-full max-w-sm rounded-xl border border-line/12 bg-ink/55 p-6 backdrop-blur-xl sm:p-7"
             >
               <figcaption className="flex items-center gap-2 text-eyebrow font-bold uppercase tracking-[0.18em] text-bone-400">
                 <span className="size-1.5 rounded-full bg-accent" aria-hidden="true" />
@@ -357,7 +357,7 @@ export default function Hero() {
                   <span className="font-display text-h4 text-bone-200">{heroStat.before}</span>
                 </span>
                 <span
-                  className="mb-1 h-px flex-1 bg-gradient-to-r from-white/15 to-accent"
+                  className="mb-1 h-px flex-1 bg-gradient-to-r from-line/15 to-accent"
                   aria-hidden="true"
                 />
                 <span className="text-right text-bone-400">

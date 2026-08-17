@@ -74,7 +74,7 @@ export default function PageStub({
       </section>
 
       <Marquee
-        className="border-y border-white/10 bg-ink py-6"
+        className="border-y border-line/10 bg-ink py-6"
         itemClassName="font-display text-[clamp(1.5rem,3.4vw,2.5rem)] font-semibold uppercase leading-none tracking-tight text-bone"
       />
 

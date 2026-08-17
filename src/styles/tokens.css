@@ -29,13 +29,32 @@
   --c-accent-300: 255 160 74; /* #FFA04A  gradient partner, ember */
   --c-accent-100: 255 214 189; /* #FFD6BD  tint on dark */
 
+  /* Secondary accent, for graphic marks that should not read as interactive.
+     In the dark theme it simply tracks the primary. */
+  --c-accent-2: 255 160 74;
+
+  /* Hairline colour. Borders and glass fills are drawn from this rather than
+     from a literal `white`, because on a light theme a white hairline is
+     invisible. Every `border-line/10`-style utility resolves here. */
+  --c-line: 255 255 255;
+
+  /* A ground that stays light in every theme, and readable text for it. The
+     client logo band uses these: its background is dictated by third-party
+     brand assets, which are full colour with dark ink, not by our palette. */
+  --c-paper: 245 242 237;
+  --c-paper-fg: 10 10 11;
+
   /* ---- Semantic aliases ----------------------------------------------- */
   --bg: rgb(var(--c-ink));
   --fg: rgb(var(--c-bone));
   --muted: rgb(var(--c-bone-400));
-  --hairline: rgb(255 255 255 / 0.1);
-  --hairline-strong: rgb(255 255 255 / 0.18);
+  --hairline: rgb(var(--c-line) / 0.1);
+  --hairline-strong: rgb(var(--c-line) / 0.18);
   --hairline-ink: rgb(10 10 11 / 0.12);
+  /* Scrim behind labels sitting over photography. Channels, not a colour, so
+     both themes can state it the same way. */
+  --scrim: rgb(10 10 11 / 0.38);
+  --scrim-fg: 245 242 237;
 
   /* ---- Type ------------------------------------------------------------ */
   --font-display: 'Clash Display', 'Satoshi', ui-sans-serif, system-ui, sans-serif;
@@ -81,4 +100,121 @@
 
   --shadow-lift: 0 24px 60px -24px rgb(0 0 0 / 0.65);
   --shadow-accent: 0 20px 60px -20px rgb(var(--c-accent) / 0.55);
+}
+
+/* ============================================================================
+   BRAND THEME  ·  html[data-theme='brand']
+   ----------------------------------------------------------------------------
+   The light, white-and-blue treatment built from the real SprayIT identity.
+   Values sampled from the live site rather than guessed: green #8DC63F, navy
+   #002396, section grey #F6F6F6, body grey #575B60.
+
+   This is a palette swap, not a second set of components. It works because the
+   tokens are relational rather than literal: `ink` is "the page ground",
+   `bone` is "the thing that contrasts with it". Flipping the two values turns
+   every dark section white and every light section navy, and all 28 sections
+   follow without a line of markup changing.
+
+   On accent colour: navy is the primary, not the green. The green is glorious
+   as a fill but it is a light colour, so white label text on it lands near
+   1.9:1, far under the 4.5:1 a button needs. Navy on white is about 13:1. The
+   green therefore drives graphic marks (--c-accent-2) where it sits behind
+   dark ink or acts as pure decoration, which is also how the real brand uses
+   it: the wordmark's "SPRAY" and the display headings.
+   ========================================================================== */
+html[data-theme='brand'] {
+  --c-ink: 255 255 255; /* #FFFFFF  page ground */
+  --c-surface: 246 246 246; /* #F6F6F6  alternate section ground */
+  --c-ink-800: 255 255 255; /* #FFFFFF  card surface, separated by its hairline */
+  --c-ink-700: 240 244 251; /* #F0F4FB  card hover */
+  --c-ink-600: 206 214 228; /* #CED6E4  border */
+
+  /* The contrast family. `bg-bone` sections invert to navy, `text-bone`
+     becomes navy text on white. Both readings stay correct. */
+  --c-bone: 0 35 150; /* #002396  brand navy */
+  --c-bone-200: 12 58 176; /* #0C3AB0  lighter navy */
+  --c-bone-400: 87 91 96; /* #575B60  brand body grey */
+
+  --c-accent: 0 35 150; /* #002396  primary action */
+  --c-accent-600: 0 25 110; /* #00196E  pressed */
+  --c-accent-300: 0 58 195; /* #003AC3  hover, still navy so labels stay legible */
+  --c-accent-100: 219 227 246; /* #DBE3F6  tint on light */
+
+  --c-accent-2: 141 198 63; /* #8DC63F  brand green, for fills and dark grounds */
+  /* The same green, deepened, for green *text* on a light ground. The brand
+     green is genuinely light: on white it measures 1.89:1, under the 3:1 that
+     even large display text needs, so setting a headline in it is unreadable
+     rather than bold. This lands at 3.4:1, reads as the same colour, and is the
+     one value to change if the client would rather match the swatch exactly. */
+  --c-accent-2-ink: 100 154 38; /* #649A26 */
+
+  --c-line: 0 35 150; /* hairlines drawn from navy, never white */
+
+  --c-paper: 255 255 255;
+  --c-paper-fg: 0 35 150;
+
+  --hairline: rgb(var(--c-line) / 0.16);
+  --hairline-strong: rgb(var(--c-line) / 0.3);
+  --hairline-ink: rgb(255 255 255 / 0.22);
+
+  /* Photography is still photography: a label over an image needs a dark
+     scrim and light text whatever the page around it is doing. Heavier than
+     the dark theme's, because here the same control also has to sit on light
+     sections, where a thin scrim left white labels at 3.3:1. */
+  --scrim: rgb(0 20 70 / 0.82);
+  --scrim-fg: 255 255 255;
+
+  --shadow-lift: 0 24px 60px -28px rgb(0 35 150 / 0.28);
+  --shadow-accent: 0 20px 55px -22px rgb(0 35 150 / 0.35);
+}
+
+/* Display headings take the brand green, the way the real identity sets them
+   ("What Is" navy / "Spray Foam" green). Scoped to the highlighted word only:
+   green is a light colour, so it works as a display accent but not as body
+   copy or a button label. */
+html[data-theme='brand'] [data-accent-word] {
+  color: rgb(var(--c-accent-2-ink));
+}
+
+/* On the inverted navy bands there is no legibility problem, so those headings
+   get the exact brand green: #8DC63F on #002396 measures 6.2:1. */
+html[data-theme='brand'] .bg-bone [data-accent-word] {
+  color: rgb(var(--c-accent-2));
+}
+
+/* The CTA headline's italic word is set in `bone` so it reads as a second
+   colour inside the amber band. In this palette `bone` *is* the band, so it
+   would vanish entirely. Green on navy measures 6.2:1. */
+html[data-theme='brand'] [data-cta-accent] {
+  color: rgb(var(--c-accent-2));
+}
+
+/* Inverted bands: swap the accent to green for everything inside them.
+   The brand accent is navy, and these sections *are* navy, so eyebrows, rules
+   and icons painted in it disappear completely. Redefining the token rather
+   than patching each utility means every accent-coloured mark follows,
+   including ones added later. */
+html[data-theme='brand'] .bg-bone {
+  --c-accent: var(--c-accent-2);
+  --c-accent-300: 182 224 111;
+}
+
+/* The CTA band paints its own background from --c-accent, so the swap has to
+   land on its children: redefining it on the section itself would turn the
+   band green and take white label text down to 1.9:1. */
+html[data-theme='brand'] .bg-accent > * {
+  --c-accent: var(--c-accent-2);
+  --c-accent-300: 182 224 111;
+}
+
+/* ...but a card inside one of those bands re-establishes a light ground, and
+   on white the green goes back to being illegible. Restore the navy accent
+   wherever the ground turns light again. */
+html[data-theme='brand'] .bg-bone .bg-ink,
+html[data-theme='brand'] .bg-bone .bg-ink-800,
+html[data-theme='brand'] .bg-bone .bg-paper,
+html[data-theme='brand'] .bg-accent .bg-ink,
+html[data-theme='brand'] .bg-accent .bg-ink-800 {
+  --c-accent: 0 35 150;
+  --c-accent-300: 0 58 195;
 }

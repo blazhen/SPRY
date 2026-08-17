@@ -51,7 +51,7 @@ export default function Services() {
   return (
     <section
       ref={scope}
-      className="relative border-t border-white/6 bg-ink py-section"
+      className="relative border-t border-line/6 bg-ink py-section"
       aria-labelledby="services-heading"
     >
       <div className="shell">
@@ -108,11 +108,11 @@ export default function Services() {
 
                 <p className="mt-4 max-w-measure text-body text-bone-400">{service.lede}</p>
 
-                <ul className="mt-8 space-y-px border-t border-white/10">
+                <ul className="mt-8 space-y-px border-t border-line/10">
                   {service.subServices.map((sub) => (
                     <li
                       key={sub.label}
-                      className="flex flex-wrap items-baseline gap-x-4 gap-y-1 border-b border-white/10 py-4"
+                      className="flex flex-wrap items-baseline gap-x-4 gap-y-1 border-b border-line/10 py-4"
                     >
                       <span className="min-w-[10rem] font-display text-h4 font-semibold text-bone transition-colors duration-300 group-hover:text-accent">
                         {sub.label}

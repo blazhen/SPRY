@@ -259,7 +259,7 @@ export default function HeroComfort() {
       <div className="pointer-events-none absolute inset-x-[var(--gutter)] top-[calc(var(--header-h)+1.5rem)] z-10 hidden justify-between md:flex">
         <div
           data-c-chip
-          className="rounded-lg border border-white/12 bg-ink/55 p-4 backdrop-blur-xl"
+          className="rounded-lg border border-line/12 bg-ink/55 p-4 backdrop-blur-xl"
         >
           <p className="flex items-center gap-2 text-eyebrow font-bold uppercase tracking-[0.18em] text-[#9FC4F0]">
             <Snowflake className="size-3.5" aria-hidden="true" />
@@ -347,9 +347,9 @@ export default function HeroComfort() {
                 <Stars label="Rated 5 stars by Victorian homeowners" />
                 <span className="font-semibold text-bone">5.0</span>
               </span>
-              <span className="hidden h-4 w-px bg-white/20 sm:block" aria-hidden="true" />
+              <span className="hidden h-4 w-px bg-line/20 sm:block" aria-hidden="true" />
               <span className="font-semibold text-bone">{heroStat.headline} {heroStat.label}</span>
-              <span className="hidden h-4 w-px bg-white/20 sm:block" aria-hidden="true" />
+              <span className="hidden h-4 w-px bg-line/20 sm:block" aria-hidden="true" />
               <span>Family-owned · Carrum Downs, Victoria</span>
             </div>
           </div>
@@ -358,7 +358,7 @@ export default function HeroComfort() {
           <div className="lg:col-span-4 lg:col-start-9 lg:justify-self-end">
             <figure
               data-c-chip
-              className="w-full max-w-sm rounded-xl border border-white/12 bg-ink/55 p-6 backdrop-blur-xl sm:p-7"
+              className="w-full max-w-sm rounded-xl border border-line/12 bg-ink/55 p-6 backdrop-blur-xl sm:p-7"
             >
               <figcaption className="flex items-center gap-2 text-eyebrow font-bold uppercase tracking-[0.18em] text-bone-400">
                 <span className="size-1.5 rounded-full bg-accent" aria-hidden="true" />

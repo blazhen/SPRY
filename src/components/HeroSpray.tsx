@@ -284,11 +284,11 @@ export default function HeroSpray() {
               <Stars label="Rated 5 stars by Victorian homeowners" />
               <span className="font-semibold text-bone">5.0</span>
             </span>
-            <span className="hidden h-4 w-px bg-white/20 sm:block" aria-hidden="true" />
+            <span className="hidden h-4 w-px bg-line/20 sm:block" aria-hidden="true" />
             <span className="font-semibold text-bone">
               {heroStat.headline} {heroStat.label}
             </span>
-            <span className="hidden h-4 w-px bg-white/20 sm:block" aria-hidden="true" />
+            <span className="hidden h-4 w-px bg-line/20 sm:block" aria-hidden="true" />
             <span>Family-owned · Carrum Downs</span>
           </div>
 
@@ -336,7 +336,7 @@ export default function HeroSpray() {
           </div>
 
           {/* Progress rail */}
-          <div className="mt-8 h-px w-full bg-white/12" aria-hidden="true">
+          <div className="mt-8 h-px w-full bg-line/12" aria-hidden="true">
             <div data-s-rail className="h-px origin-left scale-x-0 bg-accent" />
           </div>
         </div>

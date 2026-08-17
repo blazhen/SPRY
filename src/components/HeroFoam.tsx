@@ -211,9 +211,9 @@ export default function HeroFoam() {
               <Stars label="Rated 5 stars by Victorian homeowners" />
               <span className="font-semibold text-bone">5.0</span>
             </span>
-            <span className="hidden h-4 w-px bg-white/20 sm:block" aria-hidden="true" />
+            <span className="hidden h-4 w-px bg-line/20 sm:block" aria-hidden="true" />
             <span>Family-owned · Carrum Downs, Victoria</span>
-            <span className="hidden h-4 w-px bg-white/20 sm:block" aria-hidden="true" />
+            <span className="hidden h-4 w-px bg-line/20 sm:block" aria-hidden="true" />
             <span>{site.serviceArea}</span>
           </div>
 
@@ -230,7 +230,7 @@ export default function HeroFoam() {
       {/* ---------------- Proof chip ---------------- */}
       <figure
         data-f-proof
-        className="absolute bottom-8 right-[var(--gutter)] z-20 hidden w-56 rounded-lg border border-white/12 bg-ink/60 p-5 backdrop-blur-xl lg:block"
+        className="absolute bottom-8 right-[var(--gutter)] z-20 hidden w-56 rounded-lg border border-line/12 bg-ink/60 p-5 backdrop-blur-xl lg:block"
       >
         <figcaption className="text-eyebrow font-bold uppercase tracking-[0.16em] text-bone-400">
           {heroFoam.proof.label}

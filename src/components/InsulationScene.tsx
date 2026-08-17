@@ -56,7 +56,7 @@ export default function InsulationScene() {
   return (
     <section
       ref={scope}
-      className="relative border-t border-white/6 bg-surface py-section"
+      className="relative border-t border-line/6 bg-surface py-section"
       aria-labelledby="scene-heading"
     >
       {/* Explicit grid placement rather than two stacked columns. In DOM order
@@ -73,7 +73,7 @@ export default function InsulationScene() {
         {/* ---------------- Mode toggle, above the model ---------------- */}
         <fieldset className="lg:col-span-5 lg:col-start-1 lg:row-start-2 lg:mt-9">
           <legend className="sr-only">Choose an insulation type to compare</legend>
-          <div className="flex gap-2 rounded-pill border border-white/10 bg-ink-800 p-1.5">
+          <div className="flex gap-2 rounded-pill border border-line/10 bg-ink-800 p-1.5">
             {sceneCopy.modes.map((m) => {
               const isActive = m.id === mode
               return (
@@ -83,7 +83,7 @@ export default function InsulationScene() {
                   onClick={() => setMode(m.id)}
                   aria-pressed={isActive}
                   className={`flex-1 rounded-pill px-4 py-3 text-small font-bold transition-colors duration-300 ease-expo ${
-                    isActive ? 'bg-accent text-ink' : 'text-bone-400 hover:bg-white/6 hover:text-bone'
+                    isActive ? 'bg-accent text-ink' : 'text-bone-400 hover:bg-line/6 hover:text-bone'
                   }`}
                 >
                   {m.label}
@@ -95,7 +95,7 @@ export default function InsulationScene() {
 
         {/* ---------------- Canvas ---------------- */}
         <div className="lg:col-span-7 lg:col-start-6 lg:row-span-3 lg:row-start-1">
-          <div className="relative aspect-square w-full overflow-hidden rounded-xl border border-white/10 bg-ink-800 sm:aspect-[4/3]">
+          <div className="relative aspect-square w-full overflow-hidden rounded-xl border border-line/10 bg-ink-800 sm:aspect-[4/3]">
             {inView ? (
               <Suspense fallback={<CanvasFallback message={sceneCopy.loading} />}>
                 <Scene mode={mode} reducedMotion={reduced} />
@@ -105,7 +105,7 @@ export default function InsulationScene() {
             )}
 
             {/* Heat key, so the orange particles are never ambiguous. */}
-            <p className="pointer-events-none absolute left-5 top-5 inline-flex items-center gap-2 rounded-pill border border-white/12 bg-ink/70 px-3.5 py-2 text-eyebrow font-bold uppercase tracking-[0.16em] text-bone-200 backdrop-blur-md">
+            <p className="pointer-events-none absolute left-5 top-5 inline-flex items-center gap-2 rounded-pill border border-line/12 bg-ink/70 px-3.5 py-2 text-eyebrow font-bold uppercase tracking-[0.16em] text-bone-200 backdrop-blur-md">
               <span className="size-2 rounded-full bg-accent" aria-hidden="true" />
               {active.heatKey}
             </p>
@@ -116,7 +116,7 @@ export default function InsulationScene() {
         <div className="lg:col-span-5 lg:col-start-1 lg:row-start-3 lg:mt-7">
           {/* --- Verdict + explanation for the selected mode --- */}
           <div
-            className="rounded-lg border border-white/10 bg-ink-800 p-6"
+            className="rounded-lg border border-line/10 bg-ink-800 p-6"
             // Announce the swap, since the meaning of the canvas just changed.
             aria-live="polite"
           >
@@ -139,7 +139,7 @@ export default function InsulationScene() {
           <h3 className="mt-9 text-eyebrow font-bold uppercase tracking-[0.18em] text-bone-400">
             {sceneCopy.legendTitle}
           </h3>
-          <dl className="mt-4 divide-y divide-white/10 border-y border-white/10">
+          <dl className="mt-4 divide-y divide-line/10 border-y border-line/10">
             {sceneCopy.layers.map((layer, i) => (
               <div key={layer.id} className="flex items-baseline gap-4 py-3">
                 <dt className="flex min-w-[10.5rem] items-baseline gap-4 font-display text-h4 font-semibold text-bone">

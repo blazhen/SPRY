@@ -349,7 +349,7 @@ export default function HeroHouse() {
               <Stars label="Rated 5 stars by Victorian homeowners" />
               <span className="font-semibold text-bone">5.0</span>
             </span>
-            <span className="hidden h-4 w-px bg-white/20 sm:block" aria-hidden="true" />
+            <span className="hidden h-4 w-px bg-line/20 sm:block" aria-hidden="true" />
             <span>Family-owned · Carrum Downs</span>
           </div>
 
@@ -385,7 +385,7 @@ export default function HeroHouse() {
           {/* A caption strip, not a pair of cards. Boxed and set at display
               size these read as heavier than the drawing they are annotating,
               which is backwards: the house is the subject. */}
-          <div data-h-panel className="mt-5 border-t border-white/10 pt-4">
+          <div data-h-panel className="mt-5 border-t border-line/10 pt-4">
             <div className="flex flex-wrap items-baseline gap-x-6 gap-y-1">
               <span className="text-eyebrow font-bold uppercase tracking-[0.16em] text-bone-400">
                 {heroHouse.meter.label}
@@ -438,7 +438,7 @@ export default function HeroHouse() {
               the sequence you are is countable at a glance. */}
           <div className="mt-6 flex items-center gap-2" aria-hidden="true">
             {heroHouse.beats.map((beat, i) => (
-              <span key={beat.id} className="h-1 flex-1 overflow-hidden rounded-pill bg-white/12">
+              <span key={beat.id} className="h-1 flex-1 overflow-hidden rounded-pill bg-line/12">
                 <span
                   data-h-seg={i}
                   className="block size-full origin-left scale-x-0 bg-accent"

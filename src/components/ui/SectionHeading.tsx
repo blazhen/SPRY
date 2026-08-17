@@ -67,7 +67,12 @@ export default function SectionHeading({
     return (
       <>
         {before}
-        <span className="text-accent">{word}</span>
+        {/* Marked so a theme can colour the highlight independently of every
+            other accent use. The brand theme paints it green, matching how the
+            real identity sets its display headings. */}
+        <span data-accent-word className="text-accent">
+          {word}
+        </span>
         {rest.join(word)}
       </>
     )

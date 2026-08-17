@@ -31,10 +31,10 @@ const COMPONENTS: Record<HeroVariant['id'], ComponentType> = {
 function Switcher({ current }: { current: HeroVariant['id'] }) {
   return (
     <div className="pointer-events-none fixed inset-x-0 bottom-0 z-[120] flex justify-center px-gutter pb-5">
-      <div className="pointer-events-auto flex max-w-full items-center gap-1 overflow-x-auto rounded-pill border border-white/12 bg-ink/85 p-1.5 backdrop-blur-xl no-scrollbar">
+      <div className="pointer-events-auto flex max-w-full items-center gap-1 overflow-x-auto rounded-pill border border-line/12 bg-ink/85 p-1.5 backdrop-blur-xl no-scrollbar">
         <Link
           to="/heroes"
-          className="grid size-9 shrink-0 place-items-center rounded-pill text-bone-400 transition-colors hover:bg-white/8 hover:text-bone"
+          className="grid size-9 shrink-0 place-items-center rounded-pill text-bone-400 transition-colors hover:bg-line/8 hover:text-bone"
           aria-label="Back to all heroes"
         >
           <ArrowLeft className="size-4" aria-hidden="true" />
@@ -48,7 +48,7 @@ function Switcher({ current }: { current: HeroVariant['id'] }) {
               to={`/heroes/${variant.id}`}
               aria-current={active ? 'page' : undefined}
               className={`shrink-0 whitespace-nowrap rounded-pill px-4 py-2 text-small font-bold transition-colors duration-300 ${
-                active ? 'bg-accent text-ink' : 'text-bone-400 hover:bg-white/8 hover:text-bone'
+                active ? 'bg-accent text-ink' : 'text-bone-400 hover:bg-line/8 hover:text-bone'
               }`}
             >
               {variant.name}
@@ -93,7 +93,7 @@ export function HeroPreviewPage() {
           <span className="eyebrow">Hero preview</span>
           <h2 className="mt-5 text-h2 font-semibold text-bone">{variant.name}</h2>
           <p className="mt-5 text-lead text-bone-400">{variant.idea}</p>
-          <dl className="mt-8 divide-y divide-white/10 border-y border-white/10">
+          <dl className="mt-8 divide-y divide-line/10 border-y border-line/10">
             <div className="flex flex-wrap gap-x-6 gap-y-1 py-4">
               <dt className="min-w-[7rem] text-small font-bold uppercase tracking-[0.14em] text-accent">
                 Angle
@@ -163,7 +163,7 @@ export function HeroesIndexPage() {
                         </span>
                       )}
                       {variant.usesWebGL && (
-                        <span className="inline-flex items-center gap-1.5 rounded-pill border border-white/15 px-3 py-1 text-eyebrow font-bold uppercase tracking-[0.14em] text-bone-400">
+                        <span className="inline-flex items-center gap-1.5 rounded-pill border border-line/15 px-3 py-1 text-eyebrow font-bold uppercase tracking-[0.14em] text-bone-400">
                           <Boxes className="size-3" aria-hidden="true" />
                           WebGL
                         </span>

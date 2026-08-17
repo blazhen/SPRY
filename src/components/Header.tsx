@@ -121,7 +121,7 @@ export default function Header() {
           'fixed inset-x-0 top-0 z-50 transition-[transform,background-color,border-color,backdrop-filter] duration-500 ease-expo',
           hidden ? '-translate-y-full' : 'translate-y-0',
           scrolled || menuOpen
-            ? 'border-b border-white/10 bg-ink/70 backdrop-blur-xl'
+            ? 'border-b border-line/10 bg-ink/70 backdrop-blur-xl'
             : 'border-b border-transparent bg-transparent',
         ].join(' ')}
       >
@@ -132,7 +132,7 @@ export default function Header() {
             className="shrink-0 transition-opacity duration-300 ease-expo hover:opacity-80"
             aria-label={`${site.name} home`}
           >
-            <Logo height={44} className="h-9 sm:h-11" priority />
+            <Logo height={44} className="h-9 text-bone sm:h-11" />
           </Link>
 
           {/* --- Desktop nav --- */}
@@ -171,7 +171,7 @@ export default function Header() {
           <div className="flex items-center gap-2 sm:gap-3">
             <a
               href={site.phone.tel}
-              className="hidden items-center gap-2 rounded-pill border border-white/12 px-4 py-2.5 text-small font-semibold text-bone transition-colors duration-300 hover:border-accent hover:text-accent md:inline-flex"
+              className="hidden items-center gap-2 rounded-pill border border-line/12 px-4 py-2.5 text-small font-semibold text-bone transition-colors duration-300 hover:border-accent hover:text-accent md:inline-flex"
             >
               <Phone className="size-4" aria-hidden="true" />
               {site.phone.display}
@@ -192,7 +192,7 @@ export default function Header() {
               onClick={() => setMenuOpen((open) => !open)}
               aria-expanded={menuOpen}
               aria-controls="mobile-nav-drawer"
-              className="inline-flex items-center gap-2 rounded-pill border border-white/15 px-4 py-2.5 text-small font-semibold text-bone transition-colors duration-300 hover:border-accent hover:text-accent lg:hidden"
+              className="inline-flex items-center gap-2 rounded-pill border border-line/15 px-4 py-2.5 text-small font-semibold text-bone transition-colors duration-300 hover:border-accent hover:text-accent lg:hidden"
             >
               {menuOpen ? (
                 <X className="size-4" aria-hidden="true" />
@@ -225,12 +225,12 @@ export default function Header() {
 
           <div
             data-drawer-panel
-            className="relative flex max-h-full flex-col overflow-y-auto border-b border-white/10 bg-ink px-gutter pb-10 pt-[calc(var(--header-h,4.75rem)+2rem)]"
+            className="relative flex max-h-full flex-col overflow-y-auto border-b border-line/10 bg-ink px-gutter pb-10 pt-[calc(var(--header-h,4.75rem)+2rem)]"
           >
             <nav aria-label="Mobile">
               <ul>
                 {navItems.map((item) => (
-                  <li key={item.href} className="border-b border-white/8 last:border-b-0">
+                  <li key={item.href} className="border-b border-line/8 last:border-b-0">
                     <div className="line-mask">
                       <NavLink
                         to={item.href}

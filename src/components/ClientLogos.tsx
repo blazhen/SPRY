@@ -48,14 +48,21 @@ export default function ClientLogos() {
     )
   }
 
+  // `paper` rather than the usual inverted band: this section's ground is fixed
+  // by the assets on it. The twelve client logos are full-colour files with dark
+  // ink and two baked-in white boxes, verified legible on a light ground, so it
+  // stays light in every theme.
   return (
-    <section className="relative bg-bone py-section text-ink" aria-labelledby="clients-heading">
+    <section
+      className="relative bg-paper py-section text-paper-fg"
+      aria-labelledby="clients-heading"
+    >
       <div className="shell">
-        <div className="flex flex-wrap items-baseline justify-between gap-6 border-b border-ink/12 pb-8">
+        <div className="flex flex-wrap items-baseline justify-between gap-6 border-b border-paper-fg/12 pb-8">
           <h2 id="clients-heading" className="max-w-2xl text-h3 font-semibold">
             {clientsHeading}
           </h2>
-          <p className="text-small text-ink/60">
+          <p className="text-small text-paper-fg/75">
             {clients.length} brands · Australia-wide &amp; international
           </p>
         </div>

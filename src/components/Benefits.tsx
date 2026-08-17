@@ -81,7 +81,7 @@ export default function Benefits() {
   return (
     <section
       ref={scope}
-      className="relative border-t border-white/6 bg-ink py-section"
+      className="relative border-t border-line/6 bg-ink py-section"
       aria-labelledby="benefits-heading"
     >
       <div className="shell">
@@ -96,7 +96,7 @@ export default function Benefits() {
           // Perspective lives on the grid so each card tilts in the same
           // shared space rather than each having its own vanishing point.
           style={{ perspective: '1200px' }}
-          className="mt-16 grid gap-px overflow-hidden rounded-xl border border-white/10 bg-white/10 sm:grid-cols-2 lg:grid-cols-3"
+          className="mt-16 grid gap-px overflow-hidden rounded-xl border border-line/10 bg-line/10 sm:grid-cols-2 lg:grid-cols-3"
         >
           {benefits.map((benefit) => {
             const Icon = benefit.icon
@@ -113,13 +113,13 @@ export default function Benefits() {
                 />
 
                 <div className="flex items-start justify-between gap-4">
-                  <span className="inline-flex size-12 items-center justify-center rounded-md border border-white/10 bg-white/4 text-accent transition-colors duration-500 group-hover:border-accent/40 group-hover:bg-accent/10">
+                  <span className="inline-flex size-12 items-center justify-center rounded-md border border-line/10 bg-line/4 text-accent transition-colors duration-500 group-hover:border-accent/40 group-hover:bg-accent/10">
                     <Icon className="size-5" aria-hidden="true" />
                   </span>
 
                   {benefit.figure && (
                     <span
-                      className="shrink-0 font-display text-h4 font-semibold leading-none text-white/15 transition-colors duration-500 group-hover:text-accent/40"
+                      className="shrink-0 font-display text-h4 font-semibold leading-none text-line/15 transition-colors duration-500 group-hover:text-accent/40"
                       aria-hidden="true"
                     >
                       {benefit.figure}

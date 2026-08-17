@@ -186,7 +186,7 @@ export default function Testimonials() {
 
                     <figcaption
                       className={`mt-9 flex items-end justify-between gap-4 border-t pt-6 ${
-                        isActive ? 'border-white/15' : 'border-ink/12'
+                        isActive ? 'border-line/15' : 'border-ink/12'
                       }`}
                     >
                       <span>

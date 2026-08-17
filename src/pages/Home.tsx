@@ -38,7 +38,7 @@ export default function Home() {
 
       {/* Velocity-reactive strip that catches the hero's scroll hand-off. */}
       <Marquee
-        className="border-y border-white/10 bg-ink py-6 sm:py-8"
+        className="border-y border-line/10 bg-ink py-6 sm:py-8"
         itemClassName="font-display text-[clamp(1.75rem,4.2vw,3.25rem)] font-semibold uppercase leading-none tracking-tight text-bone"
       />
 

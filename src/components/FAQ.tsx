@@ -45,7 +45,7 @@ function FaqItem({ faq, index, open, onToggle }: ItemProps) {
   )
 
   return (
-    <li className="border-b border-white/10">
+    <li className="border-b border-line/10">
       <h3>
         <button
           type="button"
@@ -79,7 +79,7 @@ function FaqItem({ faq, index, open, onToggle }: ItemProps) {
             className={`relative mt-1 grid size-9 shrink-0 place-items-center rounded-pill border transition-colors duration-500 ease-expo ${
               open
                 ? 'border-accent bg-accent text-ink'
-                : 'border-white/20 text-bone group-hover:border-accent group-hover:text-accent'
+                : 'border-line/20 text-bone group-hover:border-accent group-hover:text-accent'
             }`}
           >
             <span className="absolute h-[2px] w-3.5 rounded-full bg-current" />
@@ -120,14 +120,14 @@ export default function FAQ() {
 
   return (
     <section
-      className="relative border-t border-white/6 bg-surface py-section"
+      className="relative border-t border-line/6 bg-surface py-section"
       aria-labelledby="faq-heading"
     >
       <div className="shell grid gap-14 lg:grid-cols-12 lg:gap-16">
         <div className="lg:col-span-4">
           <SectionHeading intro={faqIntro} headingId="faq-heading" />
 
-          <div className="mt-10 rounded-lg border border-white/10 bg-ink-800 p-7">
+          <div className="mt-10 rounded-lg border border-line/10 bg-ink-800 p-7">
             <p className="text-body text-bone-400">
               Still not sure whether spray foam suits your building? Ask us. We will tell you
               honestly if it is not the right answer.
@@ -145,7 +145,7 @@ export default function FAQ() {
         </div>
 
         <div className="lg:col-span-8">
-          <ul className="border-t border-white/10">
+          <ul className="border-t border-line/10">
             {faqs.map((faq, i) => (
               <FaqItem
                 key={faq.id}

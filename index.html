@@ -32,10 +32,316 @@
     <!-- Warm the image CDN before the hero background is requested. -->
     <link rel="preconnect" href="https://images.unsplash.com" crossorigin />
 
+    <!-- The boot screen's only image. Preloaded so the mark paints with it. -->
+    <link rel="preload" as="image" href="/logo/SS-Logo-White.webp" />
+
     <title>Spray Foam Insulation Melbourne &amp; Australia | Spray It Solutions</title>
+
+    <!--
+      Palette, applied before the first paint.
+
+      Must run here in <head>, synchronously, and not from React: reading the
+      stored choice after mount would paint the default palette first and then
+      repaint, which is a visible flash of the wrong colours on every load.
+    -->
+    <script>
+      ;(function () {
+        try {
+          var saved = localStorage.getItem('sprayit:theme')
+          if (saved === 'brand') {
+            document.documentElement.setAttribute('data-theme', 'brand')
+            var meta = document.querySelector('meta[name="theme-color"]')
+            if (meta) meta.setAttribute('content', '#FFFFFF')
+          }
+        } catch (e) {
+          /* Private browsing can throw. The default palette is the fallback. */
+        }
+      })()
+    </script>
+
+    <!--
+      Boot screen.
+
+      Deliberately inlined here rather than built as a React component. The app
+      ships a large bundle (React, GSAP and a Three.js scene), and a component
+      cannot render until all of that has downloaded, parsed and mounted, which
+      is precisely the blank window a loading screen exists to cover. Markup and
+      styles inline in the document paint on the first frame instead.
+
+      Token values are hard-coded because tokens.css arrives with the bundle,
+      which by definition has not loaded yet.
+    -->
+    <style>
+      #boot {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        display: grid;
+        place-items: center;
+        background: #0a0a0b;
+        transform: translateY(0);
+        transition: transform 0.8s cubic-bezier(0.76, 0, 0.24, 1) 0.2s;
+      }
+      /* Warm halo behind the mark, so the panel is not a flat black rectangle.
+         Centred on the logo rather than anchored to an edge, where it reads as
+         a clipped stray light instead of a deliberate glow. */
+      #boot::after {
+        content: '';
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        width: min(130vw, 54rem);
+        aspect-ratio: 1;
+        transform: translate(-50%, -50%);
+        /* Fades to a transparent *amber*, not to `transparent`. The keyword is
+           transparent black, so fading to it draws a dirty grey ring. */
+        background: radial-gradient(
+          closest-side,
+          rgba(255, 90, 31, 0.15),
+          rgba(255, 90, 31, 0.05) 48%,
+          rgba(255, 90, 31, 0) 100%
+        );
+        pointer-events: none;
+      }
+      .boot-mark {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1.75rem;
+        padding: 0 1.5rem;
+        opacity: 0;
+        transform: translateY(10px);
+        animation: boot-in 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.06s forwards;
+      }
+      @keyframes boot-in {
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
+      .boot-logo {
+        display: block;
+        width: auto;
+        height: clamp(3.75rem, 12vw, 6.5rem);
+      }
+      .boot-track {
+        position: relative;
+        width: clamp(9rem, 26vw, 14rem);
+        height: 2px;
+        overflow: hidden;
+        border-radius: 2px;
+        background: rgba(245, 242, 237, 0.14);
+      }
+      .boot-bar {
+        display: block;
+        height: 100%;
+        width: 100%;
+        transform: scaleX(0);
+        transform-origin: left center;
+        border-radius: inherit;
+        background: linear-gradient(90deg, #ff5a1f, #ffa04a);
+      }
+      .boot-label {
+        margin: 0;
+        font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+        font-size: 0.6875rem;
+        font-weight: 700;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        color: #a8a39a;
+      }
+      .boot-sr {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+      }
+
+      /* Exit: the mark drops out, then the whole panel wipes up off the top,
+         which is the same language as the site's section transitions. */
+      #boot[data-boot-exit] {
+        transform: translateY(-101%);
+      }
+      #boot[data-boot-exit] .boot-mark {
+        opacity: 0;
+        transform: translateY(-8px);
+        animation: none;
+        transition:
+          opacity 0.28s ease,
+          transform 0.28s ease;
+      }
+
+      /* Brand palette. The panel goes navy rather than white because the only
+         supplied logo asset is white on transparency, which would be invisible
+         on a white ground. Navy is the brand's own primary, so this reads as
+         intended rather than as a compromise. */
+      html[data-theme='brand'] #boot {
+        background: #002396;
+      }
+      html[data-theme='brand'] #boot::after {
+        background: radial-gradient(
+          closest-side,
+          rgba(141, 198, 63, 0.22),
+          rgba(141, 198, 63, 0.06) 48%,
+          rgba(141, 198, 63, 0) 100%
+        );
+      }
+      html[data-theme='brand'] .boot-bar {
+        background: linear-gradient(90deg, #8dc63f, #b6e06f);
+      }
+      html[data-theme='brand'] .boot-track {
+        background: rgba(255, 255, 255, 0.2);
+      }
+      html[data-theme='brand'] .boot-label {
+        color: rgba(255, 255, 255, 0.72);
+      }
+
+      /* While booting, the page behind must not scroll under the panel. */
+      html[data-booting] {
+        overflow: hidden;
+      }
+
+      /* A wipe is motion. Under reduced motion the panel simply stops being
+         there, which is the finished state rather than a faster animation. */
+      @media (prefers-reduced-motion: reduce) {
+        #boot,
+        #boot .boot-mark {
+          transition: none;
+          animation: none;
+          opacity: 1;
+          transform: none;
+        }
+        #boot[data-boot-exit] {
+          display: none;
+        }
+      }
+    </style>
+
+    <!-- No script, no boot screen to dismiss. -->
+    <noscript>
+      <style>
+        #boot {
+          display: none;
+        }
+        html[data-booting] {
+          overflow: auto;
+        }
+      </style>
+    </noscript>
   </head>
   <body>
+    <div id="boot" role="status" aria-live="polite">
+      <div class="boot-mark">
+        <img
+          class="boot-logo"
+          src="/logo/SS-Logo-White.webp"
+          width="289"
+          height="174"
+          alt=""
+          aria-hidden="true"
+          fetchpriority="high"
+        />
+        <div class="boot-track" aria-hidden="true"><span class="boot-bar" id="boot-bar"></span></div>
+        <p class="boot-label" aria-hidden="true">Sealing things up</p>
+      </div>
+      <span class="boot-sr">Loading Spray It Solutions</span>
+    </div>
+
     <div id="root"></div>
+
+    <script>
+      /*
+       * Boot screen controller.
+       *
+       * The bar tracks real milestones (document parsed, webfonts resolved,
+       * window load, app mounted) rather than a timer pretending to be
+       * progress. Between milestones it eases toward the next one without
+       * reaching it, so a slow step reads as "still working" instead of
+       * freezing, and it only completes when the app actually says so.
+       *
+       * Two safeguards matter more than the animation: a hard timeout, and a
+       * pageshow handler for the back/forward cache. Without either, one failed
+       * request could leave a visitor staring at a permanent splash screen.
+       */
+      (function () {
+        var panel = document.getElementById('boot')
+        var bar = document.getElementById('boot-bar')
+        if (!panel || !bar) return
+
+        var root = document.documentElement
+        root.setAttribute('data-booting', '')
+
+        var target = 0
+        var shown = 0
+        var finished = false
+        var startedAt = Date.now()
+
+        function reach(value) {
+          if (value > target) target = value
+        }
+
+        function frame() {
+          if (finished) return
+          // Creep a little past the last milestone, but never all the way to
+          // the next one: the bar must not promise progress that has not
+          // happened.
+          shown += (Math.min(target + 7, 96) - shown) * 0.055
+          bar.style.transform = 'scaleX(' + shown / 100 + ')'
+          requestAnimationFrame(frame)
+        }
+        requestAnimationFrame(frame)
+
+        function finish() {
+          if (finished) return
+          finished = true
+          bar.style.transition = 'transform .28s ease-out'
+          bar.style.transform = 'scaleX(1)'
+          root.removeAttribute('data-booting')
+
+          // If everything was cached this can be reached in ~100ms, and a panel
+          // that flashes past is worse than no panel. Hold just long enough to
+          // read as deliberate, never long enough to be a tax.
+          var hold = Math.max(0, 400 - (Date.now() - startedAt))
+          setTimeout(function () {
+            panel.setAttribute('data-boot-exit', '')
+            setTimeout(function () {
+              if (panel.parentNode) panel.parentNode.removeChild(panel)
+            }, 1100)
+          }, hold)
+        }
+
+        // The app calls this once it has mounted and its fonts are settled.
+        window.__bootReady = finish
+
+        reach(12)
+        if (document.fonts && document.fonts.ready) {
+          document.fonts.ready.then(function () {
+            reach(58)
+          })
+        } else {
+          reach(58)
+        }
+        window.addEventListener('load', function () {
+          reach(82)
+        })
+
+        // Last resort. A missing signal must never hold the page hostage.
+        setTimeout(finish, 7000)
+
+        // Restoring from the back/forward cache re-shows the old DOM, which can
+        // include this panel. Clear it immediately: nothing is loading.
+        window.addEventListener('pageshow', function (event) {
+          if (event.persisted) finish()
+        })
+      })()
+    </script>
+
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

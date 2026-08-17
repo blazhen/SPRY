@@ -61,7 +61,7 @@ export default function WhatIsSprayFoam() {
       id="what-is-spray-foam"
       // Alternates with the sections either side of it. See the depth ladder
       // note in tokens.css.
-      className="relative overflow-hidden border-t border-white/6 bg-surface py-section lg:py-[clamp(2.5rem,5.5vh,5rem)]"
+      className="relative overflow-hidden border-t border-line/6 bg-surface py-section lg:py-[clamp(2.5rem,5.5vh,5rem)]"
       aria-labelledby="what-is-heading"
     >
       {/* Explicit grid placement rather than two stacked columns. In DOM order
@@ -114,7 +114,7 @@ export default function WhatIsSprayFoam() {
                   Rendered full and rewound by the scrub, so it still reads
                   under reduced motion where no tween runs. */}
               <div className="absolute inset-x-0 bottom-0 p-6 sm:p-8">
-                <div className="h-px w-full bg-white/20" aria-hidden="true">
+                <div className="h-px w-full bg-line/20" aria-hidden="true">
                   <div data-foam-progress className="h-px origin-left scale-x-100 bg-accent" />
                 </div>
                 <p className="mt-4 text-eyebrow font-bold uppercase tracking-[0.18em] text-bone-200">

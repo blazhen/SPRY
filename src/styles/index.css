@@ -89,7 +89,7 @@
   [data-hero-tone='light'] [data-site-header] {
     background-color: rgb(var(--c-ink) / 0.72);
     backdrop-filter: blur(24px);
-    border-bottom-color: rgb(255 255 255 / 0.1);
+    border-bottom-color: var(--hairline);
   }
 
   /* Lenis */
@@ -180,10 +180,12 @@
   .btn-ghost {
     /* Not fully transparent: this button sits over photography and over the
        hero's thermal lens, where a bright hot spot would otherwise leave white
-       label text with almost no contrast. */
-    background: rgb(10 10 11 / 0.38);
-    color: rgb(var(--c-bone));
-    border-color: var(--hairline-strong);
+       label text with almost no contrast. Drawn from the scrim tokens rather
+       than the palette, because a label over a photo needs a dark backing and
+       light text no matter what the page around it is doing. */
+    background: var(--scrim);
+    color: rgb(var(--scrim-fg));
+    border-color: rgb(255 255 255 / 0.18);
     backdrop-filter: blur(6px);
   }
   .btn-ghost:hover {
@@ -199,13 +201,15 @@
     background: rgb(var(--c-ink-700));
   }
 
+  /* Sits on an inverted section, so it is drawn from `ink` throughout: dark on
+     the bone band in the dark theme, white on the navy band in the brand one. */
   .btn-outline-ink {
     background: transparent;
     color: rgb(var(--c-ink));
-    border-color: rgb(10 10 11 / 0.28);
+    border-color: rgb(var(--c-ink) / 0.3);
   }
   .btn-outline-ink:hover {
-    background: rgb(10 10 11 / 0.06);
+    background: rgb(var(--c-ink) / 0.08);
     border-color: rgb(var(--c-ink));
   }
 

@@ -39,7 +39,7 @@ export default function WorkVideos() {
     <section
       ref={scope}
       id="our-work"
-      className="relative border-t border-white/6 bg-ink py-section"
+      className="relative border-t border-line/6 bg-ink py-section"
       aria-labelledby="work-heading"
     >
       <div className="shell">

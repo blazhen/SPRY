@@ -16,33 +16,41 @@ interface LogoProps {
    */
   height?: number
   className?: string
-  priority?: boolean
 }
 
 /**
  * The SprayIT mark.
  *
- * The supplied asset is a reversed (white) logo on transparency, so it only
- * works on dark ground. The `width`/`height` attributes always carry the true
- * aspect ratio so the browser reserves the right box before the image decodes
- * and the header never reflows; visual size is left to CSS so a caller can
- * scale it responsively.
+ * The only supplied asset is a reversed (white) logo on transparency, which is
+ * invisible the moment the ground behind it is light. Rather than ship a mark
+ * that disappears on the brand palette, the file is used as an alpha mask and
+ * filled with `currentColor`, so the same asset paints white on the dark theme
+ * and navy on the light one. Colour therefore comes from a text class on the
+ * caller, e.g. `text-bone`.
+ *
+ * `width`/`height` always carry the true aspect ratio so the header reserves
+ * the right box up front and never reflows.
+ *
+ * If the client supplies the full-colour lockup (green SPRAY, navy IT), drop
+ * this back to a plain <img> and delete the mask.
  */
-export default function Logo({ height = 44, className = '', priority = false }: LogoProps) {
+export default function Logo({ height = 44, className = '' }: LogoProps) {
   const width = Math.round((NATURAL.w / NATURAL.h) * height)
+  const mask = `url("${LOGO_SRC}") center / contain no-repeat`
 
   return (
-    <img
-      src={LOGO_SRC}
-      alt={`${site.name} logo`}
-      width={width}
-      height={height}
-      className={`block w-auto object-contain ${className}`}
-      style={className.includes('h-') ? undefined : { height }}
-      // The header mark is above the fold on every page, so it should not
-      // queue behind lazily loaded content.
-      {...(priority ? { fetchpriority: 'high' } : { loading: 'lazy' as const })}
-      decoding="async"
+    <span
+      role="img"
+      aria-label={`${site.name} logo`}
+      style={{
+        width,
+        ...(className.includes('h-') ? {} : { height }),
+        aspectRatio: `${NATURAL.w} / ${NATURAL.h}`,
+        WebkitMask: mask,
+        mask,
+        backgroundColor: 'currentColor',
+      }}
+      className={`block w-auto shrink-0 ${className}`}
     />
   )
 }

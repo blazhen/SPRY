@@ -201,7 +201,7 @@ export default function HeroSeal() {
             <article
               key={beat.id}
               data-seal-step
-              className="rounded-lg border border-white/10 bg-ink-800 p-7"
+              className="rounded-lg border border-line/10 bg-ink-800 p-7"
             >
               <p className="flex items-baseline gap-4">
                 <span className="font-body text-eyebrow font-bold tracking-[0.18em] text-accent">
@@ -371,7 +371,7 @@ export default function HeroSeal() {
 
         {/* Progress rail */}
         <div className="shell mt-6">
-          <div className="h-px w-full bg-white/12" aria-hidden="true">
+          <div className="h-px w-full bg-line/12" aria-hidden="true">
             <div data-seal-rail className="h-px origin-left scale-x-0 bg-accent" />
           </div>
         </div>

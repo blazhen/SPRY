@@ -49,7 +49,7 @@ export default function VideoEmbed({
 
   return (
     <div
-      className={`relative aspect-video overflow-hidden rounded-lg border border-white/10 bg-ink-800 ${className}`}
+      className={`relative aspect-video overflow-hidden rounded-lg border border-line/10 bg-ink-800 ${className}`}
     >
       {playing ? (
         <iframe

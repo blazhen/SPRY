@@ -39,7 +39,7 @@ export default function Footer() {
               className="inline-block transition-opacity duration-300 ease-expo hover:opacity-80"
               aria-label={`${site.name} home`}
             >
-              <Logo height={58} />
+              <Logo height={58} className="text-bone" />
             </Link>
 
             <p className="mt-6 max-w-measure text-body text-bone-400">{footer.blurb}</p>
@@ -77,7 +77,7 @@ export default function Footer() {
                       href={social.href}
                       target="_blank"
                       rel="noreferrer noopener"
-                      className="grid size-11 place-items-center rounded-pill border border-white/12 text-bone-400 transition-colors duration-300 hover:border-accent hover:text-accent"
+                      className="grid size-11 place-items-center rounded-pill border border-line/12 text-bone-400 transition-colors duration-300 hover:border-accent hover:text-accent"
                     >
                       <Icon className="size-4" aria-hidden="true" />
                       <span className="sr-only">
@@ -112,7 +112,7 @@ export default function Footer() {
             </div>
 
             {/* Quote nudge */}
-            <div className="mt-12 flex flex-wrap items-center justify-between gap-6 rounded-lg border border-white/10 bg-ink-800 p-7">
+            <div className="mt-12 flex flex-wrap items-center justify-between gap-6 rounded-lg border border-line/10 bg-ink-800 p-7">
               <p className="max-w-md font-display text-h4 font-semibold text-bone">
                 {site.tagline}
               </p>
@@ -125,7 +125,7 @@ export default function Footer() {
         </div>
 
         {/* ---------------- Base line ---------------- */}
-        <div className="mt-16 flex flex-col gap-4 border-t border-white/10 py-8 text-small text-bone-400 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mt-16 flex flex-col gap-4 border-t border-line/10 py-8 text-small text-bone-400 sm:flex-row sm:items-center sm:justify-between">
           <p>
             © {year} {site.name}. ABN and licensing details on request.
           </p>

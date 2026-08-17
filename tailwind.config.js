@@ -29,6 +29,18 @@ export default {
           300: withOpacity('--c-accent-300'),
           100: withOpacity('--c-accent-100'),
         },
+        /** Secondary accent for graphic marks. Brand green on the light theme. */
+        accent2: withOpacity('--c-accent-2'),
+        /**
+         * Hairlines and glass fills. Replaces literal `white/N`, which is
+         * invisible once the ground is white.
+         */
+        line: withOpacity('--c-line'),
+        /** A ground that stays light in every theme, plus its text colour. */
+        paper: {
+          DEFAULT: withOpacity('--c-paper'),
+          fg: withOpacity('--c-paper-fg'),
+        },
       },
       fontFamily: {
         display: ['var(--font-display)'],

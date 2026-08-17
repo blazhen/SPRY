@@ -39,6 +39,12 @@ export const ACTIVE_HERO:
 /**
  * Brief brand wipe on first load.
  *
+ * Not the loading screen. That one lives inline in index.html, because a React
+ * component cannot paint until the bundle it is part of has already arrived.
+ * This is a separate flourish that runs after the app is up, so switching both
+ * on means the visitor sits through two panels in a row. Leave it off unless
+ * that is genuinely what is wanted.
+ *
  * Disabled by default: an opaque full-screen overlay sits in front of the hero
  * and therefore delays Largest Contentful Paint by roughly its own duration.
  * It is a real trade of a Lighthouse point for a moment of theatre, so it is
