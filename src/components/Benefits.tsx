@@ -4,6 +4,7 @@ import { useReducedMotion } from '@/hooks/useReducedMotion'
 import { benefits } from '@/data/benefits'
 import { benefitsIntro } from '@/data/content'
 import SectionHeading from '@/components/ui/SectionHeading'
+import SectionBackdrop from '@/components/ui/SectionBackdrop'
 
 /**
  * Benefits grid: six icon cards revealed with a staggered clip wipe.
@@ -84,7 +85,9 @@ export default function Benefits() {
       className="relative border-t border-line/6 bg-ink py-section"
       aria-labelledby="benefits-heading"
     >
-      <div className="shell">
+      <SectionBackdrop variant="orbs" tone="warm" />
+
+      <div className="relative shell">
         <SectionHeading
           intro={benefitsIntro}
           headingId="benefits-heading"

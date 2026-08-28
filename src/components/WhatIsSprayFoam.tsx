@@ -7,6 +7,7 @@ import { whatIsSprayFoam as copy } from '@/data/content'
 import Figure from '@/components/ui/Figure'
 import SectionHeading from '@/components/ui/SectionHeading'
 import StageRing from '@/components/StageRing'
+import SectionBackdrop from '@/components/ui/SectionBackdrop'
 
 /**
  * "What is spray foam": the pinned scroll sequence.
@@ -64,12 +65,14 @@ export default function WhatIsSprayFoam() {
       className="relative overflow-hidden border-t border-line/6 bg-surface py-section lg:py-[clamp(2.5rem,5.5vh,5rem)]"
       aria-labelledby="what-is-heading"
     >
+      <SectionBackdrop variant="cells" tone="both" />
+
       {/* Explicit grid placement rather than two stacked columns. In DOM order
           the photograph sits between the heading and the body copy, which is
           what a phone reads top to bottom; on desktop it is placed back into
           its own column spanning all three rows. One image element, two
           completely different reading orders. */}
-      <div className="shell grid gap-10 lg:grid-cols-12 lg:items-start lg:gap-x-16 lg:gap-y-0">
+      <div className="relative shell grid gap-10 lg:grid-cols-12 lg:items-start lg:gap-x-16 lg:gap-y-0">
         {/* ---------------- Heading ---------------- */}
         <div className="lg:col-span-6 lg:col-start-1 lg:row-start-1 lg:pr-8">
           <SectionHeading

@@ -15,6 +15,8 @@ export interface Video {
    * load. Recording the verified name keeps the network log clean.
    */
   poster: 'maxresdefault' | 'sddefault' | 'hqdefault'
+  /** Which page galleries this belongs in. */
+  sector: 'residential' | 'commercial' | 'both'
 }
 
 /** The company channel, linked from the section footer. */
@@ -33,6 +35,7 @@ export const testimonialVideo = {
   // Not sddefault: for this upload that rendition is a different frame
   // (a product shot) rather than the chosen thumbnail.
   poster: 'hqdefault',
+  sector: 'both',
 } satisfies Video
 
 export const workIntro: SectionIntro = {
@@ -63,35 +66,81 @@ export const workVideos: Video[] = [
     title: 'Stud wall spraying',
     blurb: 'Time lapse of a residential wall filled cavity by cavity.',
     poster: 'sddefault',
+    sector: 'residential',
   },
   {
     id: '8VLbxYIWyzI',
     title: 'Main Ridge house',
     blurb: 'A whole-house fit-out, wall cavities and framing.',
     poster: 'hqdefault',
+    sector: 'residential',
   },
   {
     id: 'xO1WzJZxoUY',
     title: 'Roof spraying at R6.0',
     blurb: 'Open-cell Icynene LDC-50 under the roof line.',
     poster: 'maxresdefault',
+    sector: 'residential',
   },
   {
     id: 'Zsicob298CI',
     title: 'High speed subfloor spraying',
     blurb: 'Underfloor coverage, the area most homes leave bare.',
     poster: 'maxresdefault',
+    sector: 'residential',
   },
   {
     id: 'Ht_W3K2Rhi0',
     title: 'Inflated dome, PIR foam',
     blurb: 'A structure conventional batts could never follow.',
     poster: 'maxresdefault',
+    sector: 'commercial',
   },
   {
     id: '52TYYHYkWb4',
     title: 'Is spray foam a good choice?',
     blurb: 'The short explainer on where it earns its keep.',
     poster: 'hqdefault',
+    sector: 'residential',
+  },
+
+  /* Commercial and industrial. Every one of these was checked to be a true
+     16:9 upload: the channel's factory-roof clip is a vertical Short and was
+     left out rather than pillarboxed into a landscape grid. Posters are set to
+     hqdefault, which always exists and is always the real chosen thumbnail. */
+  {
+    id: 'gOE23pCeQPc',
+    title: 'Factory wall, time lapse',
+    blurb: 'A full industrial span sprayed end to end.',
+    poster: 'hqdefault',
+    sector: 'commercial',
+  },
+  {
+    id: 'XDYjdr9lJRo',
+    title: 'Potato storage shed',
+    blurb: 'Twin rigs on a controlled-temperature produce store.',
+    poster: 'hqdefault',
+    sector: 'commercial',
+  },
+  {
+    id: 'QUGdEIRih8g',
+    title: 'Wine shed walls',
+    blurb: 'Holding temperature in a working winery store.',
+    poster: 'hqdefault',
+    sector: 'commercial',
+  },
+  {
+    id: 'CR8CfFmON3g',
+    title: 'Wine shed, interior',
+    blurb: 'Sprayed directly onto the sheeting, no framing needed.',
+    poster: 'hqdefault',
+    sector: 'commercial',
+  },
+  {
+    id: 'W61lMo3DB9w',
+    title: 'Shipping container conversion',
+    blurb: 'Closed cell foam turning a steel box into usable space.',
+    poster: 'hqdefault',
+    sector: 'commercial',
   },
 ]

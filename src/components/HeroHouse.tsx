@@ -1,11 +1,11 @@
-import { useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { ArrowDown, ArrowUpRight, Phone } from 'lucide-react'
 import { gsap, useGSAP } from '@/lib/gsap'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
 import { heroHouse } from '@/data/content'
 import { site } from '@/data/site'
 import MagneticButton from '@/components/ui/MagneticButton'
-import HouseSection from '@/components/HouseSection'
+import HouseSection, { type HouseSeason } from '@/components/HouseSection'
 import Stars from '@/components/ui/Stars'
 
 /**
@@ -31,6 +31,22 @@ import Stars from '@/components/ui/Stars'
 export default function HeroHouse() {
   const scope = useRef<HTMLElement>(null)
   const reduced = useReducedMotion()
+
+  /**
+   * The season runs on a timer rather than on scroll position. Scroll already
+   * drives the sealing; tying the weather to it too would mean you could only
+   * ever see one season per pass, and never the winter version of the sealed
+   * house without scrolling back up.
+   */
+  const [season, setSeason] = useState<HouseSeason>('summer')
+  useEffect(() => {
+    if (reduced) return
+    const id = window.setInterval(
+      () => setSeason((s) => (s === 'summer' ? 'winter' : 'summer')),
+      9000,
+    )
+    return () => window.clearInterval(id)
+  }, [reduced])
 
   useGSAP(
     () => {
@@ -122,7 +138,8 @@ export default function HeroHouse() {
           .to('[data-h-leak="floor"]', { autoAlpha: 0, duration: 0.08 }, 0.8)
 
           // The rooms warm and the windows light as the envelope closes.
-          .fromTo('[data-h-warm]', { autoAlpha: 0 }, { autoAlpha: 1, ease: 'none', duration: 0.5 }, 0.4)
+          .fromTo('[data-h-tint-start]', { autoAlpha: 1 }, { autoAlpha: 0, ease: 'none', duration: 0.5 }, 0.4)
+          .fromTo('[data-h-tint-end]', { autoAlpha: 0 }, { autoAlpha: 1, ease: 'none', duration: 0.5 }, 0.4)
           .fromTo(
             '[data-h-glow]',
             { attr: { opacity: 0 } },
@@ -178,7 +195,8 @@ export default function HeroHouse() {
         gsap.set('[data-h-clip="roof"]', { transformOrigin: '50% 0%', scaleY: 1 })
         gsap.set('[data-h-clip="wall"]', { transformOrigin: '50% 100%', scaleY: 1 })
         gsap.set('[data-h-clip="floor"]', { transformOrigin: '0% 50%', scaleX: 1 })
-        gsap.set('[data-h-warm]', { autoAlpha: 1 })
+        gsap.set('[data-h-tint-start]', { autoAlpha: 0 })
+        gsap.set('[data-h-tint-end]', { autoAlpha: 1 })
         gsap.set('[data-h-glow]', { attr: { opacity: 0.5 } })
         gsap.set('[data-h-seg]', { scaleX: 1 })
         // Every beat readable. Showing only the last would lose content.
@@ -379,13 +397,13 @@ export default function HeroHouse() {
                 strip below it is two lines rather than one. */}
             {/* Trimmed on desktop to pay for the taller captions below, so the
                 section still fits a 900px viewport and keeps its pin. */}
-            <HouseSection className="mx-auto h-[clamp(12rem,36vh,20rem)] w-full max-w-3xl drop-shadow-[0_30px_60px_rgb(0_0_0/0.55)] lg:h-[clamp(13rem,42vh,28rem)]" />
+            <HouseSection season={season} className="mx-auto h-[clamp(13rem,42vh,24rem)] w-full max-w-5xl drop-shadow-[0_30px_60px_rgb(0_0_0/0.55)] lg:h-[clamp(15rem,min(53vh,calc(100svh-400px)),34rem)]" />
           </div>
 
           {/* A caption strip, not a pair of cards. Boxed and set at display
               size these read as heavier than the drawing they are annotating,
               which is backwards: the house is the subject. */}
-          <div data-h-panel className="mt-5 border-t border-line/10 pt-4">
+          <div data-h-panel className="mt-4 border-t border-line/10 pt-3">
             <div className="flex flex-wrap items-baseline gap-x-6 gap-y-1">
               <span className="text-eyebrow font-bold uppercase tracking-[0.16em] text-bone-400">
                 {heroHouse.meter.label}
@@ -406,7 +424,7 @@ export default function HeroHouse() {
 
             {/* The step is the loudest thing here now. At one uniform small
                 size nothing announced that a beat had changed. */}
-            <div className={reduced ? 'mt-5 space-y-6' : 'relative mt-5 min-h-[8.5rem] w-full'}>
+            <div className={reduced ? 'mt-4 space-y-6' : 'relative mt-4 min-h-[7.5rem] w-full'}>
               {heroHouse.beats.map((beat, i) => (
                 <div
                   key={beat.id}
@@ -436,7 +454,7 @@ export default function HeroHouse() {
 
           {/* One segment per beat rather than a single rail, so how far through
               the sequence you are is countable at a glance. */}
-          <div className="mt-6 flex items-center gap-2" aria-hidden="true">
+          <div className="mt-4 flex items-center gap-2" aria-hidden="true">
             {heroHouse.beats.map((beat, i) => (
               <span key={beat.id} className="h-1 flex-1 overflow-hidden rounded-pill bg-line/12">
                 <span

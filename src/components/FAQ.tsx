@@ -6,6 +6,7 @@ import { faqIntro } from '@/data/content'
 import SectionHeading from '@/components/ui/SectionHeading'
 import MagneticButton from '@/components/ui/MagneticButton'
 import { site } from '@/data/site'
+import SectionBackdrop from '@/components/ui/SectionBackdrop'
 
 interface ItemProps {
   faq: Faq
@@ -120,10 +121,14 @@ export default function FAQ() {
 
   return (
     <section
-      className="relative border-t border-line/6 bg-surface py-section"
+      className="relative overflow-hidden border-t border-line/6 bg-surface py-section"
       aria-labelledby="faq-heading"
     >
-      <div className="shell grid gap-14 lg:grid-cols-12 lg:gap-16">
+      {/* Strata, not cells: the FAQ follows the R-value section, and repeating
+          its wash would make the two read as one long band. */}
+      <SectionBackdrop variant="strata" tone="cool" />
+
+      <div className="relative shell grid gap-14 lg:grid-cols-12 lg:gap-16">
         <div className="lg:col-span-4">
           <SectionHeading intro={faqIntro} headingId="faq-heading" />
 

@@ -3,8 +3,10 @@ import { ArrowUpRight } from 'lucide-react'
 import { gsap, useGSAP } from '@/lib/gsap'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
 import { channelUrl, workCopy, workIntro, workVideos } from '@/data/videos'
+import type { SectionIntro } from '@/data/content'
 import SectionHeading from '@/components/ui/SectionHeading'
-import VideoEmbed from '@/components/ui/VideoEmbed'
+import VideoCarousel from '@/components/ui/VideoCarousel'
+import SectionBackdrop from '@/components/ui/SectionBackdrop'
 
 /**
  * Work gallery.
@@ -16,19 +18,35 @@ import VideoEmbed from '@/components/ui/VideoEmbed'
  * simply present, which is the finished state rather than a faster version of
  * the animation.
  */
-export default function WorkVideos() {
+interface WorkVideosProps {
+  /** Which clips to show. Omitted shows everything. */
+  sector?: 'residential' | 'commercial'
+  /** Override the section opener, so a page can frame the same gallery its own way. */
+  intro?: SectionIntro
+  /** Ground colour, so it alternates correctly wherever it is dropped in. */
+  tone?: 'base' | 'surface'
+  /** Cap the number shown. */
+  limit?: number
+}
+
+export default function WorkVideos({ sector, intro, tone = 'base', limit }: WorkVideosProps = {}) {
+  // 'both' clips belong in every gallery, which is why the filter is not a
+  // simple equality check.
+  const shown = (
+    sector ? workVideos.filter((v) => v.sector === sector || v.sector === 'both') : workVideos
+  ).slice(0, limit ?? undefined)
+
   const scope = useRef<HTMLElement>(null)
   const reduced = useReducedMotion()
 
   useGSAP(
     () => {
       if (reduced) return
-      gsap.from('[data-work-card]', {
-        y: 42,
+      gsap.from('[data-work-rail]', {
+        y: 44,
         opacity: 0,
-        duration: 0.9,
+        duration: 0.95,
         ease: 'expo.out',
-        stagger: 0.08,
         scrollTrigger: { trigger: scope.current, start: 'top 72%' },
       })
     },
@@ -39,12 +57,14 @@ export default function WorkVideos() {
     <section
       ref={scope}
       id="our-work"
-      className="relative border-t border-line/6 bg-ink py-section"
+      className={`relative border-t border-line/6 py-section ${tone === 'surface' ? 'bg-surface' : 'bg-ink'}`}
       aria-labelledby="work-heading"
     >
-      <div className="shell">
+      <SectionBackdrop variant="orbs" tone="cool" />
+
+      <div className="relative shell">
         <div className="flex flex-wrap items-end justify-between gap-8">
-          <SectionHeading intro={workIntro} headingId="work-heading" className="max-w-2xl" />
+          <SectionHeading intro={intro ?? workIntro} headingId="work-heading" className="max-w-2xl" />
 
           <a
             href={channelUrl}
@@ -57,17 +77,9 @@ export default function WorkVideos() {
           </a>
         </div>
 
-        <ul className="mt-14 grid gap-x-7 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
-          {workVideos.map((video) => (
-            <li key={video.id} data-work-card>
-              <VideoEmbed id={video.id} title={video.title} poster={video.poster} />
-              <h3 className="mt-5 font-display text-h4 font-semibold leading-tight text-bone">
-                {video.title}
-              </h3>
-              <p className="mt-2 text-small leading-snug text-bone-400">{video.blurb}</p>
-            </li>
-          ))}
-        </ul>
+        <div data-work-rail className="mt-14">
+          <VideoCarousel videos={shown} label={(intro ?? workIntro).headingLines.join(' ')} />
+        </div>
       </div>
     </section>
   )

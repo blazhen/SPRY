@@ -1,5 +1,6 @@
 import { Helmet } from 'react-helmet-async'
 import { seo, site, socialLinks } from '@/data/site'
+import { integrations } from '@/config/integrations'
 
 interface SeoProps {
   title?: string
@@ -9,6 +10,12 @@ interface SeoProps {
   image?: string
   /** Emit the LocalBusiness structured data (homepage only). */
   structuredData?: boolean
+  /**
+   * Keep the page out of search results. Used by confirmation pages, which
+   * would otherwise report phantom conversions from organic landings, and by
+   * the internal hero previews.
+   */
+  noindex?: boolean
 }
 
 /**
@@ -21,6 +28,7 @@ export default function Seo({
   path = '/',
   image = seo.ogImage,
   structuredData = false,
+  noindex = false,
 }: SeoProps) {
   const canonical = new URL(path, seo.canonical).toString()
 
@@ -45,6 +53,7 @@ export default function Seo({
       addressCountry: 'AU',
     },
     areaServed: site.serviceArea,
+    openingHours: site.hours.schema,
     slogan: site.tagline,
   }
 
@@ -54,6 +63,12 @@ export default function Seo({
       <title>{title}</title>
       <meta name="description" content={description} />
       <link rel="canonical" href={canonical} />
+      {/* Staging forces noindex on every page, whatever the page asked for.
+          A staging copy competing with the live domain for the same content is
+          worse than not being indexed at all. */}
+      {(noindex || integrations.isStaging) && (
+        <meta name="robots" content="noindex, nofollow" />
+      )}
 
       {/* Open Graph */}
       <meta property="og:type" content="website" />

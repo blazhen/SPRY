@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="theme-color" content="#0A0A0B" />
+    <meta name="theme-color" content="#FFFFFF" />
 
     <!-- Fonts: Clash Display (headings) + Satoshi (body) via Fontshare.
          Preconnect + a single non-blocking stylesheet keeps this off the
@@ -38,6 +38,49 @@
     <title>Spray Foam Insulation Melbourne &amp; Australia | Spray It Solutions</title>
 
     <!--
+      ====================================================================
+      SITE CONFIGURATION  ·  edit this block after deploying. No rebuild.
+      ====================================================================
+
+      These values are read at runtime, so they can be changed directly in
+      this file on the server. Replace each __PLACEHOLDER__ with the real
+      value. Anything still showing a placeholder is treated as not set:
+      the quote form will show a visible error with the phone number rather
+      than silently posting leads into a dead URL, and the booking page will
+      show a call-us fallback instead of an empty iframe.
+
+      leadWebhook        GHL > Automation > Workflows > Add Trigger >
+                         Inbound Webhook. Copy the URL it gives you.
+      bookingCalendarUrl GHL > Calendars > (phone consult) > Share > Embed.
+                         Copy the src URL out of the embed code.
+      router             "history" for clean URLs like /contact. Requires the
+                         host to serve index.html for unknown paths (an SPA
+                         rewrite). If /contact 404s after deploying, switch
+                         this to "hash" and links become /#/contact, which
+                         works on any static host with no configuration.
+    -->
+    <script>
+      window.SPRAYIT_CONFIG = {
+        leadWebhook: '__GHL_LEAD_WEBHOOK__',
+        bookingCalendarUrl: '__GHL_BOOKING_URL__',
+
+        ga4Id: '__GA4_ID__',
+        googleAdsId: '__GOOGLE_ADS_ID__',
+        googleAdsQuoteLabel: '__GOOGLE_ADS_QUOTE_LABEL__',
+        googleAdsBookingLabel: '__GOOGLE_ADS_BOOKING_LABEL__',
+        metaPixelId: '__META_PIXEL_ID__',
+
+        router: 'history',
+
+        // Staging until Glenn signs off. While true, every page is noindex
+        // and the build ships a robots.txt that disallows everything, so the
+        // staging copy cannot compete with the live domain in search.
+        // Set to false ONLY at go-live, and rebuild with: npm run build:live
+        staging: true,
+      }
+    </script>
+
+    <!--
       Palette, applied before the first paint.
 
       Must run here in <head>, synchronously, and not from React: reading the
@@ -46,12 +89,22 @@
     -->
     <script>
       ;(function () {
+        /*
+          Mirrors PALETTE_SWITCHER in src/config.ts, which cannot be imported
+          into a plain inline script. Keep the two in step: while the switcher
+          is off, a stored preference must be ignored, or anyone who once tried
+          another scheme stays pinned to it with no control left to change back.
+        */
+        var PALETTE_SWITCHER = true
+        if (!PALETTE_SWITCHER) return
+
         try {
           var saved = localStorage.getItem('sprayit:theme')
-          if (saved === 'brand') {
-            document.documentElement.setAttribute('data-theme', 'brand')
+          // 'brand' is the default defined on :root, so it carries no attribute.
+          if (saved && saved !== 'brand' && /^[a-z]+$/.test(saved)) {
+            document.documentElement.setAttribute('data-theme', saved)
             var meta = document.querySelector('meta[name="theme-color"]')
-            if (meta) meta.setAttribute('content', '#FFFFFF')
+            if (meta) meta.setAttribute('content', saved === 'brand' ? '#FFFFFF' : '#0A0A0B')
           }
         } catch (e) {
           /* Private browsing can throw. The default palette is the fallback. */
@@ -78,7 +131,7 @@
         z-index: 9999;
         display: grid;
         place-items: center;
-        background: #0a0a0b;
+        background: #002396;
         transform: translateY(0);
         transition: transform 0.8s cubic-bezier(0.76, 0, 0.24, 1) 0.2s;
       }
@@ -93,13 +146,13 @@
         width: min(130vw, 54rem);
         aspect-ratio: 1;
         transform: translate(-50%, -50%);
-        /* Fades to a transparent *amber*, not to `transparent`. The keyword is
-           transparent black, so fading to it draws a dirty grey ring. */
+        /* Fades to a transparent *green*, not to `transparent`. The keyword
+           is transparent black, so fading to it draws a dirty grey ring. */
         background: radial-gradient(
           closest-side,
-          rgba(255, 90, 31, 0.15),
-          rgba(255, 90, 31, 0.05) 48%,
-          rgba(255, 90, 31, 0) 100%
+          rgba(141, 198, 63, 0.22),
+          rgba(141, 198, 63, 0.06) 48%,
+          rgba(141, 198, 63, 0) 100%
         );
         pointer-events: none;
       }
@@ -131,7 +184,7 @@
         height: 2px;
         overflow: hidden;
         border-radius: 2px;
-        background: rgba(245, 242, 237, 0.14);
+        background: rgba(255, 255, 255, 0.2);
       }
       .boot-bar {
         display: block;
@@ -140,7 +193,7 @@
         transform: scaleX(0);
         transform-origin: left center;
         border-radius: inherit;
-        background: linear-gradient(90deg, #ff5a1f, #ffa04a);
+        background: linear-gradient(90deg, #8dc63f, #b6e06f);
       }
       .boot-label {
         margin: 0;
@@ -149,7 +202,7 @@
         font-weight: 700;
         letter-spacing: 0.22em;
         text-transform: uppercase;
-        color: #a8a39a;
+        color: rgba(255, 255, 255, 0.72);
       }
       .boot-sr {
         position: absolute;
@@ -177,29 +230,32 @@
           transform 0.28s ease;
       }
 
-      /* Brand palette. The panel goes navy rather than white because the only
-         supplied logo asset is white on transparency, which would be invisible
-         on a white ground. Navy is the brand's own primary, so this reads as
-         intended rather than as a compromise. */
-      html[data-theme='brand'] #boot {
-        background: #002396;
+      /* The dark schemes. Brand is the default and carries no attribute, so
+         it is the base styling above; these two override it. */
+      html[data-theme='ice'] #boot,
+      html[data-theme='amber'] #boot {
+        background: #0a0a0b;
       }
-      html[data-theme='brand'] #boot::after {
+      html[data-theme='ice'] #boot::after,
+      html[data-theme='amber'] #boot::after {
         background: radial-gradient(
           closest-side,
-          rgba(141, 198, 63, 0.22),
-          rgba(141, 198, 63, 0.06) 48%,
-          rgba(141, 198, 63, 0) 100%
+          rgba(255, 90, 31, 0.15),
+          rgba(255, 90, 31, 0.05) 48%,
+          rgba(255, 90, 31, 0) 100%
         );
       }
-      html[data-theme='brand'] .boot-bar {
-        background: linear-gradient(90deg, #8dc63f, #b6e06f);
+      html[data-theme='ice'] .boot-bar,
+      html[data-theme='amber'] .boot-bar {
+        background: linear-gradient(90deg, #ff5a1f, #ffa04a);
       }
-      html[data-theme='brand'] .boot-track {
-        background: rgba(255, 255, 255, 0.2);
+      html[data-theme='ice'] .boot-track,
+      html[data-theme='amber'] .boot-track {
+        background: rgba(245, 242, 237, 0.14);
       }
-      html[data-theme='brand'] .boot-label {
-        color: rgba(255, 255, 255, 0.72);
+      html[data-theme='ice'] .boot-label,
+      html[data-theme='amber'] .boot-label {
+        color: #a8a39a;
       }
 
       /* While booting, the page behind must not scroll under the panel. */

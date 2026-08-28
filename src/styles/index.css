@@ -385,3 +385,46 @@
     scroll-behavior: auto !important;
   }
 }
+
+/* ----------------------------------------------------------------------------
+   Hero house weather
+
+   CSS rather than GSAP: the hero's timeline is scrubbed by scroll position, and
+   weather has to keep running whether or not anyone is scrolling. Keeping it on
+   its own clock avoids threading a second, time-based tween through a
+   scroll-driven timeline.
+
+   The global reduced-motion block above already flattens these; the component
+   also declines to render falling snow in that case, because a snowflake frozen
+   in mid-air is worse than no snow at all.
+   -------------------------------------------------------------------------- */
+@keyframes house-snow {
+  from {
+    transform: translateY(-40px);
+  }
+  to {
+    transform: translateY(660px);
+  }
+}
+
+@keyframes house-heat {
+  0% {
+    transform: translateY(6px) scaleX(0.9);
+    opacity: 0;
+  }
+  35% {
+    opacity: 0.55;
+  }
+  100% {
+    transform: translateY(-52px) scaleX(1.1);
+    opacity: 0;
+  }
+}
+
+.house-snow {
+  animation: house-snow linear infinite;
+}
+
+.house-heat {
+  animation: house-heat ease-out infinite;
+}

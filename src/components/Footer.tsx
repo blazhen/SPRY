@@ -25,7 +25,7 @@ export default function Footer() {
   const year = new Date().getFullYear()
 
   return (
-    <footer className="relative bg-ink pt-section text-bone" aria-labelledby="footer-heading">
+    <footer className="relative border-t border-line/10 bg-surface pt-section text-bone" aria-labelledby="footer-heading">
       <h2 id="footer-heading" className="sr-only">
         Site footer
       </h2>
@@ -126,8 +126,12 @@ export default function Footer() {
 
         {/* ---------------- Base line ---------------- */}
         <div className="mt-16 flex flex-col gap-4 border-t border-line/10 py-8 text-small text-bone-400 sm:flex-row sm:items-center sm:justify-between">
-          <p>
-            © {year} {site.name}. ABN and licensing details on request.
+          <p className="flex flex-wrap items-center gap-x-2 gap-y-1">
+            <span>© {year} {site.name}. ABN and licensing details on request.</span>
+            <span aria-hidden="true">·</span>
+            <Link to="/privacy" className="link-wipe text-bone">
+              Privacy policy
+            </Link>
           </p>
           <p>
             <a

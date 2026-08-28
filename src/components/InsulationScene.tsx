@@ -3,6 +3,7 @@ import { Loader2, Flame, ShieldCheck } from 'lucide-react'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
 import { sceneIntro, scene as sceneCopy } from '@/data/content'
 import SectionHeading from '@/components/ui/SectionHeading'
+import SectionBackdrop from '@/components/ui/SectionBackdrop'
 
 /**
  * Three.js is pulled in as its own chunk and only requested once this section
@@ -59,12 +60,14 @@ export default function InsulationScene() {
       className="relative border-t border-line/6 bg-surface py-section"
       aria-labelledby="scene-heading"
     >
+      <SectionBackdrop variant="grid" tone="cool" />
+
       {/* Explicit grid placement rather than two stacked columns. In DOM order
           a phone reads heading, toggle, model, then the verdict and legend that
           describe what it is looking at: the control comes before the thing it
           controls. Desktop places the model back into its own column beside
           the whole stack. */}
-      <div className="shell grid gap-8 lg:grid-cols-12 lg:items-center lg:gap-x-14 lg:gap-y-0">
+      <div className="relative shell grid gap-8 lg:grid-cols-12 lg:items-center lg:gap-x-14 lg:gap-y-0">
         {/* ---------------- Heading ---------------- */}
         <div className="lg:col-span-5 lg:col-start-1 lg:row-start-1">
           <SectionHeading intro={sceneIntro} headingId="scene-heading" />

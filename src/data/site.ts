@@ -49,6 +49,26 @@ export const site = {
 
   serviceArea: 'Melbourne, Victoria & Australia-wide',
 
+  /**
+   * Trading hours.
+   *
+   * REVIEW WITH GLENN before launch. These are plausible trade hours, not
+   * confirmed ones. They matter more than they look: the phone assistant uses
+   * them to decide between booking a call and offering a callback, and they
+   * are published as structured data, so a wrong value sends people to a
+   * closed office.
+   */
+  hours: {
+    display: [
+      { days: 'Monday to Friday', time: '7:00am to 5:00pm' },
+      { days: 'Saturday', time: 'By appointment' },
+      { days: 'Sunday', time: 'Closed' },
+    ],
+    note: 'Site work often starts earlier. If we do not pick up we are on the tools, so leave a message or book a call.',
+    /** schema.org opening hours syntax. */
+    schema: ['Mo-Fr 07:00-17:00'],
+  },
+
   cta: {
     primary: { label: 'Request a Free Quote', href: '/contact' },
     secondary: { label: 'Call 0428 26 36 26', href: 'tel:+61428263626' },

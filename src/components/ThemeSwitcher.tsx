@@ -4,16 +4,17 @@ import { THEMES, THEME_LABELS, useTheme } from '@/hooks/useTheme'
 
 /** Swatches shown on each option, so the choice reads before it is applied. */
 const SWATCHES: Record<(typeof THEMES)[number], string[]> = {
-  dark: ['#0A0A0B', '#F5F2ED', '#FF5A1F'],
   brand: ['#FFFFFF', '#002396', '#8DC63F'],
+  ice: ['#0A0A0B', '#FF5A1F', '#38BDF8'],
+  amber: ['#0A0A0B', '#FF5A1F', '#FFA04A'],
 }
 
 /**
  * Floating palette switcher.
  *
- * A review tool, not a site feature: it exists so the two palettes can be
- * compared on the real page rather than in screenshots. It is deliberately
- * conspicuous and easy to delete, being mounted in exactly one place.
+ * A visitor-facing control: people pick the scheme they prefer and it is
+ * remembered between visits. Brand is the default, so anyone who never opens
+ * this sees the real identity.
  *
  * Collapsed to a single button by default so it never sits on top of the
  * design it is meant to show.
@@ -25,10 +26,10 @@ export default function ThemeSwitcher() {
   return (
     <div className="fixed bottom-5 right-5 z-[200] print:hidden">
       {open ? (
-        <div className="w-64 overflow-hidden rounded-lg border border-line/15 bg-ink-800 shadow-lift">
+        <div className="w-72 overflow-hidden rounded-lg border border-line/15 bg-ink-800 shadow-lift">
           <div className="flex items-center justify-between gap-3 border-b border-line/10 px-4 py-3">
             <p className="text-eyebrow font-bold uppercase tracking-[0.18em] text-bone-400">
-              Palette preview
+              Colour scheme
             </p>
             <button
               type="button"
@@ -36,12 +37,12 @@ export default function ThemeSwitcher() {
               className="grid size-7 place-items-center rounded-pill text-bone-400 transition-colors hover:bg-line/8 hover:text-bone"
             >
               <X className="size-4" aria-hidden="true" />
-              <span className="sr-only">Close palette preview</span>
+              <span className="sr-only">Close colour scheme picker</span>
             </button>
           </div>
 
           <fieldset className="p-2">
-            <legend className="sr-only">Choose a colour palette</legend>
+            <legend className="sr-only">Choose a colour scheme</legend>
             {THEMES.map((id) => {
               const active = id === theme
               return (
@@ -82,7 +83,7 @@ export default function ThemeSwitcher() {
         >
           <Palette className="size-4" aria-hidden="true" />
           {THEME_LABELS[theme].name}
-          <span className="sr-only">palette. Open the palette preview to switch.</span>
+          <span className="sr-only">colour scheme. Open the picker to change it.</span>
         </button>
       )}
     </div>

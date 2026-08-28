@@ -11,6 +11,11 @@ interface VideoEmbedProps {
   className?: string
   /** Larger play target, for a single featured video. */
   featured?: boolean
+  /**
+   * Data attribute stamped on the poster image, so a carousel can drive it
+   * for parallax without reaching in by tag name.
+   */
+  posterAttr?: string
 }
 
 /**
@@ -42,6 +47,7 @@ export default function VideoEmbed({
   poster,
   className = '',
   featured = false,
+  posterAttr,
 }: VideoEmbedProps) {
   const HQ = `https://i.ytimg.com/vi/${id}/hqdefault.jpg`
   const [playing, setPlaying] = useState(false)
@@ -63,12 +69,17 @@ export default function VideoEmbed({
         <button
           type="button"
           onClick={() => setPlaying(true)}
+          onContextMenu={(e) => e.preventDefault()}
           className="group absolute inset-0 size-full cursor-pointer"
         >
           <img
+            {...(posterAttr ? { [posterAttr]: '' } : {})}
             src={src}
             alt=""
             aria-hidden="true"
+            draggable={false}
+            onDragStart={(e) => e.preventDefault()}
+            onContextMenu={(e) => e.preventDefault()}
             onError={() => setSrc(HQ)}
             onLoad={(e) => {
               // A real poster is at least 320px wide. Anything smaller is

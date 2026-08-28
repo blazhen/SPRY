@@ -7,6 +7,7 @@ import { services } from '@/data/services'
 import { servicesIntro } from '@/data/content'
 import Figure from '@/components/ui/Figure'
 import SectionHeading from '@/components/ui/SectionHeading'
+import SectionBackdrop from '@/components/ui/SectionBackdrop'
 
 /**
  * Residential / Commercial split.
@@ -54,7 +55,9 @@ export default function Services() {
       className="relative border-t border-line/6 bg-ink py-section"
       aria-labelledby="services-heading"
     >
-      <div className="shell">
+      <SectionBackdrop variant="strata" tone="both" />
+
+      <div className="relative shell">
         <SectionHeading
           intro={servicesIntro}
           headingId="services-heading"
@@ -114,10 +117,22 @@ export default function Services() {
                       key={sub.label}
                       className="flex flex-wrap items-baseline gap-x-4 gap-y-1 border-b border-line/10 py-4"
                     >
-                      <span className="min-w-[10rem] font-display text-h4 font-semibold text-bone transition-colors duration-300 group-hover:text-accent">
+                      <span className="font-display text-h4 font-semibold text-bone transition-colors duration-300 group-hover:text-accent sm:min-w-[10rem]">
                         {sub.label}
                       </span>
-                      <span className="flex-1 text-small text-bone-400">{sub.blurb}</span>
+                      {/*
+                        A full basis below `sm`, so the blurb takes its own
+                        line. `flex-1` alone gives it a zero base size, which
+                        means flex-wrap never fires however narrow the card
+                        gets: on a phone the label kept its 10rem and the blurb
+                        was left with 86 pixels, wrapping to seven lines. Basis
+                        and grow are set separately rather than through the
+                        `flex` shorthand so neither depends on the order two
+                        Tailwind utilities happen to be emitted in.
+                      */}
+                      <span className="basis-full text-small text-bone-400 sm:basis-0 sm:grow">
+                        {sub.blurb}
+                      </span>
                     </li>
                   ))}
                 </ul>

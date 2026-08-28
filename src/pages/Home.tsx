@@ -15,6 +15,8 @@ import InsulationScene from '@/components/InsulationScene'
 import Services from '@/components/Services'
 import StatBand from '@/components/StatBand'
 import WorkVideos from '@/components/WorkVideos'
+import SectorTransition from '@/components/SectorTransition'
+import RValueExplainer from '@/components/RValueExplainer'
 import ClientLogos from '@/components/ClientLogos'
 import FAQ from '@/components/FAQ'
 import QuoteCTA from '@/components/QuoteCTA'
@@ -36,6 +38,10 @@ export default function Home() {
       {ACTIVE_HERO === 'seal' && <HeroSeal />}
       {ACTIVE_HERO === 'thermal' && <Hero />}
 
+      {/* Directly under the hero: the brief is that the site must not read as
+          residential-only, and this is the first thing after the fold. */}
+      <SectorTransition />
+
       {/* Velocity-reactive strip that catches the hero's scroll hand-off. */}
       <Marquee
         className="border-y border-line/10 bg-ink py-6 sm:py-8"
@@ -43,6 +49,7 @@ export default function Home() {
       />
 
       <WhatIsSprayFoam />
+      <RValueExplainer />
       <Benefits />
       <InsulationScene />
       <Services />

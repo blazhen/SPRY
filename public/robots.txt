@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+
+# Internal comparison pages and confirmation pages carry no value in search,
+# and indexing a thank-you page reports conversions that never happened.
+Disallow: /heroes
+Disallow: /thanks/
+
+Sitemap: https://www.sprayitsolutions.com.au/sitemap.xml
