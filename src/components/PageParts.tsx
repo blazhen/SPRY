@@ -195,7 +195,7 @@ export function PageCta() {
             {site.tagline}
           </p>
           <p className="mt-5 text-body text-bone-400">
-            Tell us what needs sealing and we will come back with honest advice, or book fifteen
+            Tell us what needs insulating and we will come back with honest advice, or book fifteen
             minutes on the phone and talk it through.
           </p>
         </div>

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { Play } from 'lucide-react'
 
 import type { Video } from '@/data/videos'
@@ -16,6 +16,11 @@ interface VideoEmbedProps {
    * for parallax without reaching in by tag name.
    */
   posterAttr?: string
+  /**
+   * Lets a carousel veto a tap. Return false to swallow it, e.g. to bring an
+   * off-centre card to the middle before it is allowed to play.
+   */
+  onRequestPlay?: () => boolean
 }
 
 /**
@@ -48,9 +53,30 @@ export default function VideoEmbed({
   className = '',
   featured = false,
   posterAttr,
+  onRequestPlay,
 }: VideoEmbedProps) {
   const HQ = `https://i.ytimg.com/vi/${id}/hqdefault.jpg`
   const [playing, setPlaying] = useState(false)
+
+  /**
+   * Touch taps are handled here rather than left to the click event.
+   *
+   * Inside a carousel the native click is unreliable on a phone. A finger
+   * always drifts a few pixels, that drift starts an Embla drag, the card is
+   * mid-transform when the gesture ends, and the browser retargets the click to
+   * whatever ancestor survived the movement. The button's own handler never
+   * runs. Desktop never saw it because a mouse does not drift.
+   *
+   * So a touch that lands and lifts within the slop below counts as a tap, and
+   * the click event is left to mice and keyboards.
+   */
+  const TOUCH_SLOP = 20
+  const tapStart = useRef<{ x: number; y: number } | null>(null)
+
+  const tryPlay = () => {
+    if (onRequestPlay && !onRequestPlay()) return
+    setPlaying(true)
+  }
   const [src, setSrc] = useState(`https://i.ytimg.com/vi/${id}/${poster}.jpg`)
 
   return (
@@ -68,9 +94,31 @@ export default function VideoEmbed({
       ) : (
         <button
           type="button"
-          onClick={() => setPlaying(true)}
+          onClick={tryPlay}
+          onPointerDown={(event) => {
+            tapStart.current =
+              event.pointerType === 'mouse' ? null : { x: event.clientX, y: event.clientY }
+          }}
+          onPointerUp={(event) => {
+            const start = tapStart.current
+            tapStart.current = null
+            if (!start) return
+            if (Math.hypot(event.clientX - start.x, event.clientY - start.y) <= TOUCH_SLOP) {
+              tryPlay()
+            }
+          }}
+          onPointerCancel={() => (tapStart.current = null)}
           onContextMenu={(e) => e.preventDefault()}
-          className="group absolute inset-0 size-full cursor-pointer"
+          /*
+            Every child is pointer-events-none so the button is always the hit
+            target itself. On touch the play control was dead: the finger
+            landed on the SVG polygon inside the icon, and by the time the
+            click was dispatched that node had been replaced by a re-render, so
+            the browser retargeted the click to the wrapping div and the
+            button's own handler never ran. A mouse never drifts and never hit
+            it, which is why this only failed on phones.
+          */
+          className="group absolute inset-0 size-full cursor-pointer [&_*]:pointer-events-none"
         >
           <img
             {...(posterAttr ? { [posterAttr]: '' } : {})}

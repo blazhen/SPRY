@@ -1,4 +1,11 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import {
+  Fragment,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type PointerEvent as ReactPointerEvent,
+} from 'react'
 import { Pause, Play } from 'lucide-react'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
 import ProtectedImage from '@/components/ui/ProtectedImage'
@@ -9,7 +16,7 @@ import SectionBackdrop from '@/components/ui/SectionBackdrop'
  * Residential and commercial showcase, on a timer.
  *
  * The brief: commercial credibility has to be obvious almost immediately,
- * because Glenn quotes jobs to $1.5M and 26,000 sqm and none of that is visible
+ * because Glenn quotes jobs to $3.44M and 30,863 sqm and none of that is visible
  * today. So this sits directly under the hero, alternates residential and
  * commercial without being touched, and swaps the headline and the stats along
  * with the picture.
@@ -46,11 +53,56 @@ export default function SectorTransition() {
 
   const slide = sectorSlides[index]
   const isCommercial = slide.sector === 'commercial'
-  const stats = isCommercial ? sectorCopy.commercialStats : sectorCopy.residentialStats
 
   const go = useCallback((next: number) => {
     setIndex(((next % sectorSlides.length) + sectorSlides.length) % sectorSlides.length)
   }, [])
+
+  /**
+   * Swipe, for a band that looks like a slider.
+   *
+   * There is no carousel engine here: the slides crossfade in place and the
+   * dots move between them. That reads as swipeable on a phone, and doing
+   * nothing when swiped reads as broken, so the gesture is handled directly.
+   *
+   * Only a clearly horizontal drag counts. Anything more vertical than
+   * horizontal is someone scrolling the page with their thumb over the image,
+   * and stealing that would be much worse than not having swipe at all.
+   */
+  const swipeStart = useRef<{ x: number; y: number } | null>(null)
+  const swipeLast = useRef<{ x: number; y: number } | null>(null)
+
+  const onSwipeStart = (event: ReactPointerEvent) => {
+    swipeStart.current = { x: event.clientX, y: event.clientY }
+    swipeLast.current = { x: event.clientX, y: event.clientY }
+  }
+
+  const onSwipeMove = (event: ReactPointerEvent) => {
+    if (swipeStart.current) swipeLast.current = { x: event.clientX, y: event.clientY }
+  }
+
+  /**
+   * Committed from the tracked positions rather than from the ending event.
+   *
+   * A horizontal drag here does not always finish with a clean `pointerup`.
+   * The browser can decide mid-gesture that it owns the gesture and fire
+   * `pointercancel` instead, and it does so asymmetrically, so swiping one way
+   * worked and the other way silently did nothing. Reading the last tracked
+   * position on either ending means the swipe is judged on where the finger
+   * actually travelled, whichever event ends it.
+   */
+  const commitSwipe = () => {
+    const start = swipeStart.current
+    const last = swipeLast.current
+    swipeStart.current = null
+    swipeLast.current = null
+    if (!start || !last) return
+    const dx = last.x - start.x
+    const dy = last.y - start.y
+    if (Math.abs(dx) < 45 || Math.abs(dx) <= Math.abs(dy)) return
+    // Swiping left moves forward, matching every other slider on the site.
+    go(dx < 0 ? index + 1 : index - 1)
+  }
 
   const paused = userPaused || focusWithin
 
@@ -113,24 +165,53 @@ export default function SectorTransition() {
 
           <p className="mt-6 max-w-measure text-body text-bone-400">{sectorCopy.lede}</p>
 
-          {/* Stats swap with the sector, so the commercial numbers appear
-              without the visitor doing anything. */}
-          <dl className="mt-10 flex flex-wrap gap-x-12 gap-y-6 border-t border-line/10 pt-8">
-            {stats.map((stat) => (
-              <div key={stat.label}>
-                <dt className="sr-only">{stat.label}</dt>
-                <dd>
-                  <span
-                    className={`block font-display text-h2 font-semibold leading-none transition-colors duration-500 ${
-                      isCommercial ? 'text-accent2-ink' : 'text-accent'
-                    }`}
-                  >
-                    {stat.figure}
-                  </span>
-                  <span className="mt-2 block text-small text-bone-400">{stat.label}</span>
-                </dd>
-              </div>
-            ))}
+          {/*
+            Stats swap with the sector, so the commercial numbers appear without
+            the visitor doing anything.
+
+            Both sets are always in the DOM, stacked in the same grid cell, with
+            the inactive one hidden. Rendering only the active set made the
+            block 180px tall for residential and 95px for commercial, because
+            "40 to 50% / more efficient, same R-value" wraps to two rows on a
+            phone and the commercial pair does not. Every slide change moved
+            everything below it by 86px, which is the jump you feel when
+            swiping. Stacking them means the block is always as tall as the
+            taller set and nothing moves.
+          */}
+          <dl className="mt-10 grid border-t border-line/10 pt-8">
+            {(
+              [
+                ['residential', sectorCopy.residentialStats],
+                ['commercial', sectorCopy.commercialStats],
+              ] as const
+            ).map(([kind, set]) => {
+              const shown = isCommercial === (kind === 'commercial')
+              return (
+                <div
+                  key={kind}
+                  aria-hidden={!shown}
+                  className={`col-start-1 row-start-1 flex flex-wrap gap-x-12 gap-y-6 transition-opacity duration-500 ${
+                    shown ? 'opacity-100' : 'invisible opacity-0'
+                  }`}
+                >
+                  {set.map((stat) => (
+                    <Fragment key={stat.label}>
+                      <dt className="sr-only">{stat.label}</dt>
+                      <dd>
+                        <span
+                          className={`block font-display text-h2 font-semibold leading-none ${
+                            kind === 'commercial' ? 'text-accent2-ink' : 'text-accent'
+                          }`}
+                        >
+                          {stat.figure}
+                        </span>
+                        <span className="mt-2 block text-small text-bone-400">{stat.label}</span>
+                      </dd>
+                    </Fragment>
+                  ))}
+                </div>
+              )
+            })}
           </dl>
 
           {/* ---------------- Controls ---------------- */}
@@ -176,7 +257,13 @@ export default function SectorTransition() {
 
         {/* ---------------- Imagery ---------------- */}
         <div className="lg:col-span-7">
-          <div className="relative aspect-[4/3] overflow-hidden rounded-xl border border-line/10 bg-ink-800 sm:aspect-[16/10]">
+          <div
+            className="relative aspect-[4/3] touch-pan-y overflow-hidden rounded-xl border border-line/10 bg-ink-800 sm:aspect-[16/10]"
+            onPointerDown={onSwipeStart}
+            onPointerMove={onSwipeMove}
+            onPointerUp={commitSwipe}
+            onPointerCancel={commitSwipe}
+          >
             {sectorSlides.map((item, i) => (
               <div
                 key={item.id}

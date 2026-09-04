@@ -26,7 +26,12 @@ export default function ClientLogos() {
       <span
         className={[
           'pointer-events-auto flex shrink-0 items-center justify-center rounded-md px-2 transition duration-500 ease-expo',
-          'opacity-75 grayscale hover:opacity-100 hover:grayscale-0',
+          // Full colour, not the usual greyscale logo wall. Glenn read the
+          // desaturated version as logos being broken or missing, and he is
+          // right that it worked against the point: this band exists so a
+          // facility manager recognises Coles, BHP and Woodside at a glance,
+          // and a grey silhouette of a logo is not recognisable.
+          'opacity-100',
           // A reversed asset is white on transparency, so on the bone ground it
           // needs its own dark chip to be visible at all.
           client.reversed ? 'bg-ink px-4 py-2' : '',
@@ -72,7 +77,10 @@ export default function ClientLogos() {
         items={clients.map((client) => client.name)}
         duration={44}
         ariaLabel="Brands we have worked with"
-        className="mask-edges mt-12"
+        // A narrower fade than the shared `mask-edges`. At 8% each side two
+        // logos were always dissolving, which added to the impression that
+        // half of them were missing.
+        className="mt-12 [mask-image:linear-gradient(to_right,transparent,#000_3%,#000_97%,transparent)] [-webkit-mask-image:linear-gradient(to_right,transparent,#000_3%,#000_97%,transparent)]"
         renderItem={(name) => {
           const client = clients.find((c) => c.name === name)
           return client ? logo(client) : null

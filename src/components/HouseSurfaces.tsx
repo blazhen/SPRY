@@ -180,10 +180,6 @@ export default function HouseSurfaces() {
               <p className="mt-5 text-body leading-relaxed text-bone-400">{surface.text}</p>
             </div>
 
-            <p className="mt-6 text-small text-bone-400">
-              Shares are indicative and vary by building. What does not vary is that the surfaces
-              you leave open carry the loss the others no longer can.
-            </p>
           </div>
         </div>
       </div>

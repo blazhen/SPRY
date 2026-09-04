@@ -100,6 +100,8 @@ export default function QuoteForm() {
       phone: get('phone'),
       email: get('email'),
       postcode: get('postcode'),
+      street: get('street'),
+      suburb: get('suburb'),
       propertyType: get('propertyType'),
       areas,
       stage: get('stage'),
@@ -213,8 +215,38 @@ export default function QuoteForm() {
             className={`${FIELD} mt-2`}
             {...aria('postcode')}
           />
-          <span className={HINT}>So we can check travel</span>
           {err('postcode')}
+        </div>
+
+        <div className="sm:col-span-2">
+          <label htmlFor="street" className={LABEL}>
+            Street address <span className="font-normal text-bone-400">(optional)</span>
+          </label>
+          <input
+            id="street"
+            name="street"
+            type="text"
+            autoComplete="street-address"
+            placeholder="12 Example Street"
+            className={`${FIELD} mt-2`}
+            {...aria('street')}
+          />
+          {err('street')}
+        </div>
+
+        <div className="sm:col-span-2">
+          <label htmlFor="suburb" className={LABEL}>
+            Suburb <span className="font-normal text-bone-400">(optional)</span>
+          </label>
+          <input
+            id="suburb"
+            name="suburb"
+            type="text"
+            autoComplete="address-level2"
+            className={`${FIELD} mt-2`}
+            {...aria('suburb')}
+          />
+          {err('suburb')}
         </div>
       </div>
 

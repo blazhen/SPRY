@@ -176,11 +176,11 @@ export default function HeroEditorial() {
             className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-3 text-small text-ink/70"
           >
             <span className="inline-flex items-center gap-2">
-              <Stars label="Rated 5 stars by Victorian homeowners" />
+              <Stars label="Rated 5 stars by homeowners" />
               <span className="font-semibold text-ink">5.0</span>
             </span>
             <span className="hidden h-4 w-px bg-ink/20 sm:block" aria-hidden="true" />
-            <span>Family-owned · Carrum Downs, Victoria</span>
+            <span>Family-owned · Australia-wide</span>
             <span className="hidden h-4 w-px bg-ink/20 sm:block" aria-hidden="true" />
             <span>Decades of experience</span>
           </div>
@@ -221,9 +221,7 @@ export default function HeroEditorial() {
                 {heroStat.headline}
               </p>
               <p className="mt-1 text-h4 font-semibold">{heroStat.label}</p>
-              <p className="mt-3 text-small text-ink/60">
-                {heroStat.before} → {heroStat.after} {heroStat.unit}
-              </p>
+              <p className="mt-3 text-small text-ink/60">{heroStat.detail}</p>
             </figure>
           </div>
         </div>

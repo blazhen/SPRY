@@ -27,7 +27,7 @@ export const benefits: Benefit[] = [
   {
     id: 'energy',
     title: 'Increased energy efficiency',
-    body: 'Less air leakage means your heating and cooling runs shorter and holds longer. One customer measured 14.5% less electricity in the weeks after.',
+    body: 'Less air leakage means your heating and cooling runs shorter and holds longer. One customer measured 14.5% less electricity in the weeks after, applied to subfloor only.',
     icon: Zap,
     figure: '14.5%',
   },
@@ -46,7 +46,7 @@ export const benefits: Benefit[] = [
   {
     id: 'durability',
     title: 'Built to last',
-    body: 'Open- and closed-cell polyurethane foams, polyurea and aliphatic coatings, specified to the substrate and the conditions it has to survive.',
+    body: 'Spray foam applied correctly will last the lifetime of the building. No sagging, no settling, and nothing to replace as it ages.',
     icon: ShieldCheck,
   },
 ]

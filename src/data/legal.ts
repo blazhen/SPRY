@@ -34,7 +34,7 @@ export const policySections: PolicySection[] = [
   {
     heading: 'Who we are',
     paragraphs: [
-      'Spray It Solutions is a family-owned insulation contractor based at Factory 4, 114 Colemans Road, Carrum Downs, Victoria 3201, operating across Melbourne, Victoria and Australia-wide.',
+      'Spray It Solutions is a family-owned insulation contractor based at Factory 4, 114 Colemans Road, Carrum Downs, Victoria 3201, operating Australia-wide.',
       'We handle personal information in line with the Privacy Act 1988 (Cth) and the Australian Privacy Principles. This policy explains what we collect, why, and what you can ask us to do about it.',
     ],
   },

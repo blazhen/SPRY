@@ -53,16 +53,10 @@ export default function HeroHouse() {
       const section = scope.current
       if (!section) return
 
-      const setMeter = (v: number) => {
-        const el = section.querySelector('[data-h-meter]')
-        if (el) el.textContent = v.toFixed(1)
-      }
-
-      // Deliberately NOT derived from the reading. 245.1 to 210 works out at
-      // 14.3%, but 14.5% is the figure the customer reported and the figure
-      // quoted everywhere else on this site. Deriving it put two percentages
-      // one line apart that disagreed. The published number wins; the rounding
-      // gap is the customer's, not ours to correct on screen.
+      // The kW readout that used to sit beside this is gone. It counted one
+      // customer's meter from 245.1 down to 210 and called the result 14.5%,
+      // but that job was subfloor only, so showing it under a house sealed on
+      // all three planes credited three surfaces with what one had done.
       const setSaving = (v: number) => {
         const el = section.querySelector('[data-h-saving]')
         if (el) el.textContent = v.toFixed(1)
@@ -147,14 +141,9 @@ export default function HeroHouse() {
             0.45,
           )
 
-        // The meter and the saving, scrubbed together over the same window.
-        const reading = { v: heroHouse.meter.from }
+        // The efficiency gain, scrubbed as the house seals.
         const saving = { v: 0 }
         tl.to(
-          reading,
-          { v: heroHouse.meter.to, ease: 'none', duration: 0.68, onUpdate: () => setMeter(reading.v) },
-          0.2,
-        ).to(
           saving,
           { v: heroHouse.meter.savingTo, ease: 'none', duration: 0.68, onUpdate: () => setSaving(saving.v) },
           0.2,
@@ -201,7 +190,6 @@ export default function HeroHouse() {
         gsap.set('[data-h-seg]', { scaleX: 1 })
         // Every beat readable. Showing only the last would lose content.
         gsap.set('[data-h-beat]', { autoAlpha: 1, clearProps: 'transform' })
-        setMeter(heroHouse.meter.to)
         setSaving(heroHouse.meter.savingTo)
         return
       }
@@ -244,7 +232,10 @@ export default function HeroHouse() {
                 end: '+=175%',
                 pin: true,
                 scrub: 0.7,
-                anticipatePin: 1,
+                // No anticipatePin here. It exists to compensate for browsers
+                // that report scroll late, and on touch it does the opposite:
+                // the pin engages a frame early and the content visibly pops.
+                // Desktop keeps it; a phone does not need it.
               },
             }),
           )
@@ -272,9 +263,13 @@ export default function HeroHouse() {
               scrollTrigger: {
                 trigger: section,
                 start: 'top top',
-                // Was 340%. Five beats over three and a half screens of scroll
-                // read as slow and made it unclear anything was progressing.
-                end: '+=210%',
+                // Was 340%, then 210%. On a trackpad even 210% read as the
+                // page being stuck: several flicks before the section would
+                // release. 130% is a little over one screen of travel for the
+                // whole five-beat sequence, which is enough to register each
+                // beat without the visitor wondering whether scrolling is
+                // broken.
+                end: '+=130%',
                 pin: true,
                 scrub: 0.7,
                 anticipatePin: 1,
@@ -299,7 +294,7 @@ export default function HeroHouse() {
       // Desktop is one centred, pinned screen. Below lg the copy and the house
       // are a full screen each and only the house block is pinned, so the
       // section itself must be free to grow.
-      className="relative isolate overflow-hidden bg-ink lg:flex lg:min-h-[100svh] lg:items-center lg:py-[calc(var(--header-h)+1rem)]"
+      className="relative isolate overflow-hidden bg-ink lg:flex lg:min-h-[100svh] lg:items-center lg:pb-4 lg:pt-[calc(var(--header-h)+1rem)]"
       aria-label="Introduction"
     >
       <div
@@ -316,7 +311,7 @@ export default function HeroHouse() {
           squeezing the drawing into a narrow strip. */}
       <div className="shell grid w-full items-center gap-0 lg:grid-cols-12 lg:gap-10">
         {/* ---------------- Copy: its own screen on mobile ---------------- */}
-        <div className="flex min-h-[100svh] flex-col justify-center pb-10 pt-[calc(var(--header-h)+2rem)] lg:col-span-4 lg:block lg:min-h-0 lg:py-0">
+        <div className="flex flex-col justify-center pb-8 pt-[calc(var(--header-h)+1.5rem)] lg:col-span-4 lg:block lg:min-h-0 lg:py-0">
           <p data-h-eyebrow className="eyebrow !text-bone-200">
             {site.serviceArea}
           </p>
@@ -364,27 +359,31 @@ export default function HeroHouse() {
             className="mt-7 flex flex-wrap items-center gap-x-5 gap-y-3 text-small text-bone-200/80"
           >
             <span className="inline-flex items-center gap-2">
-              <Stars label="Rated 5 stars by Victorian homeowners" />
+              <Stars label="Rated 5 stars by homeowners" />
               <span className="font-semibold text-bone">5.0</span>
             </span>
             <span className="hidden h-4 w-px bg-line/20 sm:block" aria-hidden="true" />
-            <span>Family-owned · Carrum Downs</span>
+            <span>Family-owned · Australia-wide</span>
           </div>
 
-          <p
-            data-h-cue
-            className="mt-9 flex items-center gap-3 text-eyebrow font-bold uppercase tracking-[0.18em] text-bone-400"
-          >
-            <ArrowDown className="size-4 animate-scroll-nudge text-accent" aria-hidden="true" />
-            {heroHouse.scrollCue}
-          </p>
         </div>
 
         {/* ---------------- House and readouts: the pinned screen --------- */}
         <div
           data-h-stage
-          className="flex min-h-[100svh] flex-col justify-center pb-10 lg:col-span-8 lg:block lg:min-h-0 lg:pb-0"
+          className="flex flex-col justify-center pb-6 pt-[calc(var(--header-h)+0.5rem)] lg:col-span-8 lg:block lg:min-h-0 lg:p-0"
         >
+          {/* Directly above the house rather than at the foot of the copy
+              column. Glenn could not find it there, which is fair: an
+              instruction to scroll the house belongs beside the house. */}
+          <p
+            data-h-cue
+            className="mb-3 flex items-center justify-center gap-3 text-eyebrow font-bold uppercase tracking-[0.18em] text-bone-400 lg:justify-start"
+          >
+            <ArrowDown className="size-4 animate-scroll-nudge text-accent" aria-hidden="true" />
+            {heroHouse.scrollCue}
+          </p>
+
           <div data-h-house>
             {/* Height-capped so the section still fits a 900px viewport and
                 therefore still earns its pin. */}
@@ -397,7 +396,7 @@ export default function HeroHouse() {
                 strip below it is two lines rather than one. */}
             {/* Trimmed on desktop to pay for the taller captions below, so the
                 section still fits a 900px viewport and keeps its pin. */}
-            <HouseSection season={season} className="mx-auto h-[clamp(13rem,42vh,24rem)] w-full max-w-5xl drop-shadow-[0_30px_60px_rgb(0_0_0/0.55)] lg:h-[clamp(15rem,min(53vh,calc(100svh-400px)),34rem)]" />
+            <HouseSection season={season} className="mx-auto h-[clamp(10rem,min(42svh,calc(100svh-389px)),24rem)] min-[375px]:h-[clamp(10rem,min(42svh,calc(100svh-365px)),24rem)] w-full max-w-5xl drop-shadow-[0_30px_60px_rgb(0_0_0/0.55)] lg:h-[clamp(15rem,min(53svh,calc(100svh-412px)),34rem)]" />
           </div>
 
           {/* A caption strip, not a pair of cards. Boxed and set at display
@@ -408,14 +407,20 @@ export default function HeroHouse() {
               <span className="text-eyebrow font-bold uppercase tracking-[0.16em] text-bone-400">
                 {heroHouse.meter.label}
               </span>
-              <span className="font-display text-h4 font-semibold tabular-nums text-bone">
-                <span data-h-meter>{heroHouse.meter.from.toFixed(1)}</span>
-                <span className="ml-1.5 font-body text-small font-medium text-bone-400">
-                  {heroHouse.meter.unit}
-                </span>
-              </span>
               <span className="font-display text-h4 font-semibold tabular-nums text-accent">
-                <span data-h-saving>0.0</span>%
+                {/*
+                  Width reserved for the widest value this ever shows.
+                  Without it the readout counts 0.0 to 40.0, gains a digit on
+                  the way, and the label beside it rewraps from one line to two
+                  part way through the scroll. On a 360px phone that moved
+                  everything below the house by 24px mid-gesture, which is the
+                  jump you feel while sealing it. tabular-nums keeps the digits
+                  equal width; this keeps the box equal width too.
+                */}
+                <span data-h-saving className="inline-block min-w-[3.5ch]">
+                  0.0
+                </span>
+                %
                 <span className="ml-1.5 font-body text-small font-medium text-bone-400">
                   {heroHouse.meter.savingLabel}
                 </span>
@@ -424,7 +429,7 @@ export default function HeroHouse() {
 
             {/* The step is the loudest thing here now. At one uniform small
                 size nothing announced that a beat had changed. */}
-            <div className={reduced ? 'mt-4 space-y-6' : 'relative mt-4 min-h-[7.5rem] w-full'}>
+            <div className={reduced ? 'mt-4 space-y-6' : 'relative mt-4 min-h-[6.5rem] w-full sm:min-h-[7.5rem]'}>
               {heroHouse.beats.map((beat, i) => (
                 <div
                   key={beat.id}
@@ -454,7 +459,7 @@ export default function HeroHouse() {
 
           {/* One segment per beat rather than a single rail, so how far through
               the sequence you are is countable at a glance. */}
-          <div className="mt-4 flex items-center gap-2" aria-hidden="true">
+          <div className="mt-3 flex items-center gap-2 sm:mt-4" aria-hidden="true">
             {heroHouse.beats.map((beat, i) => (
               <span key={beat.id} className="h-1 flex-1 overflow-hidden rounded-pill bg-line/12">
                 <span

@@ -27,9 +27,9 @@ export const hero = {
     'Three custom-built vehicle-based spray rigs plus two non-vehicle reactors. Open- and closed-cell polyurethane foams, polyurea and aliphatic coatings. Any size, any site.',
   trust: {
     rating: 5,
-    ratingLabel: 'Rated 5 stars by Victorian homeowners',
-    stat: '14.5% less energy used',
-    provenance: 'Family-owned · Carrum Downs, Victoria',
+    ratingLabel: 'Rated 5 stars by homeowners',
+    stat: '40 to 50% more efficient',
+    provenance: 'Family-owned · Australia-wide',
   },
   scrollCue: 'Scroll',
   /** Copy for the interactive thermal-camera lens over the hero photograph. */
@@ -58,21 +58,28 @@ export const heroHouse = {
   headlineLines: ['Stop paying to', 'heat the sky.'],
   accentLineIndex: 1,
   subhead:
-    'A third of your heating leaves through the roof, more through the walls, the rest through the floor. Scroll to seal it and watch the meter.',
+    'A third of your heating leaves through the roof, more through the walls, the rest through the floor. Scroll to seal it and watch the difference.',
   scrollCue: 'Scroll to seal the house',
   diagramLabel:
     'Cutaway of a two-storey house showing heat escaping through the roof, walls and underfloor, then each zone being sealed with spray foam.',
 
-  /** Real customer reading. Do not invent movement in these numbers. */
+  /**
+   * The headline claim, approved in the client revision of 31 Aug 2026.
+   *
+   * This previously counted a single customer's weekly electricity reading
+   * down from 245.1 to 210 kW and called the result 14.5%. That job was
+   * subfloor only, so presenting it beside a house sealed on all three planes
+   * overstated what one surface had achieved. Both the reading and the
+   * percentage are gone. What replaces them is the efficiency gain against
+   * traditional insulation at the same rated R-value, which is a property of
+   * the product rather than of one house.
+   */
   meter: {
-    from: 245.1,
-    to: 210,
-    unit: 'KW / week',
-    label: 'Measured weekly electricity',
-    /** Saving counts up alongside the reading counting down. */
-    savingTo: 14.5,
-    savingLabel: 'less electricity',
-    footnote: 'Verified by a customer meter reading after insulating.',
+    label: 'Real-world efficiency gain',
+    /** Counts up to the conservative end of the approved 40 to 50% range. */
+    savingTo: 40,
+    savingLabel: 'vs traditional insulation at the same R-value',
+    footnote: 'Compared with traditional insulation at an equivalent rated R-value.',
   },
 
   beats: [
@@ -115,8 +122,8 @@ export const heroHouse = {
     {
       id: 'result',
       index: '05',
-      label: '14.5% less electricity',
-      note: 'One house, sealed on all three planes, measured on the owner’s own meter the following week.',
+      label: '40 to 50% more efficient',
+      note: 'Sealed on all three planes, spray foam delivers a 40 to 50% efficiency gain over traditional insulation at the same rated R-value.',
       zone: null,
       start: 0.88,
       end: 1,
@@ -253,7 +260,7 @@ export const heroComfort = {
   headlineLines: ['The same house.', 'A completely', 'different winter.'],
   accentLineIndex: 2,
   subhead:
-    'Spray foam seals the gaps batts leave behind, so the warmth you have already paid for stays in the room. Family-owned, Melbourne and Australia-wide.',
+    'Spray foam seals the gaps batts leave behind, so the warmth you have already paid for stays in the room. Family-owned, Australia-wide.',
   scrollCue: 'Scroll',
   /** Instruction shown until the visitor takes hold of the divider. */
   hint: 'Drag to compare',
@@ -308,7 +315,7 @@ export const heroSeal = {
       index: '02',
       label: 'Inside the cavity',
       note: 'Past the cladding and the battens, into the layer that does the work.',
-      stat: { value: 14.5, suffix: '%', caption: 'less energy used' },
+      stat: { value: 40, suffix: '%', caption: 'more efficient' },
       start: 0.36,
       end: 0.6,
       layer: 2,
@@ -351,7 +358,7 @@ export const whatIsSprayFoam = {
     eyebrow: 'What is spray foam',
     headingLines: ['One seamless', 'seal, not a', 'stack of gaps.'],
     accentWord: 'seamless',
-    lede: 'Spray It Solutions is a family-owned Victorian business with decades of hands-on experience applying polyurethane foam across Melbourne and Australia-wide.',
+    lede: 'Applied as a liquid, it expands and cures into one continuous bonded layer. No cut edges, no joins, and no gap where a pipe or a downlight passes through.',
   } satisfies SectionIntro,
   /* Kept deliberately tight. This column sits beside a pinned image, so its
      height decides whether the pinned sequence fits a standard desktop
@@ -466,7 +473,7 @@ export const testimonialsIntro: SectionIntro = {
   eyebrow: 'Customer stories',
   headingLines: ['Warmer houses,', 'smaller bills.'],
   accentWord: 'smaller',
-  lede: 'Unedited feedback from Victorian and Tasmanian homeowners after their install.',
+  lede: 'Unedited feedback from homeowners after their install.',
 }
 
 export const faqIntro: SectionIntro = {
@@ -479,17 +486,17 @@ export const quoteCta = {
   eyebrow: 'Free, no obligation',
   headingLines: ['Request your', 'free quote.'],
   accentWord: 'free',
-  lede: 'Tell us what you are trying to keep warm. We will tell you honestly whether spray foam is the right answer, what it involves, and exactly what it costs.',
+  lede: 'Tell us what you are trying to keep warm or cool. We will tell you honestly whether spray foam is the right answer, what it involves, and exactly what it costs.',
   assurances: [
     'Honest, itemised quoting',
-    'Melbourne & Australia-wide',
+    'Australia-wide',
     'Family-owned since day one',
   ],
 }
 
 export const footer = {
   blurb:
-    'Spray It Solutions is a family-owned insulation contractor in Carrum Downs, Victoria. We apply polyurethane foam, polyurea and aliphatic coatings to homes, factories, farms and mine sites across Australia.',
+    'Spray It Solutions is a family-owned insulation contractor in Victoria. We apply polyurethane foam, polyurea and aliphatic coatings to homes, factories, farms and mine sites Australia-wide.',
   columns: [
     {
       title: 'Services',

@@ -18,7 +18,7 @@ export default function Contact() {
     <>
       <Seo
         title="Get a Free Spray Foam Quote | Spray It Solutions"
-        description="Tell us what needs insulating and we will come back with honest advice and a free quote. Melbourne, Victoria and Australia-wide."
+        description="Tell us what needs insulating and we will come back with honest advice and a free quote. Australia-wide."
         path="/contact"
       />
 

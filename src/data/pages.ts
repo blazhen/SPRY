@@ -50,12 +50,12 @@ export interface SitePage {
 export const aboutPage: SitePage = {
   seoTitle: 'About Spray It Solutions | Family-Owned Insulation Contractor',
   seoDescription:
-    'A family-owned spray foam insulation contractor in Carrum Downs, Victoria. Three custom-built spray rigs, our own applicators, and decades of experience across Australia.',
+    'A family-owned spray foam insulation contractor in Victoria, working Australia-wide. Three custom-built spray rigs, our own applicators, and decades of experience.',
   intro: {
     eyebrow: 'About us',
     headingLines: ['A family trade,', 'at industrial scale.'],
     accentWord: 'family',
-    lede: 'Spray It Solutions is family-owned and based in Carrum Downs. We insulate single rooms and we insulate 26,000 square metre facilities, with the same crew and the same standards.',
+    lede: 'Spray It Solutions is family-owned and based in Victoria, working Australia-wide. We insulate single rooms and we insulate 30,863 square metre facilities, with the same crew and the same standards.',
   },
   sections: [
     {
@@ -65,7 +65,7 @@ export const aboutPage: SitePage = {
       accentWord: 'tools',
       body: [
         'We are a family business. The people who quote your job are the people who turn up to do it, and the people who answer the phone have been on a rig themselves. There is no call centre and no layer of account managers between you and the work.',
-        'That matters most when something is unusual. Older Victorian housing stock, a shed that was never designed to be insulated, an inflated dome, a cool room that has to hold temperature. Those jobs are decided on site by someone who has done them before.',
+        'That matters most when something is unusual. Older housing stock, a shed that was never designed to be insulated, an inflated dome, a cool room that has to hold temperature. Those jobs are decided on site by someone who has done them before.',
       ],
       tone: 'base',
     },
@@ -75,7 +75,7 @@ export const aboutPage: SitePage = {
       heading: 'Quote honestly, then do what we said.',
       accentWord: 'honestly',
       body: [
-        'If spray foam is not the right answer for your building, we will tell you on the phone rather than after you have paid for a site visit. It is a better use of everyone’s day and it is the reason most of our work arrives by referral.',
+        'If spray foam is not the right answer for your building, we will tell you. It is a better use of everyone’s day and it is the reason most of our work arrives by referral.',
         'What we quote is what you pay. Where a job turns out to be different from what was described, we stop and talk to you before doing anything that changes the price.',
       ],
       tone: 'base',
@@ -102,7 +102,7 @@ export const sprayFoamPage: SitePage = {
       heading: 'It fills the shape the building actually is.',
       accentWord: 'actually',
       body: [
-        'Two chemical components meet at the spray gun and react. Within seconds the mixture expands many times its liquid volume, pushing into the cavity, around the pipe, over the awkward join and into the corner a cut batt was never going to reach. Moments later it has cured into one continuous, bonded layer.',
+        'Two liquid components mix at the spray gun, expand within seconds and cure into a bonded insulation layer.',
         'Buildings are not built to the tolerances that cut insulation assumes. Studs are not perfectly spaced, cavities are not perfectly square, and services run through the middle of everything. Foam does not care, because it is shaped by the cavity rather than trimmed to fit it.',
       ],
       tone: 'base',
@@ -113,8 +113,8 @@ export const sprayFoamPage: SitePage = {
       heading: 'Insulation slows heat. Air sealing stops it leaving.',
       accentWord: 'leaving',
       body: [
-        'A building loses heat two ways: conduction through the materials, and air simply moving through gaps. Rated insulation values only describe the first one. That is why two buildings insulated to the same number on paper can behave nothing like each other once the wind gets up.',
-        'Because foam cures as one continuous layer bonded to the substrate, it deals with both at once. There are no edges between pieces, no settling over time, and no gap where a service penetrates. Customers describe this as drafts disappearing rather than merely easing.',
+        'A building loses heat three ways: conduction, convection and air leakage. Rated insulation values only describe the first one. That is why two buildings insulated to the same number on paper can behave nothing like each other once the wind gets up.',
+        'Because foam cures as one continuous layer bonded to the substrate, it deals with all three at once. There are no edges between pieces, no settling over time, and no gap where a service penetrates. Customers describe this as drafts disappearing rather than merely easing.',
       ],
       tone: 'base',
     },
@@ -124,14 +124,14 @@ export const sprayFoamPage: SitePage = {
 /* -------------------------------------------------------------- Residential */
 
 export const residentialPage: SitePage = {
-  seoTitle: 'Residential Spray Foam Insulation Melbourne | Spray It Solutions',
+  seoTitle: 'Residential Spray Foam Insulation Australia | Spray It Solutions',
   seoDescription:
-    'Roof, wall and underfloor spray foam insulation for Melbourne homes. Retrofit into existing brick veneer without pulling the wall apart, or full coverage during construction.',
+    'Roof, wall and underfloor spray foam insulation for homes Australia-wide. Retrofit into existing walls without pulling them apart, or full coverage during construction.',
   intro: {
     eyebrow: 'Residential',
     headingLines: ['Warmer in winter,', 'cooler in summer.'],
     accentWord: 'cooler',
-    lede: 'Most Melbourne homes leak heat through the roof, the walls and the floor at the same time. We seal all three, in existing homes as readily as in new builds.',
+    lede: 'Most homes leak heat through the roof, the walls and the floor at the same time. We seal all three, in existing homes as readily as in new builds.',
   },
   sections: [
     {
@@ -140,8 +140,8 @@ export const residentialPage: SitePage = {
       heading: 'Retrofit without gutting the house.',
       accentWord: 'without',
       body: [
-        'Brick veneer wall injection is the job people assume is impossible. The cavity is filled from outside through small access points, so nothing internal is disturbed, nobody moves out, and the wall goes back looking as it did.',
-        'Older Victorian and Tasmanian housing is where this pays off hardest. Weatherboard cottages, 1960s brick veneer and anything built before insulation was routine all respond dramatically, because they are usually starting from close to nothing.',
+        'Retrofitting wall insulation is the job people assume is impossible. Not true. Using spray foam, the cavity is filled from outside through small access points, so nothing internal is disturbed, nobody moves out, and access points are carefully made good.',
+        'Older housing is where this pays off hardest. Pre-1990 homes in Victoria usually have zero insulation in the walls or subfloor, and many have inadequate insulation in the ceiling.',
       ],
       tone: 'surface',
     },
@@ -164,12 +164,12 @@ export const residentialPage: SitePage = {
 export const commercialPage: SitePage = {
   seoTitle: 'Commercial & Industrial Spray Foam Insulation Australia',
   seoDescription:
-    'Spray foam insulation and protective coatings for factories, warehouses, cold storage, farms and mine sites. Projects to 26,000 sqm, Australia-wide.',
+    'Spray foam insulation and protective coatings for factories, warehouses, cold storage, data centres, agricultural facilities and mine sites. Projects to 30,863 sqm, Australia-wide.',
   intro: {
     eyebrow: 'Commercial & industrial',
     headingLines: ['Buildings measured', 'in hectares.'],
     accentWord: 'hectares',
-    lede: 'Factories, warehouses, cold storage, processing plants, farm structures and mine sites. Our commercial work runs to 26,000 square metres and $1.5 million on a single project.',
+    lede: 'Factories, warehouses, cold storage, processing plants, agricultural facilities, data centres and mine sites. Our commercial work runs to 30,863 square metres and $3.44 million on a single project.',
   },
   sections: [
     {
@@ -181,8 +181,8 @@ export const commercialPage: SitePage = {
         'Three vehicle-based rigs and two standalone reactors mean we can put a full application setup anywhere, including sites with no power, no shelter and no road access for a standard truck. Large spans are sprayed continuously rather than in patches, which is what keeps the envelope intact across a roof the size of a paddock.',
       ],
       stats: [
-        { figure: '26,000', label: 'square metres on a single project' },
-        { figure: '$1.5M', label: 'largest single contract value' },
+        { figure: '30,863', label: 'square metres on a single project' },
+        { figure: '$3.44M', label: 'largest single contract value' },
         { figure: '5', label: 'application rigs and reactors' },
       ],
       tone: 'base',

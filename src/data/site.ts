@@ -19,7 +19,7 @@ export interface SocialLink {
 export const site = {
   name: 'Spray It Solutions',
   shortName: 'SprayIT',
-  tagline: 'The most effective & energy efficient insulation.',
+  tagline: 'A premium and highly effective insulation solution.',
 
   /** Positioning / capability line, used as the hero subhead. */
   capability:
@@ -47,7 +47,7 @@ export const site = {
   email: 'info@sprayitsolutions.com.au',
   emailHref: 'mailto:info@sprayitsolutions.com.au',
 
-  serviceArea: 'Melbourne, Victoria & Australia-wide',
+  serviceArea: 'Australia-wide',
 
   /**
    * Trading hours.
@@ -116,15 +116,15 @@ export const socialLinks: SocialLink[] = [
 export const marqueeItems: string[] = [
   'Superior Air Barrier',
   'Higher R-Value',
-  '14.5% Less Energy',
+  '40 to 50% More Efficient',
   'Built to Last',
   'Any Size, Any Site',
 ]
 
 export const seo = {
-  title: 'Spray Foam Insulation Melbourne & Australia | Spray It Solutions',
+  title: 'Spray Foam Insulation Australia-wide | Spray It Solutions',
   description:
-    'Spray foam insulation across Melbourne and Australia: superior R-value, energy efficiency and air sealing. Get your free quote today.',
+    'Spray foam insulation Australia-wide: a premium and highly effective insulation solution with superior real-world performance and air sealing. Get your free quote today.',
   canonical: 'https://www.sprayitsolutions.com.au/',
   ogImage:
     'https://images.unsplash.com/photo-1568605114967-8130f3a36994?auto=format&fit=crop&w=1200&q=75',

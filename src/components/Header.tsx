@@ -132,7 +132,7 @@ export default function Header() {
             className="shrink-0 transition-opacity duration-300 ease-expo hover:opacity-80"
             aria-label={`${site.name} home`}
           >
-            <Logo height={44} className="h-9 text-bone sm:h-11" />
+            <Logo height={84} className="h-[4.5rem] sm:h-[5.25rem]" />
           </Link>
 
           {/* --- Desktop nav --- */}

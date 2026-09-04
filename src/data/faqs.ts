@@ -28,6 +28,6 @@ export const faqs: Faq[] = [
     id: 'effectiveness',
     question: 'How do you actually measure insulation effectiveness?',
     answer:
-      'Properly assessed, effectiveness is the combination of three things: R-value, vapour permeance and air permeance. A high R-value product installed with gaps around it will underperform a moderate one that is genuinely sealed. Judging insulation on R-value alone is the single most common and most expensive mistake in the industry.',
+      'Effective insulation is about more than R-value alone. Real-world performance depends on the insulation’s R-value, how continuously and completely it is installed, how well it controls unwanted air movement, and how the overall wall or roof system manages moisture and vapour. Even a high R-value product can perform poorly if gaps, voids or air leakage allow heat to bypass the insulation. For this reason, insulation should be assessed as part of the complete building envelope, not simply by comparing R-values.',
   },
 ]

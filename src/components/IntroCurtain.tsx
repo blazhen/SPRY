@@ -72,7 +72,7 @@ export default function IntroCurtain() {
 
       <div className="pointer-events-none absolute inset-0 grid place-items-center">
         <div data-intro-mark className="translate-y-3 opacity-0 text-center">
-          <Logo height={96} className="mx-auto h-[clamp(3.5rem,11vw,6rem)] text-bone" />
+          <Logo height={96} tone="white" className="mx-auto h-[clamp(3.5rem,11vw,6rem)]" />
           <p className="mt-3 text-eyebrow font-bold uppercase tracking-[0.2em] text-bone-400">
             {site.tagline}
           </p>

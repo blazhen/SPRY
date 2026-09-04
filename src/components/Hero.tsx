@@ -351,23 +351,11 @@ export default function Hero() {
               </p>
               <p className="mt-2 text-h4 font-semibold text-bone">{heroStat.label}</p>
 
-              <div className="mt-6 flex items-end justify-between gap-4 text-small">
-                <span className="text-bone-400">
-                  <span className="block text-eyebrow uppercase tracking-[0.14em]">Before</span>
-                  <span className="font-display text-h4 text-bone-200">{heroStat.before}</span>
-                </span>
-                <span
-                  className="mb-1 h-px flex-1 bg-gradient-to-r from-line/15 to-accent"
-                  aria-hidden="true"
-                />
-                <span className="text-right text-bone-400">
-                  <span className="block text-eyebrow uppercase tracking-[0.14em]">After</span>
-                  <span className="font-display text-h4 text-accent">{heroStat.after}</span>
-                </span>
-              </div>
-              <p className="mt-2 text-right text-eyebrow uppercase tracking-[0.14em] text-bone-400">
-                {heroStat.unit}
-              </p>
+              <span
+                className="mt-6 block h-px w-full bg-gradient-to-r from-line/15 to-accent"
+                aria-hidden="true"
+              />
+              <p className="mt-4 text-small text-bone-400">{heroStat.detail}</p>
             </figure>
           </div>
         </div>

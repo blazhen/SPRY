@@ -9,7 +9,7 @@ import type { SectionIntro } from '@/data/content'
  *
  * The consult is deliberately a phone call, not a site visit. Spray foam cannot
  * be quoted properly without seeing the building, but a rig should not be sent
- * across Melbourne before the job is qualified. The call qualifies, then a
+ * out to a site before the job is qualified. The call qualifies, then a
  * human books the assessment.
  */
 export const booking = {

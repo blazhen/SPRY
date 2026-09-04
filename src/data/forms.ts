@@ -12,8 +12,8 @@ import type { SectionIntro } from '@/data/content'
 
 export const contactIntro: SectionIntro = {
   eyebrow: 'Get a quote',
-  headingLines: ['Tell us what', 'needs sealing.'],
-  accentWord: 'sealing',
+  headingLines: ['Tell us what', 'needs insulating.'],
+  accentWord: 'insulating',
   lede: 'A few details is all it takes. We will come back to you with honest advice on whether spray foam is the right answer, what it involves and what it costs.',
 }
 

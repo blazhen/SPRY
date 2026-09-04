@@ -31,11 +31,11 @@ export const sectorCopy = {
   commercialLabel: 'Commercial & industrial',
   /** Shown while the commercial slide is active. Client-supplied figures. */
   commercialStats: [
-    { figure: '26,000', label: 'sqm, single project' },
-    { figure: '$1.5M', label: 'largest contract' },
+    { figure: '30,863', label: 'sqm, single project' },
+    { figure: '$3.44M', label: 'largest contract' },
   ],
   residentialStats: [
-    { figure: '14.5%', label: 'less electricity, measured' },
+    { figure: '40 to 50%', label: 'more efficient, same R-value' },
     { figure: '3', label: 'surfaces sealed as one' },
   ],
 }
@@ -49,7 +49,7 @@ export const sectorSlides: SectorSlide[] = [
   {
     id: 'res-wall',
     sector: 'residential',
-    title: 'Stud wall, weatherboard home',
+    title: 'Stud walls',
     caption: 'Filled cavity by cavity, edge to edge.',
     image: yt('N_ftWt3qjjM'),
   },

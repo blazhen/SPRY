@@ -33,7 +33,7 @@ export interface HeroObjectProps {
  * that change here are the light and the weather.
  *
  * The seasonal swap is the argument the whole site makes, in one object: the
- * same foam holds heat in through a Melbourne winter and keeps it out in
+ * same foam holds heat in through a cold winter and keeps it out in
  * February. Winter brings low cold light, snow on the roof and falling flakes;
  * summer brings warm high sun, dry grass and heat rising off the sheeting.
  *

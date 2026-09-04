@@ -53,11 +53,3 @@ export const ACTIVE_HERO:
  */
 export const INTRO_CURTAIN = false
 
-/**
- * Floating palette switcher, bottom right.
- *
- * A visitor-facing feature, not an internal tool: people choose the scheme
- * they prefer and the choice is remembered. Brand is the default, so anyone
- * who never touches it sees the real identity.
- */
-export const PALETTE_SWITCHER = true

@@ -59,59 +59,7 @@
                          this to "hash" and links become /#/contact, which
                          works on any static host with no configuration.
     -->
-    <script>
-      window.SPRAYIT_CONFIG = {
-        leadWebhook: '__GHL_LEAD_WEBHOOK__',
-        bookingCalendarUrl: '__GHL_BOOKING_URL__',
-
-        ga4Id: '__GA4_ID__',
-        googleAdsId: '__GOOGLE_ADS_ID__',
-        googleAdsQuoteLabel: '__GOOGLE_ADS_QUOTE_LABEL__',
-        googleAdsBookingLabel: '__GOOGLE_ADS_BOOKING_LABEL__',
-        metaPixelId: '__META_PIXEL_ID__',
-
-        router: 'history',
-
-        // Staging until Glenn signs off. While true, every page is noindex
-        // and the build ships a robots.txt that disallows everything, so the
-        // staging copy cannot compete with the live domain in search.
-        // Set to false ONLY at go-live, and rebuild with: npm run build:live
-        staging: true,
-      }
-    </script>
-
-    <!--
-      Palette, applied before the first paint.
-
-      Must run here in <head>, synchronously, and not from React: reading the
-      stored choice after mount would paint the default palette first and then
-      repaint, which is a visible flash of the wrong colours on every load.
-    -->
-    <script>
-      ;(function () {
-        /*
-          Mirrors PALETTE_SWITCHER in src/config.ts, which cannot be imported
-          into a plain inline script. Keep the two in step: while the switcher
-          is off, a stored preference must be ignored, or anyone who once tried
-          another scheme stays pinned to it with no control left to change back.
-        */
-        var PALETTE_SWITCHER = true
-        if (!PALETTE_SWITCHER) return
-
-        try {
-          var saved = localStorage.getItem('sprayit:theme')
-          // 'brand' is the default defined on :root, so it carries no attribute.
-          if (saved && saved !== 'brand' && /^[a-z]+$/.test(saved)) {
-            document.documentElement.setAttribute('data-theme', saved)
-            var meta = document.querySelector('meta[name="theme-color"]')
-            if (meta) meta.setAttribute('content', saved === 'brand' ? '#FFFFFF' : '#0A0A0B')
-          }
-        } catch (e) {
-          /* Private browsing can throw. The default palette is the fallback. */
-        }
-      })()
-    </script>
-
+    
     <!--
       Boot screen.
 
@@ -232,31 +180,6 @@
 
       /* The dark schemes. Brand is the default and carries no attribute, so
          it is the base styling above; these two override it. */
-      html[data-theme='ice'] #boot,
-      html[data-theme='amber'] #boot {
-        background: #0a0a0b;
-      }
-      html[data-theme='ice'] #boot::after,
-      html[data-theme='amber'] #boot::after {
-        background: radial-gradient(
-          closest-side,
-          rgba(255, 90, 31, 0.15),
-          rgba(255, 90, 31, 0.05) 48%,
-          rgba(255, 90, 31, 0) 100%
-        );
-      }
-      html[data-theme='ice'] .boot-bar,
-      html[data-theme='amber'] .boot-bar {
-        background: linear-gradient(90deg, #ff5a1f, #ffa04a);
-      }
-      html[data-theme='ice'] .boot-track,
-      html[data-theme='amber'] .boot-track {
-        background: rgba(245, 242, 237, 0.14);
-      }
-      html[data-theme='ice'] .boot-label,
-      html[data-theme='amber'] .boot-label {
-        color: #a8a39a;
-      }
 
       /* While booting, the page behind must not scroll under the panel. */
       html[data-booting] {

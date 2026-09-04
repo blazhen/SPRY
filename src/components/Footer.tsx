@@ -39,7 +39,7 @@ export default function Footer() {
               className="inline-block transition-opacity duration-300 ease-expo hover:opacity-80"
               aria-label={`${site.name} home`}
             >
-              <Logo height={58} className="text-bone" />
+              <Logo height={104} />
             </Link>
 
             <p className="mt-6 max-w-measure text-body text-bone-400">{footer.blurb}</p>

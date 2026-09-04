@@ -344,13 +344,13 @@ export default function HeroComfort() {
               className="mt-7 flex flex-wrap items-center gap-x-6 gap-y-3 text-small text-bone-200/80"
             >
               <span className="inline-flex items-center gap-2">
-                <Stars label="Rated 5 stars by Victorian homeowners" />
+                <Stars label="Rated 5 stars by homeowners" />
                 <span className="font-semibold text-bone">5.0</span>
               </span>
               <span className="hidden h-4 w-px bg-line/20 sm:block" aria-hidden="true" />
               <span className="font-semibold text-bone">{heroStat.headline} {heroStat.label}</span>
               <span className="hidden h-4 w-px bg-line/20 sm:block" aria-hidden="true" />
-              <span>Family-owned · Carrum Downs, Victoria</span>
+              <span>Family-owned · Australia-wide</span>
             </div>
           </div>
 

@@ -17,17 +17,22 @@ import type { SectionIntro } from '@/data/content'
  * and rated R-value only ever described conduction. What is withheld is the
  * number, not the story.
  *
- * TO PUBLISH THE FIGURE: fill in `source`, set `figuresApproved` to true.
+ * APPROVED. Glenn instructed publication of the 40 to 50% figure in the client
+ * revision document of 31 August 2026, and asked for the holding note to be
+ * removed. The gate stays in the code because the obligation does not go away:
+ * if the ACCC asks, the evidence behind `source` has to exist. See the note in
+ * the revision summary about getting a technical reference on file.
  */
 export const rvalueClaim = {
-  /** Set true ONLY once Glenn has signed off and `source` is filled in. */
-  figuresApproved: false,
+  /** Approved by Glenn, client revision V1, 31 August 2026. */
+  figuresApproved: true,
 
   /**
-   * Where the figure comes from. A test standard, a published study, or
-   * Glenn's own measured job data. Must not be empty when approved.
+   * Where the figure comes from. Currently records who approved it rather than
+   * a technical reference. Replace with the standard, study or measured job
+   * data that substantiates 40 to 50% as soon as it is available.
    */
-  source: '',
+  source: 'Client instruction, Spray It Solutions revision V1, 31 August 2026',
 
   /** The rating both products carry on paper. */
   ratedValue: 'R2.5',
@@ -46,7 +51,7 @@ export const rvalueIntro: SectionIntro = {
 export const rvalueCopy = {
   ratedLabel: 'What the label measures',
   ratedBody:
-    'R-value measures resistance to heat moving through a material by conduction. It is measured on a flat, perfect, uninterrupted sample. Nothing in that test involves a stud, a pipe, a downlight, an untidy edge or wind.',
+    'R-value measures resistance to heat moving through a material by conduction. It is measured on a flat, perfect, uninterrupted sample in a sealed piece of test equipment. Nothing in that test involves a stud, a pipe, a downlight, or wind.',
 
   realLabel: 'What the building does',
   realBody:
@@ -72,6 +77,7 @@ export const rvalueCopy = {
       'No edges, so no gaps to leak through',
       'Bonded to the substrate, does not settle',
       'Seals and insulates in one layer',
+      'A 40 to 50% gain in real-world efficiency',
     ],
   },
 

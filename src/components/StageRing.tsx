@@ -19,7 +19,10 @@ interface StageRingProps {
  * new one to the front roughly every five seconds, which is long enough to read
  * one without the ring feeling stalled.
  */
-const SPEED = 22
+// Degrees per second. Was 22, which held each card front and centre for
+// roughly three seconds: long enough to notice, not long enough to read the
+// blurb underneath it before it turned away.
+const SPEED = 12
 /** Screen pixels to degrees while dragging. */
 const DRAG_RATIO = 0.32
 

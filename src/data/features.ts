@@ -19,7 +19,7 @@ export interface Capability {
 
 export const capabilityIntro: SectionIntro = {
   eyebrow: 'What we run',
-  headingLines: ['Five ways to get', 'foam onto a wall.'],
+  headingLines: ['Five ways', 'to get foam.'],
   accentWord: 'Five',
   lede: 'Most of what we can take on comes down to the equipment. Between the vehicle rigs and the standalone reactors, there are very few sites we cannot reach.',
 }
@@ -40,7 +40,7 @@ export const capabilities: Capability[] = [
   {
     figure: 'Any',
     title: 'Size, any site',
-    text: 'A single underfloor in a weatherboard cottage and a 26,000 square metre facility are the same business to us, run by the same crew to the same standard.',
+    text: 'A single underfloor in a weatherboard cottage and a 30,863 square metre facility are the same business to us, run by the same crew to the same standard.',
     icon: 'map',
   },
   {
@@ -95,17 +95,17 @@ export const foamProperties: FoamProperty[] = [
     closedNote: 'Highest available, where depth is limited',
   },
   {
-    label: 'Moisture resistance',
-    open: 30,
-    closed: 95,
+    label: 'Moisture vapour permeable',
+    open: 92,
+    closed: 35,
     openNote: 'Vapour permeable, so the structure can still dry',
     closedNote: 'Resists water and vapour, suits cold and wet exposure',
   },
   {
     label: 'Structural rigidity added',
-    open: 15,
+    open: 75,
     closed: 85,
-    openNote: 'Soft and flexible, adds nothing structurally',
+    openNote: 'Moves with the building envelope without delaminating',
     closedNote: 'Rigid, measurably stiffens the substrate it bonds to',
   },
   {
@@ -120,20 +120,21 @@ export const foamProperties: FoamProperty[] = [
 export const foamUseCases = {
   open: {
     title: 'Open cell',
-    tag: 'Roofs, ceilings, internal walls',
+    tag: 'Roofs, ceilings, internal walls, subfloors',
     points: [
-      'Most Victorian residential roof lines',
+      'Most residential roof lines',
       'Stud walls where drying capacity matters',
+      'Subfloors: generally open-cell LDC-50 for suitable dry, ventilated subfloors',
+      'Condensation control',
       'Large areas where budget covers more coverage',
-      'Acoustic separation between rooms',
+      'Can improve acoustic performance of a wall or ceiling',
     ],
   },
   closed: {
     title: 'Closed cell',
-    tag: 'Cold storage, underfloor, exposure',
+    tag: 'Commercial and specific residential requirements',
     points: [
-      'Cool rooms, chillers and controlled storage',
-      'Underfloor and anywhere near ground moisture',
+      'Cool rooms, condensation control and warehouse insulation',
       'Shipping containers and steel structures',
       'Where thickness is limited but performance is not',
     ],
@@ -152,10 +153,10 @@ export interface HouseSurface {
 }
 
 export const surfacesIntro: SectionIntro = {
-  eyebrow: 'Where the heat goes',
+  eyebrow: 'Where the heat and cooling goes',
   headingLines: ['Three surfaces.', 'Seal all three.'],
   accentWord: 'Three',
-  lede: 'Insulating one surface and leaving the others helps, but heat simply takes whichever path is still open. Select a surface to see what it costs you.',
+  lede: 'Insulating one surface and leaving the others helps, but heating and cooling simply takes whichever path is still open. Select a surface to see what it costs you.',
 }
 
 export const houseSurfaces: HouseSurface[] = [
@@ -163,7 +164,7 @@ export const houseSurfaces: HouseSurface[] = [
     id: 'roof',
     label: 'Roof and ceiling',
     headline: 'The biggest single loss in most homes.',
-    text: 'Heat rises, and a roof cavity is usually the least protected part of the building. We apply to the underside of the roof line or across the ceiling, following every truss, penetration and downlight rather than stopping at them.',
+    text: 'Heat rises, and a roof cavity is usually the least protected part of the building. We insulate around roof and ceiling penetrations while maintaining all required clearances around downlights, flues and electrical equipment.',
     share: 'Around a third',
   },
   {
@@ -223,6 +224,15 @@ export const commercialSectors: SectorCard[] = [
     title: 'Wineries, sheds and packing floors',
     text: 'Applied straight onto sheeting with no framing required, in working buildings that cannot afford long shutdowns.',
     image: yt('QUGdEIRih8g'),
+  },
+  {
+    id: 'processing',
+    label: 'Processing plants',
+    title: 'Production floors and plant rooms',
+    text: 'Roof and wall systems on working processing facilities, sprayed around plant and services without shutting the line down for longer than the job needs.',
+    // PLACEHOLDER. Glenn asked for the SunRice roof project photo here; this
+    // frame stands in until that image is supplied.
+    image: yt('CR8CfFmON3g'),
   },
   {
     id: 'specialist',

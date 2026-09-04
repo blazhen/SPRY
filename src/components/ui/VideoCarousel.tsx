@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import useEmblaCarousel from 'embla-carousel-react'
 import { ArrowLeft, ArrowRight } from 'lucide-react'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
+import { useCarouselWheel } from '@/hooks/useCarouselWheel'
 import VideoEmbed from '@/components/ui/VideoEmbed'
 import type { Video } from '@/data/videos'
 
@@ -56,7 +57,18 @@ export default function VideoCarousel({ videos, label }: VideoCarouselProps) {
    * the click fires. Measuring the distance the pointer travelled is both
    * simpler and independent of Embla's internals.
    */
-  const pointerStart = useRef<{ x: number; y: number } | null>(null)
+  const pointerStart = useRef<{ x: number; y: number; coarse: boolean } | null>(null)
+
+  /**
+   * How far the pointer may travel and still count as a tap.
+   *
+   * A mouse click is precise. A finger is not: the browser's own touch slop is
+   * around 10px, and a tap on a moving hand can exceed that, so anything under
+   * roughly 20px is still a tap rather than a swipe. A deliberate swipe on a
+   * carousel travels several times further, so nothing is lost by being
+   * generous here.
+   */
+  const TAP_SLOP = { mouse: 8, touch: 20 }
 
   const [selected, setSelected] = useState(0)
   const [canPrev, setCanPrev] = useState(false)
@@ -65,6 +77,10 @@ export default function VideoCarousel({ videos, label }: VideoCarouselProps) {
 
   const scrollPrev = useCallback(() => emblaApi?.scrollPrev(), [emblaApi])
   const scrollNext = useCallback(() => emblaApi?.scrollNext(), [emblaApi])
+
+  // Two-finger horizontal on a trackpad. Without this the slider looks stuck
+  // to anyone on a laptop who does not spot the arrows.
+  useCarouselWheel(emblaApi)
 
   useEffect(() => {
     if (!emblaApi) return
@@ -183,17 +199,25 @@ export default function VideoCarousel({ videos, label }: VideoCarouselProps) {
               aria-label={`${i + 1} of ${videos.length}: ${video.title}`}
               // A drag that ends over a card must not launch its video.
               onPointerDownCapture={(event) => {
-                pointerStart.current = { x: event.clientX, y: event.clientY }
+                pointerStart.current = {
+                  x: event.clientX,
+                  y: event.clientY,
+                  coarse: event.pointerType !== 'mouse',
+                }
               }}
               onClickCapture={(event) => {
                 const start = pointerStart.current
-                if (!start) return
-                const moved = Math.hypot(event.clientX - start.x, event.clientY - start.y)
-                // Comfortably above a shaky tap, well below a deliberate swipe.
-                if (moved > 8) {
-                  event.preventDefault()
-                  event.stopPropagation()
+                if (start) {
+                  const moved = Math.hypot(event.clientX - start.x, event.clientY - start.y)
+                  if (moved > (start.coarse ? TAP_SLOP.touch : TAP_SLOP.mouse)) {
+                    event.preventDefault()
+                    event.stopPropagation()
+                    return
+                  }
                 }
+                /* Centring an off-centre card is handled by onRequestPlay on
+                   the embed itself, so that touch and mouse take the same
+                   path. Nothing more to do here. */
               }}
             >
               <div
@@ -207,6 +231,14 @@ export default function VideoCarousel({ videos, label }: VideoCarouselProps) {
                     title={video.title}
                     poster={video.poster}
                     posterAttr="data-vc-poster"
+                    onRequestPlay={() => {
+                      if (i === selected) return true
+                      // Off-centre cards are tilted and dimmed, so a video
+                      // playing in one looks broken. Bring it to the middle
+                      // first; the next tap plays it, flat and bright.
+                      emblaApi?.scrollTo(i)
+                      return false
+                    }}
                   />
                 </div>
                 <h3 className="mt-5 font-display text-h4 font-semibold leading-tight text-bone">
@@ -221,27 +253,33 @@ export default function VideoCarousel({ videos, label }: VideoCarouselProps) {
       </div>
 
       {/* ---------------- Controls ---------------- */}
-      <div className="mt-10 flex items-center gap-5">
+      <div className="mt-10 flex flex-wrap items-center gap-x-5 gap-y-4">
         <div className="flex shrink-0 items-center gap-2.5">
           <button
             type="button"
             onClick={scrollPrev}
             disabled={!canPrev}
-            className="grid size-12 place-items-center rounded-pill border border-line/15 text-bone transition-colors duration-300 hover:border-accent hover:text-accent disabled:opacity-35"
+            className="grid size-12 place-items-center rounded-pill border-2 border-accent bg-accent text-ink shadow-accent transition-colors duration-300 hover:bg-accent-300 hover:border-accent-300 disabled:border-line/20 disabled:bg-transparent disabled:text-bone-400 disabled:opacity-40 disabled:shadow-none"
           >
-            <ArrowLeft className="size-5" aria-hidden="true" />
+            <ArrowLeft className="size-5" strokeWidth={2.4} aria-hidden="true" />
             <span className="sr-only">Previous video</span>
           </button>
           <button
             type="button"
             onClick={scrollNext}
             disabled={!canNext}
-            className="grid size-12 place-items-center rounded-pill border border-line/15 text-bone transition-colors duration-300 hover:border-accent hover:text-accent disabled:opacity-35"
+            className="grid size-12 place-items-center rounded-pill border-2 border-accent bg-accent text-ink shadow-accent transition-colors duration-300 hover:bg-accent-300 hover:border-accent-300 disabled:border-line/20 disabled:bg-transparent disabled:text-bone-400 disabled:opacity-40 disabled:shadow-none"
           >
-            <ArrowRight className="size-5" aria-hidden="true" />
+            <ArrowRight className="size-5" strokeWidth={2.4} aria-hidden="true" />
             <span className="sr-only">Next video</span>
           </button>
         </div>
+
+        {/* Says out loud what the slider accepts. The gestures were all there
+            except the trackpad one; what was missing was any sign of them. */}
+        <p className="order-last w-full text-small text-bone-400 sm:order-none sm:w-auto">
+          Drag, swipe or scroll sideways
+        </p>
 
         {/* Continuous progress rather than dots: eleven dots is a rash, and a
             bar shows position within a long list at a glance. */}

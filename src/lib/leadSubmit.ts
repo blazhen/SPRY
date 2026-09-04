@@ -23,6 +23,9 @@ export interface LeadPayload {
   phone: string
   email: string
   postcode: string
+  /** Optional. Asked for so the assessment can be booked without a call back. */
+  street: string
+  suburb: string
   propertyType: string
   areas: string[]
   stage: string

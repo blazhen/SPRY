@@ -12,29 +12,38 @@ export interface Stat {
   detail: string
 }
 
-/** Count-up band. Every figure here is drawn from real customer reporting. */
+/**
+ * Count-up band.
+ *
+ * The first two entries used to be single customer bills: 14.5% from an Altona
+ * job and 25% from Devonport. Glenn flagged both as technically wrong to
+ * present this way, because each described one surface on one house and the
+ * band reads as a general outcome. They are replaced with the two figures that
+ * are true of the business rather than of one job.
+ */
 export const stats: Stat[] = [
   {
-    id: 'energy',
-    value: 14.5,
-    suffix: '%',
-    decimals: 1,
-    label: 'Less electricity used',
-    detail: 'Measured by a customer in Altona: 245.1 down to 210 KW per week.',
+    id: 'efficiency',
+    value: 40,
+    suffix: ' to 50%',
+    label: 'More efficient in the real world',
+    detail: 'Compared with traditional insulation at the same rated R-value.',
   },
   {
-    id: 'heating-bill',
-    value: 25,
-    suffix: '%',
-    label: 'Lower heating bill',
-    detail: 'Chris in Devonport, first bill after insulating walls and floor.',
+    id: 'contract',
+    value: 3.44,
+    prefix: '$',
+    suffix: 'M',
+    decimals: 2,
+    label: 'Largest single contract',
+    detail: 'One project, 30,863 square metres under a single contract.',
   },
   {
     id: 'experience',
     value: 3,
     suffix: '+',
     label: 'Decades of experience',
-    detail: 'Family-owned and operated from Carrum Downs, Victoria.',
+    detail: 'Family-owned and operated in Victoria, working Australia-wide.',
   },
   {
     id: 'rigs',
@@ -46,10 +55,7 @@ export const stats: Stat[] = [
 
 /** The headline energy figure, used in the hero and the marquee. */
 export const heroStat = {
-  headline: '14.5%',
-  label: 'less electricity used',
-  detail: 'Verified by a customer meter reading: 245.1 → 210 KW per week after insulating.',
-  before: 245.1,
-  after: 210,
-  unit: 'KW/week',
+  headline: '40 to 50%',
+  label: 'more efficient in the real world',
+  detail: 'Compared with traditional insulation at the same rated R-value.',
 } as const

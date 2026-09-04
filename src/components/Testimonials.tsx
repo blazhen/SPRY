@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import useEmblaCarousel from 'embla-carousel-react'
 import { ArrowLeft, ArrowRight, Quote } from 'lucide-react'
+import { useCarouselWheel } from '@/hooks/useCarouselWheel'
 import { testimonials } from '@/data/testimonials'
 import { testimonialsIntro } from '@/data/content'
 import { testimonialVideo, workCopy } from '@/data/videos'
@@ -89,6 +90,9 @@ export default function Testimonials() {
   const scrollPrev = useCallback(() => emblaApi?.scrollPrev(), [emblaApi])
   const scrollNext = useCallback(() => emblaApi?.scrollNext(), [emblaApi])
 
+  // Two-finger horizontal on a trackpad.
+  useCarouselWheel(emblaApi)
+
   const onKeyDown = (event: React.KeyboardEvent) => {
     if (event.key === 'ArrowLeft') {
       event.preventDefault()
@@ -111,25 +115,28 @@ export default function Testimonials() {
           />
 
           {/* --- Controls --- */}
-          <div className="flex items-center gap-3">
-            <button
-              type="button"
-              onClick={scrollPrev}
-              className="grid size-12 place-items-center rounded-pill border border-ink/20 text-ink transition-colors duration-300 hover:border-ink hover:bg-ink hover:text-bone"
-              aria-controls="testimonial-viewport"
-            >
-              <ArrowLeft className="size-5" aria-hidden="true" />
-              <span className="sr-only">Previous testimonial</span>
-            </button>
-            <button
-              type="button"
-              onClick={scrollNext}
-              className="grid size-12 place-items-center rounded-pill border border-ink/20 text-ink transition-colors duration-300 hover:border-ink hover:bg-ink hover:text-bone"
-              aria-controls="testimonial-viewport"
-            >
-              <ArrowRight className="size-5" aria-hidden="true" />
-              <span className="sr-only">Next testimonial</span>
-            </button>
+          <div className="flex flex-col items-start gap-2.5">
+            <div className="flex items-center gap-3">
+              <button
+                type="button"
+                onClick={scrollPrev}
+                className="grid size-12 place-items-center rounded-pill border-2 border-ink bg-ink text-bone transition-colors duration-300 hover:bg-transparent hover:text-ink"
+                aria-controls="testimonial-viewport"
+              >
+                <ArrowLeft className="size-5" strokeWidth={2.4} aria-hidden="true" />
+                <span className="sr-only">Previous testimonial</span>
+              </button>
+              <button
+                type="button"
+                onClick={scrollNext}
+                className="grid size-12 place-items-center rounded-pill border-2 border-ink bg-ink text-bone transition-colors duration-300 hover:bg-transparent hover:text-ink"
+                aria-controls="testimonial-viewport"
+              >
+                <ArrowRight className="size-5" strokeWidth={2.4} aria-hidden="true" />
+                <span className="sr-only">Next testimonial</span>
+              </button>
+            </div>
+            <p className="text-small text-ink/70">Drag, swipe or scroll sideways</p>
           </div>
         </div>
       </div>

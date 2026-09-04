@@ -11,15 +11,9 @@
 
      Brand   the default. White, navy and green, from the real identity.
      Ice     dark ground, amber for heat and ice for cooling.
-     Amber   the original dark scheme. Amber only, so it reads heating-first.
-
-   Brand lives on `:root` and carries NO attribute, which is deliberate. The
-   default has to be correct on the very first paint, before any JavaScript
-   runs, or every visitor sees a flash of the wrong palette while the stored
-   choice is read. Only the two dark schemes are attribute-scoped.
-
-   That is also why the brand-only rules further down are scoped with
-   `html:not([data-theme])` rather than by name: no attribute means Brand.
+     The site ships one palette: the SprayIT brand. Two alternate dark
+     schemes used to sit behind a switcher and have been removed, along with
+     the switcher itself, at the client's request.
 
    The tokens are relational, not literal. `ink` is "the page ground" and
    `bone` is "the thing that contrasts with it", so swapping those two values
@@ -127,7 +121,13 @@
   --section-y: clamp(5rem, 11vh, 10rem);
   --gutter: clamp(1.25rem, 4vw, 4.5rem);
   --maxw: 96rem;
-  --header-h: 4.75rem;
+  --header-h: 6rem;
+
+  /* Desktop can afford the taller bar; a phone cannot, because the hero stage
+     has to fit inside one screen or its scroll-to-seal pin refuses to engage. */
+  @media (min-width: 640px) {
+    --header-h: 6.5rem;
+  }
 
   /* ---- Motion ----------------------------------------------------------- */
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
@@ -152,83 +152,39 @@
    hover state never land on the same value. Only the secondary accent differs
    between the two, which is the entire point of offering both.
    ========================================================================== */
-html[data-theme='ice'],
-html[data-theme='amber'] {
-  --c-ink: 10 10 11; /* #0A0A0B  deepest ground, and the page base */
-  --c-surface: 20 20 26; /* #14141A  alternate section ground */
-  --c-ink-800: 26 26 31; /* #1A1A1F  card surface */
-  --c-ink-700: 36 36 42; /* #24242A  card hover */
-  --c-ink-600: 48 48 55; /* #303037  hairline / border on dark */
-
-  --c-bone: 245 242 237; /* #F5F2ED  clean off-white */
-  --c-bone-200: 228 223 214; /* #E4DFD6  muted off-white */
-  --c-bone-400: 168 163 154; /* #A8A39A  body text on dark */
-
-  --c-accent: 255 90 31; /* #FF5A1F  energetic warm amber */
-  --c-accent-600: 224 68 13; /* #E0440D  pressed / hover */
-  --c-accent-300: 255 160 74; /* #FFA04A  gradient partner, ember */
-  --c-accent-100: 255 214 189; /* #FFD6BD  tint on dark */
-
-  /* Ice: amber leads for heat loss, ice carries cooling and refrigeration. */
-  --c-accent-2: 56 189 248; /* #38BDF8 */
-  /* On a dark ground the bright value is already the readable one, so the
-     "ink" variant simply tracks it. It only diverges on the light theme. */
-  --c-accent-2-ink: 56 189 248;
-
-  --c-line: 255 255 255;
-
-  --veil: 0.16;
-  --veil-strong: 0.26;
-
-  --c-3d-body: 44 44 52; /* #2C2C34 */
-  --c-3d-roof: 62 62 72; /* #3E3E48 */
-
-  --c-paper: 245 242 237;
-  --c-paper-fg: 10 10 11;
-
-  --hairline: rgb(var(--c-line) / 0.1);
-  --hairline-strong: rgb(var(--c-line) / 0.18);
-  --hairline-ink: rgb(10 10 11 / 0.12);
-  --scrim: rgb(10 10 11 / 0.38);
-  --scrim-fg: 245 242 237;
-
-  --shadow-lift: 0 24px 60px -24px rgb(0 0 0 / 0.65);
-  --shadow-accent: 0 20px 60px -20px rgb(var(--c-accent) / 0.55);
-}
 
 /* The original scheme, kept because some people prefer it. Its secondary
    accent tracks the amber primary, which is exactly why it reads heating-only:
    one temperature, stated twice. */
-html[data-theme='amber'] {
-  --c-accent-2: 255 160 74; /* #FFA04A */
-  --c-accent-2-ink: 255 160 74;
-}
 
 /* ============================================================================
    BRAND-ONLY RULES
    ----------------------------------------------------------------------------
-   Scoped with `html:not([data-theme])` because Brand is the default and
-   carries no attribute. These handle the places where a straight token swap is
-   not enough, which is almost entirely about the green and about the inverted
-   navy bands.
+   These handle the places where a straight token value is not enough, which is
+   almost entirely about the green and about the inverted navy bands.
+
+   The `html:root` prefix looks redundant and is not. Tailwind's utilities load
+   after this file, so a bare `[data-cta-accent]` ties with `text-bone` on
+   specificity and loses on order, painting the CTA accent word navy on a navy
+   band. The prefix restores the weight these rules need to win.
    ========================================================================== */
 
 /* Display headings take the brand green, the way the real identity sets them
    ("What Is" navy / "Spray Foam" green). Scoped to the highlighted word only:
    green works as a display accent but not as body copy or a button label. */
-html:not([data-theme]) [data-accent-word] {
+html:root [data-accent-word] {
   color: rgb(var(--c-accent-2-ink));
 }
 
 /* On the inverted navy bands there is no legibility problem, so those headings
    get the exact brand green: #8DC63F on #002396 measures 6.2:1. */
-html:not([data-theme]) .bg-bone [data-accent-word] {
+html:root .bg-bone [data-accent-word] {
   color: rgb(var(--c-accent-2));
 }
 
 /* The CTA headline's italic word is set in `bone` so it reads as a second
    colour inside the band. Here `bone` *is* the band, so it would vanish. */
-html:not([data-theme]) [data-cta-accent] {
+html:root [data-cta-accent] {
   color: rgb(var(--c-accent-2));
 }
 
@@ -237,7 +193,7 @@ html:not([data-theme]) [data-cta-accent] {
    icons painted in it disappear completely. Redefining the token rather than
    patching each utility means every accent-coloured mark follows, including
    ones added later. */
-html:not([data-theme]) .bg-bone {
+html:root .bg-bone {
   --c-accent: var(--c-accent-2);
   --c-accent-300: 182 224 111;
 }
@@ -245,7 +201,7 @@ html:not([data-theme]) .bg-bone {
 /* The CTA band paints its own background from --c-accent, so the swap has to
    land on its children: redefining it on the section itself would turn the
    band green and take white label text down to 1.9:1. */
-html:not([data-theme]) .bg-accent > * {
+html:root .bg-accent > * {
   --c-accent: var(--c-accent-2);
   --c-accent-300: 182 224 111;
 }
@@ -253,11 +209,11 @@ html:not([data-theme]) .bg-accent > * {
 /* ...but a card inside one of those bands re-establishes a light ground, and
    on white the green goes back to being illegible. Restore the navy accent
    wherever the ground turns light again. */
-html:not([data-theme]) .bg-bone .bg-ink,
-html:not([data-theme]) .bg-bone .bg-ink-800,
-html:not([data-theme]) .bg-bone .bg-paper,
-html:not([data-theme]) .bg-accent .bg-ink,
-html:not([data-theme]) .bg-accent .bg-ink-800 {
+html:root .bg-bone .bg-ink,
+html:root .bg-bone .bg-ink-800,
+html:root .bg-bone .bg-paper,
+html:root .bg-accent .bg-ink,
+html:root .bg-accent .bg-ink-800 {
   --c-accent: 0 35 150;
   --c-accent-300: 0 58 195;
 }
@@ -272,26 +228,10 @@ html:not([data-theme]) .bg-accent .bg-ink-800 {
 
    Same shape as the brand rules above, for the same reason.
    ========================================================================== */
-html[data-theme='ice'] .bg-bone,
-html[data-theme='amber'] .bg-bone {
-  --c-accent: 178 60 9; /* #B23C09 */
-  --c-accent-300: 200 78 18;
-}
 
 /* A dark card sitting on one of those bands is dark again, so the bright
    amber is correct inside it. */
-html[data-theme='ice'] .bg-bone .bg-ink,
-html[data-theme='ice'] .bg-bone .bg-ink-800,
-html[data-theme='amber'] .bg-bone .bg-ink,
-html[data-theme='amber'] .bg-bone .bg-ink-800 {
-  --c-accent: 255 90 31;
-  --c-accent-300: 255 160 74;
-}
 
 /* The CTA headline's italic word sits on the saturated accent band. On the dark
    schemes the off-white `bone` measures 2.79:1 there, just under the 3:1 that
    display-size text needs. Pure white clears it at 3.18:1. */
-html[data-theme='ice'] [data-cta-accent],
-html[data-theme='amber'] [data-cta-accent] {
-  color: #ffffff;
-}
