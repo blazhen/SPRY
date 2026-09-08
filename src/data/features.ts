@@ -230,9 +230,9 @@ export const commercialSectors: SectorCard[] = [
     label: 'Processing plants',
     title: 'Production floors and plant rooms',
     text: 'Roof and wall systems on working processing facilities, sprayed around plant and services without shutting the line down for longer than the job needs.',
-    // PLACEHOLDER. Glenn asked for the SunRice roof project photo here; this
-    // frame stands in until that image is supplied.
-    image: yt('CR8CfFmON3g'),
+    // The SunRice roof, from the client's own case study post on the site this
+    // replaces. Their only published photograph of a processing plant job.
+    image: '/gallery/sunrice-roof-hero.webp',
   },
   {
     id: 'specialist',

@@ -20,6 +20,7 @@ import Contact from '@/pages/Contact'
 import Book from '@/pages/Book'
 import ThankYou from '@/pages/ThankYou'
 import Privacy from '@/pages/Privacy'
+import Gallery from '@/pages/Gallery'
 import NotFound from '@/pages/NotFound'
 import { HeroesIndexPage, HeroPreviewPage } from '@/pages/HeroPreview'
 
@@ -133,7 +134,8 @@ export default function App() {
               <Route path="/commercial" element={<Commercial />} />
               <Route path="/contact" element={<Contact />} />
               <Route path="/book" element={<Book />} />
-              <Route path="/privacy" element={<Privacy />} />
+              <Route path="/gallery" element={<Gallery />} />
+          <Route path="/privacy" element={<Privacy />} />
 
               {/* Confirmation pages. Distinct URLs so a conversion is only
                   counted once someone actually lands here. Both noindex. */}

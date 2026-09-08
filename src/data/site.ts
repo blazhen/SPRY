@@ -80,12 +80,17 @@ export const site = {
   },
 } as const
 
+/**
+ * Home is deliberately absent. The logo is a link to it, labelled for screen
+ * readers, and every site puts home behind the mark anyway. Dropping the entry
+ * keeps the bar short enough for Gallery to earn its place in it.
+ */
 export const navItems: NavItem[] = [
-  { index: '01', label: 'Home', href: '/' },
-  { index: '02', label: 'About', href: '/about' },
-  { index: '03', label: 'Spray Foam', href: '/spray-foam' },
-  { index: '04', label: 'Residential', href: '/residential' },
-  { index: '05', label: 'Commercial', href: '/commercial' },
+  { index: '01', label: 'About', href: '/about' },
+  { index: '02', label: 'Spray Foam', href: '/spray-foam' },
+  { index: '03', label: 'Residential', href: '/residential' },
+  { index: '04', label: 'Commercial', href: '/commercial' },
+  { index: '05', label: 'Gallery', href: '/gallery' },
   { index: '06', label: 'Contact', href: '/contact' },
 ]
 

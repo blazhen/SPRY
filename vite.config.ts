@@ -15,10 +15,62 @@ import fs from 'node:fs'
  *   404.html     copied from index.html. GitHub Pages, Cloudflare Pages,
  *                Azure Static Web Apps and others serve it for unknown paths,
  *                which makes the SPA resolve correctly.
- *   _redirects   Netlify and Cloudflare Pages rewrite rule, same effect.
+ *   _redirects   Netlify and Cloudflare Pages rewrite rule, same effect,
+ *                plus the legacy URL map below.
  *
  * If a host honours neither, switch `router` to 'hash' in index.html.
  */
+
+/**
+ * Permanent redirects from the WordPress site this replaces.
+ *
+ * That site has 31 indexed URLs and this one has eight, because six service
+ * pages were consolidated into Residential and Commercial and two spray-foam
+ * pages into one. Without these, every one of those addresses lands on the SPA
+ * fallback and renders the not-found page with a 200, which search engines read
+ * as a soft 404: the ranking is lost and nothing inherits it.
+ *
+ * Order matters. The catch-all rewrite has to stay last, or it swallows
+ * everything above it.
+ */
+const LEGACY_REDIRECTS: Array<[string, string]> = [
+  // Pages that simply changed address
+  ['/about-us', '/about'],
+  ['/contact-us', '/contact'],
+  ['/privacy-policy', '/privacy'],
+  ['/thank-you', '/thanks/quote'],
+
+  // Two spray-foam pages became one
+  ['/what-is-spray-foam', '/spray-foam'],
+  ['/spray-foam-insulation-system', '/spray-foam'],
+  ['/faq', '/spray-foam#faq'],
+  ['/fact-sheets', '/gallery#fact-sheets'],
+
+  // Residential services, now sections of one page
+  ['/services/under-floor-insulation', '/residential'],
+  ['/services/insulation-for-roof-and-ceiling', '/residential'],
+  ['/services/wall-insulation', '/residential'],
+
+  // Commercial services, likewise
+  ['/services/factory', '/commercial'],
+  ['/services/farming', '/commercial'],
+  ['/services/mining', '/commercial'],
+  ['/services', '/commercial'],
+
+  // Galleries and documents, all three rebuilt as one page
+  ['/photo-gallery', '/gallery'],
+  ['/video-gallery', '/gallery'],
+
+  // Blog and case studies
+  ['/sprayit-solutions-transformed-sunrice-roof', '/commercial'],
+  ['/spray-foam-insulation-why-choose', '/spray-foam'],
+  ['/spray-foam-acoustic-insulation-icynene-noise-reduction', '/spray-foam'],
+  ['/energy-efficiency-standards-vic-rental-homes', '/residential'],
+  ['/blog-2/open-cell-spray-foam-facts', '/spray-foam'],
+  ['/blog-2', '/'],
+  ['/blog', '/'],
+  ['/category/*', '/'],
+]
 function staticHostFallbacks(isLive: boolean) {
   return {
     name: 'spry-static-host-fallbacks',
@@ -27,7 +79,21 @@ function staticHostFallbacks(isLive: boolean) {
       const indexHtml = path.join(out, 'index.html')
       if (!fs.existsSync(indexHtml)) return
       fs.copyFileSync(indexHtml, path.join(out, '404.html'))
-      fs.writeFileSync(path.join(out, '_redirects'), '/*  /index.html  200\n')
+      // WordPress served these with a trailing slash, so both forms are
+      // mapped. The SPA rewrite stays last so it cannot shadow them.
+      const lines: string[] = [
+        '# Legacy URLs from the WordPress site this replaces.',
+        ...LEGACY_REDIRECTS.flatMap(([from, to]) =>
+          from.endsWith('*')
+            ? [`${from}  ${to}  301`]
+            : [`${from}  ${to}  301`, `${from}/  ${to}  301`],
+        ),
+        '',
+        '# Single page app fallback. Must remain last.',
+        '/*  /index.html  200',
+        '',
+      ]
+      fs.writeFileSync(path.join(out, '_redirects'), lines.join('\n'))
 
       // robots.txt cannot read the runtime config, so it is decided here. The
       // default build is the private one: a staging copy that search engines
