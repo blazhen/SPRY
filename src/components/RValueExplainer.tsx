@@ -546,15 +546,19 @@ export default function RValueExplainer() {
 
         {approved ? (
           <p className="mt-12 max-w-3xl font-display text-h3 font-semibold leading-tight text-bone">
-            In a real building, the sealed wall outperforms the rated-equal one by{' '}
+            Air leakage can account for as much as{' '}
             <span className="text-accent2-ink">
-              {rvalueClaim.realWorldGain.low} to {rvalueClaim.realWorldGain.high}
-              {rvalueClaim.realWorldGain.unit}
-            </span>
-            .
+              {rvalueClaim.airLeakageShare.max}
+              {rvalueClaim.airLeakageShare.unit}
+            </span>{' '}
+            of the energy cost of heating and cooling a home.
           </p>
         ) : (
           <p className="mt-12 max-w-3xl text-body text-bone-400">{rvalueCopy.pendingNote}</p>
+        )}
+
+        {approved && (
+          <p className="mt-3 text-small text-bone-400">Source: {rvalueClaim.source}.</p>
         )}
 
         <p className="mt-6 max-w-measure text-small text-bone-400">{rvalueCopy.footnote}</p>

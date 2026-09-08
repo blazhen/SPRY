@@ -23,11 +23,14 @@ export interface Stat {
  */
 export const stats: Stat[] = [
   {
-    id: 'efficiency',
+    // The suffix built '40 to 50%' from a value and a string, which is why a
+    // text search for the old claim came up clean while the page still showed
+    // it. Now the figure the supplied source actually supports.
+    id: 'air-leakage',
     value: 40,
-    suffix: ' to 50%',
-    label: 'More efficient in the real world',
-    detail: 'Compared with traditional insulation at the same rated R-value.',
+    suffix: '%',
+    label: 'Of heating and cooling cost is air leakage',
+    detail: 'Air leakage can account for as much as this. US Department of Energy, Building America Program.',
   },
   {
     id: 'contract',
@@ -55,7 +58,7 @@ export const stats: Stat[] = [
 
 /** The headline energy figure, used in the hero and the marquee. */
 export const heroStat = {
-  headline: '40 to 50%',
-  label: 'more efficient in the real world',
-  detail: 'Compared with traditional insulation at the same rated R-value.',
+  headline: 'Up to 40%',
+  label: 'of heating and cooling cost is air leakage',
+  detail: 'US Department of Energy, Building America Program.',
 } as const

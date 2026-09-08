@@ -17,28 +17,33 @@ import type { SectionIntro } from '@/data/content'
  * and rated R-value only ever described conduction. What is withheld is the
  * number, not the story.
  *
- * APPROVED. Glenn instructed publication of the 40 to 50% figure in the client
- * revision document of 31 August 2026, and asked for the holding note to be
- * removed. The gate stays in the code because the obligation does not go away:
- * if the ACCC asks, the evidence behind `source` has to exist. See the note in
- * the revision summary about getting a technical reference on file.
+ * APPROVED, then corrected. Glenn instructed publication of a 40 to 50%
+ * efficiency gain against traditional insulation, and supplied a US Department
+ * of Energy statement as the evidence. That statement says something different:
+ * air leakage can account for as much as 40% of the energy cost of heating and
+ * cooling a home. It measures the problem, not the advantage over another
+ * product, its baseline is a leaky house rather than a batt-insulated one, and
+ * 40% is its ceiling, so nothing in it reaches 50%.
+ *
+ * The claim on the site is now the one the source supports, stated in the
+ * source's own terms and cited on the page.
  */
 export const rvalueClaim = {
   /** Approved by Glenn, client revision V1, 31 August 2026. */
   figuresApproved: true,
 
-  /**
-   * Where the figure comes from. Currently records who approved it rather than
-   * a technical reference. Replace with the standard, study or measured job
-   * data that substantiates 40 to 50% as soon as it is available.
-   */
-  source: 'Client instruction, Spray It Solutions revision V1, 31 August 2026',
+  /** Named on the page, because a cited number is the only kind worth printing. */
+  source: 'US Department of Energy, Building America Program',
 
   /** The rating both products carry on paper. */
   ratedValue: 'R2.5',
 
-  /** The claimed real-world advantage. Only rendered once approved. */
-  realWorldGain: { low: 40, high: 50, unit: '%' },
+  /**
+   * The share of a home's heating and cooling cost that air leakage can reach.
+   * A ceiling, which is why it is rendered as "as much as" and never as a range
+   * running past it.
+   */
+  airLeakageShare: { max: 40, unit: '%' },
 }
 
 export const rvalueIntro: SectionIntro = {
@@ -77,7 +82,7 @@ export const rvalueCopy = {
       'No edges, so no gaps to leak through',
       'Bonded to the substrate, does not settle',
       'Seals and insulates in one layer',
-      'A 40 to 50% gain in real-world efficiency',
+      'Closes the air path a rated R-value never described',
     ],
   },
 

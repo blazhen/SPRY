@@ -396,7 +396,7 @@ export default function HeroHouse() {
                 strip below it is two lines rather than one. */}
             {/* Trimmed on desktop to pay for the taller captions below, so the
                 section still fits a 900px viewport and keeps its pin. */}
-            <HouseSection season={season} className="mx-auto h-[clamp(10rem,min(42svh,calc(100svh-389px)),24rem)] min-[375px]:h-[clamp(10rem,min(42svh,calc(100svh-365px)),24rem)] w-full max-w-5xl drop-shadow-[0_30px_60px_rgb(0_0_0/0.55)] lg:h-[clamp(15rem,min(53svh,calc(100svh-412px)),34rem)]" />
+            <HouseSection season={season} className="mx-auto h-[clamp(10rem,min(42svh,calc(100svh-365px)),24rem)] w-full max-w-5xl drop-shadow-[0_30px_60px_rgb(0_0_0/0.55)] lg:h-[clamp(15rem,min(53svh,calc(100svh-412px)),34rem)]" />
           </div>
 
           {/* A caption strip, not a pair of cards. Boxed and set at display

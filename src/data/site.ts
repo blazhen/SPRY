@@ -116,7 +116,7 @@ export const socialLinks: SocialLink[] = [
 export const marqueeItems: string[] = [
   'Superior Air Barrier',
   'Higher R-Value',
-  '40 to 50% More Efficient',
+  'Seals Air Leakage',
   'Built to Last',
   'Any Size, Any Site',
 ]

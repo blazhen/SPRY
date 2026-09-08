@@ -55,6 +55,9 @@ export default function Contact() {
                 <dt className="sr-only">Address</dt>
                 <MapPin className="mt-1 size-5 shrink-0 text-accent" aria-hidden="true" />
                 <dd>
+                  <span className="mb-1 block text-eyebrow font-bold uppercase tracking-[0.16em] text-bone-400/70">
+                    Workshop
+                  </span>
                   <address className="not-italic text-body text-bone-400">
                     {site.address.line1}
                     <br />

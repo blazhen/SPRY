@@ -35,7 +35,7 @@ export const sectorCopy = {
     { figure: '$3.44M', label: 'largest contract' },
   ],
   residentialStats: [
-    { figure: '40 to 50%', label: 'more efficient, same R-value' },
+    { figure: 'Up to 40%', label: 'of energy cost is air leakage' },
     { figure: '3', label: 'surfaces sealed as one' },
   ],
 }

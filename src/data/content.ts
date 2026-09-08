@@ -28,7 +28,7 @@ export const hero = {
   trust: {
     rating: 5,
     ratingLabel: 'Rated 5 stars by homeowners',
-    stat: '40 to 50% more efficient',
+    stat: 'Air leakage: up to 40% of energy cost',
     provenance: 'Family-owned · Australia-wide',
   },
   scrollCue: 'Scroll',
@@ -64,22 +64,29 @@ export const heroHouse = {
     'Cutaway of a two-storey house showing heat escaping through the roof, walls and underfloor, then each zone being sealed with spray foam.',
 
   /**
-   * The headline claim, approved in the client revision of 31 Aug 2026.
+   * The headline claim, and the one number on the site that carries a citation.
    *
-   * This previously counted a single customer's weekly electricity reading
-   * down from 245.1 to 210 kW and called the result 14.5%. That job was
-   * subfloor only, so presenting it beside a house sealed on all three planes
-   * overstated what one surface had achieved. Both the reading and the
-   * percentage are gone. What replaces them is the efficiency gain against
-   * traditional insulation at the same rated R-value, which is a property of
-   * the product rather than of one house.
+   * It has been through two wrong versions. First a single customer's weekly
+   * reading counted down from 245.1 to 210 kW and called 14.5%, which was a
+   * subfloor-only job presented beside a house sealed on all three planes.
+   * Then a 40 to 50% efficiency gain against traditional insulation at the same
+   * rated R-value, which the supplied evidence turned out not to support.
+   *
+   * The source says air leakage can account for as much as 40% of the energy
+   * cost of heating and cooling a home. That is the size of the problem, not a
+   * gain over another product, and 40% is its ceiling. So that is what this
+   * says, in the source's own terms, with the source named on the page.
    */
   meter: {
-    label: 'Real-world efficiency gain',
-    /** Counts up to the conservative end of the approved 40 to 50% range. */
+    label: 'Air leakage can account for',
+    /** The ceiling the source gives, not a range that continues past it. */
     savingTo: 40,
-    savingLabel: 'vs traditional insulation at the same R-value',
-    footnote: 'Compared with traditional insulation at an equivalent rated R-value.',
+    /* Kept short on purpose. A longer sub-label rewraps on narrow phones,
+       which changes the panel height and breaks the pinned stage's fit. The
+       source is named in the footnote immediately below it. */
+    savingLabel: 'of heating and cooling cost',
+    footnote:
+      'US Department of Energy, Building America Program. Air leakage is the path a rated R-value never describes, and the one a continuous sealed layer closes.',
   },
 
   beats: [
@@ -122,8 +129,8 @@ export const heroHouse = {
     {
       id: 'result',
       index: '05',
-      label: '40 to 50% more efficient',
-      note: 'Sealed on all three planes, spray foam delivers a 40 to 50% efficiency gain over traditional insulation at the same rated R-value.',
+      label: 'Sealed on all three',
+      note: 'Air leakage can account for as much as 40% of the energy cost of heating and cooling a home. Sealing the roof, the walls and the floor together is what closes that path.',
       zone: null,
       start: 0.88,
       end: 1,
@@ -475,6 +482,18 @@ export const testimonialsIntro: SectionIntro = {
   accentWord: 'smaller',
   lede: 'Unedited feedback from homeowners after their install.',
 }
+
+/**
+ * Sits under the testimonial carousel.
+ *
+ * Every figure quoted by a customer is real and specific to the work that
+ * customer had done, and most of them had one surface sealed rather than the
+ * whole building. Without this line a reader reasonably assumes the smallest
+ * number on the page is the most the product can do, which is the opposite of
+ * true and was the client's own concern about publishing them.
+ */
+export const testimonialsFootnote =
+  'Each figure is what that customer measured after the work described on their card, not the most a building can gain. Most of these are a single surface. Sealing the roof, walls and floor together does more than any one of them alone.'
 
 export const faqIntro: SectionIntro = {
   eyebrow: 'Questions',

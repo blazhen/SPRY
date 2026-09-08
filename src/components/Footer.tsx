@@ -47,6 +47,11 @@ export default function Footer() {
             <ul className="mt-9 space-y-4 text-body">
               <li className="flex items-start gap-3">
                 <MapPin className="mt-1 size-4 shrink-0 text-accent" aria-hidden="true" />
+                {/* Labelled, so the address reads as where the rigs live
+                    rather than as the limit of where they travel. */}
+                <span className="mb-1 block text-eyebrow font-bold uppercase tracking-[0.16em] text-bone-400/70">
+                  Workshop
+                </span>
                 <address className="not-italic text-bone-400">
                   {site.address.line1}
                   <br />

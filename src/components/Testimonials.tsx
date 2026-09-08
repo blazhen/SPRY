@@ -3,7 +3,7 @@ import useEmblaCarousel from 'embla-carousel-react'
 import { ArrowLeft, ArrowRight, Quote } from 'lucide-react'
 import { useCarouselWheel } from '@/hooks/useCarouselWheel'
 import { testimonials } from '@/data/testimonials'
-import { testimonialsIntro } from '@/data/content'
+import { testimonialsFootnote, testimonialsIntro } from '@/data/content'
 import { testimonialVideo, workCopy } from '@/data/videos'
 import SectionHeading from '@/components/ui/SectionHeading'
 import VideoEmbed from '@/components/ui/VideoEmbed'
@@ -243,6 +243,10 @@ export default function Testimonials() {
             />
           ))}
         </div>
+
+        <p className="shell mt-10 max-w-measure text-small text-ink/60">
+          {testimonialsFootnote}
+        </p>
 
         {/* Announce slide changes without moving focus. */}
         <p className="sr-only" aria-live="polite">

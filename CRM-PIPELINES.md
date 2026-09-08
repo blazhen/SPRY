@@ -89,7 +89,7 @@ Stages 1 to 7 are the sale. Stage 8 is a siding. Stages 9 to 12 are the job.
 | 7 | **Follow-up** | Chasing a decision | Won, Lost, or moved to Nurture | 30 days |
 | 8 | **Nurture** | Real job, wrong time | They re-engage, back to Qualified | Review quarterly |
 | | | **← Won is marked here →** | | |
-| 9 | **Scheduled** | Accepted, deposit received, date and crew locked | Crew starts | On the date |
+| 9 | **Scheduled** | Accepted, date and crew locked | Crew starts | On the date |
 | 10 | **In Progress** | On site | Work finished | 3 days over |
 | 11 | **Invoiced** | Work complete, photos captured, invoice out | Payment received | 14 days |
 | 12 | **Paid & Closed** | Done | Closes the card | |
@@ -196,6 +196,22 @@ exists to answer the second one.
 
 ## 6. Opportunity value hygiene
 
+### Deposits
+
+Deposits are taken on some jobs and not others, so **a deposit is a field on the
+card, not a gate between stages**. An earlier version of this design held a job
+out of Scheduled until one was received, which would have stranded every job
+that never needed one.
+
+Where a deposit does apply, `deposit_amount` and `deposit_received_at` are
+filled in and the deposit request fires. Where it does not, the card moves to
+Scheduled on acceptance alone. The only automation that should ever wait on a
+deposit is the one that asks for it.
+
+---
+
+## 6a. Opportunity value
+
 | Stage | What value to carry |
 | --- | --- |
 | New Enquiry, Contacting | Zero |
@@ -210,8 +226,21 @@ worthless. The estimate at Qualified is the compromise.
 Variations agreed on site go on the card as they happen, not at invoicing.
 Otherwise the delivery half of the board understates what is owed.
 
-> **Needs Glenn:** default value bands per property type, and the deposit
-> percentage that gates Scheduled.
+### Default forecast values
+
+Client-supplied, for the estimate set at Qualified. These are what a job runs
+to, not what any particular job will be.
+
+| Job | Band |
+| --- | --- |
+| Residential floors, per day on site | $3,200 to $6,000 |
+| Full house | $25,000 to $40,000 |
+| Commercial | No useful band. Leave at zero until quoted. |
+
+Residential floor work is priced per day rather than per job, so the estimate at
+Qualified should be one day's rate until the assessment establishes how many
+days it is. Commercial ranges from small to millions, which is too wide to
+forecast from, so those cards carry nothing until a real number exists.
 
 ---
 
@@ -411,8 +440,6 @@ figure is meaningless.
 
 ## 13. Open items for Glenn
 
-- Default opportunity value bands per property type
-- Deposit percentage and terms that gate Scheduled
 - Service area boundary, so *Outside service area* can be automated
 - Who is second in line when a New Enquiry escalates after an hour
 - Whether AI voice calls are recorded, which decides the script opening

@@ -45,25 +45,28 @@ different client.
 | `business_short_name` | Spray It | Used in SMS, where characters cost money |
 | `business_phone` | 0428 26 36 26 | Human-readable |
 | `business_phone_e164` | +61428263626 | For `tel:` links |
-| `business_email` | *(to confirm)* | Reply-to |
+| `business_email` | info@sprayitsolutions.com.au | Reply-to. Taken from their live site footer. |
 | `website_url` | *(staging until sign-off)* | |
 | `booking_url` | *(GHL calendar link)* | The phone consult calendar |
 | `quote_form_url` | `/contact` | |
 | `privacy_url` | `/privacy` | Required in marketing email |
-| `review_url` | *(Google review short link)* | |
+| `review_url` | *(held by the agency)* | Google review short link, set in GHL |
 | `owner_first_name` | Glenn | Signs the personal messages |
-| `service_area` | Melbourne and Victoria | |
+| `service_area` | Australia-wide | |
 | `trade_noun` | spray foam insulation | "your `{{trade_noun}}` enquiry" |
 | `trade_verb` | sealing | "what needs `{{trade_verb}}`" |
 | `assessment_noun` | site assessment | Some trades say inspection, survey, measure |
 | `consult_length` | 15 minute | |
 | `office_hours` | Mon to Fri, 7am to 5pm | *(to confirm)* |
-| `deposit_percent` | *(to confirm)* | |
-| `abn` | *(to confirm)* | Legally useful in invoices and quotes |
+| `deposit_percent` | *(varies, not always taken)* | Deposits apply to some jobs only, see the deposit note in CRM-PIPELINES |
 | `sms_signoff` | Spray It | Sender identification, see §5 |
 
-> **Needs Glenn:** business email, trading hours, deposit percentage, ABN, and
-> the Google review link.
+> **Needs Glenn:** trading hours. That is the only outstanding value.
+>
+> The business email came from their own site. The review link is held by the
+> agency. There is deliberately no ABN field: quotes and invoices are documents
+> the client issues himself and they carry it, so repeating it in a covering
+> email would create a value with no owner.
 
 ---
 
@@ -484,7 +487,6 @@ Any questions at all, {{custom_values.business_phone}}.
 
 {{custom_values.owner_first_name}}
 {{custom_values.business_name}}
-ABN {{custom_values.abn}}
 ```
 
 ### R-QUOTE-02 · SMS · Enters Quote Sent · TRANS · CORE
@@ -623,8 +625,10 @@ To help us get in and out cleanly, before we arrive:
   Pets somewhere else for the day, please.
   Somebody over 18 on site to let us in.
 
-While we are spraying, the area needs to be empty of people and pets. We will
-tell you on the day how long before you can use the space again.
+While we are spraying, the area needs to be empty of people and pets.
+Afterwards the space needs time before you use it again. That is anywhere from
+about an hour to a full day depending on which foam the job calls for, and the
+crew will tell you which applies to yours before they leave.
 
 Anything you are unsure about, ring {{custom_values.business_phone}}.
 
@@ -635,9 +639,10 @@ Anything you are unsure about, ring {{custom_values.business_phone}}.
 own list, and it is worth getting from the crew rather than the office, because
 the crew know what actually goes wrong on arrival.
 
-> **Needs Glenn:** confirm the re-occupancy guidance. This message currently
-> says the crew will advise on the day rather than stating a figure, which is
-> the safe version until Glenn confirms what the product data sheets say.
+Re-occupancy is product-dependent, confirmed by the client: as little as an
+hour for some foams, up to 24 hours for others. The message gives the range and
+leaves the specific figure to the crew on the day, which is the only accurate
+way to state it without knowing the product before the job is specified.
 
 ### JOB-03 · SMS · Day before start · TRANS · CORE
 
@@ -695,7 +700,6 @@ Payment details are on the invoice. Any questions about it, ring
 {{custom_values.business_phone}}.
 
 {{custom_values.business_name}}
-ABN {{custom_values.abn}}
 ```
 
 ### PAY-02 · SMS · Invoice day 7 · TRANS · CORE
@@ -1058,7 +1062,6 @@ Progress claim {{opportunity.invoice_number}} is attached for works at
 Supporting photos and any sign-offs are included.
 
 {{custom_values.business_name}}
-ABN {{custom_values.abn}}
 ```
 
 > **Needs Glenn:** payment terms for commercial work, and whether progress
