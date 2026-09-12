@@ -3,7 +3,7 @@ import type { SectionIntro } from '@/data/content'
 /**
  * Phone consult booking page.
  *
- * One calendar, owned by GoHighLevel. The assistant books into the same one, so
+ * One calendar, owned by Systemations. The assistant books into the same one, so
  * nothing here should ever describe availability: the calendar is the only
  * thing allowed to state what is free.
  *

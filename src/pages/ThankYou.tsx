@@ -12,7 +12,7 @@ import { trackConversion } from '@/lib/analytics'
  * A distinct URL per outcome is what makes conversion tracking reliable: the
  * ad platforms count a landing on this page rather than a click on a button,
  * so a submission that failed on the way to the CRM is never counted as a lead.
- * It also gives GHL somewhere to send people after a booking.
+ * It also gives Systemations somewhere to send people after a booking.
  *
  * Marked noindex: these pages are meaningless in search results and would
  * otherwise report phantom conversions from organic traffic landing directly.

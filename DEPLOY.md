@@ -1,6 +1,6 @@
 # Deploying / transferring this site
 
-The built site is static files. Everything it needs to talk to GoHighLevel is
+The built site is static files. Everything it needs to talk to Systemations is
 configured **after** deployment, by editing one block in `index.html`. There is
 no build step to re-run and no environment variables to set on the host.
 
@@ -20,8 +20,8 @@ Open `index.html` on the server and find the block near the top marked
 
 | Key | Where it comes from |
 | --- | --- |
-| `leadWebhook` | GHL → Automation → Workflows → Add Trigger → **Inbound Webhook**. Copy the URL. |
-| `bookingCalendarUrl` | GHL → Calendars → your phone-consult calendar → Share → **Embed**. Copy the `src` URL out of the embed code. |
+| `leadWebhook` | Systemations → Automation → Workflows → Add Trigger → **Inbound Webhook**. Copy the URL. |
+| `bookingCalendarUrl` | Systemations → Calendars → your phone-consult calendar → Share → **Embed**. Copy the `src` URL out of the embed code. |
 | `ga4Id` | GA4 measurement ID, `G-XXXXXXX`. |
 | `googleAdsId` | `AW-XXXXXXXXX`. |
 | `googleAdsQuoteLabel` | Conversion, as `AW-XXXXXXXXX/AbC-labelhere`. |
@@ -71,6 +71,6 @@ gitignored and is never part of a deployment.
 ## What is safe to expose
 
 Everything in the config block ships to the browser and is public. That is
-correct for measurement IDs and for a GHL inbound webhook, which is an
+correct for measurement IDs and for a Systemations inbound webhook, which is an
 unauthenticated write-only endpoint. **Never put an API key or private token
 there.**

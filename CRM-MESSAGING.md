@@ -1,7 +1,7 @@
 # CRM Messaging Kit
 
 Every SMS and email the pipelines send, plus the fields and custom values they
-depend on. Built for GoHighLevel.
+depend on. Built for Systemations.
 
 **This is written as a template.** Nothing client-specific is hardcoded in the
 message bodies. A new client is a Custom Values swap (§2) plus rewriting the
@@ -25,9 +25,9 @@ the job preparation notes and two objection-handling follow-ups.
 
 ### A warning about tokens
 
-GoHighLevel has changed token names between releases, particularly the
+The platform has changed token names between releases, particularly the
 appointment ones. Treat the token names below as **what to look for in the
-dropdown**, not as guaranteed strings. Confirm each one against your GHL version
+dropdown**, not as guaranteed strings. Confirm each one against your platform version
 and send a test to yourself before go-live. A token that does not resolve sends
 the raw `{{...}}` text to the customer.
 
@@ -47,10 +47,10 @@ different client.
 | `business_phone_e164` | +61428263626 | For `tel:` links |
 | `business_email` | info@sprayitsolutions.com.au | Reply-to. Taken from their live site footer. |
 | `website_url` | *(staging until sign-off)* | |
-| `booking_url` | *(GHL calendar link)* | The phone consult calendar |
+| `booking_url` | *(Systemations calendar link)* | The phone consult calendar |
 | `quote_form_url` | `/contact` | |
 | `privacy_url` | `/privacy` | Required in marketing email |
-| `review_url` | *(held by the agency)* | Google review short link, set in GHL |
+| `review_url` | *(held by the agency)* | Google review short link, set in Systemations |
 | `owner_first_name` | Glenn | Signs the personal messages |
 | `service_area` | Australia-wide | |
 | `trade_noun` | spray foam insulation | "your `{{trade_noun}}` enquiry" |
@@ -161,12 +161,12 @@ For another client it becomes whatever their equivalent choice is.
 
 | Asset | Used by | Status |
 | --- | --- | --- |
-| Booking calendar | BOOK, APPT | Needs the GHL calendar built |
-| Quote template | QUOTE | Glenn's existing template, or built in GHL |
+| Booking calendar | BOOK, APPT | Needs the Systemations calendar built |
+| Quote template | QUOTE | Glenn's existing template, or built in Systemations |
 | Review short link | REV | Needs the Google review link |
 | Job preparation PDF | JOB-02 | Needs writing, see note in that message |
 | Completion certificate or warranty | JOB-05 | Needs Glenn's existing document |
-| Unsubscribe link | All marketing email | GHL provides `{{unsubscribe_link}}` |
+| Unsubscribe link | All marketing email | The platform provides `{{unsubscribe_link}}` |
 
 ---
 
@@ -187,13 +187,13 @@ Three rules that apply to every message:
 
 1. **Every SMS identifies the sender.** `{{custom_values.sms_signoff}}` appears
    in every one. An unidentified SMS is the most common Spam Act failure.
-2. **Every marketing SMS carries an opt-out.** "Reply STOP to opt out." GHL
+2. **Every marketing SMS carries an opt-out.** "Reply STOP to opt out." Systemations
    handles STOP natively and sets DND, but the wording still has to be there.
 3. **Outbound send window: 8am to 8pm, Monday to Saturday, local time.** The Do
    Not Call industry standard governs telemarketing *calls*, not SMS to someone
    who enquired. We apply the same window to outbound messaging as policy
    anyway, because a 6am quote chase costs more goodwill than it earns. Use
-   GHL's workflow **Wait until a time window** step, not a hope that nobody
+   the platform’s workflow **Wait until a time window** step, not a hope that nobody
    submits at midnight.
 
 ---

@@ -15,7 +15,7 @@ const ICONS = { clock: Clock, phone: PhoneCall, shield: ShieldCheck }
  * modal cannot provide, and a single URL is also what ad platforms and
  * conversion tracking key off.
  *
- * The calendar itself is owned by GoHighLevel and only embedded here. The
+ * The calendar itself is owned by Systemations and only embedded here. The
  * assistant books into that same calendar through the CRM, so availability can
  * never disagree between what a visitor sees and what the AI offers. If the
  * site ever grows its own scheduler, the two will double book.

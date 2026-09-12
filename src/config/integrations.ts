@@ -15,7 +15,7 @@
  *   2. import.meta.env.VITE_*  (local development via .env.local)
  *
  * Everything here ships to the browser and is public. That is correct for
- * measurement IDs and for a GoHighLevel inbound webhook, which is an
+ * measurement IDs and for a Systemations inbound webhook, which is an
  * unauthenticated write-only endpoint. Never put an API key here.
  */
 
@@ -75,16 +75,16 @@ const runtime = (): RuntimeConfig =>
   (typeof window !== 'undefined' && window.SPRAYIT_CONFIG) || {}
 
 export const integrations = {
-  /** GHL inbound webhook that receives quote submissions. */
+  /** Systemations inbound webhook that receives quote submissions. */
   get leadWebhook() {
-    return read(runtime().leadWebhook, env.VITE_GHL_LEAD_WEBHOOK)
+    return read(runtime().leadWebhook, env.VITE_Systemations_LEAD_WEBHOOK)
   },
   /**
-   * Full embed URL of the GHL phone-consult calendar. The assistant books into
+   * Full embed URL of the Systemations phone-consult calendar. The assistant books into
    * this same calendar, so the site must never schedule independently of it.
    */
   get bookingCalendarUrl() {
-    return read(runtime().bookingCalendarUrl, env.VITE_GHL_BOOKING_URL)
+    return read(runtime().bookingCalendarUrl, env.VITE_Systemations_BOOKING_URL)
   },
   get ga4Id() {
     return read(runtime().ga4Id, env.VITE_GA4_ID)

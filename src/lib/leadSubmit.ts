@@ -2,15 +2,15 @@ import { integrations, isConfigured } from '@/config/integrations'
 import { attributionFields } from '@/lib/attribution'
 
 /**
- * Delivery of a quote enquiry to GoHighLevel.
+ * Delivery of a quote enquiry to Systemations.
  *
- * Posts JSON to a GHL inbound webhook. The webhook is an unauthenticated,
+ * Posts JSON to a Systemations inbound webhook. The webhook is an unauthenticated,
  * write-only endpoint, which is why it is safe to call straight from the
  * browser with no backend of our own.
  *
- * On CORS: GHL's hook endpoints answer the preflight for JSON POSTs, so this
+ * On CORS: Systemations's hook endpoints answer the preflight for JSON POSTs, so this
  * works from the browser. If that ever changes, the failure is reported to the
- * visitor rather than swallowed, and the fix is to point `VITE_GHL_LEAD_WEBHOOK`
+ * visitor rather than swallowed, and the fix is to point `VITE_Systemations_LEAD_WEBHOOK`
  * at a one-line serverless proxy. What this deliberately does not do is fall
  * back to a `no-cors` request: that always resolves opaque, so it would report
  * success for leads that never arrived.
@@ -19,7 +19,8 @@ import { attributionFields } from '@/lib/attribution'
 const TIMEOUT_MS = 12_000
 
 export interface LeadPayload {
-  name: string
+  firstName: string
+  lastName: string
   phone: string
   email: string
   postcode: string
@@ -62,12 +63,16 @@ export async function submitLead(lead: LeadPayload): Promise<SubmitResult> {
   }
 
   // Destructured rather than spread: the camelCase originals would otherwise
-  // ride along beside their snake_case equivalents and give GHL two fields
+  // ride along beside their snake_case equivalents and give Systemations two fields
   // meaning the same thing to map.
   const { marketingOptIn, consentText, ...rest } = lead
 
   const body = {
     ...rest,
+    // Systemations keys contacts on first and last name separately, and every
+    // message in the kit greets people by first name. Sending the joined name
+    // as well means an import that expects one field still finds one.
+    name: `${lead.firstName} ${lead.lastName}`.trim(),
     phone: toE164AU(lead.phone),
     phone_raw: lead.phone,
     areas: lead.areas.join(', '),

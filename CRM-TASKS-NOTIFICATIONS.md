@@ -18,7 +18,7 @@ rather than a rebuild.
 
 Reports go in a digest. Only actions interrupt.
 
-This is the rule that decides everything below, and it is the one most GHL
+This is the rule that decides everything below, and it is the one most CRM
 builds get wrong. A system that pings on every stage change trains everyone to
 ignore it inside a fortnight, and then the one alert that actually mattered gets
 ignored too. There are eleven real-time alerts in this document. That is
@@ -28,7 +28,7 @@ deliberate, and adding a twelfth should require an argument.
 
 ## 2. Roles
 
-Set up as GHL users, then referenced by role throughout so another client is a
+Set up as users on the platform, then referenced by role throughout so another client is a
 reassignment rather than a rewrite.
 
 | Role | Who at Spray It | Owns |
@@ -42,7 +42,7 @@ reassignment rather than a rewrite.
 > people or both him. If they are both him, the escalation ladder in §5 needs a
 > second name or it escalates to itself.
 
-**Round robin.** If more than one person can take a new lead, use GHL's round
+**Round robin.** If more than one person can take a new lead, use the platform’s round
 robin assignment on the New Enquiry trigger. Unassigned leads are the single
 most common way a lead dies: everybody assumes somebody.
 
@@ -80,7 +80,7 @@ Source: {{contact.utm_source}}
 
 Someone standing on a roof can read that and decide whether to climb down.
 
-**11. Automation failure.** GHL will not tell you loudly when a workflow breaks.
+**11. Automation failure.** The platform will not tell you loudly when a workflow breaks.
 Build this deliberately: an error branch on the lead webhook, and a weekly check
 that the count of website submissions matches the count of opportunities
 created. The website reports a failed submission to the visitor rather than
@@ -107,50 +107,50 @@ until closed. Anything with a deadline is a task, not an alert.
 ### Naming convention
 
 ```
-[VERB] [WHO] — [WHAT]
+[VERB] [WHO]: [WHAT]
 ```
 
-For example `CALL Sarah Mitchell — new enquiry, roof + underfloor`. Verb first,
+For example `CALL Sarah Mitchell: new enquiry, roof + underfloor`. Verb first,
 so a list of twenty tasks is scannable without opening any of them.
 
 ### Task schedule
 
 | Stage | Task | Assigned | Due |
 | --- | --- | --- | --- |
-| New Enquiry | `CALL {{contact.first_name}} — new enquiry` | Assigned user | 1 hour |
-| Contacting | `CALL {{contact.first_name}} — attempt 2` | Assigned user | Day 1 |
-| Contacting | `CALL {{contact.first_name}} — attempt 3` | Assigned user | Day 2 |
-| Contacting | `CALL {{contact.first_name}} — attempt 4` | Assigned user | Day 4 |
-| Contacting | `CALL {{contact.first_name}} — final attempt` | Assigned user | Day 7 |
-| Qualified | `BOOK {{contact.first_name}} — assessment` | OFFICE | 3 days |
-| Assessment Booked | `ATTEND {{contact.first_name}} — assessment` | ESTIMATOR | On the date |
-| Quoting | `QUOTE {{contact.first_name}} — {{opportunity.site_address}}` | ESTIMATOR | **2 days** |
-| Quote Sent | `CALL {{contact.first_name}} — quote follow up` | Assigned user | Day 2 |
-| Follow-up | `DECIDE {{contact.first_name}} — close or nurture` | Assigned user | Day 21 |
-| Won | `INVOICE {{contact.first_name}} — deposit` | OFFICE | 1 day |
-| Won | `SCHEDULE {{contact.first_name}} — allocate crew and date` | OFFICE | 3 days |
-| Scheduled | `CONFIRM {{contact.first_name}} — day before` | OFFICE | Day before start |
+| New Enquiry | `CALL {{contact.first_name}}: new enquiry` | Assigned user | 1 hour |
+| Contacting | `CALL {{contact.first_name}}: attempt 2` | Assigned user | Day 1 |
+| Contacting | `CALL {{contact.first_name}}: attempt 3` | Assigned user | Day 2 |
+| Contacting | `CALL {{contact.first_name}}: attempt 4` | Assigned user | Day 4 |
+| Contacting | `CALL {{contact.first_name}}: final attempt` | Assigned user | Day 7 |
+| Qualified | `BOOK {{contact.first_name}}: assessment` | OFFICE | 3 days |
+| Assessment Booked | `ATTEND {{contact.first_name}}: assessment` | ESTIMATOR | On the date |
+| Quoting | `QUOTE {{contact.first_name}}: {{opportunity.site_address}}` | ESTIMATOR | **2 days** |
+| Quote Sent | `CALL {{contact.first_name}}: quote follow up` | Assigned user | Day 2 |
+| Follow-up | `DECIDE {{contact.first_name}}: close or nurture` | Assigned user | Day 21 |
+| Won | `INVOICE {{contact.first_name}}: deposit` | OFFICE | 1 day |
+| Won | `SCHEDULE {{contact.first_name}}: allocate crew and date` | OFFICE | 3 days |
+| Scheduled | `CONFIRM {{contact.first_name}}: day before` | OFFICE | Day before start |
 | In Progress | `PHOTOS {{opportunity.site_address}}` | CREW_LEAD | On completion |
-| In Progress | `VARIATIONS {{contact.first_name}} — record any extras` | CREW_LEAD | On completion |
-| Invoiced | `INVOICE {{contact.first_name}} — final` | OFFICE | 1 day |
-| Invoiced | `CHASE {{contact.first_name}} — payment overdue` | OFFICE | Day 14 |
-| Paid & Closed | `REVIEW {{contact.first_name}} — did they leave one?` | OFFICE | Day 7 |
+| In Progress | `VARIATIONS {{contact.first_name}}: record any extras` | CREW_LEAD | On completion |
+| Invoiced | `INVOICE {{contact.first_name}}: final` | OFFICE | 1 day |
+| Invoiced | `CHASE {{contact.first_name}}: payment overdue` | OFFICE | Day 14 |
+| Paid & Closed | `REVIEW {{contact.first_name}}: did they leave one?` | OFFICE | Day 7 |
 
 ### Commercial additions
 
 | Stage | Task | Assigned | Due |
 | --- | --- | --- | --- |
-| Qualified / Scoping | `SCOPE {{contact.first_name}} — confirm decision maker and programme` | OWNER | 5 days |
-| Specifying | `SPEC {{opportunity.site_address}} — product, access, staging, WHS` | OWNER | 5 days |
-| Proposal Submitted | `CALL {{contact.first_name}} — confirm receipt` | OWNER | 2 days |
-| Commercial Review | `CHASE {{contact.first_name}} — decision date` | OWNER | Day 7, day 21 |
-| Awaiting PO | `CHASE {{contact.first_name}} — PO` | OWNER | Weekly |
-| Mobilising | `INDUCT crew — {{opportunity.site_address}}` | CREW_LEAD | Before start |
-| Mobilising | `SWMS {{opportunity.site_address}} — issue and confirm receipt` | OWNER | Before start |
+| Qualified / Scoping | `SCOPE {{contact.first_name}}: confirm decision maker and programme` | OWNER | 5 days |
+| Specifying | `SPEC {{opportunity.site_address}}: product, access, staging, WHS` | OWNER | 5 days |
+| Proposal Submitted | `CALL {{contact.first_name}}: confirm receipt` | OWNER | 2 days |
+| Commercial Review | `CHASE {{contact.first_name}}: decision date` | OWNER | Day 7, day 21 |
+| Awaiting PO | `CHASE {{contact.first_name}}: PO` | OWNER | Weekly |
+| Mobilising | `INDUCT crew: {{opportunity.site_address}}` | CREW_LEAD | Before start |
+| Mobilising | `SWMS {{opportunity.site_address}}: issue and confirm receipt` | OWNER | Before start |
 
 ### Two rules
 
-1. **Every task has an owner and a due date.** GHL will let you create a task
+1. **Every task has an owner and a due date.** The platform will let you create a task
    with neither. A task with no due date is a note.
 2. **Completing the task does not move the card.** Moving the card is a separate,
    deliberate act. Otherwise the board reflects who is tidy about tasks rather
@@ -265,7 +265,7 @@ payment.
 | Outside those | None | Held | Held to next window |
 | Sunday, public holidays | None | Held | Held |
 
-Held customer messages queue and release at the next window. Use GHL's **Wait
+Held customer messages queue and release at the next window. Use the platform’s **Wait
 until a time window** step; do not rely on nobody enquiring at midnight.
 
 On the legal position: the Do Not Call industry standard sets permitted hours

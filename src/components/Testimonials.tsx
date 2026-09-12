@@ -1,13 +1,13 @@
 import { useCallback, useEffect, useState } from 'react'
 import useEmblaCarousel from 'embla-carousel-react'
-import { ArrowLeft, ArrowRight, Quote } from 'lucide-react'
+import { ArrowLeft, ArrowRight, Quote, ArrowUpRight } from 'lucide-react'
 import { useCarouselWheel } from '@/hooks/useCarouselWheel'
 import { testimonials } from '@/data/testimonials'
 import { testimonialsFootnote, testimonialsIntro } from '@/data/content'
 import { testimonialVideo, workCopy } from '@/data/videos'
+import { site } from '@/data/site'
 import SectionHeading from '@/components/ui/SectionHeading'
 import VideoEmbed from '@/components/ui/VideoEmbed'
-import Stars from '@/components/ui/Stars'
 
 /**
  * Testimonial carousel.
@@ -173,11 +173,12 @@ export default function Testimonials() {
                     }`}
                   >
                     <div data-tst-inner className="will-change-transform">
-                      <div className="flex items-center justify-between gap-4">
-                        <Stars
-                          label={`Rated ${item.rating} out of 5 by ${item.name}`}
-                          className={isActive ? '' : 'opacity-90'}
-                        />
+                      {/* No star row here. These customers wrote to Glenn, they
+                          did not award a score, and five stars printed beside a
+                          real person's name says they did. The verified rating
+                          belongs to the business and is one click away on the
+                          Google link below. */}
+                      <div className="flex items-center justify-end gap-4">
                         <Quote
                           className={`size-7 ${isActive ? 'text-accent' : 'text-ink/20'}`}
                           aria-hidden="true"
@@ -253,6 +254,20 @@ export default function Testimonials() {
           Testimonial {selected + 1} of {testimonials.length}: {testimonials[selected]?.name},{' '}
           {testimonials[selected]?.suburb}.
         </p>
+
+        {site.reviewsUrl && (
+          <p className="shell mt-6">
+            <a
+              href={site.reviewsUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="link-wipe font-semibold text-ink"
+            >
+              Read all of our Google reviews
+              <ArrowUpRight className="size-4" aria-hidden="true" />
+            </a>
+          </p>
+        )}
 
         {/* --- Customer on camera ---
             There is exactly one testimonial video, so it is given its own

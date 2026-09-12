@@ -28,7 +28,7 @@ const AU_PHONE_RE = /^(\+?61|0)[2-478](?:[ -]?\d){8}$/
 /**
  * Quote enquiry form.
  *
- * Posts straight to a GoHighLevel inbound webhook, so there is no backend of
+ * Posts straight to a Systemations inbound webhook, so there is no backend of
  * our own to run. Three things here are load-bearing beyond the obvious:
  *
  *  - Consent is captured as evidence, not as a boolean. The marketing opt-in is
@@ -74,7 +74,8 @@ export default function QuoteForm() {
     }
 
     const next: Errors = {}
-    if (!get('name')) next.name = 'Please tell us your name.'
+    if (!get('firstName')) next.firstName = 'Please tell us your first name.'
+    if (!get('lastName')) next.lastName = 'Please tell us your last name.'
     if (!get('phone')) next.phone = 'We need a number to call you back on.'
     else if (!AU_PHONE_RE.test(get('phone')))
       next.phone = 'That does not look like an Australian number.'
@@ -96,7 +97,8 @@ export default function QuoteForm() {
 
     setStatus('sending')
     const result = await submitLead({
-      name: get('name'),
+      firstName: get('firstName'),
+      lastName: get('lastName'),
       phone: get('phone'),
       email: get('email'),
       postcode: get('postcode'),
@@ -152,21 +154,46 @@ export default function QuoteForm() {
         />
       </div>
 
+      {/*
+        First and last name are separate fields, not one "your name" box. The
+        CRM matches and addresses people on the first name alone, and a single
+        field gives it whatever the visitor typed: sometimes a full name,
+        sometimes just "Dave", sometimes a business. Two fields make the split
+        the visitor's decision rather than a guess made by a parser afterwards.
+      */}
       <div className="grid gap-6 sm:grid-cols-2">
         <div>
-          <label htmlFor="name" className={LABEL}>
-            Your name
+          <label htmlFor="firstName" className={LABEL}>
+            First name
           </label>
           <input
-            id="name"
-            name="name"
+            id="firstName"
+            name="firstName"
             type="text"
-            autoComplete="name"
+            autoComplete="given-name"
             className={`${FIELD} mt-2`}
-            {...aria('name')}
+            {...aria('firstName')}
           />
-          {err('name')}
+          {err('firstName')}
         </div>
+
+        <div>
+          <label htmlFor="lastName" className={LABEL}>
+            Last name
+          </label>
+          <input
+            id="lastName"
+            name="lastName"
+            type="text"
+            autoComplete="family-name"
+            className={`${FIELD} mt-2`}
+            {...aria('lastName')}
+          />
+          {err('lastName')}
+        </div>
+      </div>
+
+      <div className="grid gap-6 sm:grid-cols-2">
 
         <div>
           <label htmlFor="phone" className={LABEL}>

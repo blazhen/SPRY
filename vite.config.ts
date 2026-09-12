@@ -61,15 +61,18 @@ const LEGACY_REDIRECTS: Array<[string, string]> = [
   ['/photo-gallery', '/gallery'],
   ['/video-gallery', '/gallery'],
 
-  // Blog and case studies
-  ['/sprayit-solutions-transformed-sunrice-roof', '/commercial'],
-  ['/spray-foam-insulation-why-choose', '/spray-foam'],
-  ['/spray-foam-acoustic-insulation-icynene-noise-reduction', '/spray-foam'],
-  ['/energy-efficiency-standards-vic-rental-homes', '/residential'],
+  // Blog and case studies. All four articles were migrated, so these point at
+  // the articles themselves rather than at whichever page was closest.
+  ['/sprayit-solutions-transformed-sunrice-roof', '/blog/sprayit-solutions-transformed-sunrice-roof'],
+  ['/spray-foam-insulation-why-choose', '/blog/spray-foam-insulation-why-choose'],
+  [
+    '/spray-foam-acoustic-insulation-icynene-noise-reduction',
+    '/blog/spray-foam-acoustic-insulation-icynene-noise-reduction',
+  ],
+  ['/energy-efficiency-standards-vic-rental-homes', '/blog/energy-efficiency-standards-vic-rental-homes'],
   ['/blog-2/open-cell-spray-foam-facts', '/spray-foam'],
-  ['/blog-2', '/'],
-  ['/blog', '/'],
-  ['/category/*', '/'],
+  ['/blog-2', '/blog'],
+  ['/category/*', '/blog'],
 ]
 function staticHostFallbacks(isLive: boolean) {
   return {

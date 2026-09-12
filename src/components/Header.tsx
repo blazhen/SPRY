@@ -20,6 +20,9 @@ export default function Header() {
   const [hidden, setHidden] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
   const { pathname } = useLocation()
+  /* The quote page already is the quote form, so the header CTA there would
+     link to the page you are reading. It offers the phone instead. */
+  const onQuotePage = pathname === site.cta.primary.href
   const lenis = useLenis()
   const reduced = useReducedMotion()
 
@@ -178,12 +181,12 @@ export default function Header() {
             </a>
 
             <MagneticButton
-              href={site.cta.primary.href}
+              href={onQuotePage ? site.phone.tel : site.cta.primary.href}
               variant="primary"
               className="hidden !px-5 !py-3 text-small sm:inline-flex"
               strength={0.22}
             >
-              Get a Free Quote
+              {onQuotePage ? `Call ${site.phone.display}` : 'Get a Free Quote'}
             </MagneticButton>
 
             <button

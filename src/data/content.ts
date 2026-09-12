@@ -27,7 +27,7 @@ export const hero = {
     'Three custom-built vehicle-based spray rigs plus two non-vehicle reactors. Open- and closed-cell polyurethane foams, polyurea and aliphatic coatings. Any size, any site.',
   trust: {
     rating: 5,
-    ratingLabel: 'Rated 5 stars by homeowners',
+    ratingLabel: 'Rated 5.0 on Google by our customers',
     stat: 'Air leakage: up to 40% of energy cost',
     provenance: 'Family-owned · Australia-wide',
   },
@@ -401,9 +401,11 @@ export const whatIsSprayFoam = {
   },
   cta: { label: 'Learn more about spray foam', href: '/spray-foam' },
   image: {
-    id: 'photo-1621905251189-08b45d6a269e',
-    alt: 'Insulation applicator in a hard hat and gloves working carefully on a wall cavity',
-    clientSwap: true,
+    // The client's own rig, from their existing site. Replaces the stock
+    // applicator photograph that used to sit under a caption about the work
+    // not being subcontracted, which was the wrong image for that sentence.
+    id: '/site/truck-rig.webp',
+    alt: 'A Spray It Solutions truck loaded with its spray rig, parked in the workshop',
   } satisfies ImageAsset,
   imageSecondary: {
     id: 'photo-1626885930974-4b69aa21bbf9',
@@ -480,7 +482,7 @@ export const testimonialsIntro: SectionIntro = {
   eyebrow: 'Customer stories',
   headingLines: ['Warmer houses,', 'smaller bills.'],
   accentWord: 'smaller',
-  lede: 'Unedited feedback from homeowners after their install.',
+  lede: 'Feedback from homeowners after their install, in their own words.',
 }
 
 /**

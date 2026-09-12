@@ -1,9 +1,9 @@
 # CRM Pipelines: Spray It Solutions
 
-Pipeline and stage design for the GoHighLevel build, written to match what the
+Pipeline and stage design for the Systemations build, written to match what the
 website actually captures and sends.
 
-This is the reference for three audiences: whoever configures GHL, whoever runs
+This is the reference for three audiences: whoever configures Systemations, whoever runs
 the board day to day, and the AI agent that will be allowed to move cards on it.
 
 ---
@@ -36,7 +36,7 @@ design together.
 > **Mark the opportunity Won when the customer accepts, not when the job is
 > finished or paid.**
 
-GoHighLevel tracks **status** (Open, Won, Lost, Abandoned) separately from
+Systemations tracks **status** (Open, Won, Lost, Abandoned) separately from
 **stage**. A card can be status `Won` and still sit in the "In Progress" stage.
 That is what keeps two different questions separable on one board:
 
@@ -269,7 +269,7 @@ Moving preserves the attribution and the consent record.
 
 ---
 
-## 8. Custom fields to create in GHL
+## 8. Custom fields to create in Systemations
 
 These map one to one onto what the site already posts, so no transformation is
 needed. Field names are the JSON keys from the lead webhook.
@@ -286,7 +286,7 @@ needed. Field names are the JSON keys from the lead webhook.
 | `message` | Long text | |
 
 `stage` here is the **building's** stage (retrofit, under construction, still
-planning). It is not the pipeline stage. Rename it to `buildingStage` in GHL, or
+planning). It is not the pipeline stage. Rename it to `buildingStage` in Systemations, or
 the two will be confused within a week. This matters more now that the boards
 are long.
 

@@ -9,11 +9,18 @@
 
 /** Build a single Unsplash CDN URL at a given width. */
 export const unsplash = (id: string, w = 1600, q = 72): string =>
-  `https://images.unsplash.com/${id}?auto=format&fit=crop&w=${w}&q=${q}`
+  // A leading slash means a real photograph in public/, not a stock ID. Client
+  // work replacing stock is the whole direction of travel here, so the helper
+  // has to accept both rather than forcing a second code path at every call.
+  id.startsWith('/')
+    ? id
+    : `https://images.unsplash.com/${id}?auto=format&fit=crop&w=${w}&q=${q}`
 
 /** Responsive srcSet across the widths we actually render at. */
 export const unsplashSrcSet = (id: string, widths: number[] = [640, 960, 1280, 1920]): string =>
-  widths.map((w) => `${unsplash(id, w)} ${w}w`).join(', ')
+  // One local file cannot be served at four widths, so it gets no srcSet at
+  // all rather than the same URL repeated with four different descriptors.
+  id.startsWith('/') ? '' : widths.map((w) => `${unsplash(id, w)} ${w}w`).join(', ')
 
 /** A photograph plus the alt text that must always travel with it. */
 export interface ImageAsset {

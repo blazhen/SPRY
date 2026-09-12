@@ -50,6 +50,27 @@ export const site = {
   serviceArea: 'Australia-wide',
 
   /**
+   * Link to the full Google review listing.
+   *
+   * The testimonials on the site are chosen, not fed live, so that a single
+   * poor review cannot appear unannounced on the homepage. That is a fair thing
+   * to do only if the complete set is one click away, which is what this is.
+   *
+   * Empty means the link does not render at all. Never ship a dead one.
+   *
+   * The id in the middle is the Google listing for SprayIT Solutions (VIC)
+   * Pty Ltd. The trailing !9m1!1b1 is what opens the Reviews tab rather than
+   * the overview, which is the whole point of the link: a reader who clicks
+   * Read all of our reviews should land on the reviews, not on a map.
+   *
+   * Everything else Google puts in that address is session state, including
+   * map coordinates, a zoom level and an account id. All of it was tested off
+   * and this is the shortest form that still lands on the reviews tab.
+   */
+  reviewsUrl:
+    'https://www.google.com/maps/place/SprayIT+Solutions+(VIC)+Pty+Ltd/data=!4m4!3m3!1s0x6ad66d34e29e3fbb:0x2e675ad000ebab03!9m1!1b1',
+
+  /**
    * Trading hours.
    *
    * REVIEW WITH GLENN before launch. These are plausible trade hours, not
@@ -91,7 +112,8 @@ export const navItems: NavItem[] = [
   { index: '03', label: 'Residential', href: '/residential' },
   { index: '04', label: 'Commercial', href: '/commercial' },
   { index: '05', label: 'Gallery', href: '/gallery' },
-  { index: '06', label: 'Contact', href: '/contact' },
+  { index: '06', label: 'Blog', href: '/blog' },
+  { index: '07', label: 'Contact', href: '/contact' },
 ]
 
 /**

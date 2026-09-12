@@ -21,6 +21,8 @@ import Book from '@/pages/Book'
 import ThankYou from '@/pages/ThankYou'
 import Privacy from '@/pages/Privacy'
 import Gallery from '@/pages/Gallery'
+import Blog from '@/pages/Blog'
+import BlogPost from '@/pages/BlogPost'
 import NotFound from '@/pages/NotFound'
 import { HeroesIndexPage, HeroPreviewPage } from '@/pages/HeroPreview'
 
@@ -135,6 +137,8 @@ export default function App() {
               <Route path="/contact" element={<Contact />} />
               <Route path="/book" element={<Book />} />
               <Route path="/gallery" element={<Gallery />} />
+          <Route path="/blog" element={<Blog />} />
+          <Route path="/blog/:slug" element={<BlogPost />} />
           <Route path="/privacy" element={<Privacy />} />
 
               {/* Confirmation pages. Distinct URLs so a conversion is only

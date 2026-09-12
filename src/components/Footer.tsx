@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import {
   ArrowUpRight,
   Facebook,
@@ -22,6 +22,7 @@ const socialIcons: Record<SocialLink['icon'], LucideIcon> = {
 }
 
 export default function Footer() {
+  const { pathname } = useLocation()
   const year = new Date().getFullYear()
 
   return (
@@ -116,16 +117,19 @@ export default function Footer() {
               ))}
             </div>
 
-            {/* Quote nudge */}
-            <div className="mt-12 flex flex-wrap items-center justify-between gap-6 rounded-lg border border-line/10 bg-ink-800 p-7">
-              <p className="max-w-md font-display text-h4 font-semibold text-bone">
-                {site.tagline}
-              </p>
-              <Link to={site.cta.primary.href} className="btn btn-primary">
-                {site.cta.primary.label}
-                <ArrowUpRight className="size-4" aria-hidden="true" />
-              </Link>
-            </div>
+            {/* Quote nudge. Hidden on the quote page itself, where it would be
+                inviting someone to go to the page they are already on. */}
+            {pathname !== site.cta.primary.href && (
+              <div className="mt-12 flex flex-wrap items-center justify-between gap-6 rounded-lg border border-line/10 bg-ink-800 p-7">
+                <p className="max-w-md font-display text-h4 font-semibold text-bone">
+                  {site.tagline}
+                </p>
+                <Link to={site.cta.primary.href} className="btn btn-primary">
+                  {site.cta.primary.label}
+                  <ArrowUpRight className="size-4" aria-hidden="true" />
+                </Link>
+              </div>
+            )}
           </nav>
         </div>
 
