@@ -44,8 +44,9 @@
   <div class="wrap">
     <div class="nav__row" id="navRow">
       <a href="#does">What it does</a>
-      <a href="#persona">Bot instructions</a>
-      <a href="#enquiry">Taking an enquiry</a>
+      <a href="#persona">Instructions</a>
+      <a href="#window">Chat window</a>
+      <a href="#enquiry">The enquiry</a>
       <a href="#fields">Field updates</a>
       <a href="#docs">Five documents</a>
       <a href="#never">Never say</a>
@@ -224,10 +225,98 @@ Address: Factory 4, 114 Colemans Road, Carrum Downs, VIC 3201</div></div>
   </div>
 </section>
 
+<!-- ============================================================= CHAT WINDOW -->
+<section class="sec" id="window">
+  <div class="wrap">
+    <div class="sec-head"><span class="sec-n">03</span><h2>The chat window</h2></div>
+    <p class="sec-lede">What a visitor reads before the agent says anything. The supplied defaults all describe a person answering, which the agent itself is told never to claim, so they have to go.</p>
+
+    <div class="acts">
+      <div class="act">
+        <div class="act__head">
+          <span class="act__pair"><b>Setting</b><span class="k">Chat window title</span></span>
+          <button type="button" class="btn" data-copy="w1" data-plain="1">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+            Copy
+          </button>
+        </div>
+        <div class="act__body"><span class="act__lbl">Put this in</span><div class="pre" id="w1-src">Ask us about insulation</div><span class="act__lbl eg-if">Replaces the default</span><ul class="egs"><li>Have a question?</li></ul></div>
+      </div>
+      <div class="act">
+        <div class="act__head">
+          <span class="act__pair"><b>Setting</b><span class="k">Intro message</span></span>
+          <button type="button" class="btn" data-copy="w2" data-plain="1">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+            Copy
+          </button>
+        </div>
+        <div class="act__body"><span class="act__lbl">Put this in</span><div class="pre" id="w2-src">I am the Spray It Solutions website assistant. Ask me anything about spray foam insulation, or tell me what needs doing and I will take the details for a quote.</div><span class="act__lbl eg-if">Replaces the default</span><ul class="egs"><li>Enter your question below and a representative will get right back to you.</li></ul></div>
+      </div>
+      <div class="act">
+        <div class="act__head">
+          <span class="act__pair"><b>Setting</b><span class="k">Button text</span></span>
+          <button type="button" class="btn" data-copy="w3" data-plain="1">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+            Copy
+          </button>
+        </div>
+        <div class="act__body"><span class="act__lbl">Put this in</span><div class="pre" id="w3-src">Start the chat</div><span class="act__lbl eg-if">Replaces the default</span><ul class="egs"><li>Send</li></ul></div>
+      </div>
+    </div>
+
+    <h3 style="margin-top:2rem;font-size:1.2rem">The details it asks for up front</h3>
+    <p class="sec-lede">The widget collects contact details before the first message, and those are exactly the three the field updates cannot set, so this gate is doing useful work rather than getting in the way.</p>
+    <div class="tablewrap">
+      <table>
+        <thead>
+          <tr><th>Field</th><th>Mandatory</th><th>Why</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><span class="k">Name</span></td><td><span class="req">Yes</span></td><td>Every message in the follow-up greets people by first name. Ask the agent to split it into first and last once the chat is running.</td></tr>
+          <tr><td><span class="k">Phone</span></td><td><span class="req">Yes</span></td><td>The one detail the team needs to act on a lead the same working day.</td></tr>
+          <tr><td><span class="k">Email</span></td><td><span class="opt">No</span></td><td>Add the field, leave it unticked. It is needed for a real enquiry, so the agent asks for it in conversation. Demanding three things before someone can ask whether we do underfloor will cost more leads than the email is worth.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="note">
+      <b>The three defaults in the preview say a person is answering.</b> "A representative will get right back to you", "give us a minute to assign you the best person", and the inactivity notice. If the Messaging tab lets you edit them, the replacements are below. If it does not, the intro message is doing the honest work on its own, which is why it names the assistant in its first sentence.
+    </div>
+
+    <div class="tablewrap">
+      <table>
+        <thead>
+          <tr><th>Where</th><th>Instead of</th><th>Say</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Waiting</td><td>Give us a minute to assign you the best person to help you out.</td><td>One moment while I look that up.</td></tr>
+          <tr><td>Contact gate</td><td>Please share contact details</td><td>Before we start, who am I speaking with?</td></tr>
+          <tr><td>Timed out</td><td>Chat closed due to user inactivity</td><td>This chat timed out. Start another any time, or call 0428 26 36 26.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="cards">
+      <div class="cx">
+        <h3>The avatar is a stock photograph</h3>
+        <p>A headshot of a woman who does not work at Spray It Solutions, above an assistant instructed never to claim it is a person. Use the logo mark instead. It is the one change here that a customer could reasonably call misleading.</p>
+      </div>
+      <div class="cx">
+        <h3>Redirect call-to-action</h3>
+        <p>Leave it off. The agent already offers the phone consult in conversation, where it can judge whether the person wants one. A blanket redirect sends the researchers there too.</p>
+      </div>
+      <div class="cx">
+        <h3>Say the assistant, not a representative</h3>
+        <p>The instructions forbid the agent from claiming to be a person, and that only holds if the window agrees. A visitor who works out mid-chat that the representative is software has been misled by the frame, not by the answers.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ============================================================== ENQUIRY -->
 <section class="sec" id="enquiry">
   <div class="wrap">
-    <div class="sec-head"><span class="sec-n">03</span><h2>Taking an enquiry</h2></div>
+    <div class="sec-head"><span class="sec-n">04</span><h2>Taking an enquiry</h2></div>
     <p class="sec-lede">The contact form's own twelve questions, in its own wording. Matching them exactly is the whole point: a bot enquiry and a form enquiry become the same record, so nothing downstream has to know the difference. Seven are needed before the enquiry is worth submitting. The other five are offered once and dropped if the person would rather not say.</p>
 
     <div class="tablewrap">
@@ -281,7 +370,7 @@ Address: Factory 4, 114 Colemans Road, Carrum Downs, VIC 3201</div></div>
 <!-- ============================================================ FIELD UPDATES -->
 <section class="sec" id="fields">
   <div class="wrap">
-    <div class="sec-head"><span class="sec-n">04</span><h2>The field updates to create</h2></div>
+    <div class="sec-head"><span class="sec-n">05</span><h2>The field updates to create</h2></div>
     <p class="sec-lede">One Add Contact Info action holds all of them, each added with <b>Add new field</b>. Name, email and mobile are the exception: the platform takes those from the prompt, so they get no field here. That leaves nine, each needing an action name, a contact field and a one line description. The descriptions below are written to fit that single line.</p>
 
     <div class="note">
@@ -452,7 +541,7 @@ Address: Factory 4, 114 Colemans Road, Carrum Downs, VIC 3201</div></div>
 <!-- ============================================================ THE DOCUMENTS -->
 <section class="sec" id="docs">
   <div class="wrap">
-    <div class="sec-head"><span class="sec-n">05</span><h2>The five knowledge documents</h2></div>
+    <div class="sec-head"><span class="sec-n">06</span><h2>The five knowledge documents</h2></div>
     <p class="sec-lede">One subject each, so the bot retrieves the right one instead of the nearest one. Copy each into its own rich text entry, using the title shown. Every fact below is already published on the website or confirmed by Glenn.</p>
 
     <!-- ---------------------------------------------------------- DOC 1 -->
@@ -738,7 +827,7 @@ Address: Factory 4, 114 Colemans Road, Carrum Downs, VIC 3201</div></div>
 <!-- ================================================================ NEVER -->
 <section class="sec" id="never">
   <div class="wrap">
-    <div class="sec-head"><span class="sec-n">06</span><h2>What the bot must never say</h2></div>
+    <div class="sec-head"><span class="sec-n">07</span><h2>What the bot must never say</h2></div>
     <p class="sec-lede">Some of these are commercial, some are legal, and some exist because the claim is not supported by its own source. They are worth reading once before the bot goes live, because every one of them was a real decision on this project.</p>
 
     <div class="never">
@@ -764,15 +853,15 @@ Address: Factory 4, 114 Colemans Road, Carrum Downs, VIC 3201</div></div>
 <!-- =============================================================== GO LIVE -->
 <section class="sec" id="golive">
   <div class="wrap">
-    <div class="sec-head"><span class="sec-n">07</span><h2>Before switching it on</h2></div>
+    <div class="sec-head"><span class="sec-n">08</span><h2>Before switching it on</h2></div>
     <p class="sec-lede">Six things to settle, in order. The first one matters most.</p>
 
     <ol class="ol">
-      <li><span><b>Point the crawler at the new site, and remove the old one.</b> The bot is currently trained on the previous website. That site is the version we have been correcting, including the performance claim in section 06 and the testimonials, so while it is still in the crawler the bot can answer from wording we have deliberately changed. The five documents cannot override a crawled page. The old source has to come out.</span></li>
+      <li><span><b>Point the crawler at the new site, and remove the old one.</b> The bot is currently trained on the previous website. That site is the version we have been correcting, including the performance claim in section 07 and the testimonials, so while it is still in the crawler the bot can answer from wording we have deliberately changed. The five documents cannot override a crawled page. The old source has to come out.</span></li>
       <li><span><b>Confirm the trading hours with Glenn.</b> The hours in Doc 1 are the ones currently on the website, and they are still marked for review. They are not just words: the bot uses them to decide between offering a call now and offering a callback, and they are published as structured data. If they are wrong, correct them in the site data and in Doc 1 together.</span></li>
       <li><span><b>Test the enquiry end to end.</b> Run a conversation through to submission and check the record that comes out carries all eleven details, stores the words rather than the codes, opens an opportunity at New Enquiry, and triggers the same first response a form fill triggers.</span></li>
       <li><span><b>Test the consent question.</b> Confirm it is asked in the exact wording, that it defaults to no, that a declined answer is recorded as no rather than left blank, and that the wording and timestamp are stored on the contact.</span></li>
-      <li><span><b>Try to break it.</b> Ask it for a price four different ways. Ask it what R-value to use. Tell it the last job was terrible. Ask it whether it is a robot. Ask it something it cannot know. Each one should land on the behaviour in section 06.</span></li>
+      <li><span><b>Try to break it.</b> Ask it for a price four different ways. Ask it what R-value to use. Tell it the last job was terrible. Ask it whether it is a robot. Ask it something it cannot know. Each one should land on the behaviour in section 07.</span></li>
       <li><span><b>Decide who sees a bot enquiry, and how fast.</b> A chat enquiry arrives while the person is still on the site, which makes it the warmest lead of the day. It should raise the same new enquiry alert the form does.</span></li>
     </ol>
   </div>
