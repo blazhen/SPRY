@@ -145,6 +145,25 @@ td:last-child:has(.req, .opt) { width: 1%; white-space: nowrap; }
 .note { background: var(--amber-wash); border: 1px solid var(--line); border-left: 3px solid var(--amber); border-radius: 0 14px 14px 0; padding: 1rem 1.2rem; margin-top: 1.4rem; font-size: .96rem; color: var(--ink-2); }
 .note b { color: var(--ink); }
 
+/* ------------------------------------------------------------ actions */
+.acts { display: grid; gap: .9rem; margin-top: 1.4rem; }
+.act { border: 1px solid var(--line); border-radius: 14px; overflow: hidden; background: var(--ground); }
+.act__head {
+  display: flex; align-items: center; gap: .9rem 1.2rem; flex-wrap: wrap;
+  padding: .75rem 1rem; background: var(--surface); border-bottom: 1px solid var(--line);
+}
+.act__n {
+  flex: none; width: 26px; height: 26px; display: grid; place-items: center; border-radius: 8px;
+  font-family: var(--mono); font-size: .8rem; font-weight: 600; color: #fff; background: var(--navy);
+}
+.act__pair { display: flex; flex-direction: column; gap: .15rem; min-width: 0; }
+.act__pair b { font-size: .64rem; letter-spacing: .13em; text-transform: uppercase; color: var(--ink-3); font-weight: 700; }
+.act__head .btn { margin-left: auto; }
+.act__body { padding: .9rem 1rem 1.1rem; }
+.act__lbl { display: block; font-size: .64rem; letter-spacing: .13em; text-transform: uppercase; color: var(--green-ink); font-weight: 700; }
+.act__body .pre { margin-top: .45rem; font-family: var(--sans); font-size: .95rem; line-height: 1.55; }
+@media (max-width: 620px) { .act__head .btn { margin-left: 0; width: 100%; justify-content: center; } }
+
 /* ---------------------------------------------------------------- documents */
 .doc { border: 1px solid var(--line); border-radius: 16px; background: var(--ground); margin-top: 1.4rem; overflow: hidden; box-shadow: var(--shadow-s); }
 .doc__head {
@@ -153,6 +172,7 @@ td:last-child:has(.req, .opt) { width: 1%; white-space: nowrap; }
 }
 .doc__n { font-family: var(--mono); font-size: .8rem; font-weight: 600; color: #fff; background: var(--navy); border-radius: 7px; padding: .25em .6em; }
 :root[data-theme="dark"] .doc__n { color: #0b0f1a; }
+:root[data-theme="dark"] .act__n { color: #0b0f1a; }
 .doc__t { font-family: var(--display); font-weight: 700; font-size: 1.08rem; flex: 1 1 14rem; min-width: 0; }
 .doc__meta { font-size: .82rem; color: var(--ink-3); font-family: var(--mono); }
 .btn {

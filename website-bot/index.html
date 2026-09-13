@@ -265,29 +265,125 @@ Address: Factory 4, 114 Colemans Road, Carrum Downs, VIC 3201</div></div>
 <section class="sec" id="fields">
   <div class="wrap">
     <div class="sec-head"><span class="sec-n">04</span><h2>The field updates to create</h2></div>
-    <p class="sec-lede">The agent writes each answer to the contact with an Add Contact Info action, one per field. Name, email and mobile are the exception: the platform takes those from the prompt, so they get no action. That leaves nine to build, and the wording in the third column is what goes in "What to update in the field".</p>
+    <p class="sec-lede">The agent writes each answer to the contact with an Add Contact Info action, one per field. Name, email and mobile are the exception: the platform takes those from the prompt, so they get no action. That leaves nine to build. Each block below carries the three things the dialog asks for, and the description is written to be pasted whole.</p>
+
+    <div class="note">
+      <b>There is no separate box for an output example.</b> The dialog asks for three things: a name, a field, and a description. That makes the description the only place to control the shape of what gets stored, which is why each one below names the allowed values in full and ends with a worked example. If your version of the dialog does have an example box below the fold, use the example from the end of the description.
+    </div>
 
     <div class="note">
       <b>An action alone does nothing.</b> The field only fills if the prompt actually asks the question, which is why the twelve questions are written out in the instructions in section 02. Build the actions and paste the instructions together, or the agent will have somewhere to put an answer and no reason to ask for one.
     </div>
 
-    <div class="tablewrap">
-      <table>
-        <thead>
-          <tr><th>Action name</th><th>Contact field</th><th>What to update in the field</th></tr>
-        </thead>
-        <tbody>
-          <tr><td><span class="k">1. Postcode</span></td><td><span class="k">postcode</span></td><td>The four digit postcode of the property the customer wants insulated. If they give a different address for themselves, this is the property, not them.</td></tr>
-          <tr><td><span class="k">2. Street address</span></td><td><span class="k">street</span></td><td>The street number and name of the property to be insulated. Optional, so leave it empty if the customer did not give one.</td></tr>
-          <tr><td><span class="k">3. Suburb</span></td><td><span class="k">suburb</span></td><td>The suburb of the property to be insulated. Optional, so leave it empty if the customer did not give one.</td></tr>
-          <tr><td><span class="k">4. Property type</span></td><td><span class="k">property_type</span></td><td>What kind of building it is. Store one of these exactly: Home, New build, Shed or garage, Factory or warehouse, Farm or agricultural, Something else.</td></tr>
-          <tr><td><span class="k">5. Areas to insulate</span></td><td><span class="k">areas</span></td><td>Which parts of the building need insulating. One or more of these exactly: Roof or ceiling, Walls, Underfloor, Whole property, Not sure yet. If the customer names more than one, store them all, separated by a comma and a space.</td></tr>
-          <tr><td><span class="k">6. Building stage</span></td><td><span class="k">building_stage</span></td><td>Whether the building exists yet. Store one of these exactly: Existing building (retrofit), Under construction, Still planning. Optional, so leave it empty if the customer did not say.</td></tr>
-          <tr><td><span class="k">7. Timeframe</span></td><td><span class="k">timeframe</span></td><td>When the customer wants the work done. Store one of these exactly: As soon as possible, Next 1 to 3 months, 3 months or more, Just researching. Optional, so leave it empty if the customer did not say.</td></tr>
-          <tr><td><span class="k">8. Enquiry message</span></td><td><span class="k">enquiry_message</span></td><td>Anything else the customer said about the job, in their own words. Rough size, access, when they need it done, or a business name if they gave one. Optional.</td></tr>
-          <tr><td><span class="k">9. Marketing consent</span></td><td><span class="k">consent_marketing</span></td><td>Store yes only if the customer clearly agreed to receive SMS and email updates. Store no if they declined, or if they did not answer the question. Never leave this empty.</td></tr>
-        </tbody>
-      </table>
+    <div class="acts">
+      <div class="act">
+        <div class="act__head">
+          <span class="act__n">1</span>
+          <span class="act__pair"><b>Action name</b><span class="k">Postcode</span></span>
+          <span class="act__pair"><b>Which contact field</b><span class="k">postcode</span></span>
+          <button type="button" class="btn" data-copy="a1" data-plain="1">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+            Copy the description
+          </button>
+        </div>
+        <div class="act__body"><span class="act__lbl">What to update in the field</span><div class="pre" id="a1-src">The four digit Australian postcode of the property that needs insulating. If the customer gives a different address for themselves, store the property’s postcode, not theirs. Store the four digits on their own, with no suburb and no state. Example of a correct value: 3201</div></div>
+      </div>
+      <div class="act">
+        <div class="act__head">
+          <span class="act__n">2</span>
+          <span class="act__pair"><b>Action name</b><span class="k">Street address</span></span>
+          <span class="act__pair"><b>Which contact field</b><span class="k">street</span></span>
+          <button type="button" class="btn" data-copy="a2" data-plain="1">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+            Copy the description
+          </button>
+        </div>
+        <div class="act__body"><span class="act__lbl">What to update in the field</span><div class="pre" id="a2-src">The street number and street name of the property that needs insulating, without the suburb, state or postcode. This one is optional on the website form. If the customer does not give it, leave the field empty rather than guessing. Example of a correct value: 12 Example Street</div></div>
+      </div>
+      <div class="act">
+        <div class="act__head">
+          <span class="act__n">3</span>
+          <span class="act__pair"><b>Action name</b><span class="k">Suburb</span></span>
+          <span class="act__pair"><b>Which contact field</b><span class="k">suburb</span></span>
+          <button type="button" class="btn" data-copy="a3" data-plain="1">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+            Copy the description
+          </button>
+        </div>
+        <div class="act__body"><span class="act__lbl">What to update in the field</span><div class="pre" id="a3-src">The suburb of the property that needs insulating. This one is optional on the website form. If the customer does not give it, leave the field empty rather than guessing. Example of a correct value: Carrum Downs</div></div>
+      </div>
+      <div class="act">
+        <div class="act__head">
+          <span class="act__n">4</span>
+          <span class="act__pair"><b>Action name</b><span class="k">Property type</span></span>
+          <span class="act__pair"><b>Which contact field</b><span class="k">property_type</span></span>
+          <button type="button" class="btn" data-copy="a4" data-plain="1">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+            Copy the description
+          </button>
+        </div>
+        <div class="act__body"><span class="act__lbl">What to update in the field</span><div class="pre" id="a4-src">What kind of building the customer wants insulated. Store exactly one of these six labels, spelled and capitalised as written here, and nothing else: Home, New build, Shed or garage, Factory or warehouse, Farm or agricultural, Something else. If what they describe does not fit the first five, store Something else. Example of a correct value: New build</div></div>
+      </div>
+      <div class="act">
+        <div class="act__head">
+          <span class="act__n">5</span>
+          <span class="act__pair"><b>Action name</b><span class="k">Areas to insulate</span></span>
+          <span class="act__pair"><b>Which contact field</b><span class="k">areas</span></span>
+          <button type="button" class="btn" data-copy="a5" data-plain="1">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+            Copy the description
+          </button>
+        </div>
+        <div class="act__body"><span class="act__lbl">What to update in the field</span><div class="pre" id="a5-src">Which parts of the building need insulating. Store one or more of these five labels, spelled and capitalised as written here, and nothing else: Roof or ceiling, Walls, Underfloor, Whole property, Not sure yet. The customer may name more than one. If they do, store them all, separated by a comma and a space. Example of a correct value: Roof or ceiling, Walls</div></div>
+      </div>
+      <div class="act">
+        <div class="act__head">
+          <span class="act__n">6</span>
+          <span class="act__pair"><b>Action name</b><span class="k">Building stage</span></span>
+          <span class="act__pair"><b>Which contact field</b><span class="k">building_stage</span></span>
+          <button type="button" class="btn" data-copy="a6" data-plain="1">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+            Copy the description
+          </button>
+        </div>
+        <div class="act__body"><span class="act__lbl">What to update in the field</span><div class="pre" id="a6-src">Whether the building already exists. Store exactly one of these three labels, spelled and capitalised as written here, and nothing else: Existing building (retrofit), Under construction, Still planning. This one is optional on the website form. If the customer does not say, leave the field empty rather than guessing. Example of a correct value: Existing building (retrofit)</div></div>
+      </div>
+      <div class="act">
+        <div class="act__head">
+          <span class="act__n">7</span>
+          <span class="act__pair"><b>Action name</b><span class="k">Timeframe</span></span>
+          <span class="act__pair"><b>Which contact field</b><span class="k">timeframe</span></span>
+          <button type="button" class="btn" data-copy="a7" data-plain="1">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+            Copy the description
+          </button>
+        </div>
+        <div class="act__body"><span class="act__lbl">What to update in the field</span><div class="pre" id="a7-src">When the customer wants the work done. Store exactly one of these four labels, spelled and capitalised as written here, and nothing else: As soon as possible, Next 1 to 3 months, 3 months or more, Just researching. This one is optional on the website form. If the customer does not say, leave the field empty rather than guessing. Example of a correct value: Next 1 to 3 months</div></div>
+      </div>
+      <div class="act">
+        <div class="act__head">
+          <span class="act__n">8</span>
+          <span class="act__pair"><b>Action name</b><span class="k">Enquiry message</span></span>
+          <span class="act__pair"><b>Which contact field</b><span class="k">enquiry_message</span></span>
+          <button type="button" class="btn" data-copy="a8" data-plain="1">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+            Copy the description
+          </button>
+        </div>
+        <div class="act__body"><span class="act__lbl">What to update in the field</span><div class="pre" id="a8-src">Anything else the customer said about the job, in their own words. Rough size, access, when they need it done, a business name if they gave one, or anything that does not belong in another field. Keep their wording rather than summarising it, and do not repeat answers that are already stored in the other fields. Leave it empty if they said nothing else. Example of a correct value: Double garage out the back, about 6 by 6. Access is tight, there is a fence down one side.</div></div>
+      </div>
+      <div class="act">
+        <div class="act__head">
+          <span class="act__n">9</span>
+          <span class="act__pair"><b>Action name</b><span class="k">Marketing consent</span></span>
+          <span class="act__pair"><b>Which contact field</b><span class="k">consent_marketing</span></span>
+          <button type="button" class="btn" data-copy="a9" data-plain="1">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+            Copy the description
+          </button>
+        </div>
+        <div class="act__body"><span class="act__lbl">What to update in the field</span><div class="pre" id="a9-src">Whether the customer agreed to receive marketing SMS and email. Store yes only if they clearly said yes to that question. Store no if they declined, changed the subject, or were never asked. Store the word in lower case and nothing else. Never leave this field empty. Example of a correct value: no</div></div>
+      </div>
     </div>
 
     <h3 style="margin-top:2rem;font-size:1.2rem">Four fields the agent should not set</h3>
