@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Spray It Solutions customer journey</title>
+<meta name="description" content="Every message a Spray It Solutions customer receives, from the first enquiry to a year after the job, and what the team sees behind each one." />
+<meta name="robots" content="noindex, nofollow" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet" />
+<link rel="icon" href="favicon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- ======================= HERO ======================= -->
+  <section class="hero">
+    <div class="wrap">
+      <div class="topbar">
+        <img class="brandlogo l" src="logo.png" alt="Spray It Solutions" width="211" height="128" />
+        <img class="brandlogo d" src="logo-light.png" alt="Spray It Solutions" width="289" height="174" />
+        <div class="topright">
+          <span class="toptag">Customer communications</span>
+          <button type="button" class="iconbtn" id="printBtn" title="Print or save as PDF" aria-label="Print or save as PDF">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V3h12v6"/><rect x="4" y="9" width="16" height="8" rx="2"/><path d="M6 14h12v7H6z"/></svg>
+          </button>
+          <button type="button" class="iconbtn" id="themeBtn" title="Switch light or dark" aria-label="Switch light or dark">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3a9 9 0 1 0 9 9 7 7 0 0 1-9-9z"/></svg>
+          </button>
+        </div>
+      </div>
+      <p class="eyebrow">The Spray It Solutions experience</p>
+      <h1>Every message a customer receives, from the first enquiry to a <em>year after</em> the job</h1>
+      <p class="lede">This is the whole conversation a customer has with Spray It Solutions: what lands in their inbox and on their phone at each stage, in the words they will actually read. Under every message is what happens behind the scenes, the alert that reaches the team and the task that keeps the job moving. Two pipelines, one voice.</p>
+      <div class="stats">
+        <span class="stat"><b id="statStages">25</b><span>stages across two pipelines</span></span>
+        <span class="stat"><b id="statMessages">57</b><span>written messages</span></span>
+        <span class="stat"><b id="statEmails">35</b><span>emails, with subject and preheader</span></span>
+        <span class="stat"><b id="statSms">22</b><span>text messages</span></span>
+        <span class="stat"><b id="statTasks">40</b><span>tasks</span></span>
+        <span class="stat"><b id="statAlerts">11</b><span>alerts that interrupt</span></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================= CONTROLS ======================= -->
+  <div class="controls">
+    <div class="wrap">
+      <div class="controls__row">
+        <div class="seg" id="pipelineSeg" role="group" aria-label="Choose a pipeline"></div>
+        <div class="controls__right">
+          <span class="hint">Showing <span class="pzchip">sample customer</span> or <span class="tkchip">{{merge fields}}</span></span>
+          <div class="seg" id="viewSeg" role="group" aria-label="Preview mode">
+            <button type="button" data-view="preview" aria-pressed="true">Preview</button>
+            <button type="button" data-view="fields" aria-pressed="false">Fields</button>
+          </div>
+        </div>
+      </div>
+      <div class="rail" id="rail" role="tablist" aria-label="Stages"></div>
+    </div>
+  </div>
+
+  <!-- ======================= PANELS ======================= -->
+  <main class="wrap">
+    <div id="panels"></div>
+    <nav class="pager" aria-label="Stage navigation">
+      <button class="pager__a" id="pagerPrev" type="button"></button>
+      <button class="pager__a" id="pagerNext" type="button"></button>
+    </nav>
+  </main>
+
+  <!-- ======================= APPENDICES ======================= -->
+  <section class="appendix" id="values">
+    <div class="wrap">
+      <div class="sec-head"><span class="sec-n">A1</span><h2>Set once, used everywhere</h2></div>
+      <p class="sec-lede">Your name, your number, your links and the way the work is described all come from this one table. Change a value here and every message that uses it changes with it, so a new phone number or a new booking link is a one-line edit rather than a hunt through fifty messages.</p>
+      <div class="t-scroll"><table><thead><tr><th>Custom value</th><th>Spray It Solutions</th><th>Notes</th></tr></thead><tbody id="tblValues"></tbody></table></div>
+    </div>
+  </section>
+
+  <section class="appendix alt" id="index">
+    <div class="wrap">
+      <div class="sec-head"><span class="sec-n">A2</span><h2>All <span id="cntMessages">57</span> messages, in one place</h2></div>
+      <p class="sec-lede">Every message in the journey, with where it fires and which stages show it. Click a stage to jump to it.</p>
+      <div class="t-scroll"><table><thead><tr><th>ID</th><th>Channel</th><th>Trigger</th><th>Type</th><th>Subject</th><th>Appears in</th></tr></thead><tbody id="tblMessages"></tbody></table></div>
+    </div>
+  </section>
+
+  <section class="appendix" id="alerts">
+    <div class="wrap">
+      <div class="sec-head"><span class="sec-n">A3</span><h2>The eleven alerts that interrupt</h2></div>
+      <p class="sec-lede">A notification is a request to do something. If nothing needs doing it is a report, and reports go in the daily digest. These eleven are the only things that ping a phone. Adding a twelfth should require an argument.</p>
+      <div class="t-scroll"><table><thead><tr><th>#</th><th>Alert</th><th>Fires when</th><th>To</th><th>Channel</th></tr></thead><tbody id="tblAlerts"></tbody></table></div>
+      <div class="sec-head" style="margin-top:2.4rem"><span class="sec-n">A4</span><h2>Who is who</h2></div>
+      <div class="t-scroll"><table><thead><tr><th>Role</th><th>At Spray It</th><th>Owns</th></tr></thead><tbody id="tblRoles"></tbody></table></div>
+    </div>
+  </section>
+
+  <section class="appendix alt" id="hours">
+    <div class="wrap">
+      <div class="sec-head"><span class="sec-n">A5</span><h2>When things send, and when they wait</h2></div>
+      <p class="sec-lede">Confirmations go straight away because the person is waiting for them. Chases, reminders and anything marketing wait for the window. Alerts follow the same shape, so nobody is woken at 2am by a lead that can wait until 7.</p>
+      <div class="t-scroll"><table><thead><tr><th>When</th><th>Alerts</th><th>Tasks</th><th>Customer messages</th></tr></thead><tbody id="tblQuiet"></tbody></table></div>
+    </div>
+  </section>
+
+  <section class="appendix" id="rules">
+    <div class="wrap">
+      <div class="sec-head"><span class="sec-n">A6</span><h2>The rules every message follows</h2></div>
+      <div class="cards" id="compliance"></div>
+      <div class="sec-head" style="margin-top:2.6rem"><span class="sec-n">A7</span><h2>What goes live first</h2></div>
+      <p class="sec-lede">Not all at once. In the order of what earns the most, soonest, so the parts that catch leads are working while the rest is still being finished.</p>
+      <ol class="ol" id="buildOrder"></ol>
+    </div>
+  </section>
+
+  <!-- ======================= CLOSING ======================= -->
+  <section class="close">
+    <div class="wrap">
+      <p class="close__q">Automatic, but never <em>automated</em>. This is how Spray It Solutions looks after people from the first two minutes.</p>
+      <p class="close__s">Every word here is a starting point. The tone, the timing and the wording are all yours to change, and the page updates from one file so nothing drifts.</p>
+    </div>
+  </section>
+
+  <footer>
+    <div class="wrap foot">
+      <span><b>Spray It Solutions</b> · Carrum Downs, Victoria · 0428 26 36 26</span>
+      <span>Prepared for Glenn and Rachael by <b>Systemations</b></span>
+    </div>
+  </footer>
+
+  <script src="journey-data.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

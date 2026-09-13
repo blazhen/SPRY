@@ -6,6 +6,13 @@ website actually captures and sends.
 This is the reference for three audiences: whoever configures Systemations, whoever runs
 the board day to day, and the AI agent that will be allowed to move cards on it.
 
+Three companions sit beside it. [CRM-MESSAGING.md](CRM-MESSAGING.md) holds
+every message the stages send, [CRM-TASKS-NOTIFICATIONS.md](CRM-TASKS-NOTIFICATIONS.md)
+holds what the team is told and asked to do, and the customer journey page in
+`client-journey-onepage/` shows all of it stage by stage, the way the customer
+and the team will actually see it. Those two documents and the page are
+generated from the same data file, so they cannot disagree with each other.
+
 ---
 
 ## 1. Two pipelines, split by sector
@@ -319,22 +326,31 @@ whatever they actually typed.
 
 ## 9. Automation per stage
 
-| Trigger | Action |
-| --- | --- |
-| Enters **New Enquiry** | SMS acknowledgement within 2 minutes. Call task assigned. Internal notification. |
-| 1 business hour in **New Enquiry** | Escalate to a second person |
-| Enters **Contacting** | Start the five-attempt sequence across call, SMS and email |
-| Attempts exhausted | Lost, reason *Unreachable* |
-| Enters **Qualified** | Set forecast value. Prompt to book the assessment. |
-| Enters **Assessment Booked** | Confirmation SMS and email. Reminders 24 hours and 2 hours out. |
-| Assessment marked done | Move to Quoting, start the 2 day clock |
-| Enters **Quote Sent** | Delivery confirmation. Schedule follow-ups at day 2, 5, 10, 21. |
-| **Status set to Won** | Deposit request. Internal handover task. Stop every sales sequence. |
-| Enters **Scheduled** / **Mobilising** | Confirm the date with the customer. Reminder the day before. |
-| Enters **In Progress** | Crew notification. Photo capture task. |
-| Enters **Invoiced** / **Invoicing** | Invoice delivery. Payment reminder at day 7 and day 14. |
-| Marked **Lost** | Reason required. Add to the long-cycle nurture list if the reason was timing. |
-| Enters **Paid & Closed** | Review request, referral ask, 12 month check-in scheduled |
+Message IDs refer to [CRM-MESSAGING.md](CRM-MESSAGING.md). The journey page
+shows each of these under its stage.
+
+| Trigger | Action | Messages |
+| --- | --- | --- |
+| Enters **New Enquiry** | SMS acknowledgement within 2 minutes, email echo of the enquiry. Call task assigned. Alert to the assigned user. | X-ACK-01, X-ACK-02 (C-ACK-01 on commercial) |
+| 1 business hour in **New Enquiry** | Escalate to a second person | |
+| Enters **Contacting** | Start the five-attempt sequence across call, SMS and email | X-CHASE-01 to 04 |
+| Attempts exhausted | Lost, reason *Unreachable* | |
+| Phone consult booked, at any point | Confirmation, reminders at 24 hours and 2 hours, no-show and change handling | X-APPT-01 to 06 |
+| Enters **Qualified** | Set forecast value. Point them at the calendar for the assessment. | X-BOOK-01, X-BOOK-02 |
+| Enters **Assessment Booked** / **Inspection Booked** | Confirmation with the address. Morning-of text. | R-ASSESS-01, R-ASSESS-02 (C-INSP-01 on commercial) |
+| Assessment marked done, enters **Quoting** / **Specifying** | Tell them when the quote lands. Start the 2 day clock (5 on commercial). | R-QUOTING-01 (C-SPEC-01) |
+| Enters **Quote Sent** / **Proposal Submitted** | Delivery confirmation. Schedule follow-ups at day 2, 5, 10, 21 (day 7, 21 on commercial). | R-QUOTE-01, R-QUOTE-02, R-FU-01 (C-PROP-01, C-PROP-02) |
+| Enters **Follow-up** / **Commercial Review** | The rest of the sequence, ending in a decision | R-FU-02 to 04 (C-PROP-03) |
+| Marked **Lost** | Reason required. Graceful goodbye on residential. Add to nurture if the reason was timing. | LOST-01 |
+| Enters **Nurture** / **Future Project** | Consent-gated drip: 0, 30, 90 days (quarterly on commercial) | NUR-01 to 03 (C-FUT-01) |
+| Enters **Awaiting PO** | List what mobilisation needs. Weekly PO chase task. | C-PO-01 |
+| **Status set to Won** | Thank them and set out the steps. Deposit request where one applies. Handover tasks. **Stop every sales sequence.** | X-WON-01, X-WON-02 (C-MOB-01) |
+| Deposit received | One-line confirmation, and scheduling unblocks | DEP-01 |
+| Enters **Scheduled** / **Mobilising** | Booking with preparation notes. Reminder the afternoon before. | JOB-01, JOB-02, JOB-03 (C-MOB-01) |
+| Enters **In Progress** | Crew on the way text. Photo and variation tasks on the crew lead. Weekly progress on staged commercial jobs. | JOB-04, JOB-06 (C-SITE-01, C-PROG-01) |
+| Enters **Invoiced** / **Invoicing** | Completion note with photos, then the invoice separately. Reminders at day 7 and day 14, stopped on payment. | JOB-05, PAY-01 to 03 (C-DONE-01, C-PAY-01) |
+| Enters **Paid & Closed** | Review request the next day, referral ask at a week, 12 month check-in. Reference request on commercial. | REV-01 to 03 (C-CLOSE-01) |
+| Any time | Missed call text-back, out of hours reply | SYS-01, SYS-02 |
 
 Two rules that matter more than the table:
 

@@ -52,22 +52,57 @@ rhythm is a matter of swapping `bg-ink` and `bg-surface` on the section elements
 ## Project structure
 
 ```
-index.html
+index.html             Runtime SITE CONFIGURATION block lives here, see DEPLOY.md
 src/
   main.tsx
   App.tsx              Router + ReactLenis root + GSAP registration + Helmet provider
-  pages/               Home.tsx (full) + About/SprayFoam/Residential/Commercial/Contact/NotFound stubs
-  components/          Header Hero Marquee WhatIsSprayFoam Benefits InsulationScene
-                       Services StatBand Testimonials ClientLogos FAQ QuoteCTA Footer
-                       Layout PageStub
-    ui/                Figure MagneticButton SectionHeading Seo Stars
-  three/Scene.tsx      Lazy R3F scene + procedural wall geometry
-  data/                site services testimonials faqs benefits clients stats content
-  hooks/               useReducedMotion useMagnetic
-  lib/                 gsap.ts (single plugin registration) images.ts
+  pages/               Home About SprayFoam Residential Commercial Gallery Blog BlogPost
+                       Contact Book ThankYou Privacy NotFound HeroPreview
+  components/          Header Footer Layout, the hero variants (HeroHouse is the one
+                       that ships), HouseSection, InsulationScene, RValueExplainer,
+                       SectorCards, Testimonials, WorkVideos, QuoteForm, FAQ, and the
+                       section parts each page is built from
+    ui/                Figure Logo MagneticButton ProtectedImage SectionBackdrop
+                       SectionHeading Seo VideoCarousel VideoEmbed
+  three/               HeroObject SealScene Scene, lazy R3F scenes
+  data/                Every word of copy: site, pages, content, testimonials, faqs,
+                       gallery, blog, videos, forms, legal, stats, rvalue, sectors
+  hooks/               useReducedMotion useMagnetic useMediaQuery useCarouselWheel
+  lib/                 gsap.ts (single plugin registration) images.ts leadSubmit.ts
+                       attribution.ts analytics.ts boot.ts
+  config/              integrations.ts, runtime config read from window
   styles/              tokens.css index.css
-public/favicon.svg
+public/                favicon.svg, logo/, gallery/ (watermarked job photos), blog/,
+                       docs/ (client fact sheets), brands/, site/, sitemap.xml, robots.txt
+
+client-journey-onepage/  The customer journey: every message, task and alert for
+                         both pipelines, rendered from journey-data.js.
+                           index.html   the client's page. Nothing agency-facing on it.
+                           agency.html  the build sheet: merge fields by default, reuse
+                                        tags, agency notes, fields to create, go-live
+                                        checklist. Never send this one to the client.
+                         The two CRM documents below are generated from the same
+                         data file.
+CRM-PIPELINES.md         Pipeline and stage design for the Systemations build
+CRM-MESSAGING.md         Every SMS and email, generated from the journey data
+CRM-TASKS-NOTIFICATIONS.md  Alerts, tasks, escalation and digests, generated too
+DEPLOY.md                How to build, configure and transfer the site
+scripts/                 journey-check.mjs and gen-crm-docs.mjs, see below
 ```
+
+### Regenerating the CRM documents
+
+Edit `client-journey-onepage/journey-data.js`, then:
+
+```bash
+npm run docs:crm
+```
+
+That checks the data (every message referenced, every merge field has a sample
+value, every email has a subject and preheader, no house-style slips) and then
+writes `CRM-MESSAGING.md` and `CRM-TASKS-NOTIFICATIONS.md` from it. Both files
+say so at the top. Editing them by hand will be overwritten. `npm run docs:check`
+runs the checks alone. The scripts live in `scripts/`.
 
 ### Hero A/B: one-line swap
 
@@ -395,35 +430,28 @@ on short viewports instead of pushing CTAs and pinned content off screen.
 
 ## Things the client needs to supply
 
-These are marked in code with `{/* TODO: client to replace with real project photo */}`
-or a `TODO` comment.
+Most of the original list is done: the brand palette, logo, social links, contact
+form, gallery, blog, testimonials and technical documents are all real and in
+place. What is still outstanding, as of September 2026:
 
-1. **Brand colour.** `--accent` in `src/styles/tokens.css` is an inferred warm amber
-   (`#FF5A1F`). Swap that single hex for the official SprayIT orange and everything else
-   derives from it.
-2. **Logo.** The header/footer wordmark is set in Clash Display. Drop in the real mark
-   when available.
-3. **Photography.** All images are Unsplash stock standing in for real jobs. Real project
-   photos, particularly of the rigs and of foam being applied, would lift this
-   considerably. Each is marked in the JSX.
-4. **Trust logos.** `ClientLogos` renders the nine brand names as typographic wordmarks,
-   not images. Clearbit's free logo API is retired and none of these Australian brands are
-   carried by simpleicons, so a hotlinked logo CDN would render nine broken images. Real
-   monochrome SVGs should replace the wordmarks.
-5. **Social URLs** in `src/data/site.ts` are placeholders.
-7. **The comfort hero's before/after is one stock photo graded two ways.** It is honest
-   about being a grade, not a claim about a specific job. A genuine before-and-after pair
-   from one address, shot from the same position, would be far stronger and is the single
-   highest-value asset the client could supply. Swap `heroComfort.room` for two images and
-   drop the CSS filters.
-8. **The Seal hero's wall is a generic build-up** (cladding, batten cavity, closed-cell
-   foam, plasterboard). If SprayIT works to a specific standard detail, the layer depths
-   and names in `three/SealScene.tsx` and `heroSeal.layers` should be corrected to match.
-6. **Contact form.** `/contact` is a stub; the primary CTA currently routes there and the
-   secondary CTA is a working click-to-call.
+1. **Trading hours.** `site.hours` in `src/data/site.ts` is a plausible trades week,
+   not a confirmed one. The phone assistant and the structured data both read it.
+2. **Five stock photographs** still stand in for situations there is no job photo
+   of. They are marked `clientSwap: true` in `src/data/content.ts`, and the last page
+   of the gallery photo notes document lists them for Glenn.
+3. **Gallery captions.** Every caption describes only what is visible in the frame.
+   Glenn is filling in what each job actually was, in the shared document.
+4. **Two of Glenn's own fact-sheet PDFs** (LD-C-50 and the MD-R-200 MSDS) return 404 on
+   his current site, so they are not in `public/docs/` yet.
+5. **The Systemations values** the CRM messages read from: the lead webhook and the
+   booking calendar URL go in the `SITE CONFIGURATION` block in `index.html` at deploy
+   time. See DEPLOY.md and CRM-MESSAGING.md §2.
+6. **`noindex, nofollow`** is on while the site sits on the staging domain. It comes off
+   at go-live by setting `staging: false` in the same config block.
 
-All business content (address, phone numbers, capability line, testimonials, FAQ
-answers, the 14.5% energy figure) is real and used as supplied.
+All business content (address, phone number, capability line, testimonials quoted
+from the client's own site, FAQ answers, the customer-stated energy figures) is real
+and used as supplied.
 
 ---
 

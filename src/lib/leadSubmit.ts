@@ -10,7 +10,7 @@ import { attributionFields } from '@/lib/attribution'
  *
  * On CORS: Systemations's hook endpoints answer the preflight for JSON POSTs, so this
  * works from the browser. If that ever changes, the failure is reported to the
- * visitor rather than swallowed, and the fix is to point `VITE_Systemations_LEAD_WEBHOOK`
+ * visitor rather than swallowed, and the fix is to point `VITE_CRM_LEAD_WEBHOOK`
  * at a one-line serverless proxy. What this deliberately does not do is fall
  * back to a `no-cors` request: that always resolves opaque, so it would report
  * success for leads that never arrived.

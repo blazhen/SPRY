@@ -77,14 +77,14 @@ const runtime = (): RuntimeConfig =>
 export const integrations = {
   /** Systemations inbound webhook that receives quote submissions. */
   get leadWebhook() {
-    return read(runtime().leadWebhook, env.VITE_Systemations_LEAD_WEBHOOK)
+    return read(runtime().leadWebhook, env.VITE_CRM_LEAD_WEBHOOK)
   },
   /**
    * Full embed URL of the Systemations phone-consult calendar. The assistant books into
    * this same calendar, so the site must never schedule independently of it.
    */
   get bookingCalendarUrl() {
-    return read(runtime().bookingCalendarUrl, env.VITE_Systemations_BOOKING_URL)
+    return read(runtime().bookingCalendarUrl, env.VITE_CRM_BOOKING_URL)
   },
   get ga4Id() {
     return read(runtime().ga4Id, env.VITE_GA4_ID)

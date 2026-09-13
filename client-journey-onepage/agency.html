@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Spray It Solutions journey, build sheet</title>
+<meta name="description" content="Systemations build sheet for the Spray It Solutions customer journey: every message with its merge fields, every task, alert, field and value needed to build it." />
+<meta name="robots" content="noindex, nofollow" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet" />
+<link rel="icon" href="favicon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <div class="agency-band">Systemations internal. The client-facing version is <a href="index.html">index.html</a>. Do not send this page to the client.</div>
+
+  <!-- ======================= HERO ======================= -->
+  <section class="hero">
+    <div class="wrap">
+      <div class="topbar">
+        <img class="brandlogo l" src="logo.png" alt="Spray It Solutions" width="211" height="128" />
+        <img class="brandlogo d" src="logo-light.png" alt="Spray It Solutions" width="289" height="174" />
+        <div class="topright">
+          <span class="toptag">Agency build sheet</span>
+          <button type="button" class="iconbtn" id="printBtn" title="Print or save as PDF" aria-label="Print or save as PDF">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V3h12v6"/><rect x="4" y="9" width="16" height="8" rx="2"/><path d="M6 14h12v7H6z"/></svg>
+          </button>
+          <button type="button" class="iconbtn" id="themeBtn" title="Switch light or dark" aria-label="Switch light or dark">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3a9 9 0 1 0 9 9 7 7 0 0 1-9-9z"/></svg>
+          </button>
+        </div>
+      </div>
+      <p class="eyebrow">Systemations build sheet</p>
+      <h1>Everything needed to build the Spray It Solutions journey</h1>
+      <p class="lede">The same journey the client sees, opened up for whoever builds it. Every message with its merge fields and a Copy button, the tags that say which messages are reusable and which are written around spray foam, the values and fields to create, the tasks and alerts per stage, and a go-live checklist. It renders from one data file, which is also what generates the CRM documents.</p>
+      <div class="stats">
+        <span class="stat"><b id="statStages">25</b><span>stages</span></span>
+        <span class="stat"><b id="statMessages">58</b><span>messages</span></span>
+        <span class="stat"><b id="statEmails">33</b><span>emails</span></span>
+        <span class="stat"><b id="statSms">25</b><span>texts</span></span>
+        <span class="stat"><b id="statTasks">41</b><span>tasks</span></span>
+        <span class="stat"><b id="statAlerts">11</b><span>alerts</span></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================= CONTROLS ======================= -->
+  <div class="controls">
+    <div class="wrap">
+      <div class="controls__row">
+        <div class="seg" id="pipelineSeg" role="group" aria-label="Choose a pipeline"></div>
+        <div class="controls__right">
+          <span class="hint">Showing <span class="pzchip">sample customer</span> or <span class="tkchip">{{merge fields}}</span></span>
+          <div class="seg" id="viewSeg" role="group" aria-label="Preview mode">
+            <button type="button" data-view="preview" aria-pressed="false">Preview</button>
+            <button type="button" data-view="fields" aria-pressed="true">Fields</button>
+          </div>
+        </div>
+      </div>
+      <div class="rail" id="rail" role="tablist" aria-label="Stages"></div>
+    </div>
+  </div>
+
+  <!-- ======================= PANELS ======================= -->
+  <main class="wrap">
+    <div id="panels"></div>
+    <nav class="pager" aria-label="Stage navigation">
+      <button class="pager__a" id="pagerPrev" type="button"></button>
+      <button class="pager__a" id="pagerNext" type="button"></button>
+    </nav>
+  </main>
+
+  <!-- ======================= APPENDICES ======================= -->
+  <section class="appendix" id="reuse">
+    <div class="wrap">
+      <div class="sec-head"><span class="sec-n">B1</span><h2>Reusing this for another client</h2></div>
+      <p class="sec-lede">Nothing client-specific is written into a message body. A new client is a values swap plus rewriting the messages tagged Trade specific, not a rewrite of the kit.</p>
+      <ol class="ol" id="reuseSteps"></ol>
+    </div>
+  </section>
+
+  <section class="appendix alt" id="values">
+    <div class="wrap">
+      <div class="sec-head"><span class="sec-n">B2</span><h2>Custom values, the swap layer</h2></div>
+      <p class="sec-lede">Create these under Settings, Custom Values. Every name, number, link and turn of phrase that belongs to the client comes from here.</p>
+      <div class="t-scroll"><table><thead><tr><th>Custom value</th><th>Spray It Solutions</th><th>Notes</th></tr></thead><tbody id="tblValues"></tbody></table></div>
+    </div>
+  </section>
+
+  <section class="appendix" id="fields">
+    <div class="wrap">
+      <div class="sec-head"><span class="sec-n">B3</span><h2>Custom fields to create</h2></div>
+      <p class="sec-lede">Contact fields first, then opportunity fields. The keys are what the merge fields reference.</p>
+      <div id="customFields"></div>
+    </div>
+  </section>
+
+  <section class="appendix alt" id="index">
+    <div class="wrap">
+      <div class="sec-head"><span class="sec-n">B4</span><h2>All <span id="cntMessages">58</span> messages, in one place</h2></div>
+      <p class="sec-lede">Every message, with where it fires, whether it is reusable, and which stages show it. Click a stage to jump to it.</p>
+      <div class="t-scroll"><table><thead><tr><th>ID</th><th>Channel</th><th>Trigger</th><th>Type</th><th>Reuse</th><th>Subject</th><th>Appears in</th></tr></thead><tbody id="tblMessages"></tbody></table></div>
+    </div>
+  </section>
+
+  <section class="appendix" id="alerts">
+    <div class="wrap">
+      <div class="sec-head"><span class="sec-n">B5</span><h2>The eleven alerts that interrupt</h2></div>
+      <p class="sec-lede">A notification is a request to do something. If nothing needs doing it is a report, and reports go in the daily digest. Adding a twelfth should require an argument.</p>
+      <div class="t-scroll"><table><thead><tr><th>#</th><th>Alert</th><th>Fires when</th><th>To</th><th>Channel</th></tr></thead><tbody id="tblAlerts"></tbody></table></div>
+      <div class="sec-head" style="margin-top:2.4rem"><span class="sec-n">B6</span><h2>Roles</h2></div>
+      <div class="t-scroll"><table><thead><tr><th>Role</th><th>At Spray It</th><th>Owns</th></tr></thead><tbody id="tblRoles"></tbody></table></div>
+    </div>
+  </section>
+
+  <section class="appendix alt" id="hours">
+    <div class="wrap">
+      <div class="sec-head"><span class="sec-n">B7</span><h2>Send windows and quiet hours</h2></div>
+      <p class="sec-lede">Confirmations send immediately. Chases, reminders and marketing wait for the window. Use the platform's Wait until a time window step, not a hope that nobody enquires at midnight.</p>
+      <div class="t-scroll"><table><thead><tr><th>When</th><th>Alerts</th><th>Tasks</th><th>Customer messages</th></tr></thead><tbody id="tblQuiet"></tbody></table></div>
+    </div>
+  </section>
+
+  <section class="appendix" id="rules">
+    <div class="wrap">
+      <div class="sec-head"><span class="sec-n">B8</span><h2>The rules every message follows</h2></div>
+      <div class="cards" id="compliance"></div>
+      <div class="sec-head" style="margin-top:2.6rem"><span class="sec-n">B9</span><h2>Build order</h2></div>
+      <p class="sec-lede">Not all at once. In the order of what earns the most, soonest.</p>
+      <ol class="ol" id="buildOrder"></ol>
+      <div class="sec-head" style="margin-top:2.6rem"><span class="sec-n">B10</span><h2>Before go-live</h2></div>
+      <p class="sec-lede">Tick these off on the sub-account, not from memory. The boxes only remember in this browser.</p>
+      <ul class="checks" id="goLive"></ul>
+    </div>
+  </section>
+
+  <footer>
+    <div class="wrap foot">
+      <span><b>Systemations</b> · internal build sheet for Spray It Solutions</span>
+      <span>Source of truth: <b>journey-data.js</b> · regenerate the documents with <b>npm run docs:crm</b></span>
+    </div>
+  </footer>
+
+  <script>window.JOURNEY_AGENCY = true;</script>
+  <script src="journey-data.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
