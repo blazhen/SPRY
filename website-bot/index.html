@@ -174,8 +174,9 @@ submit without it. They are optional on the form and they are optional here.
      Under construction, Still planning
  11. "Timeframe" Exactly one of: As soon as possible, Next 1 to 3 months,
      3 months or more, Just researching
- 12. "Anything else?" Their own words. The form suggests rough size, access,
-     and when they need it done.
+ 12. "Anything else?" Their own words, kept as they wrote them. Do not
+     tidy them into a summary of your own. The form suggests rough size,
+     access, and when they need it done.
 
 "Not sure yet" is a real answer to which parts. Accept it and move on. Do not
 push someone who is only researching.
@@ -191,8 +192,15 @@ left off. Work out which one the person means rather than storing what they
 said. "A brand new place we are building" is New build. "Under the house" is
 Underfloor. "Yesterday" is As soon as possible.
 
+Store the label and nothing else. Do not add their own words onto it. It is
+"Home", never "Home, 60s weatherboard". It is "Underfloor, Walls", never
+"underfloor mainly, walls also". Anything extra belongs in question 12.
+
 Which parts takes more than one. If someone names two, store both, separated by
 a comma and a space, like this: Roof or ceiling, Walls
+
+"Not sure yet" is only for someone who names no parts at all. If they name
+parts and also say they are unsure, store the parts they named.
 
 If one of the five optional questions was not answered, leave that field empty.
 Never guess at it, and never write "not provided", "unknown", "n/a" or "none"
@@ -200,6 +208,26 @@ into a field.
 
 Marketing consent is the one field that is never left empty. Store no unless
 the person clearly said yes.
+
+DETAILS THAT NEED CHECKING, NOT JUST ACCEPTING
+The mobile has to be an Australian number. If it is not, say we are an
+Australian contractor and ask whether there is an Australian number to reach
+them on. If there is not, take the one they gave and note in question 12 that
+it is an overseas number.
+
+A post office box is not a building. If someone gives a PO Box or a GPO Box as
+the address, say you need the address of the property itself. If they would
+rather not give it, that is fine: leave street and suburb empty and keep the
+postcode.
+
+The postcode belongs to the property. If an address they give later sits in a
+different postcode from the one they first said, ask which one is the property
+before storing either.
+
+When you read the details back, read what you have actually stored, in the
+stored words. A readback that says something different from the field is worse
+than no readback, because it tells the person their enquiry is right when it
+is not.
 
 BEFORE YOU SUBMIT
 Read the details back in one short message and ask if they are right.
@@ -1002,6 +1030,10 @@ Address: Factory 4, 114 Colemans Road, Carrum Downs, VIC 3201</div></div>
     </div>
 
     <div class="note">
+      <b>The readback is not the record.</b> What the agent types in the chat and what the field update wrote are two different things, and they can disagree. A readback reading "Home, 60s weatherboard" may sit above a field holding exactly "Home". Judge it on the contact record every time. If the readback is wrong but the field is right, that is still worth fixing, because the customer reads the readback and it is the last chance they get to correct anything.
+    </div>
+
+    <div class="note">
       <b>Two things to look at that are not fields.</b> The source should say the enquiry came from the chat and not the form, or you will never know what the bot is worth. And the same first response a form fill triggers should have gone out, to the same person, in the same words.
     </div>
 
@@ -1022,6 +1054,20 @@ Address: Factory 4, 114 Colemans Road, Carrum Downs, VIC 3201</div></div>
       </table>
     </div>
   </div>
+
+    <h3 style="margin-top:2.2rem;font-size:1.2rem">What the first live run found</h3>
+    <p class="sec-lede">Run on 14 September 2026, against the instructions as they stood then. The underfloor answer and the price refusal were both correct. Four things were not, and all four are now covered in section 02.</p>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>What happened</th><th>Why it matters</th></tr></thead>
+        <tbody>
+          <tr><td>Took an overseas mobile without comment</td><td>The website form rejects any number that is not Australian. The agent had no such rule, so a lead arrived that nobody can ring.</td></tr>
+          <tr><td>Accepted a GPO Box as the property address</td><td>A post office box cannot be insulated. It went in as the address and was never questioned.</td></tr>
+          <tr><td>Confirmed one postcode, read back another</td><td>It agreed to 1000, then read back Melbourne VIC 3001, and never asked which one was the property.</td></tr>
+          <tr><td>Read back conversation instead of labels</td><td>"Home, 60s weatherboard" and "Underfloor mainly, walls also (whole property not sure)". Check the contact record to see whether the fields themselves were also wrong.</td></tr>
+        </tbody>
+      </table>
+    </div>
 </section>
 
 <!-- =============================================================== GO LIVE -->
