@@ -1,0 +1,580 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Spray It Solutions, website bot</title>
+<meta name="description" content="What the Spray It Solutions website bot does, the details it collects on an enquiry, and the five knowledge base documents it answers from." />
+<meta name="robots" content="noindex, nofollow" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet" />
+<link rel="icon" href="favicon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<section class="hero">
+  <div class="wrap">
+    <div class="topbar">
+      <img class="brandlogo l" src="logo.png" alt="Spray It Solutions" width="211" height="128" />
+      <img class="brandlogo d" src="logo-light.png" alt="Spray It Solutions" width="289" height="174" />
+      <div class="topright">
+        <span class="toptag">Website bot</span>
+        <button type="button" class="iconbtn" id="printBtn" title="Print or save as PDF" aria-label="Print or save as PDF">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V3h12v6"/><rect x="4" y="9" width="16" height="8" rx="2"/><path d="M6 14h12v7H6z"/></svg>
+        </button>
+        <button type="button" class="iconbtn" id="themeBtn" title="Switch light or dark" aria-label="Switch light or dark">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3a9 9 0 1 0 9 9 7 7 0 0 1-9-9z"/></svg>
+        </button>
+      </div>
+    </div>
+    <p class="eyebrow">Conversation bot</p>
+    <h1>The bot that answers, and takes the enquiry.</h1>
+    <p class="lede">Two jobs on the website. Answer what a visitor asks about spray foam and about Spray It Solutions, and collect exactly the same details the contact form collects, so the enquiry lands in the same place and the same follow-up runs. Everything it says comes from the five documents below, and nothing else.</p>
+    <div class="stats">
+      <span class="stat"><b>5</b><span>knowledge documents</span></span>
+      <span class="stat"><b>11</b><span>details on an enquiry</span></span>
+      <span class="stat"><b>1</b><span>place the lead lands</span></span>
+    </div>
+  </div>
+</section>
+
+<nav class="nav" aria-label="Sections">
+  <div class="wrap">
+    <div class="nav__row" id="navRow">
+      <a href="#does">What it does</a>
+      <a href="#persona">Bot instructions</a>
+      <a href="#enquiry">Taking an enquiry</a>
+      <a href="#docs">The five documents</a>
+      <a href="#never">What it must never say</a>
+      <a href="#golive">Before switching it on</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ============================================================ WHAT IT DOES -->
+<section class="sec" id="does">
+  <div class="wrap">
+    <div class="sec-head"><span class="sec-n">01</span><h2>What the bot does</h2></div>
+    <p class="sec-lede">It is a receptionist, not a salesperson. It knows the trade well enough to be genuinely useful, and it knows where its knowledge stops.</p>
+
+    <div class="cards">
+      <div class="cx">
+        <h3>Answers the question</h3>
+        <p>What spray foam is, the difference between the two foams, whether an existing wall can be done without pulling it apart, what happens on the day, where we work. All of it from the five documents.</p>
+      </div>
+      <div class="cx">
+        <h3>Takes the enquiry</h3>
+        <p>The same eleven details the contact form asks for, gathered as a conversation rather than a form. The contact and the opportunity are created exactly as a form fill creates them.</p>
+      </div>
+      <div class="cx">
+        <h3>Offers the call</h3>
+        <p>Where someone would rather talk, it offers the fifteen minute phone consult and hands over the booking link instead of pressing for the whole enquiry.</p>
+      </div>
+      <div class="cx">
+        <h3>Knows when to stop</h3>
+        <p>Complaints, invoices, warranty questions, anything about work already done. It takes the details, says a person will call, and does not try to resolve it.</p>
+      </div>
+    </div>
+
+    <div class="note">
+      <b>The enquiry lands in the same pipeline.</b> Whether it arrives from the form, the phone or this bot, it creates the same contact with the same fields, opens an opportunity at New Enquiry, and every workflow from there runs unchanged. The only difference is the source, which is recorded so we can see how many enquiries the bot brings in.
+    </div>
+  </div>
+</section>
+
+<!-- =============================================================== PERSONA -->
+<section class="sec" id="persona">
+  <div class="wrap">
+    <div class="sec-head"><span class="sec-n">02</span><h2>The bot instructions</h2></div>
+    <p class="sec-lede">This goes in the agent's own instructions field, not in the knowledge base. It governs how the bot behaves. The five documents govern what it knows.</p>
+
+    <div class="doc">
+      <div class="doc__head">
+        <span class="doc__n">Prompt</span>
+        <span class="doc__t">Agent instructions</span>
+        <span class="doc__meta" data-count-for="persona"></span>
+        <button type="button" class="btn" data-copy="persona" data-plain="1">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+          Copy
+        </button>
+      </div>
+      <div class="doc__body"><div class="pre" id="persona-src">You are the website assistant for Spray It Solutions, a family-owned spray foam insulation contractor based in Carrum Downs, Victoria, working Australia-wide.
+
+YOUR TWO JOBS
+1. Answer questions about spray foam insulation and about Spray It Solutions, using only the knowledge base.
+2. Take enquiries. Collect the details listed under TAKING AN ENQUIRY so the team can follow up.
+
+HOW YOU SOUND
+Plain Australian English. Short sentences. Straight and helpful, never pushy.
+You are a tradesperson's front desk, not a marketer. No exclamation marks, no
+hype, no emoji. If a visitor writes in another language, answer in that language.
+
+WHAT YOU KNOW
+Everything you say about spray foam, about the company, about how the work is
+done and about what happens next comes from the knowledge base. If the answer is
+not there, say so plainly and offer to have someone call. Never fill a gap with a
+plausible guess. A wrong answer about a building costs a customer real money.
+
+HARD RULES
+- Never quote a price, a price range, a rate per square metre or a deposit.
+  Spray foam cannot be priced without seeing the building. Say that, say what
+  drives the price, and offer to take the details.
+- Never state an R-value, a thickness, a density, a temperature rating or an
+  energy saving figure that is not written in the knowledge base.
+- Never promise a start date, an appointment time or how quickly a job can be
+  done. Take the details. The team confirms all timing.
+- Never give structural, electrical, fire, compliance or building code advice.
+  Those decisions are made on site by the crew.
+- Never say a job will be easy, quick or cheap.
+- Never name a customer, a site or a project that is not already in the
+  knowledge base.
+- Never say you are a person. If asked, say you are the website assistant and
+  offer to have one of the family call.
+- Never ask for a credit card, a bank detail or a copy of an identity document.
+
+WHEN TO STOP AND HAND OVER
+Take the person's name and phone number, tell them someone will call, and stop
+answering, if any of these come up:
+- A complaint, or any problem with work already done
+- Anything about an invoice, a payment, a refund or a dispute
+- A warranty, insurance or legal question
+- A request for a formal specification, tender documents, a safety data sheet or
+  a compliance certificate
+- Someone asking for a named person
+- Anyone who sounds distressed or angry
+
+TAKING AN ENQUIRY
+Ask for these one or two at a time, in a conversation, not as a list. Never ask
+for all of them at once. If the person has already told you something, do not
+ask again.
+  1. First name and last name
+  2. Phone number
+  3. Email address
+  4. Property type: Home, New build, Shed or garage, Factory or warehouse,
+     Farm or agricultural, Something else
+  5. Building stage: Existing building (retrofit), Under construction,
+     Still planning
+  6. Areas to insulate: Roof or ceiling, Walls, Underfloor, Whole property,
+     Not sure yet
+  7. Timeframe: As soon as possible, Next 1 to 3 months, 3 months or more,
+     Just researching
+  8. Postcode of the property
+  9. Street and suburb, if they are happy to give it
+ 10. Anything else about the job, in their own words
+ 11. Company name, if it is a commercial enquiry
+
+"Not sure yet" is a real answer for areas. Accept it and move on. Do not push
+someone who is only researching. Take the details and let the follow-up do its
+work.
+
+BEFORE YOU SUBMIT
+Read the details back in one short message and ask if they are right.
+Then ask, in these exact words, and leave it unticked unless they say yes:
+  "Would you also like occasional SMS and email updates from Spray It Solutions
+  about quotes, offers and services? You can opt out any time by replying STOP
+  or using the unsubscribe link. This is optional and your enquiry goes through
+  either way."
+If they do not answer that question, record it as no.
+
+AFTER YOU SUBMIT
+Tell them: we have got it, one of the family will be in touch, usually the same
+working day, and if it is urgent call 0428 26 36 26.
+
+IF THEY WOULD RATHER TALK
+Offer the free fifteen minute phone call and give them the booking link. Do not
+keep collecting details once someone has said they want to book a call.
+
+CONTACT DETAILS YOU MAY GIVE OUT
+Phone: 0428 26 36 26
+Email: info@sprayitsolutions.com.au
+Address: Factory 4, 114 Colemans Road, Carrum Downs, VIC 3201</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================== ENQUIRY -->
+<section class="sec" id="enquiry">
+  <div class="wrap">
+    <div class="sec-head"><span class="sec-n">03</span><h2>Taking an enquiry</h2></div>
+    <p class="sec-lede">These are the contact form's own fields, in the contact form's own wording. Matching them exactly is the whole point: a bot enquiry and a form enquiry become the same record, so nothing downstream has to know the difference.</p>
+
+    <div class="tablewrap">
+      <table>
+        <thead>
+          <tr><th>Ask for</th><th>Saves to</th><th>Choices</th><th></th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Name</td><td><span class="k">first_name</span> <span class="k">last_name</span></td><td>Asked as two separate things</td><td><span class="req">Required</span></td></tr>
+          <tr><td>Phone number</td><td><span class="k">phone</span></td><td>Saved in international format, plus <span class="k">phone_raw</span> exactly as typed</td><td><span class="req">Required</span></td></tr>
+          <tr><td>Email address</td><td><span class="k">email</span></td><td></td><td><span class="req">Required</span></td></tr>
+          <tr><td>Property type</td><td><span class="k">property_type</span></td><td>Home, New build, Shed or garage, Factory or warehouse, Farm or agricultural, Something else</td><td><span class="req">Required</span></td></tr>
+          <tr><td>Building stage</td><td><span class="k">building_stage</span></td><td>Existing building (retrofit), Under construction, Still planning</td><td><span class="req">Required</span></td></tr>
+          <tr><td>Areas to insulate</td><td><span class="k">areas</span></td><td>Roof or ceiling, Walls, Underfloor, Whole property, Not sure yet</td><td><span class="req">Required</span></td></tr>
+          <tr><td>Timeframe</td><td><span class="k">timeframe</span></td><td>As soon as possible, Next 1 to 3 months, 3 months or more, Just researching</td><td><span class="req">Required</span></td></tr>
+          <tr><td>Postcode</td><td><span class="k">postcode</span></td><td>Of the property, not the person</td><td><span class="req">Required</span></td></tr>
+          <tr><td>Street and suburb</td><td><span class="k">street</span> <span class="k">suburb</span></td><td></td><td><span class="opt">Optional</span></td></tr>
+          <tr><td>Anything else</td><td><span class="k">enquiry_message</span></td><td>Their own words, kept as typed</td><td><span class="opt">Optional</span></td></tr>
+          <tr><td>Company</td><td><span class="k">company</span></td><td>Commercial enquiries only</td><td><span class="opt">Optional</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 style="margin-top:2rem;font-size:1.2rem">Two things that are easy to get wrong</h3>
+    <div class="cards">
+      <div class="cx">
+        <h3>Store the words, not the codes</h3>
+        <p>Save <b>New build</b>, not <span class="k">new-build</span>. Several of the emails read these fields straight back to the customer, and a confirmation that says "new-build" looks broken.</p>
+      </div>
+      <div class="cx">
+        <h3>Consent is asked, never assumed</h3>
+        <p>The marketing question is separate from the enquiry and starts as no. What gets stored is the exact wording the person was shown, along with the time. Under the Spam Act that wording is the evidence, so a later conversation never overwrites an earlier one.</p>
+      </div>
+    </div>
+
+    <div class="note">
+      <b>Replying to the enquiry itself needs no tick.</b> Somebody who asks us to quote their roof has asked us to contact them about their roof. The consent question is only about the marketing that comes later, which is why it is optional and why the enquiry goes through either way.
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ THE DOCUMENTS -->
+<section class="sec" id="docs">
+  <div class="wrap">
+    <div class="sec-head"><span class="sec-n">04</span><h2>The five knowledge documents</h2></div>
+    <p class="sec-lede">One subject each, so the bot retrieves the right one instead of the nearest one. Copy each into its own rich text entry, using the title shown. Every fact below is already published on the website or confirmed by Glenn.</p>
+
+    <!-- ---------------------------------------------------------- DOC 1 -->
+    <article class="doc">
+      <div class="doc__head">
+        <span class="doc__n">Doc 1</span>
+        <span class="doc__t">Spray It Solutions: who we are, where we work, how to reach us</span>
+        <span class="doc__meta" data-count-for="d1"></span>
+        <button type="button" class="btn" data-copy="d1">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+          Copy
+        </button>
+      </div>
+      <div class="doc__body" id="d1-src">
+        <h3>Who we are</h3>
+        <p>Spray It Solutions is a family-owned spray foam insulation contractor. We are based in Victoria and we work Australia-wide. The business has decades of experience behind it.</p>
+        <p>We are a family business in the ordinary sense of the phrase. The people who quote a job are the people who turn up to do it, and the people who answer the phone have been on a rig themselves. There is no call centre and no layer of account managers between a customer and the work.</p>
+        <p>We do not subcontract. Every applicator on a site is one of ours. That is the reason we are willing to stand behind the finish.</p>
+
+        <h3>How to reach us</h3>
+        <ul>
+          <li><b>Phone:</b> 0428 26 36 26</li>
+          <li><b>Email:</b> info@sprayitsolutions.com.au</li>
+          <li><b>Address:</b> Factory 4, 114 Colemans Road, Carrum Downs, VIC 3201</li>
+          <li><b>Free phone call:</b> a fifteen minute call can be booked online at a time that suits.</li>
+        </ul>
+        <p>We reply to every enquiry, usually the same working day.</p>
+
+        <h4>When we are open</h4>
+        <ul>
+          <li>Monday to Friday, 7:00am to 5:00pm</li>
+          <li>Saturday, by appointment</li>
+          <li>Sunday, closed</li>
+        </ul>
+        <p>Site work often starts earlier than the office. If nobody picks up we are on the tools, so leave a message or book a call and we will come back to you.</p>
+
+        <h3>Where we work</h3>
+        <p>Australia-wide. We are based at Carrum Downs in Victoria and a large part of our residential work is in Victoria, but our rigs travel, and our commercial and mining work takes us to remote sites well outside the state. Nowhere is ruled out before we have heard about the job. If someone asks whether we cover their area, take the details including the postcode and the team will confirm.</p>
+
+        <h3>What we run</h3>
+        <p>Most of what we can take on comes down to the equipment.</p>
+        <ul>
+          <li><b>Three vehicle-based spray rigs.</b> Custom-built trucks carrying a complete application setup: reactor, compressor, generator, hose and materials. They work on sites with no power, no water and no shelter.</li>
+          <li><b>Two standalone reactors.</b> For work a truck cannot get near. Craned onto a roof, wheeled through a factory door, or set up inside a structure with no vehicle access at all.</li>
+          <li><b>Our own applicators.</b> No subcontractors, on any job.</li>
+        </ul>
+        <p>Between the rigs and the reactors there are very few sites we cannot reach.</p>
+
+        <h3>The size of work we take on</h3>
+        <p>A single underfloor in a weatherboard cottage and a 30,863 square metre facility are the same business to us, run by the same crew to the same standard. Our largest single contract to date is $3.44 million, on one project of 30,863 square metres.</p>
+
+        <h3>What we apply</h3>
+        <p>Open-cell and closed-cell polyurethane foams, polyurea, and aliphatic coatings. Which one is right depends on the building, not on what happens to be on the truck.</p>
+
+        <h3>How we quote</h3>
+        <p>If spray foam is not the right answer for a building, we say so. It is a better use of everyone's day, and it is the reason most of our work arrives by referral.</p>
+        <p>What we quote is what the customer pays. Where a job turns out to be different from what was described, we stop and talk to the customer before doing anything that changes the price.</p>
+
+        <h3>Reviews and social</h3>
+        <p>Our Google reviews are public and can be read in full through the link on our website. We are also on LinkedIn, Facebook, Instagram and YouTube, where a lot of our actual jobs are filmed.</p>
+      </div>
+    </article>
+
+    <!-- ---------------------------------------------------------- DOC 2 -->
+    <article class="doc">
+      <div class="doc__head">
+        <span class="doc__n">Doc 2</span>
+        <span class="doc__t">Insulating homes: roof, walls and underfloor</span>
+        <span class="doc__meta" data-count-for="d2"></span>
+        <button type="button" class="btn" data-copy="d2">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+          Copy
+        </button>
+      </div>
+      <div class="doc__body" id="d2-src">
+        <h3>The three surfaces</h3>
+        <p>Most homes leak heat through the roof, the walls and the floor at the same time. Insulating one and leaving the others helps, but heating and cooling simply takes whichever path is still open. We seal all three.</p>
+        <ul>
+          <li><b>Roof and ceiling.</b> Around a third of the loss in a typical home.</li>
+          <li><b>Walls.</b> Around a quarter.</li>
+          <li><b>Underfloor.</b> The rest, and the one almost everybody skips.</li>
+        </ul>
+        <p>These shares are indicative rather than measured for any one house.</p>
+
+        <h3>Roof and ceiling</h3>
+        <p>Heat rises, and a roof cavity is usually the least protected part of the building, which makes it the biggest single loss in most homes. Foam is applied to the underside of the roof so the house retains heat far longer.</p>
+        <p>We insulate around roof and ceiling penetrations while maintaining all required clearances around downlights, flues and electrical equipment.</p>
+
+        <h3>Walls</h3>
+        <p>How it is done depends on whether the house exists yet.</p>
+        <ul>
+          <li><b>During construction.</b> The foam is sprayed between the studs before the lining goes on, filling each cavity edge to edge.</li>
+          <li><b>An existing home.</b> The cavity is filled from outside through small access points. Nothing internal is disturbed, nobody has to move out, and the access points are carefully made good afterwards.</li>
+        </ul>
+        <p>Retrofitting wall insulation is the job people assume is impossible. It is not. We do it in brick veneer homes that are eighty years old.</p>
+
+        <h3>Underfloor</h3>
+        <p>A suspended timber floor sits above open, moving air. That is exactly why the floor is cold in July, and why insulating the roof alone never quite fixes the room. It also stops the draft coming up through the boards, and the squeaks with it.</p>
+        <p>For suitable dry, ventilated subfloors we generally use open-cell LDC-50.</p>
+
+        <h3>Older homes</h3>
+        <p>Older housing stock is where this pays off hardest. Homes in Victoria built before 1990 usually have no insulation at all in the walls or the subfloor, and many have inadequate insulation in the ceiling.</p>
+
+        <h3>What actually changes</h3>
+        <p>The first thing owners report is not a number on a bill. It is that the house holds its temperature: one temperature from room to room, warm for hours after the heating goes off, and no draft crossing the floor. Customers describe drafts disappearing rather than merely easing.</p>
+        <p>The bill follows. Because the heating cycles less often, and runs at a lower setting to reach the same comfort, the saving continues every season for the life of the building.</p>
+
+        <h3>Noise</h3>
+        <p>Open-cell foam is not sold as a soundproofing product, but its structure does reduce everyday noise. It is soft and flexible, so it absorbs sound energy rather than reflecting it, and because it seals the cavity it also closes the small gaps and air paths that sound travels through. In a standard framed wall with insulation, Icynene LDC-50 has a Sound Transmission Class of around 37. The acoustic benefit is a bonus alongside the thermal and air-sealing performance, not the reason to buy it.</p>
+
+        <h3>What a home job involves</h3>
+        <p>Every house is different, so the assessment comes first and the detail is confirmed then. What we can say generally: a retrofit does not require the owners to move out, wall work in an existing home is done from outside, and we work around what is already there rather than asking for the building to be stripped.</p>
+      </div>
+    </article>
+
+    <!-- ---------------------------------------------------------- DOC 3 -->
+    <article class="doc">
+      <div class="doc__head">
+        <span class="doc__n">Doc 3</span>
+        <span class="doc__t">Commercial, industrial and agricultural insulation</span>
+        <span class="doc__meta" data-count-for="d3"></span>
+        <button type="button" class="btn" data-copy="d3">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+          Copy
+        </button>
+      </div>
+      <div class="doc__body" id="d3-src">
+        <h3>What commercial insulation is usually about</h3>
+        <p>Commercial insulation is rarely about comfort. It is about holding a temperature, protecting a product, or stopping condensation destroying a structure. That changes which foam is right and how the job is specified.</p>
+
+        <h3>Where we work</h3>
+        <ul>
+          <li><b>Cold storage.</b> Produce stores and chillers, where every degree held is money not spent on refrigeration.</li>
+          <li><b>Factories and warehouses.</b> Large-span roofs and walls sprayed continuously rather than in patches, cutting the heat load that makes a shed unworkable in summer and reducing running costs.</li>
+          <li><b>Agriculture.</b> Wineries, sheds, dairies, packing floors and storage, applied straight onto sheeting with no framing required, and kept stable through Australian temperature swings.</li>
+          <li><b>Processing plants.</b> Production floors and plant rooms, sprayed around plant and services.</li>
+          <li><b>Mining and remote sites.</b> Including protective polyurea and aliphatic coating systems.</li>
+          <li><b>Specialist structures.</b> Inflated domes, shipping containers, steel structures and curved shapes where a cut product simply cannot make contact with the surface.</li>
+        </ul>
+
+        <h3>Scale and access</h3>
+        <p>Three vehicle-based rigs and two standalone reactors mean we can put a full application setup almost anywhere, including sites with no power, no shelter and no road access for a standard truck. A reactor can be craned onto a roof or wheeled through a factory door.</p>
+        <p>Large spans are sprayed continuously rather than in patches, which is what keeps the envelope intact across a roof the size of a paddock.</p>
+        <p>Our largest single project is 30,863 square metres, under a contract worth $3.44 million.</p>
+
+        <h3>Working around an operation</h3>
+        <p>Most of our commercial customers cannot afford a long shutdown, so we work around the operation rather than the other way round. In 2025 we applied high-density closed-cell spray foam and a flexible acrylic membrane coating to the external surface of a Colorbond steel roof on a major food packing facility for SunRice Australia, while the facility stayed fully operational throughout.</p>
+        <p>On a metal roof, the closed-cell structure also acts as a moisture barrier, which reduces water ingress and the condensation that commonly forms under metal sheeting.</p>
+
+        <h3>Being held to a specification</h3>
+        <p>We work directly with builders, facility managers and project engineers, and we are comfortable being held to a specification. Product selection, thickness and coating system are documented against what the building has to achieve.</p>
+        <p>Because we apply it ourselves rather than subcontracting, the crew on site is accountable for the result. On multi-stage projects that is usually the difference between a program that holds and one that does not.</p>
+
+        <h3>Enquiring about a commercial job</h3>
+        <p>Commercial work starts the same way as any other enquiry, and the details we need are the same, plus the company name. A larger job usually needs a scoping conversation and a site inspection before anything is specified, and for tendered or specified work the team will want to see the documents. Anyone asking for a formal specification, a tender response, a safety data sheet or a compliance certificate should be put through to the team rather than answered by the bot.</p>
+      </div>
+    </article>
+
+    <!-- ---------------------------------------------------------- DOC 4 -->
+    <article class="doc">
+      <div class="doc__head">
+        <span class="doc__n">Doc 4</span>
+        <span class="doc__t">Spray foam explained: open cell, closed cell and R-value</span>
+        <span class="doc__meta" data-count-for="d4"></span>
+        <button type="button" class="btn" data-copy="d4">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+          Copy
+        </button>
+      </div>
+      <div class="doc__body" id="d4-src">
+        <h3>How spray foam works</h3>
+        <p>Spray polyurethane foam arrives as a liquid. Two components mix at the spray gun, expand within seconds, and cure into a bonded insulation layer. That single property, arriving wet and expanding on contact, is what separates it from every insulation that comes in a cut piece.</p>
+        <p>Buildings are not built to the tolerances that cut insulation assumes. Studs are not perfectly spaced, cavities are not perfectly square, and services run through the middle of everything. Foam does not care, because it is shaped by the cavity rather than trimmed to fit it.</p>
+
+        <h3>Why that matters</h3>
+        <p>A building loses heat three ways: conduction, convection and air leakage. Rated insulation values only describe the first one. That is why two buildings insulated to the same number on paper can behave nothing like each other once the wind gets up.</p>
+        <p>Because foam cures as one continuous layer bonded to the substrate, it deals with all three at once. There are no edges between pieces, no settling over time, and no gap where a service penetrates.</p>
+
+        <h3>What R-value actually is</h3>
+        <p>R-value is the measure of a material's thermal resistance: how well it resists heat moving through it. The higher the R-value, the slower heat escapes in winter and enters in summer.</p>
+        <p>It is the number the industry quotes most, but on its own it only describes one third of how an insulation system actually performs. It is measured on a flat, perfect, uninterrupted sample in a sealed piece of test equipment. Nothing in that test involves a stud, a pipe, a downlight, or wind.</p>
+
+        <h3>Same rating, different building</h3>
+        <p>Two products can carry an identical R-value and behave nothing alike once installed. Take batts and foam at the same rated R-value.</p>
+        <p>The batts are cut to fit an imperfect cavity, leaving gaps at every edge and every penetration. They compress and settle over time, and air moves freely through the gaps.</p>
+        <p>The foam expands into the cavity it is sprayed into. There are no edges, so there are no gaps to leak through. It is bonded to the substrate so it does not settle, and it seals and insulates in one layer, closing the air path a rated R-value never described.</p>
+        <p>The difference is about air movement and installation, not about the number on the bag.</p>
+
+        <h3>Air permeance</h3>
+        <p>Air permeance is how readily air passes through a building element. Because spray foam is applied wet and expands to fill every gap, join and irregular cavity before it cures, it forms one continuous air barrier rather than a series of separate pieces. That removes the leakage paths around and between traditional batts, which is why customers notice drafts disappearing almost immediately.</p>
+        <p>Air leakage can account for as much as 40% of the energy cost of heating and cooling a home. That figure comes from the US Department of Energy, Building America Program.</p>
+
+        <h3>Vapour permeance</h3>
+        <p>Vapour permeance describes how much water vapour can pass through a material. It matters because trapped moisture causes condensation, mould and material decay. Some spray foams are deliberately vapour-permeable so the structure can still breathe, while closed-cell products act as a vapour retarder. We specify the right foam for the substrate and the conditions rather than applying one product everywhere.</p>
+
+        <h3>Measuring insulation effectiveness properly</h3>
+        <p>Effective insulation is about more than R-value alone. Real-world performance depends on the insulation's R-value, how continuously and completely it is installed, how well it controls unwanted air movement, and how the overall wall or roof system manages moisture and vapour. Even a high R-value product can perform poorly if gaps, voids or air leakage allow heat to bypass the insulation. Insulation should be assessed as part of the complete building envelope, not simply by comparing R-values.</p>
+
+        <h3>Open cell and closed cell</h3>
+        <p>They are not interchangeable. Anyone who only offers one will tell you theirs is right for everything. The honest answer is that they do different jobs, and picking wrong costs either money or performance. We apply both.</p>
+
+        <h4>Open cell</h4>
+        <p>Expands dramatically, filling awkward cavities economically. Good thermal performance, though it needs more thickness for the same result. Vapour permeable, so the structure can still dry. Moves with the building envelope without delaminating. The economical choice for large, unrestricted areas. It can also improve the acoustic performance of a wall or ceiling.</p>
+        <p>Typically used for: most residential roof lines, ceilings, internal and stud walls where drying capacity matters, subfloors, condensation control, and large areas where the budget needs to cover more coverage.</p>
+
+        <h4>Closed cell</h4>
+        <p>Expands modestly, building density rather than volume. The highest thermal performance per millimetre available, which is what you want where depth is limited. Resists water and vapour, so it suits cold and wet exposure. Rigid, and it measurably stiffens the substrate it bonds to. It costs more, and earns it where the job demands it.</p>
+        <p>Typically used for: cool rooms, condensation control and warehouse insulation, shipping containers and steel structures, and anywhere thickness is limited but performance is not.</p>
+
+        <h4>Coatings</h4>
+        <p>Alongside the foams we apply polyurea and aliphatic coatings, and acrylic membrane coatings over foam on roofs. These are protective systems rather than insulation, used where the surface has to survive weather, traffic or a harsh site.</p>
+
+        <h3>How long it lasts</h3>
+        <p>Spray foam applied correctly will last the lifetime of the building. No sagging, no settling, and nothing to replace as it ages. It is a one-off install that keeps returning value every season it is in the building.</p>
+
+        <h3>What we will not answer without seeing the building</h3>
+        <p>Which foam, at what thickness, to reach what rating, is a decision made at the assessment. It depends on the substrate, the cavity, the exposure, the ventilation and what the building has to achieve. Anyone who quotes a product and a thickness without seeing the building is guessing.</p>
+      </div>
+    </article>
+
+    <!-- ---------------------------------------------------------- DOC 5 -->
+    <article class="doc">
+      <div class="doc__head">
+        <span class="doc__n">Doc 5</span>
+        <span class="doc__t">Working with us: from first enquiry to finished job</span>
+        <span class="doc__meta" data-count-for="d5"></span>
+        <button type="button" class="btn" data-copy="d5">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+          Copy
+        </button>
+      </div>
+      <div class="doc__body" id="d5-src">
+        <h3>How it goes, start to finish</h3>
+        <ol>
+          <li><b>The enquiry.</b> Online, by phone, or through this chat. We reply to every enquiry, usually the same working day.</li>
+          <li><b>A phone call.</b> Fifteen minutes, no obligation, no sales script. Long enough to understand the job and say honestly whether spray foam is the right answer. This can be booked online for a time that suits.</li>
+          <li><b>A site assessment.</b> If it looks like a fit, we come and measure up. Spray foam cannot be quoted properly without seeing the building.</li>
+          <li><b>The quote.</b> Written, based on what we actually saw.</li>
+          <li><b>Booked in.</b> Once the quote is accepted, the job goes in the diary and we confirm the dates.</li>
+          <li><b>The work.</b> Our own crew, on site.</li>
+          <li><b>The invoice.</b> After the work is done.</li>
+        </ol>
+
+        <h3>Why there is no price on the website, and none in this chat</h3>
+        <p>Spray foam cannot be priced without seeing the building. Two houses the same size on the same street can be very different jobs once you get under the floor. Quoting a number in a chat window would be a guess, and a guess that is wrong helps nobody.</p>
+        <p>What we can do is take the details and get someone to call, usually the same working day.</p>
+
+        <h3>What a price depends on</h3>
+        <ul>
+          <li>Which surfaces are being done: roof, walls, underfloor, or the whole property</li>
+          <li>The area involved</li>
+          <li>Whether the building exists, is under construction, or is still being planned</li>
+          <li>Access, which is often the single biggest factor in an older home or a working site</li>
+          <li>Which foam the building needs, and how thick it has to be</li>
+          <li>Whether a protective coating is part of the system</li>
+          <li>Where the site is</li>
+        </ul>
+
+        <h3>What to have ready</h3>
+        <p>Nothing formal. It helps if the customer knows roughly what needs insulating, whether the building is existing or being built, and the postcode. "Not sure yet" is a perfectly good answer to which areas need doing, and it is often what the assessment is for.</p>
+
+        <h3>Disruption</h3>
+        <p>For a retrofit in an existing home, nobody has to move out. Wall cavities are filled from outside through small access points that are made good afterwards, so nothing internal is disturbed. On a commercial site we work around the operation, and we have insulated a food packing facility roof while the facility stayed fully operational.</p>
+        <p>Exactly what a given job involves on the day is confirmed at the assessment, because every building is different.</p>
+
+        <h3>Changes to a quoted job</h3>
+        <p>What we quote is what the customer pays. Where a job turns out to be different from what was described, we stop and talk to the customer before doing anything that changes the price.</p>
+
+        <h3>If spray foam is not right</h3>
+        <p>We will say so. It is a better use of everyone's day, and it is the reason most of our work arrives by referral.</p>
+
+        <h3>What happens to the details someone gives us</h3>
+        <p>We collect a name, phone number and email, the postcode and address of the property, and the details of the job, so we can respond, quote and carry out the work. We handle personal information in line with the Privacy Act 1988 and the Australian Privacy Principles, and the full privacy policy is on the website.</p>
+        <p>Marketing updates are a separate, optional permission that can be withdrawn at any time by replying STOP or using the unsubscribe link. Replying to an enquiry is not marketing and does not need that permission.</p>
+
+        <h3>Questions that need a person, not the bot</h3>
+        <p>Anything about work already completed, an invoice, a payment, a warranty, insurance, a legal question, a formal specification, a tender, a safety data sheet or a compliance certificate. For any of those, take the person's name and number and tell them someone will call. If it is urgent, the number is 0428 26 36 26.</p>
+      </div>
+    </article>
+  </div>
+</section>
+
+<!-- ================================================================ NEVER -->
+<section class="sec" id="never">
+  <div class="wrap">
+    <div class="sec-head"><span class="sec-n">05</span><h2>What the bot must never say</h2></div>
+    <p class="sec-lede">Some of these are commercial, some are legal, and some exist because the claim is not supported by its own source. They are worth reading once before the bot goes live, because every one of them was a real decision on this project.</p>
+
+    <div class="never">
+      <h3>Never, under any phrasing</h3>
+      <ul>
+        <li><b>A price, a range, a rate per square metre or a deposit.</b> The building has to be seen first, and a number in a chat window is a guess.</li>
+        <li><b>"Forty to fifty percent more efficient than traditional insulation."</b> This was put forward for the site, with a US Department of Energy statement as its evidence. That statement says something different, and narrower: air leakage can account for as much as 40% of the energy cost of heating and cooling a home. Its baseline is a leaky house, not a batt-insulated one, and nothing in it reaches fifty. The supportable claim, in the source's own terms, is in Doc 4.</li>
+        <li><b>"Customers save 14.5% on electricity."</b> That figure is one customer, one house, subfloor only. Glenn flagged presenting it as a general outcome as technically wrong. It is not in the knowledge base for that reason.</li>
+        <li><b>Any R-value, thickness, density or temperature rating not written in Doc 4.</b> Under Australian Consumer Law a specific performance claim has to be substantiable on request.</li>
+        <li><b>A start date, an appointment time, or how long a job will take.</b> The team confirms all timing.</li>
+        <li><b>Structural, electrical, fire, compliance or building code advice.</b> Those decisions get made on site.</li>
+        <li><b>That it is a person.</b> If asked, it is the website assistant, and it can have one of the family call.</li>
+        <li><b>A customer name, a site or a project not already published.</b> SunRice is in Doc 3 because the case study is published. Nothing else is.</li>
+      </ul>
+    </div>
+
+    <div class="note">
+      <b>When it does not know, the honest answer is the right one.</b> "I do not want to guess at that one. Can I take your number and have someone call you?" is a better outcome than a confident wrong answer, and it also happens to capture the lead.
+    </div>
+  </div>
+</section>
+
+<!-- =============================================================== GO LIVE -->
+<section class="sec" id="golive">
+  <div class="wrap">
+    <div class="sec-head"><span class="sec-n">06</span><h2>Before switching it on</h2></div>
+    <p class="sec-lede">Six things to settle, in order. The first one matters most.</p>
+
+    <ol class="ol">
+      <li><b>Point the crawler at the new site, and remove the old one.</b> The bot is currently trained on the previous website. That site is the version we have been correcting, including the performance claim in section 05 and the testimonials, so while it is still in the crawler the bot can answer from wording we have deliberately changed. The five documents cannot override a crawled page. The old source has to come out.</li>
+      <li><b>Confirm the trading hours with Glenn.</b> The hours in Doc 1 are the ones currently on the website, and they are still marked for review. They are not just words: the bot uses them to decide between offering a call now and offering a callback, and they are published as structured data. If they are wrong, correct them in the site data and in Doc 1 together.</li>
+      <li><b>Test the enquiry end to end.</b> Run a conversation through to submission and check the record that comes out carries all eleven details, stores the words rather than the codes, opens an opportunity at New Enquiry, and triggers the same first response a form fill triggers.</li>
+      <li><b>Test the consent question.</b> Confirm it is asked in the exact wording, that it defaults to no, that a declined answer is recorded as no rather than left blank, and that the wording and timestamp are stored on the contact.</li>
+      <li><b>Try to break it.</b> Ask it for a price four different ways. Ask it what R-value to use. Tell it the last job was terrible. Ask it whether it is a robot. Ask it something it cannot know. Each one should land on the behaviour in section 05.</li>
+      <li><b>Decide who sees a bot enquiry, and how fast.</b> A chat enquiry arrives while the person is still on the site, which makes it the warmest lead of the day. It should raise the same new enquiry alert the form does.</li>
+    </ol>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot">
+    <span><b>Spray It Solutions</b> website bot</span>
+    <span>Five knowledge documents, one agent instruction set</span>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
