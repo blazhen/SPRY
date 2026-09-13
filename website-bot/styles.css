@@ -170,6 +170,16 @@ td:last-child:has(.req, .opt) { width: 1%; white-space: nowrap; }
 .act__body .act__lbl + .egs { margin-bottom: .2rem; }
 .act__body > .act__lbl:not(:first-child) { display: block; margin-top: 1rem; }
 
+/* -------------------------------------------------------------- test turns */
+.turns { display: grid; gap: .8rem; margin-top: 1.5rem; }
+.turn { display: grid; grid-template-columns: 2.4rem 1fr; gap: .9rem; align-items: start; }
+.turn__n { font-family: var(--mono); font-size: .85rem; font-weight: 600; color: #fff; background: var(--navy); border-radius: 8px; padding: .3em 0; text-align: center; margin-top: 1.2rem; }
+.turn__b { border: 1px solid var(--line); border-radius: 14px; padding: .85rem 1.1rem 1rem; background: var(--ground); min-width: 0; }
+.turn__b .pre { margin-top: .35rem; font-size: .93rem; }
+.turn__b p { color: var(--ink-2); font-size: .97rem; margin-top: .35rem; }
+.turn__b .act__lbl.eg-if { display: block; margin-top: .9rem; }
+@media (max-width: 560px) { .turn { grid-template-columns: 1fr; gap: .4rem; } .turn__n { width: 2.4rem; margin-top: 0; } }
+
 /* ---------------------------------------------------------------- documents */
 .doc { border: 1px solid var(--line); border-radius: 16px; background: var(--ground); margin-top: 1.4rem; overflow: hidden; box-shadow: var(--shadow-s); }
 .doc__head {
@@ -179,6 +189,7 @@ td:last-child:has(.req, .opt) { width: 1%; white-space: nowrap; }
 .doc__n { font-family: var(--mono); font-size: .8rem; font-weight: 600; color: #fff; background: var(--navy); border-radius: 7px; padding: .25em .6em; }
 :root[data-theme="dark"] .doc__n { color: #0b0f1a; }
 :root[data-theme="dark"] .act__n { color: #0b0f1a; }
+:root[data-theme="dark"] .turn__n { color: #0b0f1a; }
 .doc__t { font-family: var(--display); font-weight: 700; font-size: 1.08rem; flex: 1 1 14rem; min-width: 0; }
 .doc__meta { font-size: .82rem; color: var(--ink-3); font-family: var(--mono); }
 .btn {

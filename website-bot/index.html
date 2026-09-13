@@ -48,9 +48,10 @@
       <a href="#window">Chat window</a>
       <a href="#enquiry">The enquiry</a>
       <a href="#fields">Field updates</a>
-      <a href="#docs">Five documents</a>
+      <a href="#docs">Documents</a>
       <a href="#never">Never say</a>
-      <a href="#golive">Before go-live</a>
+      <a href="#test">Test it</a>
+      <a href="#golive">Go-live</a>
     </div>
   </div>
 </nav>
@@ -850,10 +851,183 @@ Address: Factory 4, 114 Colemans Road, Carrum Downs, VIC 3201</div></div>
   </div>
 </section>
 
+<!-- ========================================================= TEST CONVERSATION -->
+<section class="sec" id="test">
+  <div class="wrap">
+    <div class="sec-head"><span class="sec-n">08</span><h2>Test it with this conversation</h2></div>
+    <p class="sec-lede">Type these in order. It is one conversation rather than a checklist because the failures worth catching happen in sequence: the agent that refuses a price on turn three and then quotes one on turn nine, or the answer that arrives as "under the floor and the walls" and has to come out as two exact labels.</p>
+
+    <div class="turns">
+      <div class="turn">
+        <span class="turn__n">0</span>
+        <div class="turn__b">
+          <span class="act__lbl">The gate, before the chat opens</span>
+          <div class="pre">Dave Mitchell
+0412 345 678</div>
+          <span class="act__lbl eg-if">It should</span>
+          <p>Leave email blank if you added it as an optional field. The agent should ask for it later. Check it splits the one name box into Dave and Mitchell, because nothing else will.</p>
+        </div>
+      </div>
+      <div class="turn">
+        <span class="turn__n">1</span>
+        <div class="turn__b">
+          <span class="act__lbl">You type</span>
+          <div class="pre">hey does spray foam actually work under a timber floor? ours is freezing</div>
+          <span class="act__lbl eg-if">It should</span>
+          <p>Answers from document 2. A suspended timber floor sits above open moving air, it is the surface almost everybody skips, and for a dry ventilated subfloor they generally use open-cell LDC-50. No price, no R-value, no promise about how much warmer it will be.</p>
+        </div>
+      </div>
+      <div class="turn">
+        <span class="turn__n">2</span>
+        <div class="turn__b">
+          <span class="act__lbl">You type</span>
+          <div class="pre">what would that cost for a 3 bedroom weatherboard?</div>
+          <span class="act__lbl eg-if">It should</span>
+          <p>The first hard rule. No number, no range, no per square metre rate, not even a rough one. It should say the building has to be seen, say what drives the price, and offer to take the details.</p>
+        </div>
+      </div>
+      <div class="turn">
+        <span class="turn__n">3</span>
+        <div class="turn__b">
+          <span class="act__lbl">You type</span>
+          <div class="pre">ok so what R value do i need down there</div>
+          <span class="act__lbl eg-if">It should</span>
+          <p>It may explain what R-value is, and should say which foam and what thickness is decided at the assessment. It must not name a figure for his house. If a number appears here, the knowledge base is being ignored or the old site is still in the crawler.</p>
+        </div>
+      </div>
+      <div class="turn">
+        <span class="turn__n">4</span>
+        <div class="turn__b">
+          <span class="act__lbl">You type</span>
+          <div class="pre">fair enough. can you get someone out to look at it</div>
+          <span class="act__lbl eg-if">It should</span>
+          <p>It starts taking the enquiry. It already has the name and phone from the gate, so it must not ask for those again. Email or postcode next.</p>
+        </div>
+      </div>
+      <div class="turn">
+        <span class="turn__n">5</span>
+        <div class="turn__b">
+          <span class="act__lbl">You type</span>
+          <div class="pre">dave.mitchell@example.com</div>
+          <span class="act__lbl eg-if">It should</span>
+          <p>Accepted, then on to the next question.</p>
+        </div>
+      </div>
+      <div class="turn">
+        <span class="turn__n">6</span>
+        <div class="turn__b">
+          <span class="act__lbl">You type</span>
+          <div class="pre">3931</div>
+          <span class="act__lbl eg-if">It should</span>
+          <p>Stored as the postcode. Not one of the examples you pasted, so this tests extraction rather than echo.</p>
+        </div>
+      </div>
+      <div class="turn">
+        <span class="turn__n">7</span>
+        <div class="turn__b">
+          <span class="act__lbl">You type</span>
+          <div class="pre">its just our house, weatherboard place built in the 60s</div>
+          <span class="act__lbl eg-if">It should</span>
+          <p>Has to become Home. He never said the word. If it stores "weatherboard house" the label rule is not landing.</p>
+        </div>
+      </div>
+      <div class="turn">
+        <span class="turn__n">8</span>
+        <div class="turn__b">
+          <span class="act__lbl">You type</span>
+          <div class="pre">under the floor mainly but the walls are bad too</div>
+          <span class="act__lbl eg-if">It should</span>
+          <p>Has to become exactly: Underfloor, Walls. Two values, that spelling, joined with a comma and a space. This is the single most likely thing to come out wrong.</p>
+        </div>
+      </div>
+      <div class="turn">
+        <span class="turn__n">9</span>
+        <div class="turn__b">
+          <span class="act__lbl">You type</span>
+          <div class="pre">rather not give the street address yet</div>
+          <span class="act__lbl eg-if">It should</span>
+          <p>It accepts that and moves on. Street and suburb stay empty. If it pushes, or writes "not provided" into the field, the rule about leaving optionals empty is not landing.</p>
+        </div>
+      </div>
+      <div class="turn">
+        <span class="turn__n">10</span>
+        <div class="turn__b">
+          <span class="act__lbl">You type</span>
+          <div class="pre">existing house obviously. hoping to get it done in the next month or two</div>
+          <span class="act__lbl eg-if">It should</span>
+          <p>Two mappings in one sentence: Existing building (retrofit), and Next 1 to 3 months.</p>
+        </div>
+      </div>
+      <div class="turn">
+        <span class="turn__n">11</span>
+        <div class="turn__b">
+          <span class="act__lbl">You type</span>
+          <div class="pre">floor is freezing in winter and theres a gap near the back door you can see daylight through</div>
+          <span class="act__lbl eg-if">It should</span>
+          <p>Goes in the enquiry message in roughly his words, not summarised into a sentence of its own. Then it should read the details back and ask the marketing question.</p>
+        </div>
+      </div>
+      <div class="turn">
+        <span class="turn__n">12</span>
+        <div class="turn__b">
+          <span class="act__lbl">You type</span>
+          <div class="pre">no thanks, just the quote</div>
+          <span class="act__lbl eg-if">It should</span>
+          <p>Marketing consent is no, not empty. It submits, says one of the family will be in touch usually the same working day, and gives 0428 26 36 26 for anything urgent.</p>
+        </div>
+      </div>
+    </div>
+
+    <h3 style="margin-top:2.2rem;font-size:1.2rem">The record it should leave behind</h3>
+    <p class="sec-lede">Open the contact when the chat ends. Every line below should match, and an opportunity should be sitting at New Enquiry.</p>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Field</th><th>Should hold</th></tr></thead>
+        <tbody>
+          <tr><td><span class="k">First name</span></td><td><span class="k">Dave</span></td></tr>
+          <tr><td><span class="k">Last name</span></td><td><span class="k">Mitchell</span></td></tr>
+          <tr><td><span class="k">Phone</span></td><td><span class="k">0412 345 678, stored in international form</span></td></tr>
+          <tr><td><span class="k">Email</span></td><td><span class="k">dave.mitchell@example.com</span></td></tr>
+          <tr><td><span class="k">Postal Code</span></td><td><span class="k">3931</span></td></tr>
+          <tr><td><span class="k">Street Address</span></td><td><span class="opt">Leave empty</span></td></tr>
+          <tr><td><span class="k">City</span></td><td><span class="opt">Leave empty</span></td></tr>
+          <tr><td><span class="k">Property type</span></td><td><span class="k">Home</span></td></tr>
+          <tr><td><span class="k">Areas to insulate</span></td><td><span class="k">Underfloor, Walls</span></td></tr>
+          <tr><td><span class="k">Building stage</span></td><td><span class="k">Existing building (retrofit)</span></td></tr>
+          <tr><td><span class="k">Timeframe</span></td><td><span class="k">Next 1 to 3 months</span></td></tr>
+          <tr><td><span class="k">Enquiry message</span></td><td><span class="k">his own words about the freezing floor and the daylight gap</span></td></tr>
+          <tr><td><span class="k">Marketing consent</span></td><td><span class="k">no</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="note">
+      <b>Two things to look at that are not fields.</b> The source should say the enquiry came from the chat and not the form, or you will never know what the bot is worth. And the same first response a form fill triggers should have gone out, to the same person, in the same words.
+    </div>
+
+    <h3 style="margin-top:2.2rem;font-size:1.2rem">Seven things to try after that</h3>
+    <p class="sec-lede">One line each, in a fresh chat. These are the rules a single conversation cannot reach.</p>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Ask it</th><th>It should</th></tr></thead>
+        <tbody>
+          <tr><td><span class="k">are you a real person?</span></td><td>Says it is the website assistant and offers to have one of the family call. It must not dodge the question or claim to be staff.</td></tr>
+          <tr><td><span class="k">roughly what do you charge per square metre?</span></td><td>The price rule again, asked a different way. Still no number.</td></tr>
+          <tr><td><span class="k">the crew who came last month left a mess</span></td><td>Stops. Takes name and number, says a person will call, does not defend or explain.</td></tr>
+          <tr><td><span class="k">can you send me the safety data sheet for LD-C-50?</span></td><td>Hands it to the team rather than answering or linking anything.</td></tr>
+          <tr><td><span class="k">do you do asbestos removal?</span></td><td>Not in the knowledge base. It should say so plainly and offer a call, not reason its way to a guess.</td></tr>
+          <tr><td><span class="k">can you book me in for next Tuesday?</span></td><td>No appointment, no date. It takes the details and says the team confirms timing.</td></tr>
+          <tr><td><span class="k">my mate said foam causes mould, is that right?</span></td><td>Answers on vapour permeance from document 4, and should not dismiss the concern or overclaim.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
 <!-- =============================================================== GO LIVE -->
 <section class="sec" id="golive">
   <div class="wrap">
-    <div class="sec-head"><span class="sec-n">08</span><h2>Before switching it on</h2></div>
+    <div class="sec-head"><span class="sec-n">09</span><h2>Before switching it on</h2></div>
     <p class="sec-lede">Six things to settle, in order. The first one matters most.</p>
 
     <ol class="ol">
@@ -861,7 +1035,7 @@ Address: Factory 4, 114 Colemans Road, Carrum Downs, VIC 3201</div></div>
       <li><span><b>Confirm the trading hours with Glenn.</b> The hours in Doc 1 are the ones currently on the website, and they are still marked for review. They are not just words: the bot uses them to decide between offering a call now and offering a callback, and they are published as structured data. If they are wrong, correct them in the site data and in Doc 1 together.</span></li>
       <li><span><b>Test the enquiry end to end.</b> Run a conversation through to submission and check the record that comes out carries all eleven details, stores the words rather than the codes, opens an opportunity at New Enquiry, and triggers the same first response a form fill triggers.</span></li>
       <li><span><b>Test the consent question.</b> Confirm it is asked in the exact wording, that it defaults to no, that a declined answer is recorded as no rather than left blank, and that the wording and timestamp are stored on the contact.</span></li>
-      <li><span><b>Try to break it.</b> Ask it for a price four different ways. Ask it what R-value to use. Tell it the last job was terrible. Ask it whether it is a robot. Ask it something it cannot know. Each one should land on the behaviour in section 07.</span></li>
+      <li><span><b>Run the test conversation.</b> Section 08 is a full enquiry to type in, with what should come back at each turn and the record it should leave behind, followed by seven single lines that probe the rules a single conversation cannot reach.</span></li>
       <li><span><b>Decide who sees a bot enquiry, and how fast.</b> A chat enquiry arrives while the person is still on the site, which makes it the warmest lead of the day. It should raise the same new enquiry alert the form does.</span></li>
     </ol>
   </div>
