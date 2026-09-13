@@ -403,6 +403,28 @@
     }).join('');
   }
 
+  /* Slide the chosen stage to the middle of the rail, or as close as the ends
+     allow, so the first and last stages are never left half cut off. */
+  function centreNode(node) {
+    var over = railEl.scrollWidth - railEl.clientWidth;
+    if (over <= 0) { railEl.scrollLeft = 0; return; }
+    var nb = node.getBoundingClientRect(), rb = railEl.getBoundingClientRect();
+    var want = railEl.scrollLeft + (nb.left - rb.left) - (rb.width - nb.width) / 2;
+    railEl.scrollLeft = Math.max(0, Math.min(over, Math.round(want)));
+  }
+
+  /* Is there more rail than screen, and on which side? Drives the grab
+     cursor, the drag hint and the fade on each edge. */
+  function railEdges() {
+    if (!railEl) return;
+    var over = railEl.scrollWidth - railEl.clientWidth;
+    var more = over > 2;
+    railEl.classList.toggle('grabbable', more);
+    railEl.classList.toggle('rail-over', more);
+    railEl.classList.toggle('can-l', more && railEl.scrollLeft > 2);
+    railEl.classList.toggle('can-r', more && railEl.scrollLeft < over - 2);
+  }
+
   function activate(pipelineId, stageKey, opts) {
     opts = opts || {};
     var p = pipelineById(pipelineId);
@@ -414,9 +436,10 @@
     buildRail();
     var active = railEl.querySelector('.node[aria-selected="true"]');
     if (active) {
-      active.scrollIntoView({ inline: 'center', block: 'nearest' });
+      centreNode(active);
       if (opts.focus) active.focus();
     }
+    railEdges();
     main.querySelectorAll('.panel').forEach(function (pn) { pn.classList.toggle('on', pn.id === 'p-' + p.id + '-' + stage.key); });
 
     var i = p.stages.indexOf(stage);
@@ -753,6 +776,46 @@
       var b = e.target.closest('.node');
       if (b) activate(state.pipeline, b.dataset.stage);
     });
+
+    /* Press and pull the rail sideways. Touch scrolls it natively already, so
+       only a mouse or a pen is handled here. A press has to travel past a few
+       pixels before it counts as a drag, and a drag must not pick the stage it
+       happened to finish on. */
+    var grab = null, moved = false;
+    railEl.addEventListener('pointerdown', function (e) {
+      moved = false;
+      if (e.pointerType === 'touch' || (e.pointerType === 'mouse' && e.button !== 0)) return;
+      if (railEl.scrollWidth - railEl.clientWidth < 3) return;
+      grab = { x: e.clientX, left: railEl.scrollLeft, id: e.pointerId };
+    });
+    railEl.addEventListener('pointermove', function (e) {
+      if (!grab || e.pointerId !== grab.id) return;
+      var dx = e.clientX - grab.x;
+      if (!moved) {
+        if (Math.abs(dx) < 6) return;
+        moved = true;
+        railEl.classList.add('dragging');
+        try { railEl.setPointerCapture(grab.id); } catch (err) { /* older engines */ }
+      }
+      railEl.scrollLeft = grab.left - dx;
+      railEdges();
+      e.preventDefault();
+    });
+    function letGo(e) {
+      if (!grab || (e && e.pointerId !== undefined && e.pointerId !== grab.id)) return;
+      try { railEl.releasePointerCapture(grab.id); } catch (err) { /* already gone */ }
+      grab = null;
+      railEl.classList.remove('dragging');
+    }
+    railEl.addEventListener('pointerup', letGo);
+    railEl.addEventListener('pointercancel', letGo);
+    railEl.addEventListener('lostpointercapture', letGo);
+    railEl.addEventListener('dragstart', function (e) { e.preventDefault(); });
+    railEl.addEventListener('click', function (e) {
+      if (moved) { e.stopPropagation(); e.preventDefault(); moved = false; }
+    }, true);
+    railEl.addEventListener('scroll', railEdges, { passive: true });
+    window.addEventListener('resize', railEdges);
     railEl.addEventListener('keydown', function (e) {
       var nodes = Array.prototype.slice.call(railEl.querySelectorAll('.node'));
       var i = nodes.indexOf(document.activeElement);
@@ -852,6 +915,14 @@
     buildSeg();
     renderAll();
     fromHash(false);
+    /* The web fonts land after the first measure, and the rail gets wider when
+       they do. Put the chosen stage back in the middle once that has settled,
+       or the last stage sits a few pixels off the end. */
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () {
+      var a = railEl && railEl.querySelector('.node[aria-selected="true"]');
+      if (a) centreNode(a);
+      railEdges();
+    });
   } else {
     openFromHash();
     window.addEventListener('hashchange', openFromHash);
