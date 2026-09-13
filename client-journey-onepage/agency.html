@@ -14,8 +14,6 @@
 </head>
 <body>
 
-  <div class="agency-band">Systemations internal. The client-facing version is <a href="index.html">index.html</a>. Do not send this page to the client.</div>
-
   <!-- ======================= HERO ======================= -->
   <section class="hero">
     <div class="wrap">
@@ -49,14 +47,12 @@
   <!-- ======================= CONTROLS ======================= -->
   <div class="controls">
     <div class="wrap">
-      <div class="controls__row">
+      <div class="controls__top">
+        <nav class="pagenav" id="pageNav" aria-label="Pages"></nav>
         <div class="seg" id="pipelineSeg" role="group" aria-label="Choose a pipeline"></div>
-        <div class="controls__right">
-          <span class="hint">Showing <span class="pzchip">sample customer</span> or <span class="tkchip">{{merge fields}}</span></span>
-          <div class="seg" id="viewSeg" role="group" aria-label="Preview mode">
-            <button type="button" data-view="preview" aria-pressed="false">Preview</button>
-            <button type="button" data-view="fields" aria-pressed="true">Fields</button>
-          </div>
+        <div class="seg" id="viewSeg" role="group" aria-label="Preview mode">
+          <button type="button" data-view="preview" aria-pressed="false">Preview</button>
+          <button type="button" data-view="fields" aria-pressed="true">Fields</button>
         </div>
       </div>
       <div class="rail" id="rail" role="tablist" aria-label="Stages"></div>
@@ -73,6 +69,12 @@
   </main>
 
   <!-- ======================= APPENDICES ======================= -->
+  <details class="more" id="more">
+    <summary class="wrap">
+      <span class="more__t">Reference: values, fields, alerts, hours and build order</span>
+      <span class="more__s">Everything needed to set the sub-account up, and the checklist to tick before the first real lead.</span>
+    </summary>
+
   <section class="appendix" id="reuse">
     <div class="wrap">
       <div class="sec-head"><span class="sec-n">B1</span><h2>Reusing this for another client</h2></div>
@@ -107,8 +109,8 @@
 
   <section class="appendix" id="alerts">
     <div class="wrap">
-      <div class="sec-head"><span class="sec-n">B5</span><h2>The eleven alerts that interrupt</h2></div>
-      <p class="sec-lede">A notification is a request to do something. If nothing needs doing it is a report, and reports go in the daily digest. Adding a twelfth should require an argument.</p>
+      <div class="sec-head"><span class="sec-n">B5</span><h2>The <span id="cntAlerts">11</span> alerts that interrupt</h2></div>
+      <p class="sec-lede">A notification is a request to do something. If nothing needs doing it is a report, and reports go in the daily digest. Only one of these was added after the rule was written, and it had to earn it.</p>
       <div class="t-scroll"><table><thead><tr><th>#</th><th>Alert</th><th>Fires when</th><th>To</th><th>Channel</th></tr></thead><tbody id="tblAlerts"></tbody></table></div>
       <div class="sec-head" style="margin-top:2.4rem"><span class="sec-n">B6</span><h2>Roles</h2></div>
       <div class="t-scroll"><table><thead><tr><th>Role</th><th>At Spray It</th><th>Owns</th></tr></thead><tbody id="tblRoles"></tbody></table></div>
@@ -135,6 +137,7 @@
       <ul class="checks" id="goLive"></ul>
     </div>
   </section>
+  </details>
 
   <footer>
     <div class="wrap foot">

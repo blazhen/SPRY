@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Spray It Solutions journey, workflows</title>
+<meta name="description" content="Every workflow to build for the Spray It Solutions journey: trigger, steps, branches and stop conditions, rendered from the same data as the journey page." />
+<meta name="robots" content="noindex, nofollow" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet" />
+<link rel="icon" href="favicon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <section class="hero">
+    <div class="wrap">
+      <div class="topbar">
+        <img class="brandlogo l" src="logo.png" alt="Spray It Solutions" width="211" height="128" />
+        <img class="brandlogo d" src="logo-light.png" alt="Spray It Solutions" width="289" height="174" />
+        <div class="topright">
+          <span class="toptag">Agency workflows</span>
+          <button type="button" class="iconbtn" id="printBtn" title="Print or save as PDF" aria-label="Print or save as PDF">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V3h12v6"/><rect x="4" y="9" width="16" height="8" rx="2"/><path d="M6 14h12v7H6z"/></svg>
+          </button>
+          <button type="button" class="iconbtn" id="themeBtn" title="Switch light or dark" aria-label="Switch light or dark">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3a9 9 0 1 0 9 9 7 7 0 0 1-9-9z"/></svg>
+          </button>
+        </div>
+      </div>
+      <p class="eyebrow">Systemations workflows</p>
+      <h1>Every workflow to build, step by step</h1>
+      <p class="lede">The automation behind the journey, written in the platform's own building blocks: a trigger, the steps in order, the branches, and what stops it. Every Send links to the stage that shows the message. Build them in the order of the build sheet, and tick the go-live list there before the first real lead.</p>
+      <div class="stats">
+        <span class="stat"><b id="cntWorkflows">29</b><span>workflows</span></span>
+        <span class="stat"><b id="cntSent">56</b><span>messages sent by them</span></span>
+        <span class="stat"><b id="statAlerts">11</b><span>alerts</span></span>
+        <span class="stat"><b id="statTasks">42</b><span>tasks</span></span>
+      </div>
+      <p class="sec-lede" id="coverage" style="margin-top:1.2rem"></p>
+    </div>
+  </section>
+
+  <div class="controls">
+    <div class="wrap">
+      <div class="controls__top">
+        <nav class="pagenav" id="pageNav" aria-label="Pages"></nav>
+        <span class="hint">Step types: <span class="st st--send">Send</span> <span class="st st--task">Task</span> <span class="st st--alert">Alert</span> <span class="st st--wait">Wait</span> <span class="st st--if">If</span> <span class="st st--move">Move</span> <span class="st st--set">Set</span> <span class="st st--do">Do</span></span>
+      </div>
+      <div class="controls__row">
+        <div class="seg" id="boardSeg" role="group" aria-label="Filter by board">
+          <button type="button" data-board="all" aria-pressed="true">All</button>
+          <button type="button" data-board="residential" aria-pressed="false">Residential</button>
+          <button type="button" data-board="commercial" aria-pressed="false">Commercial</button>
+        </div>
+        <div class="controls__right">
+          <button type="button" class="btn" data-acc="open" data-target="#workflows details">Open all</button>
+          <button type="button" class="btn" data-acc="close" data-target="#workflows details">Close all</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <main class="wrap">
+    <div id="workflows" class="wf-list"></div>
+  </main>
+
+  <section class="appendix" id="conventions">
+    <div class="wrap">
+      <div class="sec-head"><span class="sec-n">C1</span><h2>Conventions that apply to every workflow</h2></div>
+      <div class="cards">
+        <div class="cx"><h3>Stop on reply</h3><p>Every sequence checks for an inbound reply before each send and stops if one has arrived. WF-24 handles the pause; each sequence still needs its own exit condition so a resumed contact does not receive a stale message.</p></div>
+        <div class="cx"><h3>Send window</h3><p>Anything marked "waits for the send window" sits behind a Wait until a time window step: 8am to 8pm, Monday to Saturday. Confirmations are exempt.</p></div>
+        <div class="cx"><h3>Won kills sales</h3><p>WF-14 removes the contact from every sales sequence before it does anything else. Test this one specifically: set a card to Won mid-chase and confirm nothing further sends.</p></div>
+        <div class="cx"><h3>Error branches</h3><p>Every workflow gets an error branch that fires alert 11 with the workflow name and the contact. A silent failure is a lead vanishing.</p></div>
+        <div class="cx"><h3>Human labels</h3><p>Dropdown fields store the label, not the form value, or the echo emails read "new-build". Fixed once in WF-01, checked in the go-live list.</p></div>
+        <div class="cx"><h3>Required fields on entry</h3><p>Stages that need a field to send correctly (assessment date, proposal due date, job dates, invoice number, PO number, photos) require it on the stage change rather than reminding afterwards.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="wrap foot">
+      <span><b>Systemations</b> · internal workflow list for Spray It Solutions</span>
+      <span>Source of truth: <b>journey-data.js</b> · also generated as <b>CRM-WORKFLOWS.md</b></span>
+    </div>
+  </footer>
+
+  <script>window.JOURNEY_AGENCY = true;</script>
+  <script src="journey-data.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,1177 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="robots" content="noindex, nofollow" />
+<title>SprayIT Pipeline Blueprint</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+
+<style>
+  /* ==========================================================================
+     Tokens
+
+     Light is the bare :root. Dark values are declared once as --d-* so the two
+     dark selectors (system preference, explicit toggle) can only ever assign
+     the same thing. Nothing below this block declares a colour literal.
+     ========================================================================== */
+  :root {
+    --ground: #F5F8FC;
+    --surface: #FFFFFF;
+    --surface-2: #EAF0F9;
+    --ink: #0B1B3A;
+    --ink-2: #47536D;
+    --ink-3: #6C7890;
+    --line: #D6DFEC;
+    --line-soft: #E5EBF4;
+    --navy: #002396;
+    --navy-ink: #002396;
+    --lime: #5E9224;
+    --lime-ink: #4F7D1C;
+    --steel: #4A5B7A;
+    --hot: #B93B20;
+    --hot-wash: #FBEBE6;
+    --lime-wash: #EEF6E2;
+    --navy-wash: #E7ECFA;
+    --shadow: 0 1px 2px rgba(11, 27, 58, .05), 0 8px 24px -14px rgba(11, 27, 58, .22);
+
+    --d-ground: #0A1020;
+    --d-surface: #121A2C;
+    --d-surface-2: #1A2439;
+    --d-ink: #E7EDF8;
+    --d-ink-2: #A6B2C8;
+    --d-ink-3: #7D8AA3;
+    --d-line: #27334A;
+    --d-line-soft: #1E2839;
+    --d-navy: #93AEFF;
+    --d-navy-ink: #A8BEFF;
+    --d-lime: #A6D65C;
+    --d-lime-ink: #B5E06D;
+    --d-steel: #93A3BF;
+    --d-hot: #F08A6C;
+    --d-hot-wash: #33190F;
+    --d-lime-wash: #1D2A12;
+    --d-navy-wash: #16203C;
+    --d-shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 8px 24px -14px rgba(0, 0, 0, .6);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground: var(--d-ground);
+      --surface: var(--d-surface);
+      --surface-2: var(--d-surface-2);
+      --ink: var(--d-ink);
+      --ink-2: var(--d-ink-2);
+      --ink-3: var(--d-ink-3);
+      --line: var(--d-line);
+      --line-soft: var(--d-line-soft);
+      --navy: var(--d-navy);
+      --navy-ink: var(--d-navy-ink);
+      --lime: var(--d-lime);
+      --lime-ink: var(--d-lime-ink);
+      --steel: var(--d-steel);
+      --hot: var(--d-hot);
+      --hot-wash: var(--d-hot-wash);
+      --lime-wash: var(--d-lime-wash);
+      --navy-wash: var(--d-navy-wash);
+      --shadow: var(--d-shadow);
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --ground: var(--d-ground);
+    --surface: var(--d-surface);
+    --surface-2: var(--d-surface-2);
+    --ink: var(--d-ink);
+    --ink-2: var(--d-ink-2);
+    --ink-3: var(--d-ink-3);
+    --line: var(--d-line);
+    --line-soft: var(--d-line-soft);
+    --navy: var(--d-navy);
+    --navy-ink: var(--d-navy-ink);
+    --lime: var(--d-lime);
+    --lime-ink: var(--d-lime-ink);
+    --steel: var(--d-steel);
+    --hot: var(--d-hot);
+    --hot-wash: var(--d-hot-wash);
+    --lime-wash: var(--d-lime-wash);
+    --navy-wash: var(--d-navy-wash);
+    --shadow: var(--d-shadow);
+  }
+
+  /* ==========================================================================
+     Base
+     ========================================================================== */
+  * { box-sizing: border-box; }
+
+  body {
+    background: var(--ground);
+    color: var(--ink);
+    font-family: "IBM Plex Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+    font-size: 16px;
+    line-height: 1.62;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap {
+    max-width: 62rem;
+    margin: 0 auto;
+    padding: 0 1.5rem 6rem;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: Archivo, ui-sans-serif, system-ui, sans-serif;
+    text-wrap: balance;
+    margin: 0;
+    letter-spacing: -.015em;
+  }
+
+  p { margin: 0; max-width: 68ch; }
+
+  a { color: var(--navy-ink); text-underline-offset: 3px; }
+
+  code, .mono {
+    font-family: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: .86em;
+  }
+
+  code {
+    background: var(--surface-2);
+    border: 1px solid var(--line-soft);
+    border-radius: 4px;
+    padding: .1em .38em;
+    white-space: nowrap;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--navy);
+    outline-offset: 3px;
+    border-radius: 3px;
+  }
+
+  /* ==========================================================================
+     Masthead
+     ========================================================================== */
+  .masthead {
+    border-bottom: 1px solid var(--line);
+    background: var(--surface);
+    margin-bottom: 3.5rem;
+  }
+
+  .masthead-inner {
+    max-width: 62rem;
+    margin: 0 auto;
+    padding: 3.25rem 1.5rem 2.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .kicker {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: .72rem;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--lime-ink);
+    display: flex;
+    align-items: center;
+    gap: .7rem;
+  }
+
+  .kicker::before {
+    content: "";
+    width: 1.9rem;
+    height: 2px;
+    background: var(--lime);
+  }
+
+  h1 {
+    font-size: clamp(2.1rem, 5.2vw, 3.1rem);
+    font-weight: 800;
+    line-height: 1.04;
+    letter-spacing: -.03em;
+  }
+
+  .standfirst {
+    font-size: 1.075rem;
+    color: var(--ink-2);
+    max-width: 60ch;
+  }
+
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--line-soft);
+    font-size: .82rem;
+    color: var(--ink-3);
+  }
+
+  .meta b {
+    display: block;
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: .68rem;
+    letter-spacing: .13em;
+    text-transform: uppercase;
+    font-weight: 500;
+    color: var(--ink-3);
+    opacity: .8;
+    margin-bottom: .1rem;
+  }
+
+  .meta span { color: var(--ink); font-weight: 500; }
+
+  /* ==========================================================================
+     Sections
+     ========================================================================== */
+  section { margin-bottom: 4rem; scroll-margin-top: 1.5rem; }
+
+  .sec-head {
+    display: flex;
+    align-items: baseline;
+    gap: .85rem;
+    margin-bottom: 1.4rem;
+    padding-bottom: .8rem;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .sec-n {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: .8rem;
+    font-weight: 500;
+    color: var(--ink-3);
+    letter-spacing: .06em;
+    flex: none;
+  }
+
+  h2 { font-size: 1.42rem; font-weight: 700; }
+
+  h3 {
+    font-size: 1.02rem;
+    font-weight: 700;
+    margin: 2.1rem 0 .7rem;
+    letter-spacing: -.005em;
+  }
+
+  .stack { display: flex; flex-direction: column; gap: 1rem; }
+
+  /* ==========================================================================
+     Pipeline flow strip
+
+     The stages of a pipeline are a genuine sequence, so they are numbered and
+     laid left to right. The rail colour identifies the pipeline, the chip under
+     each stage is its stall time, the dot marks a stage the AI may move a card
+     into, and the divider is the Won line: everything right of it is work
+     already sold.
+     ========================================================================== */
+  .board {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+
+  .board-top {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: .5rem 1rem;
+    padding: .9rem 1.15rem;
+    border-bottom: 1px solid var(--line-soft);
+    background: var(--surface-2);
+  }
+
+  .board-name {
+    font-family: Archivo, sans-serif;
+    font-weight: 700;
+    font-size: .95rem;
+  }
+
+  .board-note { font-size: .8rem; color: var(--ink-3); }
+
+  .flow {
+    display: flex;
+    gap: .5rem;
+    list-style: none;
+    margin: 0;
+    padding: 1.15rem;
+    overflow-x: auto;
+  }
+
+  .stage {
+    flex: 1 0 8.2rem;
+    min-width: 8.2rem;
+    background: var(--ground);
+    border: 1px solid var(--line-soft);
+    border-top: 3px solid var(--rail, var(--steel));
+    border-radius: 7px;
+    padding: .7rem .72rem .72rem;
+    display: flex;
+    flex-direction: column;
+    gap: .4rem;
+  }
+
+  /* Work already sold reads quieter than work still in play. */
+  .stage.sold {
+    background: transparent;
+    border-style: dashed;
+    border-top-style: solid;
+  }
+
+  .stage-n {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: .66rem;
+    font-weight: 500;
+    letter-spacing: .1em;
+    color: var(--ink-3);
+    display: flex;
+    align-items: center;
+    gap: .35rem;
+  }
+
+  .ai-dot {
+    width: .42rem;
+    height: .42rem;
+    border-radius: 50%;
+    background: var(--lime);
+    flex: none;
+  }
+
+  .stage-name {
+    font-family: Archivo, sans-serif;
+    font-weight: 700;
+    font-size: .855rem;
+    line-height: 1.22;
+    letter-spacing: -.005em;
+  }
+
+  .rot {
+    margin-top: auto;
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: .655rem;
+    letter-spacing: .02em;
+    color: var(--ink-3);
+    padding-top: .2rem;
+  }
+
+  .rot-urgent { color: var(--hot); font-weight: 500; }
+
+  /* The Won line itself. */
+  .wonline {
+    flex: none;
+    align-self: stretch;
+    width: 5.4rem;
+    min-width: 5.4rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: .45rem;
+    position: relative;
+  }
+
+  .wonline::before,
+  .wonline::after {
+    content: "";
+    width: 2px;
+    flex: 1;
+    background: repeating-linear-gradient(to bottom, var(--hot) 0 4px, transparent 4px 8px);
+    opacity: .55;
+  }
+
+  .wonline b {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: .6rem;
+    letter-spacing: .13em;
+    text-transform: uppercase;
+    color: var(--hot);
+    text-align: center;
+    line-height: 1.3;
+    font-weight: 500;
+  }
+
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem 1.4rem;
+    padding: 0 1.15rem 1.05rem;
+    font-size: .76rem;
+    color: var(--ink-3);
+  }
+
+  .legend span { display: flex; align-items: center; gap: .42rem; }
+
+  .swatch-sold {
+    width: .8rem;
+    height: .8rem;
+    border: 1px dashed var(--line);
+    border-radius: 3px;
+    flex: none;
+  }
+
+  .rail-res { --rail: var(--navy); }
+  .rail-com { --rail: var(--lime); }
+
+  /* ==========================================================================
+     Tables
+     ========================================================================== */
+  .t-scroll {
+    overflow-x: auto;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: var(--surface);
+    box-shadow: var(--shadow);
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: .875rem;
+    min-width: 34rem;
+  }
+
+  thead th {
+    text-align: left;
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: .67rem;
+    font-weight: 500;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    padding: .8rem 1rem;
+    background: var(--surface-2);
+    border-bottom: 1px solid var(--line);
+    white-space: nowrap;
+  }
+
+  tbody td {
+    padding: .78rem 1rem;
+    border-bottom: 1px solid var(--line-soft);
+    vertical-align: top;
+    color: var(--ink-2);
+  }
+
+  tbody tr:last-child td { border-bottom: 0; }
+  tbody td:first-child { color: var(--ink); font-weight: 500; }
+
+  /* The Won line, repeated inside the detail table. */
+  tr.divider td {
+    background: var(--hot-wash);
+    color: var(--hot);
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: .68rem;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    font-weight: 500;
+    padding: .5rem 1rem;
+  }
+
+  td .num {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-variant-numeric: tabular-nums;
+    color: var(--ink-3);
+  }
+
+  .urgent { color: var(--hot); font-weight: 500; }
+
+  /* ==========================================================================
+     Callouts and rule cards
+     ========================================================================== */
+  .why {
+    border-left: 3px solid var(--navy);
+    background: var(--navy-wash);
+    border-radius: 0 8px 8px 0;
+    padding: .95rem 1.15rem;
+  }
+
+  .why h4 {
+    font-size: .82rem;
+    font-weight: 700;
+    margin-bottom: .3rem;
+    color: var(--navy-ink);
+  }
+
+  .why p { font-size: .9rem; color: var(--ink-2); }
+
+  .ask {
+    border-left: 3px solid var(--hot);
+    background: var(--hot-wash);
+    border-radius: 0 8px 8px 0;
+    padding: .95rem 1.15rem;
+    font-size: .9rem;
+    color: var(--ink-2);
+  }
+
+  .ask b { color: var(--hot); }
+
+  /* The single rule the whole design rests on. */
+  .keystone {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-top: 3px solid var(--hot);
+    border-radius: 10px;
+    box-shadow: var(--shadow);
+    padding: 1.4rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: .55rem;
+  }
+
+  .keystone p.big {
+    font-family: Archivo, sans-serif;
+    font-size: 1.16rem;
+    font-weight: 700;
+    line-height: 1.32;
+    letter-spacing: -.015em;
+    color: var(--ink);
+    max-width: 44ch;
+  }
+
+  .keystone p.sub { font-size: .9rem; color: var(--ink-2); }
+
+  .cols {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  }
+
+  .rule {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 1.05rem 1.15rem;
+    box-shadow: var(--shadow);
+    border-top: 3px solid var(--rule-c, var(--steel));
+  }
+
+  .rule-yes { --rule-c: var(--lime); }
+  .rule-no  { --rule-c: var(--hot); }
+  .rule-esc { --rule-c: var(--navy); }
+
+  .rule h4 {
+    font-family: Archivo, sans-serif;
+    font-size: .9rem;
+    font-weight: 700;
+    margin: 0 0 .6rem;
+  }
+
+  .rule ul { margin: 0; padding-left: 1.05rem; }
+  .rule li { font-size: .875rem; color: var(--ink-2); margin-bottom: .34rem; }
+  .rule li::marker { color: var(--rule-c); }
+
+  ul.plain { margin: 0; padding-left: 1.1rem; }
+  ul.plain li { margin-bottom: .42rem; color: var(--ink-2); max-width: 68ch; }
+  ul.plain li::marker { color: var(--ink-3); }
+  ul.plain b, .rule b { color: var(--ink); font-weight: 600; }
+
+  .chips { display: flex; flex-wrap: wrap; gap: .4rem; }
+
+  .chip {
+    font-size: .8rem;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: .28rem .72rem;
+    color: var(--ink-2);
+  }
+
+  .fine { font-size: .82rem; color: var(--ink-3); max-width: 68ch; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .stage { transition: border-color .15s ease; }
+    .stage:hover { border-color: var(--line); }
+  }
+</style>
+<style>body { margin: 0; }</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="masthead-inner">
+    <p class="kicker">Spray It Solutions &middot; Systemations</p>
+    <h1>Two pipelines, and what every stage is for</h1>
+    <p class="standfirst">
+      One board for residential, one for commercial. Each runs a job from first
+      enquiry to final payment. Written against what the website already captures,
+      so nothing here needs a field that does not exist yet. The Messaging Kit, the
+      Alerts and Tasks page and the customer journey page are its companions.
+    </p>
+    <div class="meta">
+      <div><b>Prepared for</b><span>Glenn, Spray It Solutions</span></div>
+      <div><b>System</b><span>Systemations</span></div>
+      <div><b>Status</b><span>Draft for review</span></div>
+      <div><b>Source of truth</b><span class="mono">CRM-PIPELINES.md</span></div>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <!-- ===================================================================== -->
+  <section id="shape">
+    <div class="sec-head"><span class="sec-n">01</span><h2>Two pipelines, split by sector</h2></div>
+
+    <div class="stack">
+      <div class="t-scroll">
+        <table>
+          <thead>
+            <tr><th>Pipeline</th><th>Covers</th><th>Stages</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Residential</td><td>Homes, new builds, sheds, garages</td><td class="num">12</td></tr>
+            <tr><td>Commercial &amp; Industrial</td><td>Factories, warehouses, cold storage, farms, large spans</td><td class="num">13</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="why">
+        <h4>Why the split is by sector, not by sales against delivery</h4>
+        <p>
+          Residential and commercial are genuinely different sales. A roof retrofit
+          closes off one phone call and one site visit. A 26,000&nbsp;sqm industrial job
+          runs through specification, tender, procurement and a purchase order, and takes
+          months. Forced onto one board the stages stop meaning anything, because half the
+          cards skip half the stages and every conversion figure becomes an average of two
+          unrelated processes. That is the split worth having, so it is the one we spend on.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================================== -->
+  <section id="wonline">
+    <div class="sec-head"><span class="sec-n">02</span><h2>The Won line</h2></div>
+
+    <div class="stack">
+      <p>
+        Because delivery lives on the same board as the sale, one rule holds the whole
+        design together.
+      </p>
+
+      <div class="keystone">
+        <p class="big">Mark the opportunity Won when the customer accepts, not when the job is finished or paid.</p>
+        <p class="sub">
+          Systemations tracks <b>status</b> (Open, Won, Lost, Abandoned) separately from
+          <b>stage</b>. A card can be status <code>Won</code> and still sit in the
+          "In Progress" stage. That is what keeps two different questions separable on a
+          single board.
+        </p>
+      </div>
+
+      <div class="t-scroll">
+        <table>
+          <thead><tr><th>Question</th><th>Where the answer lives</th></tr></thead>
+          <tbody>
+            <tr><td>What might we win?</td><td>Open opportunities, stages 1 to 8</td></tr>
+            <tr><td>What have we committed to deliver?</td><td>Won opportunities, stages 9 onward</td></tr>
+            <tr><td>What is the forecast worth?</td><td><span class="urgent">Open only.</span> Never the whole board.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p class="fine">
+        Residential marks Won on quote acceptance. Commercial marks Won on the purchase
+        order, never on a verbal.
+      </p>
+
+      <h3>What the merge costs</h3>
+      <ul class="plain">
+        <li><b>Every value report has to filter on status.</b> An unfiltered "pipeline value" now adds work already sold to work still being chased, and reads roughly double what is actually in play. Save the filtered views as the defaults so nobody has to remember.</li>
+        <li><b>The boards are long.</b> Twelve and thirteen columns is a lot of horizontal scrolling, particularly on a phone. Saved views per stage group are the fix.</li>
+        <li><b>Stage conversion rates get muddier.</b> "Quote Sent to Scheduled" is a real conversion; "Scheduled to In Progress" is just work happening. Only measure conversion across the sales stages.</li>
+      </ul>
+
+      <h3>What it buys</h3>
+      <ul class="plain">
+        <li>Two boards instead of three, which a family business will actually keep updated.</li>
+        <li>One card per job, so no handover step, no duplicate record, and the full history from first click to final invoice in one place.</li>
+        <li>Attribution survives to the end. You can ask what a Google Ads click was eventually worth in <em>paid revenue</em>, not just in quotes sent.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ===================================================================== -->
+  <section id="residential">
+    <div class="sec-head"><span class="sec-n">03</span><h2>Residential</h2></div>
+
+    <div class="board">
+      <div class="board-top">
+        <span class="board-name">Residential</span>
+        <span class="board-note">Homes, new builds, sheds and garages &middot; 12 stages</span>
+      </div>
+      <ol class="flow rail-res">
+        <li class="stage"><span class="stage-n"><span class="ai-dot"></span>01</span><span class="stage-name">New Enquiry</span><span class="rot rot-urgent">1 business hour</span></li>
+        <li class="stage"><span class="stage-n"><span class="ai-dot"></span>02</span><span class="stage-name">Contacting</span><span class="rot">2 days</span></li>
+        <li class="stage"><span class="stage-n"><span class="ai-dot"></span>03</span><span class="stage-name">Qualified</span><span class="rot">3 days</span></li>
+        <li class="stage"><span class="stage-n"><span class="ai-dot"></span>04</span><span class="stage-name">Assessment Booked</span><span class="rot">on the date</span></li>
+        <li class="stage"><span class="stage-n">05</span><span class="stage-name">Quoting</span><span class="rot rot-urgent">2 days</span></li>
+        <li class="stage"><span class="stage-n">06</span><span class="stage-name">Quote Sent</span><span class="rot">3 days</span></li>
+        <li class="stage"><span class="stage-n">07</span><span class="stage-name">Follow&#8209;up</span><span class="rot">30 days</span></li>
+        <li class="stage"><span class="stage-n"><span class="ai-dot"></span>08</span><span class="stage-name">Nurture</span><span class="rot">quarterly</span></li>
+        <li class="wonline" aria-hidden="true"><b>Won<br>line</b></li>
+        <li class="stage sold"><span class="stage-n">09</span><span class="stage-name">Scheduled</span><span class="rot">on the date</span></li>
+        <li class="stage sold"><span class="stage-n">10</span><span class="stage-name">In Progress</span><span class="rot">3 days over</span></li>
+        <li class="stage sold"><span class="stage-n">11</span><span class="stage-name">Invoiced</span><span class="rot">14 days</span></li>
+        <li class="stage sold"><span class="stage-n">12</span><span class="stage-name">Paid &amp; Closed</span><span class="rot">triggers follow-up</span></li>
+      </ol>
+      <div class="legend">
+        <span><span class="ai-dot"></span> AI may move a card here</span>
+        <span><span class="swatch-sold"></span> already sold, status Won</span>
+        <span class="rot-urgent mono">red = the clock that matters</span>
+      </div>
+    </div>
+
+    <div class="t-scroll" style="margin-top:1rem">
+      <table>
+        <thead>
+          <tr><th>Stage</th><th>It means</th><th>Exits when</th><th>Stalls after</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>1. New Enquiry</td><td>Lead has landed. Nobody has touched it.</td><td>First contact attempt is logged</td><td class="urgent">1 business hour</td></tr>
+          <tr><td>2. Contacting</td><td>At least one attempt made, no two-way conversation yet</td><td>They reply, or attempts are exhausted</td><td class="num">2 days</td></tr>
+          <tr><td>3. Qualified</td><td>We have spoken to them and it is a job we want</td><td>Site assessment is booked</td><td class="num">3 days</td></tr>
+          <tr><td>4. Assessment Booked</td><td>Date and time in the diary</td><td>The assessment happens</td><td class="num">on the date</td></tr>
+          <tr><td>5. Quoting</td><td>Measured up, preparing the number</td><td>Quote is sent</td><td class="urgent">2 days</td></tr>
+          <tr><td>6. Quote Sent</td><td>Written quote delivered, value on the card</td><td>Accepted, declined, or gone quiet</td><td class="num">3 days</td></tr>
+          <tr><td>7. Follow-up</td><td>Chasing a decision</td><td>Won, Lost, or moved to Nurture</td><td class="num">30 days</td></tr>
+          <tr><td>8. Nurture</td><td>Real job, wrong time</td><td>They re-engage, back to Qualified</td><td class="num">review quarterly</td></tr>
+          <tr class="divider"><td colspan="4">Won is marked here, on quote acceptance</td></tr>
+          <tr><td>9. Scheduled</td><td>Accepted, deposit received, date and crew locked</td><td>Crew starts</td><td class="num">on the date</td></tr>
+          <tr><td>10. In Progress</td><td>On site</td><td>Work finished</td><td class="num">3 days over</td></tr>
+          <tr><td>11. Invoiced</td><td>Work complete, photos captured, invoice out</td><td>Payment received</td><td class="num">14 days</td></tr>
+          <tr><td>12. Paid &amp; Closed</td><td>Done</td><td>Closes the card</td><td class="num">&mdash;</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>The stages that carry weight</h3>
+    <ul class="plain">
+      <li><b>New Enquiry exists to be measured.</b> Time to first contact is the single biggest lever in the pipeline, and it cannot be measured if leads land straight into Contacting.</li>
+      <li><b>Contacting is capped.</b> Five attempts over seven days across call, SMS and email. When the cap is hit the card goes to Lost with reason <em>Unreachable</em>, rather than being left to rot.</li>
+      <li><b>Qualified is where a deal becomes real.</b> Building type, areas, access, timeframe, and confirmation we are talking to whoever decides. This is where a forecast value is first set.</li>
+      <li><b>Assessment Booked follows the consult, not the form.</b> Spray foam cannot be quoted without seeing the building, and a rig should not cross Melbourne before the job is qualified. The calendar sells a fifteen minute phone call; a human books the site assessment afterwards.</li>
+      <li><b>Quoting is time-boxed at two days.</b> A quote that takes a week loses jobs that were already won on the day.</li>
+      <li><b>Nurture is a siding, not a step.</b> It sits beside the sales run because cards arrive from Follow-up and leave backwards to Qualified.</li>
+      <li><b>Invoiced is where the photos get captured.</b> Completed jobs are the source of the site photography, which matters more than usual given competitors have been lifting images off the old website. Make it a required task on entry or it will not happen.</li>
+      <li><b>Paid &amp; Closed is the most valuable stage on either board.</b> It fires a review request, a referral ask, and a check-in scheduled twelve months out.</li>
+    </ul>
+  </section>
+
+  <!-- ===================================================================== -->
+  <section id="commercial">
+    <div class="sec-head"><span class="sec-n">04</span><h2>Commercial &amp; Industrial</h2></div>
+
+    <div class="board">
+      <div class="board-top">
+        <span class="board-name">Commercial &amp; Industrial</span>
+        <span class="board-note">Factories, warehouses, cold storage, farms, large spans &middot; 13 stages</span>
+      </div>
+      <ol class="flow rail-com">
+        <li class="stage"><span class="stage-n"><span class="ai-dot"></span>01</span><span class="stage-name">New Enquiry</span><span class="rot rot-urgent">1 business hour</span></li>
+        <li class="stage"><span class="stage-n"><span class="ai-dot"></span>02</span><span class="stage-name">Contacting</span><span class="rot">3 days</span></li>
+        <li class="stage"><span class="stage-n"><span class="ai-dot"></span>03</span><span class="stage-name">Qualified / Scoping</span><span class="rot">5 days</span></li>
+        <li class="stage"><span class="stage-n">04</span><span class="stage-name">Inspection Booked</span><span class="rot">on the date</span></li>
+        <li class="stage"><span class="stage-n">05</span><span class="stage-name">Specifying</span><span class="rot">5 days</span></li>
+        <li class="stage"><span class="stage-n">06</span><span class="stage-name">Proposal Submitted</span><span class="rot">7 days</span></li>
+        <li class="stage"><span class="stage-n">07</span><span class="stage-name">Commercial Review</span><span class="rot">14 days</span></li>
+        <li class="stage"><span class="stage-n">08</span><span class="stage-name">Awaiting PO</span><span class="rot">14 days</span></li>
+        <li class="stage"><span class="stage-n">09</span><span class="stage-name">Future Project</span><span class="rot">quarterly</span></li>
+        <li class="wonline" aria-hidden="true"><b>Won<br>line</b></li>
+        <li class="stage sold"><span class="stage-n">10</span><span class="stage-name">Mobilising</span><span class="rot">on the date</span></li>
+        <li class="stage sold"><span class="stage-n">11</span><span class="stage-name">In Progress</span><span class="rot">per programme</span></li>
+        <li class="stage sold"><span class="stage-n">12</span><span class="stage-name">Invoicing</span><span class="rot">30 days</span></li>
+        <li class="stage sold"><span class="stage-n">13</span><span class="stage-name">Paid &amp; Closed</span><span class="rot">triggers follow-up</span></li>
+      </ol>
+      <div class="legend">
+        <span><span class="ai-dot"></span> AI may move a card here</span>
+        <span><span class="swatch-sold"></span> already sold, status Won</span>
+        <span>The AI hands over at stage 03 and touches nothing beyond it</span>
+      </div>
+    </div>
+
+    <div class="t-scroll" style="margin-top:1rem">
+      <table>
+        <thead>
+          <tr><th>Stage</th><th>It means</th><th>Exits when</th><th>Stalls after</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>1. New Enquiry</td><td>Untouched</td><td>First attempt logged</td><td class="urgent">1 business hour</td></tr>
+          <tr><td>2. Contacting</td><td>Attempted, no conversation yet</td><td>They reply</td><td class="num">3 days</td></tr>
+          <tr><td>3. Qualified / Scoping</td><td>Decision maker identified, scale and programme understood</td><td>Inspection booked</td><td class="num">5 days</td></tr>
+          <tr><td>4. Inspection Booked</td><td>Site visit in the diary</td><td>The visit happens</td><td class="num">on the date</td></tr>
+          <tr><td>5. Specifying</td><td>Product, thickness, access, plant, staging and WHS being worked out</td><td>Proposal issued</td><td class="num">5 days</td></tr>
+          <tr><td>6. Proposal Submitted</td><td>Priced proposal or tender lodged</td><td>Shortlisted, declined, or quiet</td><td class="num">7 days</td></tr>
+          <tr><td>7. Commercial Review</td><td>They are evaluating: clarifications, value engineering, references, insurances, SWMS</td><td>A decision</td><td class="num">14 days</td></tr>
+          <tr><td>8. Awaiting PO</td><td>Verbally won, paperwork pending</td><td>PO or signed contract received</td><td class="num">14 days</td></tr>
+          <tr><td>9. Future Project</td><td>Real project, future budget cycle</td><td>It comes back around</td><td class="num">review quarterly</td></tr>
+          <tr class="divider"><td colspan="4">Won is marked here, on the purchase order</td></tr>
+          <tr><td>10. Mobilising</td><td>PO in hand. Programme, access, inductions, SWMS, materials.</td><td>Crew starts</td><td class="num">on the date</td></tr>
+          <tr><td>11. In Progress</td><td>On site, possibly in stages</td><td>Works complete</td><td class="num">per programme</td></tr>
+          <tr><td>12. Invoicing</td><td>Progress claims or final invoice out</td><td>Payment received</td><td class="num">30 days</td></tr>
+          <tr><td>13. Paid &amp; Closed</td><td>Done</td><td>Closes the card</td><td class="num">&mdash;</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="stack" style="margin-top:1.4rem">
+      <div class="why">
+        <h4>Why stages 7 and 8 are separate</h4>
+        <p>
+          "They are still deciding" and "they have chosen us and procurement is slow" look
+          identical on a board and are completely different for forecasting. Splitting them
+          is what makes a commercial forecast worth reading.
+        </p>
+      </div>
+      <div class="why">
+        <h4>Why commercial gets Mobilising and residential does not</h4>
+        <p>
+          A house job goes from accepted to scheduled. An industrial job needs site
+          inductions, SWMS sign off, access arrangements and often a staged programme
+          before anyone turns up. That work is real, it takes weeks, and hiding it inside
+          "Scheduled" makes the board lie about where the job is. For the same reason the
+          billing stage is <em>Invoicing</em>, not Invoiced: large jobs bill in progress
+          claims rather than one invoice.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================================== -->
+  <section id="status">
+    <div class="sec-head"><span class="sec-n">05</span><h2>Status, and Lost reasons</h2></div>
+
+    <div class="stack">
+      <p>
+        Do not build "Won" or "Lost" stages. Status already carries it, building it twice
+        double-counts, and it breaks the built-in conversion reporting.
+      </p>
+      <ul class="plain">
+        <li><b>Won</b> at acceptance or PO received, then the card keeps moving through the delivery stages.</li>
+        <li><b>Lost</b> with a reason, always. A Lost with no reason teaches nothing.</li>
+        <li><b>Abandoned</b> for duplicates, spam and wrong numbers, so they stay out of the conversion maths entirely.</li>
+      </ul>
+
+      <h3>Lost reasons, fixed list, single select</h3>
+      <div class="chips">
+        <span class="chip">Price</span>
+        <span class="chip">Went with another contractor</span>
+        <span class="chip">Chose batts or another product</span>
+        <span class="chip">Timing, project deferred</span>
+        <span class="chip">Outside service area</span>
+        <span class="chip">Not suitable for spray foam</span>
+        <span class="chip">Unreachable</span>
+        <span class="chip">Not the decision maker</span>
+        <span class="chip">Budget withdrawn</span>
+        <span class="chip">Duplicate</span>
+        <span class="chip">Spam</span>
+      </div>
+      <p class="fine">
+        The distinction worth having is <em>Price</em> against <em>Chose batts</em>. They
+        point at completely different fixes, and the R-value explainer on the website
+        exists to answer the second one.
+      </p>
+    </div>
+  </section>
+
+  <!-- ===================================================================== -->
+  <section id="value">
+    <div class="sec-head"><span class="sec-n">06</span><h2>What value a card carries</h2></div>
+
+    <div class="stack">
+      <div class="t-scroll">
+        <table>
+          <thead><tr><th>Stage</th><th>Value on the opportunity</th></tr></thead>
+          <tbody>
+            <tr><td>New Enquiry, Contacting</td><td>Zero</td></tr>
+            <tr><td>Qualified</td><td>A default estimate by property type and area, for forecasting only</td></tr>
+            <tr><td>Quote Sent onward</td><td>The actual quoted figure</td></tr>
+            <tr><td>Delivery stages</td><td>Unchanged from the accepted figure, plus variations</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        A real number before the site assessment produces a forecast made of guesses. Zero
+        until Quote Sent produces a pipeline that appears worthless. The estimate at
+        Qualified is the compromise.
+      </p>
+      <p>
+        Variations agreed on site go on the card as they happen, not at invoicing.
+        Otherwise the delivery half of the board understates what is owed.
+      </p>
+      <div class="ask">
+        <b>Needs Glenn:</b> the default value bands per property type, and the deposit
+        percentage that gates Scheduled. These have to be real numbers, not invented ones.
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================================== -->
+  <section id="routing">
+    <div class="sec-head"><span class="sec-n">07</span><h2>Which pipeline a lead enters</h2></div>
+
+    <div class="stack">
+      <p>Routed automatically on <code>propertyType</code> from the website webhook.</p>
+      <div class="t-scroll">
+        <table>
+          <thead><tr><th>propertyType</th><th>Pipeline</th></tr></thead>
+          <tbody>
+            <tr><td><code>home</code>, <code>new-build</code></td><td>Residential</td></tr>
+            <tr><td><code>shed</code></td><td>Residential</td></tr>
+            <tr><td><code>factory</code></td><td>Commercial &amp; Industrial</td></tr>
+            <tr><td><code>farm</code></td><td>Commercial &amp; Industrial</td></tr>
+            <tr><td><code>other</code></td><td>Residential, plus a review task to confirm</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="fine">
+        Worth adding once volume justifies it: any enquiry whose message mentions a square
+        metre figure above a threshold, a tender, or a builder or head contractor goes to
+        Commercial regardless of <code>propertyType</code>. A card that turns out to be on
+        the wrong board gets <em>moved</em>, not recreated: moving preserves the
+        attribution and the consent record.
+      </p>
+    </div>
+  </section>
+
+  <!-- ===================================================================== -->
+  <section id="fields">
+    <div class="sec-head"><span class="sec-n">08</span><h2>Fields to create in Systemations</h2></div>
+
+    <div class="stack">
+      <p>
+        These map one to one onto what the site already posts, so no transformation is
+        needed. Names below are the JSON keys from the lead webhook.
+      </p>
+
+      <h3>Job detail</h3>
+      <div class="t-scroll">
+        <table>
+          <thead><tr><th>Field</th><th>Type</th><th>Values</th></tr></thead>
+          <tbody>
+            <tr><td><code>propertyType</code></td><td>Single select</td><td>home, new-build, shed, factory, farm, other</td></tr>
+            <tr><td><code>areas</code></td><td>Text, comma separated</td><td>roof, walls, underfloor, whole, unsure</td></tr>
+            <tr><td><code>stage</code></td><td>Single select</td><td>existing, construction, planning</td></tr>
+            <tr><td><code>timeframe</code></td><td>Single select</td><td>asap, 1-3-months, 3-plus-months, researching</td></tr>
+            <tr><td><code>postcode</code></td><td>Text</td><td></td></tr>
+            <tr><td><code>message</code></td><td>Long text</td><td></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="ask" style="margin-top:1rem">
+        <b>Rename this one:</b> <code>stage</code> is the <em>building's</em> stage, retrofit
+        or under construction or still planning. It is not the pipeline stage. Map it into
+        Systemations as <code>buildingStage</code> or the two will be confused within a week,
+        which matters more now the boards are twelve and thirteen columns long.
+      </div>
+
+      <h3>Consent evidence</h3>
+      <div class="t-scroll">
+        <table>
+          <thead><tr><th>Field</th><th>Type</th></tr></thead>
+          <tbody>
+            <tr><td><code>consent_marketing</code></td><td>yes / no</td></tr>
+            <tr><td><code>consent_text</code></td><td>Long text</td></tr>
+            <tr><td><code>consent_at</code></td><td>Date and time</td></tr>
+            <tr><td><code>consent_page</code></td><td>Text, URL</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Attribution</h3>
+      <p class="fine">
+        <code>utm_source</code>, <code>utm_medium</code>, <code>utm_campaign</code>,
+        <code>utm_term</code>, <code>utm_content</code>, <code>utm_id</code>,
+        <code>gclid</code>, <code>fbclid</code>, plus first and last touch:
+        <code>first_touch_at</code>, <code>first_touch_referrer</code>,
+        <code>first_touch_landing</code>, <code>last_touch_referrer</code>,
+        <code>last_touch_landing</code>.
+      </p>
+
+      <h3>Housekeeping</h3>
+      <p class="fine">
+        <code>source</code> (always <code>website</code>), <code>form</code> (always
+        <code>quote_request</code>), <code>submitted_at</code>, <code>page_title</code>,
+        <code>phone_raw</code>. Phone arrives already normalised to E.164
+        (<code>+61…</code>), because that is what the CRM matches a person on across web,
+        SMS, chat and voice. <code>phone_raw</code> keeps whatever they actually typed.
+      </p>
+    </div>
+  </section>
+
+  <!-- ===================================================================== -->
+  <section id="automation">
+    <div class="sec-head"><span class="sec-n">09</span><h2>What fires at each stage</h2></div>
+    <p class="fine" style="margin-bottom:1rem">Message ids refer to the Messaging Kit. The customer journey page shows each of these under its stage, for both boards.</p>
+
+    <div class="t-scroll">
+      <table>
+        <thead><tr><th>Trigger</th><th>Action</th><th>Messages</th></tr></thead>
+        <tbody>
+          <tr><td>Enters New Enquiry</td><td>SMS acknowledgement within 2 minutes, email echo of the enquiry. Call task assigned. Alert to the assigned user.</td><td class="mono">X-ACK-01, X-ACK-02 (C-ACK-01 on commercial)</td></tr>
+          <tr><td>1 business hour in New Enquiry</td><td>Escalate to a second person</td><td class="mono"></td></tr>
+          <tr><td>Enters Contacting</td><td>Start the five-attempt sequence across call, SMS and email</td><td class="mono">X-CHASE-01 to 04</td></tr>
+          <tr><td>Attempts exhausted</td><td>Lost, reason <em>Unreachable</em></td><td class="mono"></td></tr>
+          <tr><td>Phone consult booked, at any point</td><td>Confirmation, reminders at 24 hours and 2 hours, no-show and change handling</td><td class="mono">X-APPT-01 to 06</td></tr>
+          <tr><td>Enters Qualified</td><td>Set forecast value. Point them at the calendar for the assessment.</td><td class="mono">X-BOOK-01, X-BOOK-02</td></tr>
+          <tr><td>Enters Assessment Booked / Inspection Booked</td><td>Confirmation with the address. Morning-of text.</td><td class="mono">R-ASSESS-01, R-ASSESS-02 (C-INSP-01)</td></tr>
+          <tr><td>Assessment done, enters Quoting / Specifying</td><td>Tell them when the quote lands. Start the 2 day clock (5 on commercial).</td><td class="mono">R-QUOTING-01 (C-SPEC-01)</td></tr>
+          <tr><td>Enters Quote Sent / Proposal Submitted</td><td>Delivery confirmation. Follow-ups at day 2, 5, 10, 21 (day 7, 21 on commercial).</td><td class="mono">R-QUOTE-01, R-QUOTE-02, R-FU-01 (C-PROP-01, C-PROP-02)</td></tr>
+          <tr><td>Enters Follow-up / Commercial Review</td><td>The rest of the sequence, ending in a decision</td><td class="mono">R-FU-02 to 04 (C-PROP-03)</td></tr>
+          <tr><td>Marked Lost</td><td>Reason required. Graceful goodbye on residential. Nurture if the reason was timing.</td><td class="mono">LOST-01</td></tr>
+          <tr><td>Enters Nurture / Future Project</td><td>Consent-gated drip at 0, 30 and 90 days (quarterly on commercial)</td><td class="mono">NUR-01 to 03 (C-FUT-01)</td></tr>
+          <tr><td>Enters Awaiting PO</td><td>List what mobilisation needs. Weekly PO chase task.</td><td class="mono">C-PO-01</td></tr>
+          <tr class="divider"><td colspan="3">Status set to Won</td></tr>
+          <tr><td>Status set to Won</td><td>Thank them and set out the steps. Deposit request where one applies. Handover tasks. <b>Stop every sales sequence.</b></td><td class="mono">X-WON-01, X-WON-02 (C-MOB-01)</td></tr>
+          <tr><td>Deposit received</td><td>One-line confirmation, and scheduling unblocks</td><td class="mono">DEP-01</td></tr>
+          <tr><td>Enters Scheduled / Mobilising</td><td>Booking with preparation notes. Reminder the afternoon before.</td><td class="mono">JOB-01, JOB-02, JOB-03 (C-MOB-01)</td></tr>
+          <tr><td>Enters In Progress</td><td>Crew on the way text. Photo and variation tasks on the crew lead. Weekly progress on staged commercial jobs.</td><td class="mono">JOB-04, JOB-06 (C-SITE-01, C-PROG-01)</td></tr>
+          <tr><td>Enters Invoiced / Invoicing</td><td>Completion note with photos, then the invoice separately. Reminders at day 7 and 14, stopped on payment.</td><td class="mono">JOB-05, PAY-01 to 03 (C-DONE-01, C-PAY-01)</td></tr>
+          <tr><td>Enters Paid &amp; Closed</td><td>Review request next day, referral ask at a week, 12 month check-in. Reference request on commercial.</td><td class="mono">REV-01 to 03 (C-CLOSE-01)</td></tr>
+          <tr><td>Any time</td><td>Missed call text-back, out of hours reply</td><td class="mono">SYS-01, SYS-02</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="cols" style="margin-top:1.2rem">
+      <div class="ask">
+        <b>Rule one:</b> every reminder and follow-up sequence stops the moment the person
+        replies. A sequence that keeps firing after someone has answered is the fastest way
+        to turn a won job into a complaint.
+      </div>
+      <div class="ask">
+        <b>Rule two:</b> setting Won must kill every sales sequence on the card. On a merged
+        board the sales and delivery automation live on the same record, so a quote
+        follow-up firing at a customer whose job is already booked is a real and easy
+        failure.
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================================== -->
+  <section id="ai">
+    <div class="sec-head"><span class="sec-n">10</span><h2>What the AI is allowed to do</h2></div>
+
+    <p style="margin-bottom:1.2rem">
+      The voice and chat agents share these boards with the family. That only works if the
+      boundary is written down, and on merged boards the boundary is simply the Won line:
+      the AI works the sales half and never crosses it.
+    </p>
+
+    <div class="cols">
+      <div class="rule rule-yes">
+        <h4>The AI may</h4>
+        <ul>
+          <li>Create the opportunity and move New Enquiry to Contacting</li>
+          <li>Qualify: building type, areas, access, timeframe, decision maker</li>
+          <li>Move a card to Qualified once those are captured</li>
+          <li>Book, reschedule and cancel in the phone consult calendar, and move to Assessment Booked</li>
+          <li>Send reminders and confirmations</li>
+          <li>Answer what the site already answers: what spray foam is, open cell against closed cell, the process, the service area</li>
+          <li>Move a card to Nurture when someone says not now</li>
+        </ul>
+      </div>
+
+      <div class="rule rule-no">
+        <h4>The AI may not</h4>
+        <ul>
+          <li>Send a quote, or state a price, a firm lead time, or a performance figure</li>
+          <li>Set or change the opportunity value</li>
+          <li>Set any status: not Won, not Lost, not Abandoned</li>
+          <li>Move any card past Qualified on the Commercial board</li>
+          <li><b>Move any card at or beyond the Won line on either board</b></li>
+          <li>Promise compliance, suitability or warranty outcomes for a specific building</li>
+        </ul>
+      </div>
+
+      <div class="rule rule-esc">
+        <h4>Escalate to a human immediately</h4>
+        <ul>
+          <li>Any commercial enquiry, once identified as commercial</li>
+          <li>Any request for a firm price</li>
+          <li>Anything mentioning a complaint, insurance, legal, or an existing job</li>
+          <li>Any contact about a job already in delivery, including "where is the crew"</li>
+          <li>An unhappy customer, at any point</li>
+          <li>Anything the agent has answered twice without the person accepting the answer</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="why" style="margin-top:1.2rem">
+      <h4>Why the AI is barred from quoting</h4>
+      <p>
+        Not caution for its own sake. Spray foam cannot be priced without seeing the
+        building, so any number given on a call is either wrong or becomes a commitment.
+        The consult exists to qualify. The assessment exists to price.
+      </p>
+    </div>
+  </section>
+
+  <!-- ===================================================================== -->
+  <section id="compliance">
+    <div class="sec-head"><span class="sec-n">11</span><h2>Compliance the pipeline has to respect</h2></div>
+
+    <ul class="plain">
+      <li><b>Spam Act 2003.</b> Marketing SMS and email need express consent, and the evidence is what the person was actually shown. That is why <code>consent_text</code>, <code>consent_at</code> and <code>consent_page</code> travel with the record and must survive the import onto the contact. Transactional messages about an enquiry someone made are a different thing and are fine.</li>
+      <li><b>Do Not Call Register.</b> Applies to cold outbound, not to someone who enquired. Any purchased or scraped list needs washing first.</li>
+      <li><b>Call recording.</b> If AI voice calls are recorded, callers must be told at the start of the call. Victoria's rules on recording private conversations are strict, so this is a script requirement rather than a nice to have.</li>
+      <li><b>Australian Consumer Law.</b> Any performance claim the agent makes has to be substantiated. Same reason the R-value figure on the website is gated behind sign-off rather than published.</li>
+    </ul>
+  </section>
+
+  <!-- ===================================================================== -->
+  <section id="reports">
+    <div class="sec-head"><span class="sec-n">12</span><h2>Reports worth watching</h2></div>
+
+    <p style="margin-bottom:1rem">
+      Every value report below filters on <b>status</b>. On a merged board an unfiltered
+      figure is meaningless.
+    </p>
+
+    <ul class="plain">
+      <li><b>Time to first contact</b> on New Enquiry. The one number that moves everything else.</li>
+      <li><b>Open pipeline value,</b> status Open only. This is the forecast.</li>
+      <li><b>Committed work,</b> status Won and not yet Paid &amp; Closed. This is the schedule, and the cash coming.</li>
+      <li><b>Enquiry to Qualified, by source.</b> Separates traffic quality from sales execution.</li>
+      <li><b>Qualified to Assessment Booked.</b> If this sags, the consult script is the problem.</li>
+      <li><b>Days in Quoting.</b> Should be under two.</li>
+      <li><b>Quote Sent to Won,</b> by sector. Measure conversion across the sales stages only; the delivery stages are not conversions.</li>
+      <li><b>Days from Won to Paid &amp; Closed.</b> Only visible because delivery is on the same board, and it is the number that tells you whether the business can take more work.</li>
+      <li><b>Lost reason mix.</b> Watch the ratio of <em>Price</em> to <em>Chose batts</em>.</li>
+      <li><b>Paid revenue by <code>utm_source</code>, <code>gclid</code> and <code>fbclid</code>.</b> The attribution fields now survive all the way to payment, so ad spend can be judged on money received rather than on form fills.</li>
+    </ul>
+  </section>
+
+  <!-- ===================================================================== -->
+  <section id="open">
+    <div class="sec-head"><span class="sec-n">13</span><h2>Open items for Glenn</h2></div>
+
+    <div class="cols">
+      <div class="rule rule-esc">
+        <h4>Before the boards go live</h4>
+        <ul>
+          <li>Default opportunity value bands per property type</li>
+          <li>Deposit percentage and terms that gate Scheduled</li>
+          <li>Service area boundary, so <em>Outside service area</em> can be automated</li>
+        </ul>
+      </div>
+      <div class="rule rule-esc">
+        <h4>Decisions to make</h4>
+        <ul>
+          <li>Whether farm and agricultural work sits in Commercial or gets its own board</li>
+          <li>Who is second in line when a New Enquiry escalates after an hour</li>
+          <li>Whether AI voice calls are recorded, which decides the script opening</li>
+          <li>Whether progress claims on commercial jobs need their own reporting, or the Invoicing stage is enough</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+</body>
+</html>

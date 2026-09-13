@@ -11,7 +11,7 @@ step. Editing this file by hand will be overwritten.
 
 **This is written as a template.** Nothing client-specific is hardcoded in a
 message body. A new client is a Custom Values swap (§2) plus rewriting the
-7 messages marked `TRADE`, not a rewrite of the kit.
+9 messages marked `TRADE`, not a rewrite of the kit.
 
 The visual companion is the customer journey page in `client-journey-onepage/`.
 Open its `index.html` to see every message below as the customer would receive
@@ -30,7 +30,7 @@ template text ready to paste into the builder.
 5. Replace the sample customers in the data file so previews read right for the new trade.
 6. Run npm run docs:crm. The checker fails on any missing sample value, any email without a preheader, and any agency wording in text the client reads.
 
-Of the 58 messages, 7 are trade-specific: R-FU-02, NUR-01, NUR-02, JOB-02, JOB-05, C-MOB-01, C-DONE-01.
+Of the 64 messages, 9 are trade-specific: R-ASSESS-06, R-FU-02, NUR-01, NUR-02, JOB-02, JOB-05, C-INSP-03, C-MOB-01, C-DONE-01.
 Everything else moves between clients untouched.
 
 ### A warning about tokens
@@ -227,7 +227,7 @@ Three rules that apply to every message:
 
 ## 6. Message inventory
 
-58 messages. Every SMS fits in one segment with the sample values, which
+64 messages. Every SMS fits in one segment with the sample values, which
 was checked on the journey page rather than assumed.
 
 | ID | Channel | Trigger | Delay | Type | Reuse | Appears in |
@@ -248,6 +248,10 @@ was checked on the journey page rather than assumed.
 | X-BOOK-02 | Email | Enters Qualified | Straight after the call | TRANS | CORE | Residential · Qualified |
 | R-ASSESS-01 | SMS | Enters Assessment Booked | Immediately | TRANS | CORE | Residential · Assessment Booked |
 | R-ASSESS-02 | SMS | Assessment day | 7:00am on the day | TRANS | CORE | Residential · Assessment Booked |
+| R-ASSESS-03 | SMS | Assessment cancelled | Immediately | TRANS | CORE | Residential · Assessment Booked |
+| R-ASSESS-04 | Email | Assessment cancelled | Immediately | TRANS | CORE | Residential · Assessment Booked |
+| R-ASSESS-05 | SMS | Assessment marked no-show, or the crew could not get in | Straight away, from site | TRANS | CORE | Residential · Assessment Booked |
+| R-ASSESS-06 | Email | Assessment marked no-show | Same day | TRANS | **TRADE** | Residential · Assessment Booked |
 | R-QUOTING-01 | SMS | Enters Quoting | Straight after the assessment | TRANS | CORE | Residential · Quoting |
 | R-QUOTE-01 | Email | Enters Quote Sent | Immediately, with the quote attached | TRANS | CORE | Residential · Quote Sent |
 | R-QUOTE-02 | SMS | Enters Quote Sent | Immediately | TRANS | CORE | Residential · Quote Sent |
@@ -278,6 +282,8 @@ was checked on the journey page rather than assumed.
 | SYS-02 | SMS | Inbound SMS outside hours | Immediately | TRANS | CORE | Always on |
 | C-ACK-01 | Email | Enters New Enquiry on the Commercial board | Immediately | TRANS | CORE | Commercial · New Enquiry |
 | C-INSP-01 | Email | Enters Inspection Booked | Immediately | TRANS | CORE | Commercial · Inspection Booked |
+| C-INSP-02 | Email | Inspection cancelled | Immediately | TRANS | CORE | Commercial · Inspection Booked |
+| C-INSP-03 | Email | Inspection marked no-show, or no access on arrival | Same day | TRANS | **TRADE** | Commercial · Inspection Booked |
 | C-SPEC-01 | Email | Enters Specifying | Same day as the inspection | TRANS | CORE | Commercial · Specifying |
 | C-PROP-01 | Email | Enters Proposal Submitted | Immediately, with the proposal attached | TRANS | CORE | Commercial · Proposal Submitted |
 | C-PROP-02 | Email | Proposal unanswered | Day 7 | TRANS | CORE | Commercial · Proposal Submitted |
@@ -549,6 +555,78 @@ Morning {{contact.first_name}}, we are coming to you today for the {{custom_valu
 ```
 
 *Stops:* Cancelled with the appointment. *Window:* sends immediately.
+
+### R-ASSESS-03 · SMS · Assessment cancelled, immediately · TRANS · CORE
+
+```
+Hi {{contact.first_name}}, your {{custom_values.assessment_noun}} is cancelled. Grab a new time whenever suits: {{custom_values.booking_url}} {{custom_values.sms_signoff}}
+```
+
+*Stops:* Sends once per cancellation. *Window:* waits for the send window.
+
+### R-ASSESS-04 · Email · Assessment cancelled, immediately · TRANS · CORE
+
+**From:** {{custom_values.from_name_owner}} <{{custom_values.business_email}}>  
+**Reply-to:** {{custom_values.business_email}}  
+**Subject:** Your {{custom_values.assessment_noun}} is cancelled  
+**Preheader:** No problem at all. A new time is a couple of clicks away whenever you are ready.
+
+```
+Hi {{contact.first_name}},
+
+Just confirming the {{custom_values.assessment_noun}} at {{opportunity.site_address}} is cancelled. No problem at all.
+
+Nothing else changes. We still cannot put a real number on the job without seeing the building, so whenever the timing is better, the visit is the next step.
+
+Pick a new time: {{custom_values.booking_url}}
+
+Or reply with a week that suits and we will work around you.
+
+{{custom_values.owner_first_name}}
+{{custom_values.business_name}}
+{{custom_values.business_phone}}
+```
+
+*Stops:* Sends once per cancellation. The card goes back to Qualified at the same moment. *Window:* waits for the send window.
+
+A cancelled site visit is usually a diary clash rather than a change of mind, so this says nothing has changed and hands back the booking link rather than asking what went wrong.
+
+### R-ASSESS-05 · SMS · Assessment marked no-show, or the crew could not get in, straight away, from site · TRANS · CORE
+
+```
+Hi {{contact.first_name}}, we came out today for the {{custom_values.assessment_noun}} but could not get in. No problem, pick another time here: {{custom_values.booking_url}} {{custom_values.sms_signoff}}
+```
+
+*Stops:* Sends once. *Window:* waits for the send window.
+
+### R-ASSESS-06 · Email · Assessment marked no-show, same day · TRANS · **TRADE**
+
+**From:** {{custom_values.from_name_owner}} <{{custom_values.business_email}}>  
+**Reply-to:** {{custom_values.business_email}}  
+**Subject:** We came out today but could not get in  
+**Preheader:** No harm done. Two things make sure the next one goes ahead.
+
+```
+Hi {{contact.first_name}},
+
+We were at {{opportunity.site_address}} today for the {{custom_values.assessment_noun}} but could not get access, so the visit did not happen.
+
+No harm done, it happens. When you pick a new time, two things make sure it goes ahead:
+
+  Somebody over 18 on site to let us in.
+  Clear access to {{contact.areas}}, because that is what we have come to measure.
+
+Pick a new time: {{custom_values.booking_url}}
+
+If something came up, ring {{custom_values.business_phone}} and we will find a time that definitely works.
+
+{{custom_values.owner_first_name}}
+{{custom_values.business_name}}
+```
+
+*Stops:* Sends once. The card goes back to Qualified at the same moment. *Window:* waits for the send window.
+
+Trade specific: the two conditions are what actually goes wrong on a spray foam assessment. The tone stays light on purpose. The visit cost the business half a day, but a customer who feels told off does not rebook.
 
 ### R-QUOTING-01 · SMS · Enters Quoting, straight after the assessment · TRANS · CORE
 
@@ -1118,6 +1196,59 @@ We will bring insurances and SWMS. If you need those in advance for your own rec
 
 *Stops:* Sends once per booking. X-APPT-03 sends the day-before SMS reminder. *Window:* sends immediately.
 
+### C-INSP-02 · Email · Inspection cancelled, immediately · TRANS · CORE
+
+**From:** {{custom_values.from_name_owner}} <{{custom_values.business_email}}>  
+**Reply-to:** {{custom_values.business_email}}  
+**Subject:** Site inspection cancelled, {{opportunity.site_address}}  
+**Preheader:** Confirming the visit is off. Send a new date and we will work around your site.
+
+```
+Hi {{contact.first_name}},
+
+Confirming the site inspection at {{opportunity.site_address}} is cancelled.
+
+The proposal depends on the visit. Product, thickness, access and staging cannot be specified from a drawing, and a number produced without seeing the building is a number we would have to revise later.
+
+Send us a date that works and we will fit around your site. If it is easier, tell us the constraint, a shutdown window, an induction day, a quiet period, and we will propose times inside it.
+
+{{custom_values.owner_first_name}}
+{{custom_values.business_name}}
+{{custom_values.business_phone}}
+```
+
+*Stops:* Sends once per cancellation. The card goes back to Qualified / Scoping. *Window:* waits for the send window.
+
+### C-INSP-03 · Email · Inspection marked no-show, or no access on arrival, same day · TRANS · **TRADE**
+
+**From:** {{custom_values.from_name_owner}} <{{custom_values.business_email}}>  
+**Reply-to:** {{custom_values.business_email}}  
+**Subject:** We attended {{opportunity.site_address}} but could not get access  
+**Preheader:** The visit did not go ahead. Here is what needs to be in place for the next one.
+
+```
+Hi {{contact.first_name}},
+
+We attended {{opportunity.site_address}} on {{opportunity.assessment_date}} but could not get onto the area, so the inspection did not happen.
+
+To make sure the next one does, we need these confirmed before the day:
+
+  The induction booked, and how long it takes
+  Any permit or escort arranged
+  A site contact and a mobile for the day
+  Access to the areas being assessed
+
+Give us a date with those in place and we will attend.
+
+{{custom_values.owner_first_name}}
+{{custom_values.business_name}}
+{{custom_values.business_phone}}
+```
+
+*Stops:* Sends once. The card goes back to Qualified / Scoping. *Window:* waits for the send window.
+
+Trade specific: on an industrial site the visit fails on inductions and permits far more often than on anyone forgetting. Naming the four things is what stops the second attempt failing the same way.
+
 ### C-SPEC-01 · Email · Enters Specifying, same day as the inspection · TRANS · CORE
 
 **From:** {{custom_values.from_name_owner}} <{{custom_values.business_email}}>  
@@ -1418,7 +1549,7 @@ A reference from a facilities manager is worth more on a commercial tender than 
 
 ## 14. Build order
 
-Do not build all 58 at once. In order of what earns most:
+Do not build all 64 at once. In order of what earns most:
 
 1. **SYS-01**, missed call text-back. Highest return of anything here.
 2. **X-ACK-01, X-ACK-02**, the two minute acknowledgement.

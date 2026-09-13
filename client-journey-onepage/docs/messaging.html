@@ -1,0 +1,1833 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="robots" content="noindex, nofollow" />
+<title>SprayIT Messaging Kit</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+
+<style>
+  /* Tokens shared with the Pipeline Blueprint, so the set reads as one system.
+     Light is bare :root; dark values live once as --d-* so the two dark
+     selectors can only ever assign the same thing. */
+  :root {
+    --ground: #F5F8FC; --surface: #FFFFFF; --surface-2: #EAF0F9;
+    --ink: #0B1B3A; --ink-2: #47536D; --ink-3: #6C7890;
+    --line: #D6DFEC; --line-soft: #E5EBF4;
+    --navy: #002396; --navy-ink: #002396;
+    --lime: #5E9224; --lime-ink: #4F7D1C;
+    --steel: #4A5B7A; --hot: #B93B20;
+    --hot-wash: #FBEBE6; --lime-wash: #EEF6E2; --navy-wash: #E7ECFA;
+    --amber: #8A5A00; --amber-wash: #FBF0DC;
+    --code-bg: #F0F4FA;
+    --shadow: 0 1px 2px rgba(11,27,58,.05), 0 8px 24px -14px rgba(11,27,58,.22);
+
+    --d-ground: #0A1020; --d-surface: #121A2C; --d-surface-2: #1A2439;
+    --d-ink: #E7EDF8; --d-ink-2: #A6B2C8; --d-ink-3: #7D8AA3;
+    --d-line: #27334A; --d-line-soft: #1E2839;
+    --d-navy: #93AEFF; --d-navy-ink: #A8BEFF;
+    --d-lime: #A6D65C; --d-lime-ink: #B5E06D;
+    --d-steel: #93A3BF; --d-hot: #F08A6C;
+    --d-hot-wash: #33190F; --d-lime-wash: #1D2A12; --d-navy-wash: #16203C;
+    --d-amber: #E8B45C; --d-amber-wash: #2E2310;
+    --d-code-bg: #0E1626;
+    --d-shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px -14px rgba(0,0,0,.6);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground: var(--d-ground); --surface: var(--d-surface); --surface-2: var(--d-surface-2);
+      --ink: var(--d-ink); --ink-2: var(--d-ink-2); --ink-3: var(--d-ink-3);
+      --line: var(--d-line); --line-soft: var(--d-line-soft);
+      --navy: var(--d-navy); --navy-ink: var(--d-navy-ink);
+      --lime: var(--d-lime); --lime-ink: var(--d-lime-ink);
+      --steel: var(--d-steel); --hot: var(--d-hot);
+      --hot-wash: var(--d-hot-wash); --lime-wash: var(--d-lime-wash); --navy-wash: var(--d-navy-wash);
+      --amber: var(--d-amber); --amber-wash: var(--d-amber-wash);
+      --code-bg: var(--d-code-bg); --shadow: var(--d-shadow);
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --ground: var(--d-ground); --surface: var(--d-surface); --surface-2: var(--d-surface-2);
+    --ink: var(--d-ink); --ink-2: var(--d-ink-2); --ink-3: var(--d-ink-3);
+    --line: var(--d-line); --line-soft: var(--d-line-soft);
+    --navy: var(--d-navy); --navy-ink: var(--d-navy-ink);
+    --lime: var(--d-lime); --lime-ink: var(--d-lime-ink);
+    --steel: var(--d-steel); --hot: var(--d-hot);
+    --hot-wash: var(--d-hot-wash); --lime-wash: var(--d-lime-wash); --navy-wash: var(--d-navy-wash);
+    --amber: var(--d-amber); --amber-wash: var(--d-amber-wash);
+    --code-bg: var(--d-code-bg); --shadow: var(--d-shadow);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    background: var(--ground); color: var(--ink);
+    font-family: "IBM Plex Sans", ui-sans-serif, system-ui, -apple-system, sans-serif;
+    font-size: 16px; line-height: 1.62; -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap { max-width: 62rem; margin: 0 auto; padding: 0 1.5rem 6rem; }
+
+  h1, h2, h3, h4 {
+    font-family: Archivo, ui-sans-serif, system-ui, sans-serif;
+    text-wrap: balance; margin: 0; letter-spacing: -.015em;
+  }
+
+  p { margin: 0; max-width: 68ch; }
+  a { color: var(--navy-ink); text-underline-offset: 3px; }
+
+  code, .mono { font-family: "IBM Plex Mono", ui-monospace, Menlo, monospace; font-size: .86em; }
+
+  code {
+    background: var(--surface-2); border: 1px solid var(--line-soft);
+    border-radius: 4px; padding: .1em .38em; white-space: nowrap;
+  }
+
+  :focus-visible { outline: 2px solid var(--navy); outline-offset: 3px; border-radius: 3px; }
+
+  /* Masthead */
+  .masthead { border-bottom: 1px solid var(--line); background: var(--surface); margin-bottom: 3.5rem; }
+  .masthead-inner {
+    max-width: 62rem; margin: 0 auto; padding: 3.25rem 1.5rem 2.5rem;
+    display: flex; flex-direction: column; gap: 1.25rem;
+  }
+  .kicker {
+    font-family: "IBM Plex Mono", monospace; font-size: .72rem; letter-spacing: .16em;
+    text-transform: uppercase; color: var(--lime-ink); display: flex; align-items: center; gap: .7rem;
+  }
+  .kicker::before { content: ""; width: 1.9rem; height: 2px; background: var(--lime); }
+  h1 { font-size: clamp(2.1rem, 5.2vw, 3.1rem); font-weight: 800; line-height: 1.04; letter-spacing: -.03em; }
+  .standfirst { font-size: 1.075rem; color: var(--ink-2); max-width: 60ch; }
+  .meta {
+    display: flex; flex-wrap: wrap; gap: .5rem 2rem; padding-top: 1rem;
+    border-top: 1px solid var(--line-soft); font-size: .82rem; color: var(--ink-3);
+  }
+  .meta b {
+    display: block; font-family: "IBM Plex Mono", monospace; font-size: .68rem;
+    letter-spacing: .13em; text-transform: uppercase; font-weight: 500;
+    color: var(--ink-3); opacity: .8; margin-bottom: .1rem;
+  }
+  .meta span { color: var(--ink); font-weight: 500; }
+
+  /* Sections */
+  section { margin-bottom: 4rem; scroll-margin-top: 1.5rem; }
+  .sec-head {
+    display: flex; align-items: baseline; gap: .85rem; margin-bottom: 1.4rem;
+    padding-bottom: .8rem; border-bottom: 1px solid var(--line);
+  }
+  .sec-n {
+    font-family: "IBM Plex Mono", monospace; font-size: .8rem; font-weight: 500;
+    color: var(--ink-3); letter-spacing: .06em; flex: none;
+  }
+  h2 { font-size: 1.42rem; font-weight: 700; }
+  h3 { font-size: 1.02rem; font-weight: 700; margin: 2.1rem 0 .7rem; }
+  .stack { display: flex; flex-direction: column; gap: 1rem; }
+
+  /* Tables */
+  .t-scroll {
+    overflow-x: auto; border: 1px solid var(--line); border-radius: 10px;
+    background: var(--surface); box-shadow: var(--shadow);
+  }
+  table { width: 100%; border-collapse: collapse; font-size: .875rem; min-width: 32rem; }
+  thead th {
+    text-align: left; font-family: "IBM Plex Mono", monospace; font-size: .67rem;
+    font-weight: 500; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-3);
+    padding: .8rem 1rem; background: var(--surface-2); border-bottom: 1px solid var(--line); white-space: nowrap;
+  }
+  tbody td { padding: .74rem 1rem; border-bottom: 1px solid var(--line-soft); vertical-align: top; color: var(--ink-2); }
+  tbody tr:last-child td { border-bottom: 0; }
+  tbody td:first-child { color: var(--ink); font-weight: 500; }
+  tr.divider td {
+    background: var(--surface-2); color: var(--ink-3); font-family: "IBM Plex Mono", monospace;
+    font-size: .68rem; letter-spacing: .12em; text-transform: uppercase; font-weight: 500; padding: .5rem 1rem;
+  }
+
+  /* Tags. Channel, compliance type and reuse class are the three things you
+     need to know before reading a message, so they sit in its header. */
+  .tag {
+    font-family: "IBM Plex Mono", monospace; font-size: .63rem; font-weight: 500;
+    letter-spacing: .1em; text-transform: uppercase; padding: .16rem .48rem;
+    border-radius: 4px; border: 1px solid transparent; white-space: nowrap;
+  }
+  .tag-sms   { background: var(--navy-wash); color: var(--navy-ink); border-color: var(--navy-ink); }
+  .tag-eml   { background: var(--surface-2); color: var(--ink-2); border-color: var(--line); }
+  .tag-trans { background: var(--lime-wash); color: var(--lime-ink); }
+  .tag-mktg  { background: var(--amber-wash); color: var(--amber); }
+  .tag-core  { background: transparent; color: var(--ink-3); border-color: var(--line); }
+  .tag-trade { background: var(--hot-wash); color: var(--hot); }
+
+  /* Message card */
+  .msg {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 10px;
+    box-shadow: var(--shadow); margin-bottom: 1rem; overflow: hidden;
+  }
+  .msg-head {
+    display: flex; flex-wrap: wrap; align-items: center; gap: .45rem .6rem;
+    padding: .75rem 1rem; background: var(--surface-2); border-bottom: 1px solid var(--line-soft);
+  }
+  .msg-id {
+    font-family: "IBM Plex Mono", monospace; font-size: .78rem; font-weight: 500;
+    color: var(--ink); letter-spacing: .02em;
+  }
+  .msg-when { font-size: .78rem; color: var(--ink-3); margin-left: auto; }
+  .msg-subject {
+    padding: .7rem 1rem 0; font-size: .85rem; color: var(--ink-2);
+  }
+  .msg-subject b {
+    font-family: "IBM Plex Mono", monospace; font-size: .68rem; letter-spacing: .1em;
+    text-transform: uppercase; color: var(--ink-3); font-weight: 500; margin-right: .5rem;
+  }
+  .msg-body {
+    margin: .7rem 1rem 1rem; padding: .85rem 1rem; background: var(--code-bg);
+    border: 1px solid var(--line-soft); border-radius: 7px;
+    font-family: "IBM Plex Mono", monospace; font-size: .795rem; line-height: 1.66;
+    color: var(--ink); white-space: pre-wrap; overflow-x: auto;
+  }
+  .msg-note {
+    padding: 0 1rem 1rem; font-size: .85rem; color: var(--ink-3); max-width: none;
+  }
+  .msg-note b { color: var(--ink-2); }
+
+  /* Callouts */
+  .why {
+    border-left: 3px solid var(--navy); background: var(--navy-wash);
+    border-radius: 0 8px 8px 0; padding: .95rem 1.15rem;
+  }
+  .why h4 { font-size: .82rem; font-weight: 700; margin-bottom: .3rem; color: var(--navy-ink); }
+  .why p { font-size: .9rem; color: var(--ink-2); }
+  .ask {
+    border-left: 3px solid var(--hot); background: var(--hot-wash);
+    border-radius: 0 8px 8px 0; padding: .95rem 1.15rem; font-size: .9rem; color: var(--ink-2);
+  }
+  .ask b { color: var(--hot); }
+  .keystone {
+    background: var(--surface); border: 1px solid var(--line); border-top: 3px solid var(--hot);
+    border-radius: 10px; box-shadow: var(--shadow); padding: 1.3rem 1.4rem;
+    display: flex; flex-direction: column; gap: .5rem;
+  }
+  .keystone p.big {
+    font-family: Archivo, sans-serif; font-size: 1.12rem; font-weight: 700;
+    line-height: 1.34; letter-spacing: -.015em; color: var(--ink); max-width: 46ch;
+  }
+  .keystone p.sub { font-size: .9rem; color: var(--ink-2); }
+
+  .cols { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); }
+  .rule {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 10px;
+    padding: 1.05rem 1.15rem; box-shadow: var(--shadow); border-top: 3px solid var(--rule-c, var(--steel));
+  }
+  .rule-yes { --rule-c: var(--lime); }
+  .rule-no  { --rule-c: var(--hot); }
+  .rule h4 { font-family: Archivo, sans-serif; font-size: .9rem; font-weight: 700; margin: 0 0 .6rem; }
+  .rule ul { margin: 0; padding-left: 1.05rem; }
+  .rule li { font-size: .875rem; color: var(--ink-2); margin-bottom: .34rem; }
+  .rule li::marker { color: var(--rule-c); }
+
+  ul.plain { margin: 0; padding-left: 1.1rem; }
+  ul.plain li { margin-bottom: .42rem; color: var(--ink-2); max-width: 68ch; }
+  ul.plain li::marker { color: var(--ink-3); }
+  ul.plain b, .rule b { color: var(--ink); font-weight: 600; }
+  ol.plain { margin: 0; padding-left: 1.3rem; }
+  ol.plain li { margin-bottom: .42rem; color: var(--ink-2); max-width: 68ch; }
+
+  .fine { font-size: .82rem; color: var(--ink-3); max-width: 68ch; }
+</style>
+
+<header class="masthead">
+  <div class="masthead-inner">
+    <p class="kicker">Spray It Solutions &middot; Systemations &middot; Doc 2 of 3</p>
+    <h1>Every message the pipelines send</h1>
+    <p class="standfirst">
+      64 SMS and emails with their sender, subject and preheader, the custom fields they
+      read from, and the values every message draws its names, numbers and links from.
+      Change a value once and every message that uses it follows.
+    </p>
+    <div class="meta">
+      <div><b>Prepared for</b><span>Glenn, Spray It Solutions</span></div>
+      <div><b>System</b><span>Systemations</span></div>
+      <div><b>Messages</b><span>64</span></div>
+      <div><b>Source of truth</b><span class="mono">journey-data.js</span></div>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <section id="template">
+    <div class="sec-head"><span class="sec-n">01</span><h2>How the kit is organised</h2></div>
+    <div class="stack">
+      <p>The visual companion is the <a href="../index.html">customer journey page</a>: every message below as the customer would receive it, stage by stage, with the alerts and tasks behind each one. Its Fields mode shows the raw merge fields and its Copy button hands over the template text ready to paste.</p>
+      <ol class="plain">
+        <li>The values in &sect;2 are set once. Every message reads your name, number and links from them.</li>
+        <li>The fields in &sect;3 are what the website sends and what the team fills in as a job moves.</li>
+        <li>Messages tagged <span class="tag tag-core">Core</span> use wording that does not depend on the product.</li>
+        <li>Messages tagged <span class="tag tag-trade">Trade</span> are written around spray foam itself: the R-value explanation, the preparation list, the completion notes. They are the ones to revisit if the product range or the process changes.</li>
+      </ol>
+      <p>
+        Of the 64, 9 are written around the product: R-ASSESS-06, R-FU-02, NUR-01, NUR-02, JOB-02, JOB-05, C-INSP-03, C-MOB-01, C-DONE-01.
+      </p>
+      <h3>Sender identity</h3>
+      <p>
+        Every email carries a From name, a From address and a Reply-to. Two From names are used:
+        <code>from_name_owner</code>, "Glenn at Spray It Solutions", on anything personal, and
+        <code>from_name_brand</code>, "Spray It Solutions", on confirmations, invoices and paperwork.
+        Both send from <code>business_email</code>. The sending domain needs SPF and DKIM before
+        go-live, or the first thing the customer sees is a spam warning.
+      </p>
+      <h3>Preheaders</h3>
+      <p>
+        Every email has one. It is the grey line the inbox shows under the subject, and on a phone
+        it is most of what the reader sees before deciding whether to open. They complete the
+        subject rather than repeat it, and stay under 110 characters.
+      </p>
+      <div class="ask">
+        <b>A warning about tokens.</b> The platform has changed token names between releases,
+        particularly the appointment ones. Treat every token below as <em>what to look for
+        in the dropdown</em>, not as a guaranteed string. Confirm each against your Systemations
+        version and send yourself a test before go-live. A token that does not resolve
+        sends the raw <code>{{...}}</code> text to the customer.
+      </div>
+    </div>
+  </section>
+
+  <section id="values">
+    <div class="sec-head"><span class="sec-n">02</span><h2>Custom Values: the swap layer</h2></div>
+    <div class="stack">
+      <p>
+        Under <b>Settings &rarr; Custom Values</b>. This is the whole template mechanism:
+        change these 21 values and every message works for a different client.
+      </p>
+      <div class="t-scroll">
+        <table>
+          <thead><tr><th>Custom value</th><th>Spray It Solutions</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td><code>business_name</code></td><td>Spray It Solutions</td><td>Used in email</td></tr>
+            <tr><td><code>business_short_name</code></td><td>Spray It</td><td>Used in SMS, where characters cost money</td></tr>
+            <tr><td><code>business_phone</code></td><td>0428 26 36 26</td><td>Human readable</td></tr>
+            <tr><td><code>business_phone_e164</code></td><td>+61428263626</td><td>For tel: links</td></tr>
+            <tr><td><code>business_email</code></td><td>info@sprayitsolutions.com.au</td><td>From address and reply-to. The sending domain needs SPF and DKIM before go-live.</td></tr>
+            <tr><td><code>from_name_owner</code></td><td>Glenn at Spray It Solutions</td><td>From name on the personal emails</td></tr>
+            <tr><td><code>from_name_brand</code></td><td>Spray It Solutions</td><td>From name on confirmations and invoices</td></tr>
+            <tr><td><code>website_url</code></td><td>sprayitsolutions.com.au</td><td>Staging address until sign-off</td></tr>
+            <tr><td><code>booking_url</code></td><td>sprayitsolutions.com.au/book</td><td>The phone consult calendar, embedded on the site</td></tr>
+            <tr><td><code>quote_form_url</code></td><td>sprayitsolutions.com.au/contact</td><td></td></tr>
+            <tr><td><code>privacy_url</code></td><td>sprayitsolutions.com.au/privacy</td><td>Required in marketing email</td></tr>
+            <tr><td><code>review_url</code></td><td>Google review link</td><td>The Reviews tab of the Google listing. Use a trigger link so it is shortened in SMS.</td></tr>
+            <tr><td><code>owner_first_name</code></td><td>Glenn</td><td>Signs the personal messages</td></tr>
+            <tr><td><code>service_area</code></td><td>Australia-wide</td><td></td></tr>
+            <tr><td><code>trade_noun</code></td><td>spray foam insulation</td><td>How the work is named in a message: "your spray foam insulation enquiry"</td></tr>
+            <tr><td><code>trade_verb</code></td><td>insulation</td><td>The short form: "your insulation job"</td></tr>
+            <tr><td><code>assessment_noun</code></td><td>site assessment</td><td>What the measure-up visit is called</td></tr>
+            <tr><td><code>consult_length</code></td><td>15 minute</td><td></td></tr>
+            <tr><td><code>office_hours</code></td><td>Mon to Fri, 7am to 5pm</td><td>To confirm with Glenn</td></tr>
+            <tr><td><code>quote_turnaround</code></td><td>2 business days</td><td>The promise made at the assessment</td></tr>
+            <tr><td><code>sms_signoff</code></td><td>Spray It</td><td>Sender identification on every SMS</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="ask">
+        <b>Needs Glenn:</b> trading hours. That is the only outstanding value. There is deliberately
+        no ABN value: quotes and invoices are documents Glenn issues himself and they carry it.
+      </div>
+    </div>
+  </section>
+
+  <section id="fields">
+    <div class="sec-head"><span class="sec-n">03</span><h2>Custom fields</h2></div>
+
+    <h3>Contact fields, from the website webhook</h3>
+    <div class="t-scroll">
+      <table>
+        <thead><tr><th>Key</th><th>Label</th><th>Type</th><th>Options</th></tr></thead>
+        <tbody>
+          <tr><td><code>first_name</code>, <code>last_name</code></td><td>Name</td><td>Text</td><td>The form asks for both separately</td></tr>
+          <tr><td><code>property_type</code></td><td>Property type</td><td>Dropdown</td><td>Home, New build, Shed or garage, Factory or warehouse, Farm or agricultural, Something else</td></tr>
+          <tr><td><code>building_stage</code></td><td>Building stage</td><td>Dropdown</td><td>Existing building (retrofit), Under construction, Still planning</td></tr>
+          <tr><td><code>areas</code></td><td>Areas to insulate</td><td>Text</td><td>Roof or ceiling, Walls, Underfloor, Whole property, Not sure yet</td></tr>
+          <tr><td><code>timeframe</code></td><td>Timeframe</td><td>Dropdown</td><td>As soon as possible, Next 1 to 3 months, 3 months or more, Just researching</td></tr>
+          <tr><td><code>postcode</code></td><td>Postcode</td><td>Text</td><td></td></tr>
+          <tr><td><code>street</code>, <code>suburb</code></td><td>Street, suburb</td><td>Text</td><td>Optional on the form</td></tr>
+          <tr><td><code>enquiry_message</code></td><td>Enquiry message</td><td>Multi-line</td><td></td></tr>
+          <tr><td><code>phone_raw</code></td><td>Phone as typed</td><td>Text</td><td>Phone itself arrives in E.164, which is what the CRM matches a person on</td></tr>
+          <tr><td><code>company</code></td><td>Company</td><td>Text</td><td>Commercial contacts. Asked on the scoping call.</td></tr>
+        </tbody>
+      </table>
+    </div>
+<p class="fine" style="margin-top:.7rem">These arrive already populated. Reference them as {{contact.&lt;key&gt;}}. Store the human label in each dropdown, not the form value: the webhook sends home, new-build and 1-3-months, and several emails echo these fields back to the customer. The building stage arrives as stage; map it to building_stage, because it is the building's stage, not the pipeline stage.</p>
+    <h3>Contact fields, consent evidence</h3>
+    <div class="t-scroll">
+      <table>
+        <thead><tr><th>Key</th><th>Label</th><th>Type</th></tr></thead>
+        <tbody>
+          <tr><td><code>consent_marketing</code></td><td>Marketing consent</td><td>Dropdown: yes, no</td></tr>
+          <tr><td><code>consent_text</code></td><td>Consent wording shown</td><td>Multi-line</td></tr>
+          <tr><td><code>consent_at</code></td><td>Consent timestamp</td><td>Date</td></tr>
+          <tr><td><code>consent_page</code></td><td>Consent page URL</td><td>Text</td></tr>
+        </tbody>
+      </table>
+    </div>
+<p class="fine" style="margin-top:.7rem">Never overwrite these on a later form fill. Under the Spam Act what matters is the wording someone actually saw, so a second submission appends a new record rather than replacing the original evidence.</p>
+    <h3>Contact fields, attribution</h3>
+    <div class="t-scroll">
+      <table>
+        <thead><tr><th>Key</th><th>Type</th></tr></thead>
+        <tbody>
+          <tr><td><code>utm_source</code>, <code>utm_medium</code>, <code>utm_campaign</code>, <code>utm_term</code>, <code>utm_content</code>, <code>utm_id</code></td><td>Text</td></tr>
+          <tr><td><code>gclid</code>, <code>gbraid</code>, <code>wbraid</code>, <code>fbclid</code>, <code>msclkid</code>, <code>ttclid</code></td><td>Text</td></tr>
+          <tr><td><code>first_touch_at</code></td><td>Date</td></tr>
+          <tr><td><code>first_touch_referrer</code>, <code>first_touch_landing</code></td><td>Text</td></tr>
+          <tr><td><code>last_touch_referrer</code>, <code>last_touch_landing</code></td><td>Text</td></tr>
+          <tr><td><code>source</code>, <code>form_name</code>, <code>submitted_at</code>, <code>page_title</code></td><td>Text</td></tr>
+        </tbody>
+      </table>
+    </div>
+<p class="fine" style="margin-top:.7rem">Set the first-touch fields only if empty. Overwriting them on every visit destroys the thing they exist to measure.</p>
+    <h3>Contact fields, CRM-managed</h3>
+    <div class="t-scroll">
+      <table>
+        <thead><tr><th>Key</th><th>Label</th><th>Type</th><th>Set by</th></tr></thead>
+        <tbody>
+          <tr><td><code>contact_attempts</code></td><td>Contact attempts</td><td>Number</td><td>The chase, incremented per attempt</td></tr>
+          <tr><td><code>last_attempt_at</code></td><td>Last attempt</td><td>Date</td><td>The chase</td></tr>
+          <tr><td><code>preferred_contact</code></td><td>Preferred contact</td><td>Dropdown: call, sms, email</td><td>Asked on the consult</td></tr>
+          <tr><td><code>do_not_sms</code></td><td>Do not SMS</td><td>Checkbox</td><td>Manual, on request, and by STOP</td></tr>
+        </tbody>
+      </table>
+    </div>
+<p class="fine" style="margin-top:.7rem">Not from the website. Set by workflows.</p>
+    <h3>Opportunity fields</h3>
+    <div class="t-scroll">
+      <table>
+        <thead><tr><th>Key</th><th>Label</th><th>Type</th><th>Stage it is set</th></tr></thead>
+        <tbody>
+          <tr><td><code>site_address</code></td><td>Site address</td><td>Text</td><td>Qualified</td></tr>
+          <tr><td><code>access_notes</code></td><td>Access notes</td><td>Multi-line</td><td>Assessment</td></tr>
+          <tr><td><code>sqm_estimate</code></td><td>Area, sqm</td><td>Number</td><td>Assessment</td></tr>
+          <tr><td><code>product_type</code></td><td>Product</td><td>Dropdown: open cell, closed cell, both</td><td>Assessment</td></tr>
+          <tr><td><code>assessment_date</code></td><td>Assessment date</td><td>Date</td><td>Assessment Booked</td></tr>
+          <tr><td><code>proposal_due_date</code></td><td>Proposal due</td><td>Date</td><td>Specifying (commercial)</td></tr>
+          <tr><td><code>quote_number</code></td><td>Quote number</td><td>Text</td><td>Quoting</td></tr>
+          <tr><td><code>quote_sent_at</code></td><td>Quote sent</td><td>Date</td><td>Quote Sent</td></tr>
+          <tr><td><code>deposit_amount</code></td><td>Deposit amount</td><td>Monetary</td><td>Won, where a deposit applies</td></tr>
+          <tr><td><code>deposit_received_at</code></td><td>Deposit received</td><td>Date</td><td>Scheduled</td></tr>
+          <tr><td><code>job_start_date</code>, <code>job_end_date</code></td><td>Job dates</td><td>Date</td><td>Scheduled</td></tr>
+          <tr><td><code>crew_assigned</code></td><td>Crew</td><td>Text</td><td>Scheduled</td></tr>
+          <tr><td><code>variation_amount</code></td><td>Variations</td><td>Monetary</td><td>In Progress</td></tr>
+          <tr><td><code>photos_captured</code></td><td>Photos captured</td><td>Checkbox</td><td>In Progress. Required before Invoiced.</td></tr>
+          <tr><td><code>invoice_number</code>, <code>invoice_sent_at</code></td><td>Invoice</td><td>Text, Date</td><td>Invoiced</td></tr>
+          <tr><td><code>po_number</code></td><td>Purchase order</td><td>Text</td><td>Commercial, on Won</td></tr>
+          <tr><td><code>lost_reason</code></td><td>Lost reason</td><td>Dropdown</td><td>On Lost</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+  </section>
+
+  <section id="compliance">
+    <div class="sec-head"><span class="sec-n">04</span><h2>The compliance line</h2></div>
+    <div class="stack">
+      <div class="cols">
+        <div class="rule rule-yes">
+          <h4><span class="tag tag-trans">Transactional</span></h4>
+          <ul>
+            <li>About an enquiry, appointment or job the person already has with us</li>
+            <li>No marketing consent required</li>
+            <li>No unsubscribe required</li>
+            <li>Still identifies the sender</li>
+          </ul>
+        </div>
+        <div class="rule rule-no">
+          <h4><span class="tag tag-mktg">Marketing</span></h4>
+          <ul>
+            <li>Promotional. 6 of the 64: NUR-01, NUR-02, NUR-03, REV-02, REV-03, C-FUT-01. None is an SMS.</li>
+            <li>Sends <b>only</b> when <code>consent_marketing</code> is <code>yes</code></li>
+            <li>Must carry a functional unsubscribe</li>
+            <li>This is the entire reason the consent fields exist</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3>Three rules that apply to every message</h3>
+      <ul class="plain">
+        <li><b>Every SMS identifies the sender.</b> <code>{{custom_values.sms_signoff}}</code> appears in every one. An unidentified SMS is the most common Spam Act failure.</li>
+        <li><b>Every marketing message carries an opt-out.</b> The platform handles STOP natively and sets do-not-SMS, and <code>{{unsubscribe_link}}</code> handles email, but the wording still has to be there.</li>
+        <li><b>Send window 8am to 8pm, Monday to Saturday.</b> Confirmations send immediately because the person is waiting for them. Everything else waits. Use the platform's <em>Wait until a time window</em> step rather than hoping nobody enquires at midnight.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="inventory">
+    <div class="sec-head"><span class="sec-n">05</span><h2>All 64 messages</h2></div>
+    <div class="stack">
+      <p>Every SMS fits in one segment with the sample values, checked on the journey page rather than assumed.</p>
+      <div class="t-scroll">
+        <table>
+          <thead><tr><th>ID</th><th>Channel</th><th>Trigger</th><th>Type</th><th>Reuse</th><th>Appears in</th></tr></thead>
+          <tbody>
+          <tr><td><code>X-ACK-01</code></td><td>SMS</td><td>Enters New Enquiry<br><span class="fine">Within 2 minutes</span></td><td><span class="tag tag-trans">Trans</span></td><td><span class="tag tag-core">Core</span></td><td>Residential · New Enquiry, Commercial · New Enquiry</td></tr>
+          <tr><td><code>X-ACK-02</code></td><td>Email</td><td>Enters New Enquiry<br><span class="fine">Immediately</span></td><td><span class="tag tag-trans">Trans</span></td><td><span class="tag tag-core">Core</span></td><td>Residential · New Enquiry</td></tr>
+          <tr><td><code>X-CHASE-01</code></td><td>SMS</td><td>First call attempt not answered<br><span class="fine">Straight after the call</span></td><td><span class="tag tag-trans">Trans</span></td><td><span class="tag tag-core">Core</span></td><td>Residential · Contacting, Commercial · Contacting</td></tr>
+          <tr><td><code>X-CHASE-02</code></td><td>Email</td><td>No reply<br><span class="fine">Day 2</span></td><td><span class="tag tag-trans">Trans</span></td><td><span class="tag tag-core">Core</span></td><td>Residential · Contacting, Commercial · Contacting</td></tr>
+          <tr><td><code>X-CHASE-03</code></td><td>SMS</td><td>No reply<br><span class="fine">Day 4</span></td><td><span class="tag tag-trans">Trans</span></td><td><span class="tag tag-core">Core</span></td><td>Residential · Contacting, Commercial · Contacting</td></tr>
+          <tr><td><code>X-CHASE-04</code></td><td>Email</td><td>No reply<br><span class="fine">Day 7, final</span></td><td><span class="tag tag-trans">Trans</span></td><td><span class="tag tag-core">Core</span></td><td>Residential · Contacting, Commercial · Contacting</td></tr>
+          <tr><td><code>X-APPT-01</code></td><td>Email</td><td>Phone consult booked<br><span class="fine">Immediately</span></td><td><span class="tag tag-trans">Trans</span></td><td><span class="tag tag-core">Core</span></td><td>Residential · Contacting, Commercial · Contacting</td></tr>
+          <tr><td><code>X-APPT-02</code></td><td>SMS</td><td>Phone consult booked<br><span class="fine">Immediately</span></td><td><span class="tag tag-trans">Trans</span></td><td><span class="tag tag-core">Core</span></td><td>Residential · Contacting, Commercial · Contacting</td></tr>
+          <tr><td><code>X-APPT-03</code></td><td>SMS</td><td>Phone consult upcoming<br><span class="fine">24 hours before</span></td><td><span class="tag tag-trans">Trans</span></td><td><span class="tag tag-core">Core</span></td><td>Residential · Contacting, Commercial · Contacting, Commercial · Inspection Booked</td></tr>
+          <tr><td><code>X-APPT-04</code></td><td>SMS</td><td>Phone consult upcoming<br><span class="fine">2 hours before</span></td><td><span class="tag tag-trans">Trans</span></td><td><span class="tag tag-core">Core</span></td><td>Residential · Contacting, Commercial · Contacting</td></tr>
+          <tr><td><code>X-APPT-05</code></td><td>SMS</td><td>Marked no-show<br><span class="fine">Straight away</span></td><td><span class="tag tag-trans">Trans</span></td><td><span class="tag tag-core">Core</span></td><td>Residential · Contacting, Commercial · Contacting</td></tr>
+          <tr><td><code>X-APPT-06</code></td><td>Email</td><td>Appointment rescheduled or cancelled<br><span class="fine">Immediately</span></td><td><span class="tag tag-trans">Trans</span></td><td><span class="tag tag-core">Core</span></td><td>Residential · Contacting, Residential · Assessment Booked, Commercial · Contacting, Commercial · Inspection Booked</td></tr>
+          <tr><td><code>X-BOOK-01</code></td><td>SMS</td><td>Enters Qualified<br><span class="fine">Straight after the call</span></td><td><span class="tag tag-trans">Trans</span></td><td><span class="tag tag-core">Core</span></td><td>Residential · Qualified</td></tr>
+          <tr><td><code>X-BOOK-02</code></td><td>Email</td><td>Enters Qualified<br><span class="fine">Straight after the call</span></td><td><span class="tag tag-trans">Trans</span></td><td><span class="tag tag-core">Core</span></td><td>Residential · Qualified</td></tr>
+          <tr><td><code>R-ASSESS-01</code></td><td>SMS</td><td>Enters Assessment Booked<br><span class="fine">Immediately</span></td><td><span class="tag tag-trans">Trans</span></td><td><span class="tag tag-core">Core</span></td><td>Residential · Assessment Booked</td></tr>
+          <tr><td><code>R-ASSESS-02</code></td><td>SMS</td><td>Assessment day<br><span class="fine">7:00am on the day</span></td><td><span class="tag tag-trans">Trans</span></td><td><span class="tag tag-core">Core</span></td><td>Residential · Assessment Booked</td></tr>
+          <tr><td><code>R-ASSESS-03</code></td><td>SMS</td><td>Assessment cancelled<br><span class="fine">Immediately</span></td><td><span class="tag tag-trans">Trans</span></td><td><span class="tag tag-core">Core</span></td><td>Residential · Assessment Booked</td></tr>
+          <tr><td><code>R-ASSESS-04</code></td><td>Email</td><td>Assessment cancelled<br><span class="fine">Immediately</span></td><td><span class="tag tag-trans">Trans</span></td><td><span class="tag tag-core">Core</span></td><td>Residential · Assessment Booked</td></tr>
+          <tr><td><code>R-ASSESS-05</code></td><td>SMS</td><td>Assessment marked no-show, or the crew could not get in<br><span class="fine">Straight away, from site</span></td><td><span class="tag tag-trans">Trans</span></td><td><span class="tag tag-core">Core</span></td><td>Residential · Assessment Booked</td></tr>
+          <tr><td><code>R-ASSESS-06</code></td><td>Email</td><td>Assessment marked no-show<br><span class="fine">Same day</span></td><td><span class="tag tag-trans">Trans</span></td><td><span class="tag tag-trade">Trade</span></td><td>Residential · Assessment Booked</td></tr>
+          <tr><td><code>R-QUOTING-01</code></td><td>SMS</td><td>Enters Quoting<br><span class="fine">Straight after the assessment</span></td><td><span class="tag tag-trans">Trans</span></td><td><span class="tag tag-core">Core</span></td><td>Residential · Quoting</td></tr>
+          <tr><td><code>R-QUOTE-01</code></td><td>Email</td><td>Enters Quote Sent<br><span class="fine">Immediately, with the quote attached</span></td><td><span class="tag tag-trans">Trans</span></td><td><span class="tag tag-core">Core</span></td><td>Residential · Quote Sent</td></tr>
+          <tr><td><code>R-QUOTE-02</code></td><td>SMS</td><td>Enters Quote Sent<br><span class="fine">Immediately</span></td><td><span class="tag tag-trans">Trans</span></td><td><span class="tag tag-core">Core</span></td><td>Residential · Quote Sent</td></tr>
+          <tr><td><code>R-FU-01</code></td><td>SMS</td><td>Quote unanswered<br><span class="fine">Day 2</span></td><td><span class="tag tag-trans">Trans</span></td><td><span class="tag tag-core">Core</span></td><td>Residential · Quote Sent</td></tr>
+          <tr><td><code>R-FU-02</code></td><td>Email</td><td>Quote unanswered<br><span class="fine">Day 5</span></td><td><span class="tag tag-trans">Trans</span></td><td><span class="tag tag-trade">Trade</span></td><td>Residential · Follow-up</td></tr>
+          <tr><td><code>R-FU-03</code></td><td>SMS</td><td>Quote unanswered<br><span class="fine">Day 10</span></td><td><span class="tag tag-trans">Trans</span></td><td><span class="tag tag-core">Core</span></td><td>Residential · Follow-up</td></tr>
+          <tr><td><code>R-FU-04</code></td><td>Email</td><td>Quote unanswered<br><span class="fine">Day 21, final</span></td><td><span class="tag tag-trans">Trans</span></td><td><span class="tag tag-core">Core</span></td><td>Residential · Follow-up</td></tr>
+          <tr><td><code>LOST-01</code></td><td>Email</td><td>Marked Lost, any reason except Unreachable, Duplicate or Spam<br><span class="fine">Next business morning</span></td><td><span class="tag tag-trans">Trans</span></td><td><span class="tag tag-core">Core</span></td><td>Residential · Follow-up</td></tr>
+          <tr><td><code>NUR-01</code></td><td>Email</td><td>Enters Nurture<br><span class="fine">Next business morning</span></td><td><span class="tag tag-mktg">Mktg</span></td><td><span class="tag tag-trade">Trade</span></td><td>Residential · Nurture</td></tr>
+          <tr><td><code>NUR-02</code></td><td>Email</td><td>In Nurture<br><span class="fine">+30 days</span></td><td><span class="tag tag-mktg">Mktg</span></td><td><span class="tag tag-trade">Trade</span></td><td>Residential · Nurture</td></tr>
+          <tr><td><code>NUR-03</code></td><td>Email</td><td>In Nurture<br><span class="fine">+90 days</span></td><td><span class="tag tag-mktg">Mktg</span></td><td><span class="tag tag-core">Core</span></td><td>Residential · Nurture</td></tr>
+          <tr><td><code>X-WON-01</code></td><td>Email</td><td>Status set to Won<br><span class="fine">Immediately</span></td><td><span class="tag tag-trans">Trans</span></td><td><span class="tag tag-core">Core</span></td><td>Residential · Won</td></tr>
+          <tr><td><code>X-WON-02</code></td><td>SMS</td><td>Status set to Won<br><span class="fine">Immediately</span></td><td><span class="tag tag-trans">Trans</span></td><td><span class="tag tag-core">Core</span></td><td>Residential · Won</td></tr>
+          <tr><td><code>DEP-01</code></td><td>SMS</td><td>deposit_received_at is set<br><span class="fine">Immediately</span></td><td><span class="tag tag-trans">Trans</span></td><td><span class="tag tag-core">Core</span></td><td>Residential · Won</td></tr>
+          <tr><td><code>JOB-01</code></td><td>SMS</td><td>Enters Scheduled<br><span class="fine">Immediately</span></td><td><span class="tag tag-trans">Trans</span></td><td><span class="tag tag-core">Core</span></td><td>Residential · Scheduled</td></tr>
+          <tr><td><code>JOB-02</code></td><td>Email</td><td>Enters Scheduled<br><span class="fine">Immediately</span></td><td><span class="tag tag-trans">Trans</span></td><td><span class="tag tag-trade">Trade</span></td><td>Residential · Scheduled</td></tr>
+          <tr><td><code>JOB-03</code></td><td>SMS</td><td>Job upcoming<br><span class="fine">Day before, 4:00pm</span></td><td><span class="tag tag-trans">Trans</span></td><td><span class="tag tag-core">Core</span></td><td>Residential · Scheduled</td></tr>
+          <tr><td><code>JOB-04</code></td><td>SMS</td><td>Enters In Progress<br><span class="fine">Morning of the start</span></td><td><span class="tag tag-trans">Trans</span></td><td><span class="tag tag-core">Core</span></td><td>Residential · In Progress</td></tr>
+          <tr><td><code>JOB-06</code></td><td>SMS</td><td>Crew running late<br><span class="fine">Sent by the crew, from a saved template</span></td><td><span class="tag tag-trans">Trans</span></td><td><span class="tag tag-core">Core</span></td><td>Residential · In Progress</td></tr>
+          <tr><td><code>JOB-05</code></td><td>Email</td><td>Enters Invoiced<br><span class="fine">Immediately, with photos attached</span></td><td><span class="tag tag-trans">Trans</span></td><td><span class="tag tag-trade">Trade</span></td><td>Residential · Invoiced</td></tr>
+          <tr><td><code>PAY-01</code></td><td>Email</td><td>Enters Invoiced<br><span class="fine">Immediately, with the invoice attached</span></td><td><span class="tag tag-trans">Trans</span></td><td><span class="tag tag-core">Core</span></td><td>Residential · Invoiced</td></tr>
+          <tr><td><code>PAY-02</code></td><td>SMS</td><td>Invoice unpaid<br><span class="fine">Day 7</span></td><td><span class="tag tag-trans">Trans</span></td><td><span class="tag tag-core">Core</span></td><td>Residential · Invoiced</td></tr>
+          <tr><td><code>PAY-03</code></td><td>Email</td><td>Invoice unpaid<br><span class="fine">Day 14</span></td><td><span class="tag tag-trans">Trans</span></td><td><span class="tag tag-core">Core</span></td><td>Residential · Invoiced</td></tr>
+          <tr><td><code>REV-01</code></td><td>SMS</td><td>Enters Paid &amp; Closed<br><span class="fine">+1 day</span></td><td><span class="tag tag-trans">Trans</span></td><td><span class="tag tag-core">Core</span></td><td>Residential · Paid &amp; Closed</td></tr>
+          <tr><td><code>REV-02</code></td><td>Email</td><td>In Paid &amp; Closed<br><span class="fine">+7 days</span></td><td><span class="tag tag-mktg">Mktg</span></td><td><span class="tag tag-core">Core</span></td><td>Residential · Paid &amp; Closed</td></tr>
+          <tr><td><code>REV-03</code></td><td>Email</td><td>In Paid &amp; Closed<br><span class="fine">+12 months</span></td><td><span class="tag tag-mktg">Mktg</span></td><td><span class="tag tag-core">Core</span></td><td>Residential · Paid &amp; Closed</td></tr>
+          <tr><td><code>SYS-01</code></td><td>SMS</td><td>Inbound call missed<br><span class="fine">Within 60 seconds</span></td><td><span class="tag tag-trans">Trans</span></td><td><span class="tag tag-core">Core</span></td><td>Always on</td></tr>
+          <tr><td><code>SYS-02</code></td><td>SMS</td><td>Inbound SMS outside hours<br><span class="fine">Immediately</span></td><td><span class="tag tag-trans">Trans</span></td><td><span class="tag tag-core">Core</span></td><td>Always on</td></tr>
+          <tr><td><code>C-ACK-01</code></td><td>Email</td><td>Enters New Enquiry on the Commercial board<br><span class="fine">Immediately</span></td><td><span class="tag tag-trans">Trans</span></td><td><span class="tag tag-core">Core</span></td><td>Commercial · New Enquiry</td></tr>
+          <tr><td><code>C-INSP-01</code></td><td>Email</td><td>Enters Inspection Booked<br><span class="fine">Immediately</span></td><td><span class="tag tag-trans">Trans</span></td><td><span class="tag tag-core">Core</span></td><td>Commercial · Inspection Booked</td></tr>
+          <tr><td><code>C-INSP-02</code></td><td>Email</td><td>Inspection cancelled<br><span class="fine">Immediately</span></td><td><span class="tag tag-trans">Trans</span></td><td><span class="tag tag-core">Core</span></td><td>Commercial · Inspection Booked</td></tr>
+          <tr><td><code>C-INSP-03</code></td><td>Email</td><td>Inspection marked no-show, or no access on arrival<br><span class="fine">Same day</span></td><td><span class="tag tag-trans">Trans</span></td><td><span class="tag tag-trade">Trade</span></td><td>Commercial · Inspection Booked</td></tr>
+          <tr><td><code>C-SPEC-01</code></td><td>Email</td><td>Enters Specifying<br><span class="fine">Same day as the inspection</span></td><td><span class="tag tag-trans">Trans</span></td><td><span class="tag tag-core">Core</span></td><td>Commercial · Specifying</td></tr>
+          <tr><td><code>C-PROP-01</code></td><td>Email</td><td>Enters Proposal Submitted<br><span class="fine">Immediately, with the proposal attached</span></td><td><span class="tag tag-trans">Trans</span></td><td><span class="tag tag-core">Core</span></td><td>Commercial · Proposal Submitted</td></tr>
+          <tr><td><code>C-PROP-02</code></td><td>Email</td><td>Proposal unanswered<br><span class="fine">Day 7</span></td><td><span class="tag tag-trans">Trans</span></td><td><span class="tag tag-core">Core</span></td><td>Commercial · Proposal Submitted</td></tr>
+          <tr><td><code>C-PROP-03</code></td><td>Email</td><td>Still in Commercial Review<br><span class="fine">Day 21</span></td><td><span class="tag tag-trans">Trans</span></td><td><span class="tag tag-core">Core</span></td><td>Commercial · Commercial Review</td></tr>
+          <tr><td><code>C-FUT-01</code></td><td>Email</td><td>In Future Project<br><span class="fine">Every 90 days</span></td><td><span class="tag tag-mktg">Mktg</span></td><td><span class="tag tag-core">Core</span></td><td>Commercial · Future Project</td></tr>
+          <tr><td><code>C-PO-01</code></td><td>Email</td><td>Enters Awaiting PO<br><span class="fine">Immediately</span></td><td><span class="tag tag-trans">Trans</span></td><td><span class="tag tag-core">Core</span></td><td>Commercial · Awaiting PO</td></tr>
+          <tr><td><code>C-MOB-01</code></td><td>Email</td><td>Status set to Won (PO received), enters Mobilising<br><span class="fine">Immediately</span></td><td><span class="tag tag-trans">Trans</span></td><td><span class="tag tag-trade">Trade</span></td><td>Commercial · Won, Commercial · Mobilising</td></tr>
+          <tr><td><code>C-SITE-01</code></td><td>SMS</td><td>Each site day in In Progress<br><span class="fine">6:30am on the day</span></td><td><span class="tag tag-trans">Trans</span></td><td><span class="tag tag-core">Core</span></td><td>Commercial · In Progress</td></tr>
+          <tr><td><code>C-PROG-01</code></td><td>Email</td><td>In Progress, staged jobs<br><span class="fine">Weekly, Friday, from a saved template</span></td><td><span class="tag tag-trans">Trans</span></td><td><span class="tag tag-core">Core</span></td><td>Commercial · In Progress</td></tr>
+          <tr><td><code>C-PAY-01</code></td><td>Email</td><td>Progress claim issued<br><span class="fine">Per the programme</span></td><td><span class="tag tag-trans">Trans</span></td><td><span class="tag tag-core">Core</span></td><td>Commercial · Invoicing</td></tr>
+          <tr><td><code>C-DONE-01</code></td><td>Email</td><td>Works complete, enters Invoicing<br><span class="fine">Immediately, with the close-out pack attached</span></td><td><span class="tag tag-trans">Trans</span></td><td><span class="tag tag-trade">Trade</span></td><td>Commercial · Invoicing</td></tr>
+          <tr><td><code>C-CLOSE-01</code></td><td>Email</td><td>Enters Paid &amp; Closed<br><span class="fine">+1 day</span></td><td><span class="tag tag-trans">Trans</span></td><td><span class="tag tag-core">Core</span></td><td>Commercial · Paid &amp; Closed</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section id="shared">
+    <div class="sec-head"><span class="sec-n">06</span><h2>Shared messages</h2></div>
+    <div class="stack"><p>Used by both boards: the chase, the phone consult booking, and the step from the call to the assessment.</p></div>
+    <article class="msg">
+      <div class="msg-head">
+        <span class="msg-id">X-ACK-01</span>
+        <span class="tag tag-sms">SMS</span><span class="tag tag-trans">Trans</span><span class="tag tag-core">Core</span>
+        <span class="msg-when">Enters New Enquiry, within 2 minutes</span>
+      </div>
+      <pre class="msg-body">Hi {{contact.first_name}}, {{custom_values.business_short_name}} here. We have your enquiry and one of us will call you today. Need us sooner? {{custom_values.business_phone}}</pre>
+      <p class="msg-note"><b>Stops:</b> Sends once. <b>Window:</b> sends immediately. Fires before anyone has looked at the lead, so it promises only what automation can guarantee: that a human will call.</p>
+    </article>
+
+    <article class="msg">
+      <div class="msg-head">
+        <span class="msg-id">X-ACK-02</span>
+        <span class="tag tag-eml">Email</span><span class="tag tag-trans">Trans</span><span class="tag tag-core">Core</span>
+        <span class="msg-when">Enters New Enquiry, immediately</span>
+      </div>
+      <div class="msg-subject"><b>From</b>{{custom_values.from_name_brand}} &lt;{{custom_values.business_email}}&gt;</div>
+      <div class="msg-subject"><b>Reply-to</b>{{custom_values.business_email}}</div>
+      <div class="msg-subject"><b>Subject</b>We have your enquiry, {{contact.first_name}}</div>
+      <div class="msg-subject"><b>Preheader</b>One of the family will call you, usually today. Here is what you told us and what happens next.</div>
+      <pre class="msg-body">Hi {{contact.first_name}},
+
+Thanks for getting in touch. We have your enquiry and one of the family will call you, usually the same working day.
+
+Here is what you told us:
+
+  Property        {{contact.property_type}}
+  Needs doing     {{contact.areas}}
+  Building stage  {{contact.building_stage}}
+  Timeframe       {{contact.timeframe}}
+  Postcode        {{contact.postcode}}
+
+If any of that is wrong, just reply to this email and we will fix it.
+
+What happens next:
+
+  1. We call you for a {{custom_values.consult_length}} chat about the building.
+  2. If it looks like a fit, we book a {{custom_values.assessment_noun}}.
+  3. You get a written quote with no obligation.
+
+We cannot price {{custom_values.trade_noun}} properly without seeing the building, so nobody is going to quote you a number over the phone. The call is to work out whether it is the right answer for you at all.
+
+{{custom_values.owner_first_name}} and the team
+{{custom_values.business_name}}
+{{custom_values.business_phone}}</pre>
+      <p class="msg-note"><b>Stops:</b> Sends once. <b>Window:</b> sends immediately. Echoing their answers back cuts "did that go through?" replies and catches a wrong postcode before it wastes a site visit.</p>
+    </article>
+
+    <article class="msg">
+      <div class="msg-head">
+        <span class="msg-id">X-CHASE-01</span>
+        <span class="tag tag-sms">SMS</span><span class="tag tag-trans">Trans</span><span class="tag tag-core">Core</span>
+        <span class="msg-when">First call attempt not answered, straight after the call</span>
+      </div>
+      <pre class="msg-body">Hi {{contact.first_name}}, tried to call about your {{custom_values.trade_noun}} enquiry. Reply here or ring {{custom_values.business_phone}} when it suits. {{custom_values.sms_signoff}}</pre>
+      <p class="msg-note"><b>Stops:</b> The whole chase stops the moment they reply, book, or the card leaves Contacting. <b>Window:</b> waits for the send window.</p>
+    </article>
+
+    <article class="msg">
+      <div class="msg-head">
+        <span class="msg-id">X-CHASE-02</span>
+        <span class="tag tag-eml">Email</span><span class="tag tag-trans">Trans</span><span class="tag tag-core">Core</span>
+        <span class="msg-when">No reply, day 2</span>
+      </div>
+      <div class="msg-subject"><b>From</b>{{custom_values.from_name_owner}} &lt;{{custom_values.business_email}}&gt;</div>
+      <div class="msg-subject"><b>Reply-to</b>{{custom_values.business_email}}</div>
+      <div class="msg-subject"><b>Subject</b>Still keen to help with your {{custom_values.trade_noun}}</div>
+      <div class="msg-subject"><b>Preheader</b>Three easy ways to pick this back up, whenever suits.</div>
+      <pre class="msg-body">Hi {{contact.first_name}},
+
+We have tried you a couple of times without luck. No rush at our end, we just do not want to keep ringing if now is a bad time.
+
+Three ways to pick this back up:
+
+  Reply to this email with a time that suits
+  Book a call yourself: {{custom_values.booking_url}}
+  Ring us on {{custom_values.business_phone}}
+
+{{custom_values.owner_first_name}}
+{{custom_values.business_name}}</pre>
+      <p class="msg-note"><b>Stops:</b> Stops on reply, booking, or stage change. <b>Window:</b> waits for the send window.</p>
+    </article>
+
+    <article class="msg">
+      <div class="msg-head">
+        <span class="msg-id">X-CHASE-03</span>
+        <span class="tag tag-sms">SMS</span><span class="tag tag-trans">Trans</span><span class="tag tag-core">Core</span>
+        <span class="msg-when">No reply, day 4</span>
+      </div>
+      <pre class="msg-body">Hi {{contact.first_name}}, still happy to talk through your {{custom_values.trade_verb}} job whenever suits. Pick a time here: {{custom_values.booking_url}} {{custom_values.sms_signoff}}</pre>
+      <p class="msg-note"><b>Stops:</b> Stops on reply, booking, or stage change. <b>Window:</b> waits for the send window.</p>
+    </article>
+
+    <article class="msg">
+      <div class="msg-head">
+        <span class="msg-id">X-CHASE-04</span>
+        <span class="tag tag-eml">Email</span><span class="tag tag-trans">Trans</span><span class="tag tag-core">Core</span>
+        <span class="msg-when">No reply, day 7, final</span>
+      </div>
+      <div class="msg-subject"><b>From</b>{{custom_values.from_name_owner}} &lt;{{custom_values.business_email}}&gt;</div>
+      <div class="msg-subject"><b>Reply-to</b>{{custom_values.business_email}}</div>
+      <div class="msg-subject"><b>Subject</b>Closing this one off</div>
+      <div class="msg-subject"><b>Preheader</b>We could not reach you, so we will stop ringing. Nothing is lost.</div>
+      <pre class="msg-body">Hi {{contact.first_name}},
+
+We have not been able to reach you, so we will close this enquiry off rather than keep chasing.
+
+Nothing is lost. If the job comes back around, reply to this email or ring {{custom_values.business_phone}} and we will pick it straight back up.
+
+All the best with it either way.
+
+{{custom_values.owner_first_name}}
+{{custom_values.business_name}}</pre>
+      <p class="msg-note"><b>Stops:</b> Last in the sequence. The card goes to Lost, reason Unreachable. <b>Window:</b> waits for the send window. The honest close is the highest-replying message in the sequence. Do not soften it into another chase or it stops working.</p>
+    </article>
+
+    <article class="msg">
+      <div class="msg-head">
+        <span class="msg-id">X-APPT-01</span>
+        <span class="tag tag-eml">Email</span><span class="tag tag-trans">Trans</span><span class="tag tag-core">Core</span>
+        <span class="msg-when">Phone consult booked, immediately</span>
+      </div>
+      <div class="msg-subject"><b>From</b>{{custom_values.from_name_brand}} &lt;{{custom_values.business_email}}&gt;</div>
+      <div class="msg-subject"><b>Reply-to</b>{{custom_values.business_email}}</div>
+      <div class="msg-subject"><b>Subject</b>Confirmed: {{appointment.start_time}}</div>
+      <div class="msg-subject"><b>Preheader</b>We will call you on {{contact.phone}}. Reschedule or cancel with one click.</div>
+      <pre class="msg-body">Hi {{contact.first_name}},
+
+You are booked in.
+
+  When   {{appointment.start_time}}
+  What   {{appointment.title}}
+  Where  We call you on {{contact.phone}}
+
+There is nothing to prepare. If it is handy, have a rough idea of what needs doing and when, but the call is mostly us listening.
+
+Need to change it?
+
+  Reschedule: {{appointment.reschedule_link}}
+  Cancel: {{appointment.cancellation_link}}
+
+{{custom_values.business_name}}
+{{custom_values.business_phone}}</pre>
+      <p class="msg-note"><b>Stops:</b> Sends once per booking. <b>Window:</b> sends immediately.</p>
+    </article>
+
+    <article class="msg">
+      <div class="msg-head">
+        <span class="msg-id">X-APPT-02</span>
+        <span class="tag tag-sms">SMS</span><span class="tag tag-trans">Trans</span><span class="tag tag-core">Core</span>
+        <span class="msg-when">Phone consult booked, immediately</span>
+      </div>
+      <pre class="msg-body">Booked in for {{appointment.start_time}}. We will call you on {{contact.phone}}. Change it here: {{appointment.reschedule_link}} {{custom_values.sms_signoff}}</pre>
+      <p class="msg-note"><b>Stops:</b> Sends once per booking. <b>Window:</b> sends immediately.</p>
+    </article>
+
+    <article class="msg">
+      <div class="msg-head">
+        <span class="msg-id">X-APPT-03</span>
+        <span class="tag tag-sms">SMS</span><span class="tag tag-trans">Trans</span><span class="tag tag-core">Core</span>
+        <span class="msg-when">Phone consult upcoming, 24 hours before</span>
+      </div>
+      <pre class="msg-body">Reminder: your call with {{custom_values.business_short_name}} is tomorrow, {{appointment.start_time}}. Need to move it? {{appointment.reschedule_link}}</pre>
+      <p class="msg-note"><b>Stops:</b> Cancelled with the appointment. <b>Window:</b> waits for the send window.</p>
+    </article>
+
+    <article class="msg">
+      <div class="msg-head">
+        <span class="msg-id">X-APPT-04</span>
+        <span class="tag tag-sms">SMS</span><span class="tag tag-trans">Trans</span><span class="tag tag-core">Core</span>
+        <span class="msg-when">Phone consult upcoming, 2 hours before</span>
+      </div>
+      <pre class="msg-body">Your call with {{custom_values.business_short_name}} is at {{appointment.start_time}}, about 2 hours away. Talk soon.</pre>
+      <p class="msg-note"><b>Stops:</b> Cancelled with the appointment. <b>Window:</b> sends immediately.</p>
+    </article>
+
+    <article class="msg">
+      <div class="msg-head">
+        <span class="msg-id">X-APPT-05</span>
+        <span class="tag tag-sms">SMS</span><span class="tag tag-trans">Trans</span><span class="tag tag-core">Core</span>
+        <span class="msg-when">Marked no-show, straight away</span>
+      </div>
+      <pre class="msg-body">Hi {{contact.first_name}}, we missed you just now. No problem, grab another time here: {{custom_values.booking_url}} {{custom_values.sms_signoff}}</pre>
+      <p class="msg-note"><b>Stops:</b> Sends once. The chase sequence restarts from attempt 2. <b>Window:</b> waits for the send window.</p>
+    </article>
+
+    <article class="msg">
+      <div class="msg-head">
+        <span class="msg-id">X-APPT-06</span>
+        <span class="tag tag-eml">Email</span><span class="tag tag-trans">Trans</span><span class="tag tag-core">Core</span>
+        <span class="msg-when">Appointment rescheduled or cancelled, immediately</span>
+      </div>
+      <div class="msg-subject"><b>From</b>{{custom_values.from_name_brand}} &lt;{{custom_values.business_email}}&gt;</div>
+      <div class="msg-subject"><b>Reply-to</b>{{custom_values.business_email}}</div>
+      <div class="msg-subject"><b>Subject</b>Your booking has changed</div>
+      <div class="msg-subject"><b>Preheader</b>Your new time is {{appointment.start_time}}. If that is not right, ring us.</div>
+      <pre class="msg-body">Hi {{contact.first_name}},
+
+That booking has been updated.
+
+  Now   {{appointment.start_time}}
+
+If that is not right, ring us on {{custom_values.business_phone}}.
+
+{{custom_values.business_name}}</pre>
+      <p class="msg-note"><b>Stops:</b> Sends once per change. <b>Window:</b> sends immediately. Used for both the phone consult and the site assessment, so it never names which.</p>
+    </article>
+
+    <article class="msg">
+      <div class="msg-head">
+        <span class="msg-id">X-BOOK-01</span>
+        <span class="tag tag-sms">SMS</span><span class="tag tag-trans">Trans</span><span class="tag tag-core">Core</span>
+        <span class="msg-when">Enters Qualified, straight after the call</span>
+      </div>
+      <pre class="msg-body">Hi {{contact.first_name}}, good to talk. Grab a time for the {{custom_values.assessment_noun}} here: {{custom_values.booking_url}} {{custom_values.sms_signoff}}</pre>
+      <p class="msg-note"><b>Stops:</b> Stops when the assessment is booked. <b>Window:</b> waits for the send window.</p>
+    </article>
+
+    <article class="msg">
+      <div class="msg-head">
+        <span class="msg-id">X-BOOK-02</span>
+        <span class="tag tag-eml">Email</span><span class="tag tag-trans">Trans</span><span class="tag tag-core">Core</span>
+        <span class="msg-when">Enters Qualified, straight after the call</span>
+      </div>
+      <div class="msg-subject"><b>From</b>{{custom_values.from_name_owner}} &lt;{{custom_values.business_email}}&gt;</div>
+      <div class="msg-subject"><b>Reply-to</b>{{custom_values.business_email}}</div>
+      <div class="msg-subject"><b>Subject</b>Booking your {{custom_values.assessment_noun}}</div>
+      <div class="msg-subject"><b>Preheader</b>Pick a time for us to measure up. About an hour, and someone to let us in.</div>
+      <pre class="msg-body">Hi {{contact.first_name}},
+
+Thanks for the chat. Next step is the {{custom_values.assessment_noun}}, where we measure up and look at access so the quote is a real number rather than a guess.
+
+Pick a time that suits: {{custom_values.booking_url}}
+
+It takes about an hour. Someone needs to be there to let us in, and we will need to get at {{contact.areas}}.
+
+{{custom_values.owner_first_name}}
+{{custom_values.business_name}}
+{{custom_values.business_phone}}</pre>
+      <p class="msg-note"><b>Stops:</b> Stops when the assessment is booked. <b>Window:</b> waits for the send window.</p>
+    </article>
+  </section>
+
+  <section id="residential">
+    <div class="sec-head"><span class="sec-n">07</span><h2>Residential: assessment to decision</h2></div>
+    <article class="msg">
+      <div class="msg-head">
+        <span class="msg-id">R-ASSESS-01</span>
+        <span class="tag tag-sms">SMS</span><span class="tag tag-trans">Trans</span><span class="tag tag-core">Core</span>
+        <span class="msg-when">Enters Assessment Booked, immediately</span>
+      </div>
+      <pre class="msg-body">Hi {{contact.first_name}}, {{custom_values.business_short_name}} booked for {{opportunity.assessment_date}} at {{opportunity.site_address}}. Takes about an hour. {{custom_values.sms_signoff}}</pre>
+      <p class="msg-note"><b>Stops:</b> Sends once per booking. <b>Window:</b> sends immediately.</p>
+    </article>
+
+    <article class="msg">
+      <div class="msg-head">
+        <span class="msg-id">R-ASSESS-02</span>
+        <span class="tag tag-sms">SMS</span><span class="tag tag-trans">Trans</span><span class="tag tag-core">Core</span>
+        <span class="msg-when">Assessment day, 7:00am on the day</span>
+      </div>
+      <pre class="msg-body">Morning {{contact.first_name}}, we are coming to you today for the {{custom_values.assessment_noun}}. We will text when we are close. {{custom_values.sms_signoff}}</pre>
+      <p class="msg-note"><b>Stops:</b> Cancelled with the appointment. <b>Window:</b> sends immediately.</p>
+    </article>
+
+    <article class="msg">
+      <div class="msg-head">
+        <span class="msg-id">R-ASSESS-03</span>
+        <span class="tag tag-sms">SMS</span><span class="tag tag-trans">Trans</span><span class="tag tag-core">Core</span>
+        <span class="msg-when">Assessment cancelled, immediately</span>
+      </div>
+      <pre class="msg-body">Hi {{contact.first_name}}, your {{custom_values.assessment_noun}} is cancelled. Grab a new time whenever suits: {{custom_values.booking_url}} {{custom_values.sms_signoff}}</pre>
+      <p class="msg-note"><b>Stops:</b> Sends once per cancellation. <b>Window:</b> waits for the send window.</p>
+    </article>
+
+    <article class="msg">
+      <div class="msg-head">
+        <span class="msg-id">R-ASSESS-04</span>
+        <span class="tag tag-eml">Email</span><span class="tag tag-trans">Trans</span><span class="tag tag-core">Core</span>
+        <span class="msg-when">Assessment cancelled, immediately</span>
+      </div>
+      <div class="msg-subject"><b>From</b>{{custom_values.from_name_owner}} &lt;{{custom_values.business_email}}&gt;</div>
+      <div class="msg-subject"><b>Reply-to</b>{{custom_values.business_email}}</div>
+      <div class="msg-subject"><b>Subject</b>Your {{custom_values.assessment_noun}} is cancelled</div>
+      <div class="msg-subject"><b>Preheader</b>No problem at all. A new time is a couple of clicks away whenever you are ready.</div>
+      <pre class="msg-body">Hi {{contact.first_name}},
+
+Just confirming the {{custom_values.assessment_noun}} at {{opportunity.site_address}} is cancelled. No problem at all.
+
+Nothing else changes. We still cannot put a real number on the job without seeing the building, so whenever the timing is better, the visit is the next step.
+
+Pick a new time: {{custom_values.booking_url}}
+
+Or reply with a week that suits and we will work around you.
+
+{{custom_values.owner_first_name}}
+{{custom_values.business_name}}
+{{custom_values.business_phone}}</pre>
+      <p class="msg-note"><b>Stops:</b> Sends once per cancellation. The card goes back to Qualified at the same moment. <b>Window:</b> waits for the send window. A cancelled site visit is usually a diary clash rather than a change of mind, so this says nothing has changed and hands back the booking link rather than asking what went wrong.</p>
+    </article>
+
+    <article class="msg">
+      <div class="msg-head">
+        <span class="msg-id">R-ASSESS-05</span>
+        <span class="tag tag-sms">SMS</span><span class="tag tag-trans">Trans</span><span class="tag tag-core">Core</span>
+        <span class="msg-when">Assessment marked no-show, or the crew could not get in, straight away, from site</span>
+      </div>
+      <pre class="msg-body">Hi {{contact.first_name}}, we came out today for the {{custom_values.assessment_noun}} but could not get in. No problem, pick another time here: {{custom_values.booking_url}} {{custom_values.sms_signoff}}</pre>
+      <p class="msg-note"><b>Stops:</b> Sends once. <b>Window:</b> waits for the send window.</p>
+    </article>
+
+    <article class="msg">
+      <div class="msg-head">
+        <span class="msg-id">R-ASSESS-06</span>
+        <span class="tag tag-eml">Email</span><span class="tag tag-trans">Trans</span><span class="tag tag-trade">Trade</span>
+        <span class="msg-when">Assessment marked no-show, same day</span>
+      </div>
+      <div class="msg-subject"><b>From</b>{{custom_values.from_name_owner}} &lt;{{custom_values.business_email}}&gt;</div>
+      <div class="msg-subject"><b>Reply-to</b>{{custom_values.business_email}}</div>
+      <div class="msg-subject"><b>Subject</b>We came out today but could not get in</div>
+      <div class="msg-subject"><b>Preheader</b>No harm done. Two things make sure the next one goes ahead.</div>
+      <pre class="msg-body">Hi {{contact.first_name}},
+
+We were at {{opportunity.site_address}} today for the {{custom_values.assessment_noun}} but could not get access, so the visit did not happen.
+
+No harm done, it happens. When you pick a new time, two things make sure it goes ahead:
+
+  Somebody over 18 on site to let us in.
+  Clear access to {{contact.areas}}, because that is what we have come to measure.
+
+Pick a new time: {{custom_values.booking_url}}
+
+If something came up, ring {{custom_values.business_phone}} and we will find a time that definitely works.
+
+{{custom_values.owner_first_name}}
+{{custom_values.business_name}}</pre>
+      <p class="msg-note"><b>Stops:</b> Sends once. The card goes back to Qualified at the same moment. <b>Window:</b> waits for the send window. Trade specific: the two conditions are what actually goes wrong on a spray foam assessment. The tone stays light on purpose. The visit cost the business half a day, but a customer who feels told off does not rebook.</p>
+    </article>
+
+    <article class="msg">
+      <div class="msg-head">
+        <span class="msg-id">R-QUOTING-01</span>
+        <span class="tag tag-sms">SMS</span><span class="tag tag-trans">Trans</span><span class="tag tag-core">Core</span>
+        <span class="msg-when">Enters Quoting, straight after the assessment</span>
+      </div>
+      <pre class="msg-body">Thanks for having us today {{contact.first_name}}. Your written quote will be with you within {{custom_values.quote_turnaround}}. {{custom_values.sms_signoff}}</pre>
+      <p class="msg-note"><b>Stops:</b> Sends once. <b>Window:</b> waits for the send window. The stage is time-boxed at two days. Saying so out loud is what stops the "when is the quote coming" call, and it holds the estimator to the promise.</p>
+    </article>
+
+    <article class="msg">
+      <div class="msg-head">
+        <span class="msg-id">R-QUOTE-01</span>
+        <span class="tag tag-eml">Email</span><span class="tag tag-trans">Trans</span><span class="tag tag-core">Core</span>
+        <span class="msg-when">Enters Quote Sent, immediately, with the quote attached</span>
+      </div>
+      <div class="msg-subject"><b>From</b>{{custom_values.from_name_owner}} &lt;{{custom_values.business_email}}&gt;</div>
+      <div class="msg-subject"><b>Reply-to</b>{{custom_values.business_email}}</div>
+      <div class="msg-subject"><b>Subject</b>Your quote from {{custom_values.business_name}}</div>
+      <div class="msg-subject"><b>Preheader</b>Quote {{opportunity.quote_number}} attached. Everything included, valid 30 days, questions welcome.</div>
+      <pre class="msg-body">Hi {{contact.first_name}},
+
+Your quote is attached. Quote number {{opportunity.quote_number}}.
+
+It covers {{contact.areas}} at {{opportunity.site_address}}, using {{opportunity.product_type}} foam.
+
+A few things worth saying plainly:
+
+  The price includes everything. No separate charge for access, setup or clean-up.
+  It is valid for 30 days, mostly because material costs move.
+  If anything in it does not make sense, ring us. We would rather explain it than have you sign something you are unsure about.
+
+Any questions at all, {{custom_values.business_phone}}.
+
+{{custom_values.owner_first_name}}
+{{custom_values.business_name}}</pre>
+      <p class="msg-note"><b>Stops:</b> Sends once per quote. <b>Window:</b> sends immediately.</p>
+    </article>
+
+    <article class="msg">
+      <div class="msg-head">
+        <span class="msg-id">R-QUOTE-02</span>
+        <span class="tag tag-sms">SMS</span><span class="tag tag-trans">Trans</span><span class="tag tag-core">Core</span>
+        <span class="msg-when">Enters Quote Sent, immediately</span>
+      </div>
+      <pre class="msg-body">Hi {{contact.first_name}}, your quote is in your inbox. Any questions, ring {{custom_values.business_phone}}. {{custom_values.sms_signoff}}</pre>
+      <p class="msg-note"><b>Stops:</b> Sends once per quote. <b>Window:</b> sends immediately.</p>
+    </article>
+
+    <article class="msg">
+      <div class="msg-head">
+        <span class="msg-id">R-FU-01</span>
+        <span class="tag tag-sms">SMS</span><span class="tag tag-trans">Trans</span><span class="tag tag-core">Core</span>
+        <span class="msg-when">Quote unanswered, day 2</span>
+      </div>
+      <pre class="msg-body">Hi {{contact.first_name}}, did the quote come through OK? Happy to talk through any of it. {{custom_values.sms_signoff}}</pre>
+      <p class="msg-note"><b>Stops:</b> The whole follow-up stops on reply, acceptance, or when the card leaves the stage. <b>Window:</b> waits for the send window.</p>
+    </article>
+
+    <article class="msg">
+      <div class="msg-head">
+        <span class="msg-id">R-FU-02</span>
+        <span class="tag tag-eml">Email</span><span class="tag tag-trans">Trans</span><span class="tag tag-trade">Trade</span>
+        <span class="msg-when">Quote unanswered, day 5</span>
+      </div>
+      <div class="msg-subject"><b>From</b>{{custom_values.from_name_owner}} &lt;{{custom_values.business_email}}&gt;</div>
+      <div class="msg-subject"><b>Reply-to</b>{{custom_values.business_email}}</div>
+      <div class="msg-subject"><b>Subject</b>Why our number might look different</div>
+      <div class="msg-subject"><b>Preheader</b>Two numbers for the same job can look nothing alike. Here is why.</div>
+      <pre class="msg-body">Hi {{contact.first_name}},
+
+If you are comparing quotes, one thing is worth knowing, because it is the reason two numbers for the "same" job can look nothing alike.
+
+Insulation is sold on R-value, and R-value is measured on a flat, perfect, uninterrupted sample. Nothing in that test involves a stud, a pipe, a downlight, an untidy edge or wind.
+
+A real wall has all of those. Cut products leave edges, edges leave gaps, and air moves through gaps carrying heat with it. That path is not in the rating at all, which is why two walls rated the same can feel completely different to live in.
+
+We wrote the whole thing up here, with a diagram: {{custom_values.website_url}}/spray-foam#r-value
+
+Not trying to talk you out of anything. Just make sure you are comparing the finished wall, not the number on the bag.
+
+{{custom_values.owner_first_name}}
+{{custom_values.business_name}}</pre>
+      <p class="msg-note"><b>Stops:</b> Stops on reply, acceptance, or stage change. <b>Window:</b> waits for the send window. The one message in the journey that makes an argument. It works because it explains something the customer did not know, not because it sells.</p>
+    </article>
+
+    <article class="msg">
+      <div class="msg-head">
+        <span class="msg-id">R-FU-03</span>
+        <span class="tag tag-sms">SMS</span><span class="tag tag-trans">Trans</span><span class="tag tag-core">Core</span>
+        <span class="msg-when">Quote unanswered, day 10</span>
+      </div>
+      <pre class="msg-body">Hi {{contact.first_name}}, still thinking it over or has something changed? Either is fine, just want to know whether to keep the slot free. {{custom_values.sms_signoff}}</pre>
+      <p class="msg-note"><b>Stops:</b> Stops on reply, acceptance, or stage change. <b>Window:</b> waits for the send window. A real question outperforms "just checking in", because it can be answered in one word.</p>
+    </article>
+
+    <article class="msg">
+      <div class="msg-head">
+        <span class="msg-id">R-FU-04</span>
+        <span class="tag tag-eml">Email</span><span class="tag tag-trans">Trans</span><span class="tag tag-core">Core</span>
+        <span class="msg-when">Quote unanswered, day 21, final</span>
+      </div>
+      <div class="msg-subject"><b>From</b>{{custom_values.from_name_owner}} &lt;{{custom_values.business_email}}&gt;</div>
+      <div class="msg-subject"><b>Reply-to</b>{{custom_values.business_email}}</div>
+      <div class="msg-subject"><b>Subject</b>Should I close this off?</div>
+      <div class="msg-subject"><b>Preheader</b>No reply, so I will assume the timing is off. Tell me if I am wrong.</div>
+      <pre class="msg-body">Hi {{contact.first_name}},
+
+I have not heard back on quote {{opportunity.quote_number}}, so I will assume the timing is not right and close it off.
+
+If that is wrong, just reply and we will pick it up. If you went with someone else, that is completely fine, and if you can tell me why I would genuinely find it useful.
+
+{{custom_values.owner_first_name}}
+{{custom_values.business_name}}</pre>
+      <p class="msg-note"><b>Stops:</b> Last in the sequence. The card is then Lost or moved to Nurture, never left sitting. <b>Window:</b> waits for the send window. The "why" ask feeds the Lost reason field, which is what makes the Price against Chose batts split on the board real rather than guessed.</p>
+    </article>
+
+    <article class="msg">
+      <div class="msg-head">
+        <span class="msg-id">LOST-01</span>
+        <span class="tag tag-eml">Email</span><span class="tag tag-trans">Trans</span><span class="tag tag-core">Core</span>
+        <span class="msg-when">Marked Lost, any reason except Unreachable, Duplicate or Spam, next business morning</span>
+      </div>
+      <div class="msg-subject"><b>From</b>{{custom_values.from_name_owner}} &lt;{{custom_values.business_email}}&gt;</div>
+      <div class="msg-subject"><b>Reply-to</b>{{custom_values.business_email}}</div>
+      <div class="msg-subject"><b>Subject</b>Thanks for considering us, {{contact.first_name}}</div>
+      <div class="msg-subject"><b>Preheader</b>No hard feelings. The door stays open.</div>
+      <pre class="msg-body">Hi {{contact.first_name}},
+
+Thanks for giving us the chance to quote on {{opportunity.site_address}}. If you went another way, we hope it goes well.
+
+If the timing changes, or the job grows, reply to this and we will pick it up where we left off. Same number, same people, and we still have the measurements.
+
+{{custom_values.owner_first_name}}
+{{custom_values.business_name}}
+{{custom_values.business_phone}}</pre>
+      <p class="msg-note"><b>Stops:</b> Sends once. <b>Window:</b> waits for the send window. A graceful goodbye is the cheapest marketing there is. A surprising number of "went with someone else" jobs come back after the other quote falls over.</p>
+    </article>
+  </section>
+
+  <section id="delivery">
+    <div class="sec-head"><span class="sec-n">08</span><h2>Won and delivery</h2></div>
+    <article class="msg">
+      <div class="msg-head">
+        <span class="msg-id">X-WON-01</span>
+        <span class="tag tag-eml">Email</span><span class="tag tag-trans">Trans</span><span class="tag tag-core">Core</span>
+        <span class="msg-when">Status set to Won, immediately</span>
+      </div>
+      <div class="msg-subject"><b>From</b>{{custom_values.from_name_owner}} &lt;{{custom_values.business_email}}&gt;</div>
+      <div class="msg-subject"><b>Reply-to</b>{{custom_values.business_email}}</div>
+      <div class="msg-subject"><b>Subject</b>Locked in. Here is what happens next.</div>
+      <div class="msg-subject"><b>Preheader</b>Four steps from here. Deposit details are on your quote.</div>
+      <pre class="msg-body">Hi {{contact.first_name}},
+
+Thanks for going ahead. Here is how this runs from here.
+
+  1. A deposit of {{opportunity.deposit_amount}} confirms the booking, where one applies. Details are on the quote.
+  2. We lock a start date and confirm it with you.
+  3. We send you a short note on how to prepare the space.
+  4. The crew arrives and does the work.
+
+Anything at all in the meantime, ring {{custom_values.business_phone}}.
+
+{{custom_values.owner_first_name}}
+{{custom_values.business_name}}
+{{custom_values.business_phone}}</pre>
+      <p class="msg-note"><b>Stops:</b> Sends once. Every sales sequence on the card is killed at the same moment. <b>Window:</b> sends immediately. Deposits are taken on some jobs and not others. Where none applies, the workflow branch drops line 1 and the SMS below says "we will confirm dates shortly".</p>
+    </article>
+
+    <article class="msg">
+      <div class="msg-head">
+        <span class="msg-id">X-WON-02</span>
+        <span class="tag tag-sms">SMS</span><span class="tag tag-trans">Trans</span><span class="tag tag-core">Core</span>
+        <span class="msg-when">Status set to Won, immediately</span>
+      </div>
+      <pre class="msg-body">Thanks {{contact.first_name}}. Deposit details are on your quote, and we will confirm dates as soon as it lands. {{custom_values.sms_signoff}}</pre>
+      <p class="msg-note"><b>Stops:</b> Sends once. <b>Window:</b> sends immediately.</p>
+    </article>
+
+    <article class="msg">
+      <div class="msg-head">
+        <span class="msg-id">DEP-01</span>
+        <span class="tag tag-sms">SMS</span><span class="tag tag-trans">Trans</span><span class="tag tag-core">Core</span>
+        <span class="msg-when">deposit_received_at is set, immediately</span>
+      </div>
+      <pre class="msg-body">Deposit received, thanks {{contact.first_name}}. You are locked in. We will confirm your start date within 3 business days. {{custom_values.sms_signoff}}</pre>
+      <p class="msg-note"><b>Stops:</b> Sends once. Only on jobs where a deposit applies. <b>Window:</b> waits for the send window. Silence after a payment is the thing customers hate most. This is one line and it stops the "did you get it?" call.</p>
+    </article>
+
+    <article class="msg">
+      <div class="msg-head">
+        <span class="msg-id">JOB-01</span>
+        <span class="tag tag-sms">SMS</span><span class="tag tag-trans">Trans</span><span class="tag tag-core">Core</span>
+        <span class="msg-when">Enters Scheduled, immediately</span>
+      </div>
+      <pre class="msg-body">Hi {{contact.first_name}}, you are booked for {{opportunity.job_start_date}}. Prep notes are in your email. {{custom_values.sms_signoff}}</pre>
+      <p class="msg-note"><b>Stops:</b> Sends once per booking. <b>Window:</b> waits for the send window.</p>
+    </article>
+
+    <article class="msg">
+      <div class="msg-head">
+        <span class="msg-id">JOB-02</span>
+        <span class="tag tag-eml">Email</span><span class="tag tag-trans">Trans</span><span class="tag tag-trade">Trade</span>
+        <span class="msg-when">Enters Scheduled, immediately</span>
+      </div>
+      <div class="msg-subject"><b>From</b>{{custom_values.from_name_brand}} &lt;{{custom_values.business_email}}&gt;</div>
+      <div class="msg-subject"><b>Reply-to</b>{{custom_values.business_email}}</div>
+      <div class="msg-subject"><b>Subject</b>Your job is booked for {{opportunity.job_start_date}}</div>
+      <div class="msg-subject"><b>Preheader</b>Booked for {{opportunity.job_start_date}}. Five things to do before we arrive.</div>
+      <pre class="msg-body">Hi {{contact.first_name}},
+
+You are in the diary.
+
+  Start   {{opportunity.job_start_date}}
+  Finish  {{opportunity.job_end_date}}
+  Where   {{opportunity.site_address}}
+  Crew    {{opportunity.crew_assigned}}
+
+To help us get in and out cleanly, before we arrive:
+
+  Clear access to {{contact.areas}}. We need room to work and to get the hose through.
+  Move anything you would rather not have dust near.
+  Make sure we can park close. The rig runs off the truck.
+  Pets somewhere else for the day, please.
+  Somebody over 18 on site to let us in.
+
+While we are spraying, the area needs to be empty of people and pets. Afterwards the space needs time before you use it again. That is anywhere from about an hour to a full day depending on which foam the job calls for, and the crew will tell you which applies to yours before they leave.
+
+Anything you are unsure about, ring {{custom_values.business_phone}}.
+
+{{custom_values.business_name}}</pre>
+      <p class="msg-note"><b>Stops:</b> Sends once per booking. <b>Window:</b> waits for the send window. Worth checking this list with the crew rather than the office, because the crew know what actually goes wrong on arrival. Re-occupancy is product dependent: as little as an hour for some foams, up to 24 hours for others, so the crew give the figure on the day.</p>
+    </article>
+
+    <article class="msg">
+      <div class="msg-head">
+        <span class="msg-id">JOB-03</span>
+        <span class="tag tag-sms">SMS</span><span class="tag tag-trans">Trans</span><span class="tag tag-core">Core</span>
+        <span class="msg-when">Job upcoming, day before, 4:00pm</span>
+      </div>
+      <pre class="msg-body">Hi {{contact.first_name}}, we are with you tomorrow, {{opportunity.job_start_date}}. Access clear and pets sorted? {{custom_values.sms_signoff}}</pre>
+      <p class="msg-note"><b>Stops:</b> Cancelled if the job moves. <b>Window:</b> waits for the send window.</p>
+    </article>
+
+    <article class="msg">
+      <div class="msg-head">
+        <span class="msg-id">JOB-04</span>
+        <span class="tag tag-sms">SMS</span><span class="tag tag-trans">Trans</span><span class="tag tag-core">Core</span>
+        <span class="msg-when">Enters In Progress, morning of the start</span>
+      </div>
+      <pre class="msg-body">Morning {{contact.first_name}}, {{opportunity.crew_assigned}} is on the way to you now. {{custom_values.sms_signoff}}</pre>
+      <p class="msg-note"><b>Stops:</b> Sends once per start day. <b>Window:</b> sends immediately.</p>
+    </article>
+
+    <article class="msg">
+      <div class="msg-head">
+        <span class="msg-id">JOB-06</span>
+        <span class="tag tag-sms">SMS</span><span class="tag tag-trans">Trans</span><span class="tag tag-core">Core</span>
+        <span class="msg-when">Crew running late, sent by the crew, from a saved template, manual send</span>
+      </div>
+      <pre class="msg-body">Hi {{contact.first_name}}, running about 30 minutes behind on the way to you. Sorry about that, see you shortly. {{custom_values.sms_signoff}}</pre>
+      <p class="msg-note"><b>Stops:</b> Manual. One tap from the mobile app. <b>Window:</b> sends immediately. Not automated. A saved snippet the crew can send from the app in one tap, because the alternative is a customer standing at the window at 7:30 wondering.</p>
+    </article>
+
+    <article class="msg">
+      <div class="msg-head">
+        <span class="msg-id">JOB-05</span>
+        <span class="tag tag-eml">Email</span><span class="tag tag-trans">Trans</span><span class="tag tag-trade">Trade</span>
+        <span class="msg-when">Enters Invoiced, immediately, with photos attached</span>
+      </div>
+      <div class="msg-subject"><b>From</b>{{custom_values.from_name_owner}} &lt;{{custom_values.business_email}}&gt;</div>
+      <div class="msg-subject"><b>Reply-to</b>{{custom_values.business_email}}</div>
+      <div class="msg-subject"><b>Subject</b>All done at {{opportunity.site_address}}</div>
+      <div class="msg-subject"><b>Preheader</b>Photos of the finished work, your paperwork, and how to live with it.</div>
+      <pre class="msg-body">Hi {{contact.first_name}},
+
+The job is finished. Photos of the completed work are attached, along with your paperwork.
+
+What we did:
+
+  {{contact.areas}}, using {{opportunity.product_type}} foam
+  {{opportunity.sqm_estimate}} sqm
+
+Living with it:
+
+  There is nothing to maintain. It does not settle, sag or need topping up.
+  If you ever cut into it for a new downlight or a pipe, seal it back up. An opening in a sealed layer costs more than the same opening in an unsealed one.
+  You may notice the place holds temperature longer and is quieter. Both are the foam doing its job.
+
+Your invoice is on its way separately.
+
+Thanks for having us.
+
+{{custom_values.owner_first_name}}
+{{custom_values.business_name}}</pre>
+      <p class="msg-note"><b>Stops:</b> Sends once. <b>Window:</b> waits for the send window. The photos are the point. They are the customer's record, and they are the source of the site photography, which matters given competitors have lifted images off the old website.</p>
+    </article>
+
+    <article class="msg">
+      <div class="msg-head">
+        <span class="msg-id">PAY-01</span>
+        <span class="tag tag-eml">Email</span><span class="tag tag-trans">Trans</span><span class="tag tag-core">Core</span>
+        <span class="msg-when">Enters Invoiced, immediately, with the invoice attached</span>
+      </div>
+      <div class="msg-subject"><b>From</b>{{custom_values.from_name_brand}} &lt;{{custom_values.business_email}}&gt;</div>
+      <div class="msg-subject"><b>Reply-to</b>{{custom_values.business_email}}</div>
+      <div class="msg-subject"><b>Subject</b>Invoice {{opportunity.invoice_number}}</div>
+      <div class="msg-subject"><b>Preheader</b>Invoice {{opportunity.invoice_number}} attached. Payment details are on it.</div>
+      <pre class="msg-body">Hi {{contact.first_name}},
+
+Invoice {{opportunity.invoice_number}} is attached for the work at {{opportunity.site_address}}.
+
+Payment details are on the invoice. Any questions about it, ring {{custom_values.business_phone}}.
+
+{{custom_values.business_name}}</pre>
+      <p class="msg-note"><b>Stops:</b> Sends once per invoice. <b>Window:</b> waits for the send window.</p>
+    </article>
+
+    <article class="msg">
+      <div class="msg-head">
+        <span class="msg-id">PAY-02</span>
+        <span class="tag tag-sms">SMS</span><span class="tag tag-trans">Trans</span><span class="tag tag-core">Core</span>
+        <span class="msg-when">Invoice unpaid, day 7</span>
+      </div>
+      <pre class="msg-body">Hi {{contact.first_name}}, friendly reminder that invoice {{opportunity.invoice_number}} is due. Any issues, ring {{custom_values.business_phone}}. {{custom_values.sms_signoff}}</pre>
+      <p class="msg-note"><b>Stops:</b> Stops dead the moment payment is marked. <b>Window:</b> waits for the send window.</p>
+    </article>
+
+    <article class="msg">
+      <div class="msg-head">
+        <span class="msg-id">PAY-03</span>
+        <span class="tag tag-eml">Email</span><span class="tag tag-trans">Trans</span><span class="tag tag-core">Core</span>
+        <span class="msg-when">Invoice unpaid, day 14</span>
+      </div>
+      <div class="msg-subject"><b>From</b>{{custom_values.from_name_brand}} &lt;{{custom_values.business_email}}&gt;</div>
+      <div class="msg-subject"><b>Reply-to</b>{{custom_values.business_email}}</div>
+      <div class="msg-subject"><b>Subject</b>Invoice {{opportunity.invoice_number}} is now overdue</div>
+      <div class="msg-subject"><b>Preheader</b>A copy is attached. If something is wrong with it, ring us and we will sort it.</div>
+      <pre class="msg-body">Hi {{contact.first_name}},
+
+Invoice {{opportunity.invoice_number}} is now overdue. A copy is attached.
+
+If there is a problem with it, or you need a different arrangement, ring {{custom_values.business_phone}} and we will sort it out. We would much rather talk than chase.
+
+{{custom_values.business_name}}</pre>
+      <p class="msg-note"><b>Stops:</b> Stops dead the moment payment is marked. A reminder sent after someone has paid does more damage than the reminder was worth. <b>Window:</b> waits for the send window.</p>
+    </article>
+  </section>
+
+  <section id="after">
+    <div class="sec-head"><span class="sec-n">09</span><h2>After the job</h2></div>
+    <article class="msg">
+      <div class="msg-head">
+        <span class="msg-id">REV-01</span>
+        <span class="tag tag-sms">SMS</span><span class="tag tag-trans">Trans</span><span class="tag tag-core">Core</span>
+        <span class="msg-when">Enters Paid &amp; Closed, +1 day</span>
+      </div>
+      <pre class="msg-body">Hi {{contact.first_name}}, thanks again. If you were happy with the job, a quick Google review really helps a family business: {{custom_values.review_url}} {{custom_values.sms_signoff}}</pre>
+      <p class="msg-note"><b>Stops:</b> Ask once. Do not chase reviews. <b>Window:</b> waits for the send window. The link opens the Reviews tab of the Google listing directly. Ask once, by SMS, the day after payment.</p>
+    </article>
+
+    <article class="msg">
+      <div class="msg-head">
+        <span class="msg-id">REV-02</span>
+        <span class="tag tag-eml">Email</span><span class="tag tag-mktg">Mktg</span><span class="tag tag-core">Core</span>
+        <span class="msg-when">In Paid &amp; Closed, +7 days</span>
+      </div>
+      <div class="msg-subject"><b>From</b>{{custom_values.from_name_owner}} &lt;{{custom_values.business_email}}&gt;</div>
+      <div class="msg-subject"><b>Reply-to</b>{{custom_values.business_email}}</div>
+      <div class="msg-subject"><b>Subject</b>Know anyone else with the same problem?</div>
+      <div class="msg-subject"><b>Preheader</b>Most of our work is word of mouth. You would know who.</div>
+      <pre class="msg-body">Hi {{contact.first_name}},
+
+Hope the place is holding its temperature.
+
+Most of our work comes from people passing our name on. If someone you know is fighting the same problem, send them our way or pass on {{custom_values.business_phone}}.
+
+{{custom_values.owner_first_name}}
+{{custom_values.business_name}}
+
+You are getting this because you agreed to hear from us. {{unsubscribe_link}}</pre>
+      <p class="msg-note"><b>Stops:</b> Only if consent_marketing is yes. <b>Window:</b> waits for the send window.</p>
+    </article>
+
+    <article class="msg">
+      <div class="msg-head">
+        <span class="msg-id">REV-03</span>
+        <span class="tag tag-eml">Email</span><span class="tag tag-mktg">Mktg</span><span class="tag tag-core">Core</span>
+        <span class="msg-when">In Paid &amp; Closed, +12 months</span>
+      </div>
+      <div class="msg-subject"><b>From</b>{{custom_values.from_name_owner}} &lt;{{custom_values.business_email}}&gt;</div>
+      <div class="msg-subject"><b>Reply-to</b>{{custom_values.business_email}}</div>
+      <div class="msg-subject"><b>Subject</b>A year on, how is it going?</div>
+      <div class="msg-subject"><b>Preheader</b>It has been a year since {{opportunity.site_address}}. Tell us how it is holding up.</div>
+      <pre class="msg-body">Hi {{contact.first_name}},
+
+It has been about a year since we did the work at {{opportunity.site_address}}. No agenda here, we just like knowing how jobs hold up.
+
+If anything is not as you expected, tell us and we will come and look.
+
+And if you have taken on more of the building since, the rest of it is usually easier the second time, because we already know the place.
+
+{{custom_values.owner_first_name}}
+{{custom_values.business_name}}
+
+{{unsubscribe_link}}</pre>
+      <p class="msg-note"><b>Stops:</b> Only if consent_marketing is yes. <b>Window:</b> waits for the send window.</p>
+    </article>
+  </section>
+
+  <section id="nurture">
+    <div class="sec-head"><span class="sec-n">10</span><h2>Nurture</h2></div>
+    <div class="stack"><p>Marketing. Sends only when <code>consent_marketing</code> is <code>yes</code>. Every one carries an unsubscribe.</p></div>
+    <article class="msg">
+      <div class="msg-head">
+        <span class="msg-id">NUR-01</span>
+        <span class="tag tag-eml">Email</span><span class="tag tag-mktg">Mktg</span><span class="tag tag-trade">Trade</span>
+        <span class="msg-when">Enters Nurture, next business morning</span>
+      </div>
+      <div class="msg-subject"><b>From</b>{{custom_values.from_name_owner}} &lt;{{custom_values.business_email}}&gt;</div>
+      <div class="msg-subject"><b>Reply-to</b>{{custom_values.business_email}}</div>
+      <div class="msg-subject"><b>Subject</b>The bit about R-value nobody explains</div>
+      <div class="msg-subject"><b>Preheader</b>Worth knowing before you get anywhere near comparing quotes.</div>
+      <pre class="msg-body">Hi {{contact.first_name}},
+
+You mentioned the timing was not right, which is fair enough. Here is something worth knowing before you get to the point of comparing quotes.
+
+R-value is measured on a flat, perfect, uninterrupted sample. Nothing in that test involves a stud, a pipe, a downlight, an untidy edge or wind. A real wall has all of those, and air moving through gaps carries heat with it.
+
+Which is why two walls rated the same can feel completely different.
+
+The full explanation, with a diagram of both walls: {{custom_values.website_url}}/spray-foam#r-value
+
+No rush from us. When it comes back around, we will be here.
+
+{{custom_values.owner_first_name}}
+{{custom_values.business_name}}
+
+{{unsubscribe_link}}</pre>
+      <p class="msg-note"><b>Stops:</b> Only if consent_marketing is yes. Stops on unsubscribe or re-engagement. <b>Window:</b> waits for the send window.</p>
+    </article>
+
+    <article class="msg">
+      <div class="msg-head">
+        <span class="msg-id">NUR-02</span>
+        <span class="tag tag-eml">Email</span><span class="tag tag-mktg">Mktg</span><span class="tag tag-trade">Trade</span>
+        <span class="msg-when">In Nurture, +30 days</span>
+      </div>
+      <div class="msg-subject"><b>From</b>{{custom_values.from_name_owner}} &lt;{{custom_values.business_email}}&gt;</div>
+      <div class="msg-subject"><b>Reply-to</b>{{custom_values.business_email}}</div>
+      <div class="msg-subject"><b>Subject</b>Where the heat actually goes</div>
+      <div class="msg-subject"><b>Preheader</b>A third through the roof, more through the walls, and the floor nobody thinks about.</div>
+      <pre class="msg-body">Hi {{contact.first_name}},
+
+A third of your heating leaves through the roof, more through the walls, and the rest through the floor. The floor is the one almost nobody insulates, and it is the one people notice most once it is done.
+
+There is an interactive version of this on our site. Scroll and the house seals itself while the meter drops: {{custom_values.website_url}}
+
+{{custom_values.owner_first_name}}
+{{custom_values.business_name}}
+
+{{unsubscribe_link}}</pre>
+      <p class="msg-note"><b>Stops:</b> Only if consent_marketing is yes. Stops on unsubscribe or re-engagement. <b>Window:</b> waits for the send window.</p>
+    </article>
+
+    <article class="msg">
+      <div class="msg-head">
+        <span class="msg-id">NUR-03</span>
+        <span class="tag tag-eml">Email</span><span class="tag tag-mktg">Mktg</span><span class="tag tag-core">Core</span>
+        <span class="msg-when">In Nurture, +90 days</span>
+      </div>
+      <div class="msg-subject"><b>From</b>{{custom_values.from_name_owner}} &lt;{{custom_values.business_email}}&gt;</div>
+      <div class="msg-subject"><b>Reply-to</b>{{custom_values.business_email}}</div>
+      <div class="msg-subject"><b>Subject</b>Still on the list?</div>
+      <div class="msg-subject"><b>Preheader</b>If the project is still on the horizon, do nothing. If it is off the table, one click and we stop.</div>
+      <pre class="msg-body">Hi {{contact.first_name}},
+
+We have been sending you the occasional note since you enquired. If the project is still somewhere on the horizon, no action needed and we will keep in touch now and then.
+
+If it is off the table, unsubscribe below and we will leave you alone. No hard feelings.
+
+{{custom_values.owner_first_name}}
+{{custom_values.business_name}}
+
+{{unsubscribe_link}}</pre>
+      <p class="msg-note"><b>Stops:</b> Only if consent_marketing is yes. Stops on unsubscribe or re-engagement. <b>Window:</b> waits for the send window. A permission reset every 90 days keeps the list clean and the deliverability healthy. It is also the honest thing to do.</p>
+    </article>
+  </section>
+
+  <section id="system">
+    <div class="sec-head"><span class="sec-n">11</span><h2>Always on</h2></div>
+    <article class="msg">
+      <div class="msg-head">
+        <span class="msg-id">SYS-01</span>
+        <span class="tag tag-sms">SMS</span><span class="tag tag-trans">Trans</span><span class="tag tag-core">Core</span>
+        <span class="msg-when">Inbound call missed, within 60 seconds</span>
+      </div>
+      <pre class="msg-body">Sorry we missed your call. This is {{custom_values.business_short_name}}. Reply here and we will get straight back to you, or we will ring you shortly.</pre>
+      <p class="msg-note"><b>Stops:</b> Once per caller per day. <b>Window:</b> sends immediately. For a trade business where the phone rings while someone is up a ladder, this is the single highest-value automation on the list.</p>
+    </article>
+
+    <article class="msg">
+      <div class="msg-head">
+        <span class="msg-id">SYS-02</span>
+        <span class="tag tag-sms">SMS</span><span class="tag tag-trans">Trans</span><span class="tag tag-core">Core</span>
+        <span class="msg-when">Inbound SMS outside hours, immediately</span>
+      </div>
+      <pre class="msg-body">Thanks for your message. We are back {{custom_values.office_hours}} and will reply first thing. Urgent? {{custom_values.business_phone}}.</pre>
+      <p class="msg-note"><b>Stops:</b> Once per contact per day, not once per message. <b>Window:</b> sends immediately.</p>
+    </article>
+  </section>
+
+  <section id="commercial">
+    <div class="sec-head"><span class="sec-n">12</span><h2>Commercial</h2></div>
+    <div class="stack"><p>Commercial buys differently. These are longer, plainer and carry no urgency devices, because the reader is a facility manager or a builder with a file open, not a homeowner.</p></div>
+    <article class="msg">
+      <div class="msg-head">
+        <span class="msg-id">C-ACK-01</span>
+        <span class="tag tag-eml">Email</span><span class="tag tag-trans">Trans</span><span class="tag tag-core">Core</span>
+        <span class="msg-when">Enters New Enquiry on the Commercial board, immediately</span>
+      </div>
+      <div class="msg-subject"><b>From</b>{{custom_values.from_name_owner}} &lt;{{custom_values.business_email}}&gt;</div>
+      <div class="msg-subject"><b>Reply-to</b>{{custom_values.business_email}}</div>
+      <div class="msg-subject"><b>Subject</b>Your enquiry, {{contact.first_name}}</div>
+      <div class="msg-subject"><b>Preheader</b>We will call to scope it. Five things that make that call useful.</div>
+      <pre class="msg-body">Hi {{contact.first_name}},
+
+Thanks for the enquiry regarding {{contact.property_type}} at {{contact.postcode}}.
+
+We will call you to scope it. Before that call it helps to know:
+
+  Approximate area, in square metres
+  What the space is used for, and any temperature requirement
+  Whether the building is occupied or operating during the works
+  Programme dates, if they are set
+  Who else needs to be involved in the decision
+
+We work {{custom_values.service_area}} and hold current insurances and SWMS documentation, which we can supply on request.
+
+{{custom_values.owner_first_name}}
+{{custom_values.business_name}}
+{{custom_values.business_phone}}</pre>
+      <p class="msg-note"><b>Stops:</b> Sends once. The SMS acknowledgement X-ACK-01 goes too. <b>Window:</b> sends immediately. Commercial buys differently. These are longer, plainer and carry no urgency devices, because the reader is a facility manager or a builder with a file open, not a homeowner.</p>
+    </article>
+
+    <article class="msg">
+      <div class="msg-head">
+        <span class="msg-id">C-INSP-01</span>
+        <span class="tag tag-eml">Email</span><span class="tag tag-trans">Trans</span><span class="tag tag-core">Core</span>
+        <span class="msg-when">Enters Inspection Booked, immediately</span>
+      </div>
+      <div class="msg-subject"><b>From</b>{{custom_values.from_name_brand}} &lt;{{custom_values.business_email}}&gt;</div>
+      <div class="msg-subject"><b>Reply-to</b>{{custom_values.business_email}}</div>
+      <div class="msg-subject"><b>Subject</b>Site inspection confirmed, {{opportunity.assessment_date}}</div>
+      <div class="msg-subject"><b>Preheader</b>Confirmed for {{opportunity.assessment_date}}. Inductions, PPE, access and a site contact, please.</div>
+      <pre class="msg-body">Hi {{contact.first_name}},
+
+Confirmed for {{opportunity.assessment_date}} at {{opportunity.site_address}}.
+
+Please let us know before the visit:
+
+  Site induction requirements, and how long they take
+  PPE beyond standard
+  Access arrangements, including any permits or escorts
+  A site contact and mobile for the day
+
+We will bring insurances and SWMS. If you need those in advance for your own records, reply and we will send them through.
+
+{{custom_values.business_name}}
+{{custom_values.business_phone}}</pre>
+      <p class="msg-note"><b>Stops:</b> Sends once per booking. X-APPT-03 sends the day-before SMS reminder. <b>Window:</b> sends immediately.</p>
+    </article>
+
+    <article class="msg">
+      <div class="msg-head">
+        <span class="msg-id">C-INSP-02</span>
+        <span class="tag tag-eml">Email</span><span class="tag tag-trans">Trans</span><span class="tag tag-core">Core</span>
+        <span class="msg-when">Inspection cancelled, immediately</span>
+      </div>
+      <div class="msg-subject"><b>From</b>{{custom_values.from_name_owner}} &lt;{{custom_values.business_email}}&gt;</div>
+      <div class="msg-subject"><b>Reply-to</b>{{custom_values.business_email}}</div>
+      <div class="msg-subject"><b>Subject</b>Site inspection cancelled, {{opportunity.site_address}}</div>
+      <div class="msg-subject"><b>Preheader</b>Confirming the visit is off. Send a new date and we will work around your site.</div>
+      <pre class="msg-body">Hi {{contact.first_name}},
+
+Confirming the site inspection at {{opportunity.site_address}} is cancelled.
+
+The proposal depends on the visit. Product, thickness, access and staging cannot be specified from a drawing, and a number produced without seeing the building is a number we would have to revise later.
+
+Send us a date that works and we will fit around your site. If it is easier, tell us the constraint, a shutdown window, an induction day, a quiet period, and we will propose times inside it.
+
+{{custom_values.owner_first_name}}
+{{custom_values.business_name}}
+{{custom_values.business_phone}}</pre>
+      <p class="msg-note"><b>Stops:</b> Sends once per cancellation. The card goes back to Qualified / Scoping. <b>Window:</b> waits for the send window.</p>
+    </article>
+
+    <article class="msg">
+      <div class="msg-head">
+        <span class="msg-id">C-INSP-03</span>
+        <span class="tag tag-eml">Email</span><span class="tag tag-trans">Trans</span><span class="tag tag-trade">Trade</span>
+        <span class="msg-when">Inspection marked no-show, or no access on arrival, same day</span>
+      </div>
+      <div class="msg-subject"><b>From</b>{{custom_values.from_name_owner}} &lt;{{custom_values.business_email}}&gt;</div>
+      <div class="msg-subject"><b>Reply-to</b>{{custom_values.business_email}}</div>
+      <div class="msg-subject"><b>Subject</b>We attended {{opportunity.site_address}} but could not get access</div>
+      <div class="msg-subject"><b>Preheader</b>The visit did not go ahead. Here is what needs to be in place for the next one.</div>
+      <pre class="msg-body">Hi {{contact.first_name}},
+
+We attended {{opportunity.site_address}} on {{opportunity.assessment_date}} but could not get onto the area, so the inspection did not happen.
+
+To make sure the next one does, we need these confirmed before the day:
+
+  The induction booked, and how long it takes
+  Any permit or escort arranged
+  A site contact and a mobile for the day
+  Access to the areas being assessed
+
+Give us a date with those in place and we will attend.
+
+{{custom_values.owner_first_name}}
+{{custom_values.business_name}}
+{{custom_values.business_phone}}</pre>
+      <p class="msg-note"><b>Stops:</b> Sends once. The card goes back to Qualified / Scoping. <b>Window:</b> waits for the send window. Trade specific: on an industrial site the visit fails on inductions and permits far more often than on anyone forgetting. Naming the four things is what stops the second attempt failing the same way.</p>
+    </article>
+
+    <article class="msg">
+      <div class="msg-head">
+        <span class="msg-id">C-SPEC-01</span>
+        <span class="tag tag-eml">Email</span><span class="tag tag-trans">Trans</span><span class="tag tag-core">Core</span>
+        <span class="msg-when">Enters Specifying, same day as the inspection</span>
+      </div>
+      <div class="msg-subject"><b>From</b>{{custom_values.from_name_owner}} &lt;{{custom_values.business_email}}&gt;</div>
+      <div class="msg-subject"><b>Reply-to</b>{{custom_values.business_email}}</div>
+      <div class="msg-subject"><b>Subject</b>Proposal for {{opportunity.site_address}} by {{opportunity.proposal_due_date}}</div>
+      <div class="msg-subject"><b>Preheader</b>Thanks for the site visit. Here is when the proposal lands and what it will include.</div>
+      <pre class="msg-body">Hi {{contact.first_name}},
+
+Thanks for the time on site today.
+
+We are now working through product, thickness, access, plant and staging for {{contact.areas}}, roughly {{opportunity.sqm_estimate}} sqm. You will have the proposal by {{opportunity.proposal_due_date}}.
+
+It will include the specification, programme, a SWMS summary and our insurances, so it can go straight into your approval process.
+
+If there is a format your procurement needs it in, or it has to be split into stages for budget reasons, tell us now and we will issue it that way the first time.
+
+{{custom_values.owner_first_name}}
+{{custom_values.business_name}}
+{{custom_values.business_phone}}</pre>
+      <p class="msg-note"><b>Stops:</b> Sends once. <b>Window:</b> waits for the send window. The date is set by the estimator when the card enters Specifying. Naming it is what keeps a five-day stage at five days.</p>
+    </article>
+
+    <article class="msg">
+      <div class="msg-head">
+        <span class="msg-id">C-PROP-01</span>
+        <span class="tag tag-eml">Email</span><span class="tag tag-trans">Trans</span><span class="tag tag-core">Core</span>
+        <span class="msg-when">Enters Proposal Submitted, immediately, with the proposal attached</span>
+      </div>
+      <div class="msg-subject"><b>From</b>{{custom_values.from_name_owner}} &lt;{{custom_values.business_email}}&gt;</div>
+      <div class="msg-subject"><b>Reply-to</b>{{custom_values.business_email}}</div>
+      <div class="msg-subject"><b>Subject</b>Proposal, {{opportunity.site_address}}</div>
+      <div class="msg-subject"><b>Preheader</b>Specification, programme and compliance documents attached. Say if procurement needs it reshaped.</div>
+      <pre class="msg-body">Hi {{contact.first_name}},
+
+Our proposal is attached.
+
+  Scope       {{contact.areas}}
+  Area        {{opportunity.sqm_estimate}} sqm
+  Product     {{opportunity.product_type}}
+  Reference   {{opportunity.quote_number}}
+
+It includes the specification, programme, and the compliance documentation you will need for your own records.
+
+If you need it broken down differently for internal approval, or split into stages, tell us what shape it needs to be in and we will reissue it.
+
+{{custom_values.owner_first_name}}
+{{custom_values.business_name}}</pre>
+      <p class="msg-note"><b>Stops:</b> Sends once per proposal. <b>Window:</b> waits for the send window. The offer to reformat is deliberate. Losing a commercial job because the numbers were not in the shape procurement needed is an avoidable loss.</p>
+    </article>
+
+    <article class="msg">
+      <div class="msg-head">
+        <span class="msg-id">C-PROP-02</span>
+        <span class="tag tag-eml">Email</span><span class="tag tag-trans">Trans</span><span class="tag tag-core">Core</span>
+        <span class="msg-when">Proposal unanswered, day 7</span>
+      </div>
+      <div class="msg-subject"><b>From</b>{{custom_values.from_name_owner}} &lt;{{custom_values.business_email}}&gt;</div>
+      <div class="msg-subject"><b>Reply-to</b>{{custom_values.business_email}}</div>
+      <div class="msg-subject"><b>Subject</b>Anything you need on {{opportunity.quote_number}}?</div>
+      <div class="msg-subject"><b>Preheader</b>References, insurances, a revised breakdown. And is there a decision date?</div>
+      <pre class="msg-body">Hi {{contact.first_name}},
+
+Checking whether you need anything further on the proposal for {{opportunity.site_address}}. References, insurances, a site visit for your own team, or a revised breakdown, all easy.
+
+Also useful for us: is there a decision date we should be working to?
+
+{{custom_values.owner_first_name}}
+{{custom_values.business_name}}</pre>
+      <p class="msg-note"><b>Stops:</b> Stops on reply or stage change. <b>Window:</b> waits for the send window.</p>
+    </article>
+
+    <article class="msg">
+      <div class="msg-head">
+        <span class="msg-id">C-PROP-03</span>
+        <span class="tag tag-eml">Email</span><span class="tag tag-trans">Trans</span><span class="tag tag-core">Core</span>
+        <span class="msg-when">Still in Commercial Review, day 21</span>
+      </div>
+      <div class="msg-subject"><b>From</b>{{custom_values.from_name_owner}} &lt;{{custom_values.business_email}}&gt;</div>
+      <div class="msg-subject"><b>Reply-to</b>{{custom_values.business_email}}</div>
+      <div class="msg-subject"><b>Subject</b>{{opportunity.quote_number}}, where does this sit?</div>
+      <div class="msg-subject"><b>Preheader</b>Live, deferred, or gone elsewhere. Any answer helps us hold capacity.</div>
+      <pre class="msg-body">Hi {{contact.first_name}},
+
+Following up on {{opportunity.quote_number}}. Happy either way, we just need to know whether to hold capacity.
+
+  Still live, decision pending
+  Deferred to a later budget
+  Gone elsewhere
+
+Any of those is a useful answer.
+
+{{custom_values.owner_first_name}}
+{{custom_values.business_name}}</pre>
+      <p class="msg-note"><b>Stops:</b> Stops on reply or stage change. <b>Window:</b> waits for the send window.</p>
+    </article>
+
+    <article class="msg">
+      <div class="msg-head">
+        <span class="msg-id">C-FUT-01</span>
+        <span class="tag tag-eml">Email</span><span class="tag tag-mktg">Mktg</span><span class="tag tag-core">Core</span>
+        <span class="msg-when">In Future Project, every 90 days</span>
+      </div>
+      <div class="msg-subject"><b>From</b>{{custom_values.from_name_owner}} &lt;{{custom_values.business_email}}&gt;</div>
+      <div class="msg-subject"><b>Reply-to</b>{{custom_values.business_email}}</div>
+      <div class="msg-subject"><b>Subject</b>Still on the plan for {{opportunity.site_address}}?</div>
+      <div class="msg-subject"><b>Preheader</b>A quarterly check-in, nothing more. Tell us when the budget cycle comes around.</div>
+      <pre class="msg-body">Hi {{contact.first_name}},
+
+You mentioned {{opportunity.site_address}} was a future-budget project, so this is the quarterly check-in as promised.
+
+If the budget cycle has come around, we can refresh the proposal against current material pricing within a week. If it has moved further out, tell us the quarter and we will leave you alone until then.
+
+{{custom_values.owner_first_name}}
+{{custom_values.business_name}}
+
+{{unsubscribe_link}}</pre>
+      <p class="msg-note"><b>Stops:</b> Only if consent_marketing is yes. Stops when the card moves back to Qualified. <b>Window:</b> waits for the send window.</p>
+    </article>
+
+    <article class="msg">
+      <div class="msg-head">
+        <span class="msg-id">C-PO-01</span>
+        <span class="tag tag-eml">Email</span><span class="tag tag-trans">Trans</span><span class="tag tag-core">Core</span>
+        <span class="msg-when">Enters Awaiting PO, immediately</span>
+      </div>
+      <div class="msg-subject"><b>From</b>{{custom_values.from_name_owner}} &lt;{{custom_values.business_email}}&gt;</div>
+      <div class="msg-subject"><b>Reply-to</b>{{custom_values.business_email}}</div>
+      <div class="msg-subject"><b>Subject</b>Ready to proceed, {{opportunity.site_address}}</div>
+      <div class="msg-subject"><b>Preheader</b>To mobilise we need four things. Programme confirmed within two working days of the PO.</div>
+      <pre class="msg-body">Hi {{contact.first_name}},
+
+Good news about the award. To get this moving we need:
+
+  Purchase order or signed contract
+  Site contact for mobilisation
+  Induction dates for the crew
+  Confirmed access windows
+
+Once the PO is with us we will confirm the programme within two working days.
+
+{{custom_values.owner_first_name}}
+{{custom_values.business_name}}</pre>
+      <p class="msg-note"><b>Stops:</b> Sends once. A weekly task chases the PO from here. <b>Window:</b> waits for the send window.</p>
+    </article>
+
+    <article class="msg">
+      <div class="msg-head">
+        <span class="msg-id">C-MOB-01</span>
+        <span class="tag tag-eml">Email</span><span class="tag tag-trans">Trans</span><span class="tag tag-trade">Trade</span>
+        <span class="msg-when">Status set to Won (PO received), enters Mobilising, immediately</span>
+      </div>
+      <div class="msg-subject"><b>From</b>{{custom_values.from_name_brand}} &lt;{{custom_values.business_email}}&gt;</div>
+      <div class="msg-subject"><b>Reply-to</b>{{custom_values.business_email}}</div>
+      <div class="msg-subject"><b>Subject</b>Mobilising for {{opportunity.site_address}}</div>
+      <div class="msg-subject"><b>Preheader</b>PO {{opportunity.po_number}} received. SWMS, insurances and crew list attached. Four things we need from you.</div>
+      <pre class="msg-body">Hi {{contact.first_name}},
+
+PO {{opportunity.po_number}} received, thank you. We are mobilising.
+
+  Start       {{opportunity.job_start_date}}
+  Completion  {{opportunity.job_end_date}}
+  Crew        {{opportunity.crew_assigned}}
+
+Attached: SWMS, insurances, and the crew list for induction.
+
+We need from you:
+
+  Induction booked for the crew before the start date
+  Confirmed access and any permits
+  Power and water availability on site
+  Confirmation the area will be clear of other trades while we spray
+
+That last one matters more than it sounds. The area has to be free of other trades during application and cure.
+
+{{custom_values.business_name}}
+{{custom_values.business_phone}}</pre>
+      <p class="msg-note"><b>Stops:</b> Sends once. Every sales sequence on the card is killed at the same moment. <b>Window:</b> waits for the send window.</p>
+    </article>
+
+    <article class="msg">
+      <div class="msg-head">
+        <span class="msg-id">C-SITE-01</span>
+        <span class="tag tag-sms">SMS</span><span class="tag tag-trans">Trans</span><span class="tag tag-core">Core</span>
+        <span class="msg-when">Each site day in In Progress, 6:30am on the day</span>
+      </div>
+      <pre class="msg-body">Morning {{contact.first_name}}, {{custom_values.business_short_name}} crew is on site at {{opportunity.site_address}} today. Lead on the day is {{opportunity.crew_assigned}}. Anything on site, ring {{custom_values.business_phone}}. {{custom_values.sms_signoff}}</pre>
+      <p class="msg-note"><b>Stops:</b> Once per site day. <b>Window:</b> sends immediately. Goes to the site contact, who is often not the person who signed the PO. Set the contact on the card when the job is mobilised.</p>
+    </article>
+
+    <article class="msg">
+      <div class="msg-head">
+        <span class="msg-id">C-PROG-01</span>
+        <span class="tag tag-eml">Email</span><span class="tag tag-trans">Trans</span><span class="tag tag-core">Core</span>
+        <span class="msg-when">In Progress, staged jobs, weekly, friday, from a saved template, manual send</span>
+      </div>
+      <div class="msg-subject"><b>From</b>{{custom_values.from_name_owner}} &lt;{{custom_values.business_email}}&gt;</div>
+      <div class="msg-subject"><b>Reply-to</b>{{custom_values.business_email}}</div>
+      <div class="msg-subject"><b>Subject</b>Progress update: {{opportunity.site_address}}</div>
+      <div class="msg-subject"><b>Preheader</b>Where the works are up to, what is next, and anything we need from you.</div>
+      <pre class="msg-body">Hi {{contact.first_name}},
+
+Weekly update on {{opportunity.site_address}}.
+
+  Completed this week   [areas and sqm]
+  Next week             [areas and staging]
+  We need from you      [access, other trades, sign-off]
+
+Photos attached. The claim for this stage follows per the programme.
+
+{{custom_values.owner_first_name}}
+{{custom_values.business_name}}
+{{custom_values.business_phone}}</pre>
+      <p class="msg-note"><b>Stops:</b> Manual. Sent by the owner from the template each Friday the job is live. <b>Window:</b> waits for the send window. Bracketed lines are filled in by hand. Automating a progress report produces a report nobody reads, so this is a template with a Friday task attached, not a workflow.</p>
+    </article>
+
+    <article class="msg">
+      <div class="msg-head">
+        <span class="msg-id">C-PAY-01</span>
+        <span class="tag tag-eml">Email</span><span class="tag tag-trans">Trans</span><span class="tag tag-core">Core</span>
+        <span class="msg-when">Progress claim issued, per the programme</span>
+      </div>
+      <div class="msg-subject"><b>From</b>{{custom_values.from_name_brand}} &lt;{{custom_values.business_email}}&gt;</div>
+      <div class="msg-subject"><b>Reply-to</b>{{custom_values.business_email}}</div>
+      <div class="msg-subject"><b>Subject</b>Progress claim {{opportunity.invoice_number}}</div>
+      <div class="msg-subject"><b>Preheader</b>Claim {{opportunity.invoice_number}} attached with supporting photos and sign-offs.</div>
+      <pre class="msg-body">Hi {{contact.first_name}},
+
+Progress claim {{opportunity.invoice_number}} is attached for works at {{opportunity.site_address}}.
+
+  Claim covers   [stage or percentage]
+  Terms          [payment terms]
+
+Supporting photos and any sign-offs are included.
+
+{{custom_values.business_name}}</pre>
+      <p class="msg-note"><b>Stops:</b> Sends once per claim. <b>Window:</b> waits for the send window. Needs Glenn: payment terms for commercial work, and whether progress claims follow a percentage, a milestone, or a monthly cycle.</p>
+    </article>
+
+    <article class="msg">
+      <div class="msg-head">
+        <span class="msg-id">C-DONE-01</span>
+        <span class="tag tag-eml">Email</span><span class="tag tag-trans">Trans</span><span class="tag tag-trade">Trade</span>
+        <span class="msg-when">Works complete, enters Invoicing, immediately, with the close-out pack attached</span>
+      </div>
+      <div class="msg-subject"><b>From</b>{{custom_values.from_name_owner}} &lt;{{custom_values.business_email}}&gt;</div>
+      <div class="msg-subject"><b>Reply-to</b>{{custom_values.business_email}}</div>
+      <div class="msg-subject"><b>Subject</b>Works complete: {{opportunity.site_address}}</div>
+      <div class="msg-subject"><b>Preheader</b>Close-out pack attached: photos, product data, SWMS, variations. Final claim to follow.</div>
+      <pre class="msg-body">Hi {{contact.first_name}},
+
+Works at {{opportunity.site_address}} are complete.
+
+Attached is the close-out pack:
+
+  Completion photos, by area
+  Product data sheets for the {{opportunity.product_type}} foam applied
+  SWMS and insurances as issued
+  Any variations agreed on site, itemised
+
+The final claim follows separately. If your handover process needs a sign-off form or a walk-through, name a time and we will be there.
+
+{{custom_values.owner_first_name}}
+{{custom_values.business_name}}</pre>
+      <p class="msg-note"><b>Stops:</b> Sends once. <b>Window:</b> waits for the send window.</p>
+    </article>
+
+    <article class="msg">
+      <div class="msg-head">
+        <span class="msg-id">C-CLOSE-01</span>
+        <span class="tag tag-eml">Email</span><span class="tag tag-trans">Trans</span><span class="tag tag-core">Core</span>
+        <span class="msg-when">Enters Paid &amp; Closed, +1 day</span>
+      </div>
+      <div class="msg-subject"><b>From</b>{{custom_values.from_name_owner}} &lt;{{custom_values.business_email}}&gt;</div>
+      <div class="msg-subject"><b>Reply-to</b>{{custom_values.business_email}}</div>
+      <div class="msg-subject"><b>Subject</b>Thanks, {{contact.first_name}}</div>
+      <div class="msg-subject"><b>Preheader</b>Final payment received. One favour, and a promise about next time.</div>
+      <pre class="msg-body">Hi {{contact.first_name}},
+
+Final payment on {{opportunity.site_address}} is in, thank you.
+
+One favour. If the works went the way you needed, would you be willing to act as a reference for a future client of similar scale? A phone call, nothing written.
+
+And for next time: we hold the specification and site notes, so a second stage or another site can be scoped without starting from scratch.
+
+{{custom_values.owner_first_name}}
+{{custom_values.business_name}}
+{{custom_values.business_phone}}</pre>
+      <p class="msg-note"><b>Stops:</b> Sends once. <b>Window:</b> waits for the send window. A reference from a facilities manager is worth more on a commercial tender than any number of homeowner reviews. Ask for it while the job is fresh.</p>
+    </article>
+  </section>
+
+  <div class="ask">
+    <b>Needs Glenn:</b> payment terms for commercial work, and whether progress claims
+    follow a percentage, a milestone, or a monthly cycle.
+  </div>
+
+  <section id="order">
+    <div class="sec-head"><span class="sec-n">13</span><h2>Build order</h2></div>
+    <div class="stack">
+      <p>Do not build all 64 at once. In order of what earns most:</p>
+      <ol class="plain">
+        <li><b>SYS-01</b>, missed call text-back. Highest return of anything here.</li>
+        <li><b>X-ACK-01, X-ACK-02</b>, the two minute acknowledgement.</li>
+        <li><b>X-CHASE-01 to 04</b>, the chase, with its honest close.</li>
+        <li><b>X-APPT-01 to 06</b>, so phone calls stop being no-shows.</li>
+        <li><b>X-BOOK, R-ASSESS, R-QUOTING-01</b>, from the call to the quote.</li>
+        <li><b>R-QUOTE, R-FU-01 to 04, LOST-01</b>, the follow-up that converts quotes, and the goodbye.</li>
+        <li><b>X-WON, DEP-01, JOB, PAY</b>, the delivery half.</li>
+        <li><b>REV-01</b>, the review ask.</li>
+        <li><b>NUR-01 to 03, REV-02, REV-03</b>, once there is a consented list worth mailing.</li>
+        <li><b>The commercial set</b>, last. That board moves slowly enough that a human writing the email is still viable.</li>
+      </ol>
+    </div>
+  </section>
+
+</div>
+
+</body>
+</html>

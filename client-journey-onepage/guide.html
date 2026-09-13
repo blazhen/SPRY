@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Spray It Solutions system guide</title>
+<meta name="description" content="How to run the Spray It Solutions customer journey day to day: what happens by itself, what your team does, and how to do the common things." />
+<meta name="robots" content="noindex, nofollow" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet" />
+<link rel="icon" href="favicon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <section class="hero">
+    <div class="wrap">
+      <div class="topbar">
+        <img class="brandlogo l" src="logo.png" alt="Spray It Solutions" width="211" height="128" />
+        <img class="brandlogo d" src="logo-light.png" alt="Spray It Solutions" width="289" height="174" />
+        <div class="topright">
+          <span class="toptag">Your guide</span>
+          <button type="button" class="iconbtn" id="printBtn" title="Print or save as PDF" aria-label="Print or save as PDF">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V3h12v6"/><rect x="4" y="9" width="16" height="8" rx="2"/><path d="M6 14h12v7H6z"/></svg>
+          </button>
+          <button type="button" class="iconbtn" id="themeBtn" title="Switch light or dark" aria-label="Switch light or dark">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3a9 9 0 1 0 9 9 7 7 0 0 1-9-9z"/></svg>
+          </button>
+        </div>
+      </div>
+      <p class="eyebrow">How to run it</p>
+      <h1>What happens by itself, and what <em>you</em> do</h1>
+      <p class="lede">The system sends every confirmation, reminder, follow-up and thank-you for you. Your part is small and specific: move the card when something real happens, ring people when your phone tells you to, and put a few details on the card as a job moves. This page is that list.</p>
+      <div class="hero__cta">
+        <a class="btn btn--primary" href="#stages">Jump to stage by stage</a>
+        <a class="btn" href="index.html">See the messages customers get</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="controls">
+    <div class="wrap">
+      <div class="controls__top">
+        <nav class="pagenav" id="pageNav" aria-label="Pages"></nav>
+      </div>
+      <nav class="gnav" id="gnav" aria-label="Sections">
+        <a href="#rule">The one rule</a>
+        <a href="#day">Your day</a>
+        <a href="#alerts">When your phone buzzes</a>
+        <a href="#stages">Stage by stage</a>
+        <a href="#howto">How to do things</a>
+        <a href="#never">Never need to do</a>
+        <a href="#nothing">If you do nothing</a>
+        <a href="#ask">When to call us</a>
+      </nav>
+    </div>
+  </div>
+
+  <main>
+    <section class="gsec" id="rule">
+      <div class="wrap">
+        <div class="g-rule">
+          <p class="eyebrow">The one rule</p>
+          <h2 id="gPrincipleTitle"></h2>
+          <p class="sec-lede" id="gPrincipleBody"></p>
+        </div>
+      </div>
+    </section>
+
+    <section class="gsec alt" id="day">
+      <div class="wrap">
+        <div class="sec-head"><span class="sec-n">1</span><h2>Your day</h2></div>
+        <div class="g-rows" id="gRoutine"></div>
+      </div>
+    </section>
+
+    <section class="gsec" id="alerts">
+      <div class="wrap">
+        <div class="sec-head"><span class="sec-n">2</span><h2>When your phone buzzes</h2></div>
+        <p class="sec-lede">These are the only things that reach your phone. Nothing else does, and each one is a job for the next hour.</p>
+        <div class="t-scroll"><table><thead><tr><th>Alert</th><th>Who gets it</th><th>What to do</th></tr></thead><tbody id="gAlerts"></tbody></table></div>
+      </div>
+    </section>
+
+    <section class="gsec alt" id="stages">
+      <div class="wrap">
+        <div class="sec-head"><span class="sec-n">3</span><h2>Stage by stage</h2></div>
+        <p class="sec-lede">For every column on the board: what the system does the moment a card lands there, and what is yours to do. Pick a board, then open a stage.</p>
+        <div class="seg" id="guideSeg" role="group" aria-label="Choose a board" style="margin-bottom:1rem"></div>
+        <div class="accbar">
+          <button type="button" class="btn" data-acc="open" data-target="#guideStages details">Open all stages</button>
+          <button type="button" class="btn" data-acc="close" data-target="#guideStages details">Close all</button>
+        </div>
+        <div id="guideStages" class="g-stages"></div>
+      </div>
+    </section>
+
+    <section class="gsec" id="howto">
+      <div class="wrap">
+        <div class="sec-head"><span class="sec-n">4</span><h2>How to do the common things</h2></div>
+        <div class="cards" id="gHowTo"></div>
+      </div>
+    </section>
+
+    <section class="gsec alt" id="never">
+      <div class="wrap">
+        <div class="sec-head"><span class="sec-n">5</span><h2>What you never need to do</h2></div>
+        <ul class="g-list g-list--never" id="gNever"></ul>
+      </div>
+    </section>
+
+    <section class="gsec" id="nothing">
+      <div class="wrap">
+        <div class="sec-head"><span class="sec-n">6</span><h2>If you do nothing</h2></div>
+        <p class="sec-lede">The system is built so that a busy week does not lose a job. This is what happens when a card sits.</p>
+        <div class="g-rows" id="gIfNothing"></div>
+      </div>
+    </section>
+
+    <section class="gsec alt" id="ask">
+      <div class="wrap">
+        <div class="sec-head"><span class="sec-n">7</span><h2>When to call us</h2></div>
+        <ul class="g-list" id="gAsk"></ul>
+        <p class="sec-lede" style="margin-top:1.4rem">Every message in the journey is on <a href="index.html">the journey page</a>, stage by stage, exactly as your customers will read it.</p>
+      </div>
+    </section>
+  </main>
+
+  <section class="close">
+    <div class="wrap">
+      <p class="close__q">Move the card. Ring when it buzzes. <em>Everything else is handled.</em></p>
+      <p class="close__s">If anything here does not match how you actually work, tell us. The system bends to the business, not the other way round.</p>
+    </div>
+  </section>
+
+  <footer>
+    <div class="wrap foot">
+      <span><b>Spray It Solutions</b> · Carrum Downs, Victoria · 0428 26 36 26</span>
+      <span>Prepared for Glenn and Rachael by <b>Systemations</b></span>
+    </div>
+  </footer>
+
+  <script src="journey-data.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

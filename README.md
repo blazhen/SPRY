@@ -77,15 +77,23 @@ public/                favicon.svg, logo/, gallery/ (watermarked job photos), bl
 
 client-journey-onepage/  The customer journey: every message, task and alert for
                          both pipelines, rendered from journey-data.js.
-                           index.html   the client's page. Nothing agency-facing on it.
-                           agency.html  the build sheet: merge fields by default, reuse
-                                        tags, agency notes, fields to create, go-live
-                                        checklist. Never send this one to the client.
-                         The two CRM documents below are generated from the same
-                         data file.
+                           index.html     the client's journey page. Nothing agency-facing.
+                           guide.html     the client's guide: what runs by itself, what
+                                          they do, stage by stage, and how to do it.
+                           agency.html    the build sheet: merge fields by default, reuse
+                                          tags, agency notes, fields to create, go-live
+                                          checklist. Never send this one to the client.
+                           workflows.html every workflow to build, with steps and
+                                          branches. Agency only.
+                           docs/          the three CRM documents as pages for Glenn:
+                                          pipelines, messaging, alerts-and-tasks.
+                         Everything here is plain HTML. Open a file, or host the
+                         folder. Nothing is published anywhere else. The three CRM
+                         documents below are generated from the same data file.
 CRM-PIPELINES.md         Pipeline and stage design for the Systemations build
 CRM-MESSAGING.md         Every SMS and email, generated from the journey data
 CRM-TASKS-NOTIFICATIONS.md  Alerts, tasks, escalation and digests, generated too
+CRM-WORKFLOWS.md         Every workflow, trigger, steps, branches, generated too
 DEPLOY.md                How to build, configure and transfer the site
 scripts/                 journey-check.mjs and gen-crm-docs.mjs, see below
 ```
@@ -99,9 +107,12 @@ npm run docs:crm
 ```
 
 That checks the data (every message referenced, every merge field has a sample
-value, every email has a subject and preheader, no house-style slips) and then
-writes `CRM-MESSAGING.md` and `CRM-TASKS-NOTIFICATIONS.md` from it. Both files
-say so at the top. Editing them by hand will be overwritten. `npm run docs:check`
+value, every email has a subject and preheader, every task and notification
+carries both a title and a description, every workflow sends real messages, no
+agency wording where the client reads, no house-style slips) and
+then writes `CRM-MESSAGING.md`, `CRM-TASKS-NOTIFICATIONS.md`, `CRM-WORKFLOWS.md`
+and the two generated pages in `client-journey-onepage/docs/`. All of them say
+so at the top. Editing them by hand will be overwritten. `npm run docs:check`
 runs the checks alone. The scripts live in `scripts/`.
 
 ### Hero A/B: one-line swap

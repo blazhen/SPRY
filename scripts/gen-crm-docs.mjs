@@ -255,7 +255,32 @@ ${J.buildOrder.map((b, i) => `${i + 1}. **${b.ids}**, ${b.why.charAt(0).toLowerC
 /* ============================================================== TASKS */
 const prio = { now: 'Act now', heads: 'Heads up', win: 'Win', fyi: 'Good to know' }
 const alertsTable = J.alerts.map((a) => `| ${a.n} | **${a.name}** | ${a.trigger} | ${a.to} | ${a.channel} | ${a.why} |`).join('\n')
-const alertBodies = J.alerts.map((a) => `**${a.n}. ${a.name}** · ${prio[a.prio]}\n\n\`\`\`\n${a.body}\n\`\`\`${a.note ? '\n\n' + a.note : ''}`).join('\n\n')
+const alertBodies = J.alerts.map((a) => `### ${a.n}. ${a.name}
+
+**Priority:** ${prio[a.prio]} · **To:** ${a.to} · **By:** ${a.channel}
+**Fires when:** ${a.trigger}
+
+${a.desc}
+
+\`\`\`
+${a.body}
+\`\`\`${a.note ? '\n\n' + a.note : ''}`).join('\n\n')
+
+const taskBlocks = (list, where) => list.map(({ stage, t }) => `### \`${t.title}\`
+
+**${where}:** ${stage} · **Assigned:** ${t.role} · **Due:** ${t.due}
+
+${t.desc}`).join('\n\n')
+const collect = (pipeline) => {
+  const out = []
+  for (const s of pipeline.stages) for (const t of s.tasks || []) out.push({ stage: s.won ? 'Won' : s.name, t })
+  return out
+}
+const allTasks = [...collect(J.pipelines[0]), ...collect(J.pipelines[1]), ...(J.alwaysOn.tasks || []).map((t) => ({ stage: 'Any stage', t }))]
+/* one description per distinct task title, so the same task appearing on both
+   boards is written out once */
+const seenTitle = new Set()
+const uniqueTasks = allTasks.filter(({ t }) => (seenTitle.has(t.title) ? false : seenTitle.add(t.title)))
 
 const taskTable = (pipeline) => {
   const rows = []
@@ -296,7 +321,8 @@ This is the rule that decides everything below, and it is the one most CRM
 builds get wrong. A system that pings on every stage change trains everyone to
 ignore it inside a fortnight, and then the one alert that actually mattered gets
 ignored too. There are ${J.alerts.length} real-time alerts in this document. That is
-deliberate, and adding a twelfth should require an argument.
+deliberate. Eleven were there from the start; the twelfth had to argue its way in,
+which is the standard the next one is held to.
 
 ---
 
@@ -379,6 +405,15 @@ ${taskTable(J.pipelines[1])}
 | Stage | Task | Assigned | Due |
 | --- | --- | --- | --- |
 ${alwaysTasks}
+
+### What each task says
+
+Every task carries a title and a description. The title is what shows in a
+list, so it leads with the verb. The description is what the person reads when
+they open it, and it is written to be enough on its own: what to do, what has
+already happened automatically, and what moving the card will trigger next.
+
+${taskBlocks(uniqueTasks, 'Stage')}
 
 ### Two rules
 
@@ -533,6 +568,90 @@ by week three.
 ${goLiveMd}
 `
 
+/* ============================================================ WORKFLOWS */
+const stepMd = (st, depth) => {
+  const pad = '  '.repeat(depth)
+  const label = st.t.toUpperCase()
+  let line
+  switch (st.t) {
+    case 'send': { const m = M[st.id]; line = `**${label}** \`${st.id}\` (${m ? (m.channel === 'sms' ? 'SMS' : 'Email: ' + m.subject) : 'unknown'})${st.note ? ', ' + st.note : ''}`; break }
+    case 'task': line = `**${label}** \`${st.title}\` to ${st.role}, due ${st.due}${st.desc ? `  \n${pad}  *${st.desc}*` : ''}`; break
+    case 'alert': { const a = J.alerts[st.n - 1]; line = `**${label}** ${st.n}, ${a.name}, to ${a.to} by ${a.channel}`; break }
+    case 'wait': line = `**${label}** ${st.for}`; break
+    case 'if': line = `**${label}** ${st.cond}`; break
+    case 'move': line = `**${label}** stage to ${st.stage}`; break
+    case 'set': line = `**${label}** \`${st.field}\` = ${st.value}`; break
+    case 'stop': line = `**${label}** ${st.when}`; break
+    default: line = `**${label}** ${st.text}`
+  }
+  let out = `${pad}- ${line}\n`
+  if (st.t === 'if') {
+    for (const s of st.then || []) out += stepMd(s, depth + 1)
+    if (st.else && st.else.length) { out += `${pad}  - *otherwise*\n`; for (const s of st.else) out += stepMd(s, depth + 2) }
+  }
+  return out
+}
+const boardName = { both: 'Both boards', residential: 'Residential', commercial: 'Commercial & Industrial' }
+const workflowsMd = J.workflows.map((w) => `## ${w.id} · ${w.name}
+
+**Board:** ${boardName[w.board]}
+**Trigger:** ${w.trigger}
+
+${w.why ? w.why + '\n\n' : ''}${w.steps.map((s) => stepMd(s, 0)).join('')}
+**Stops:** ${w.stops}${w.error ? `  \n**On error:** ${w.error}` : ''}
+`).join('\n---\n\n')
+
+const sentBy = new Set()
+const walkAll = (steps) => { for (const s of steps) { if (s.t === 'send') sentBy.add(s.id); if (s.then) walkAll(s.then); if (s.else) walkAll(s.else) } }
+for (const w of J.workflows) walkAll(w.steps)
+const manualIds = ids.filter((id) => M[id].manual)
+
+const workflows = `# CRM Workflows
+
+Every workflow to build in Systemations for the Spray It Solutions journey,
+written in the platform's own building blocks: a trigger, the steps in order,
+the branches, and what stops it.
+
+**Generated.** This file is produced from
+\`client-journey-onepage/journey-data.js\`, which also renders the agency
+workflows page (\`client-journey-onepage/workflows.html\`). Edit the data
+file and run \`npm run docs:crm\`. Editing this file by hand will be
+overwritten.
+
+Companion to [CRM-PIPELINES.md](CRM-PIPELINES.md), [CRM-MESSAGING.md](CRM-MESSAGING.md)
+and [CRM-TASKS-NOTIFICATIONS.md](CRM-TASKS-NOTIFICATIONS.md). Message ids,
+alert numbers and task names below refer to those documents.
+
+${J.workflows.length} workflows. ${sentBy.size} of the ${count} messages are sent by them; the other
+${manualIds.length} (${manualIds.join(', ')}) are saved templates sent by hand.
+
+## Step types
+
+| Type | Meaning |
+| --- | --- |
+| DO | An action in the platform that is not one of the others: create a contact, map fields, assign, tag, reassign |
+| SEND | Send a message from the kit, by id |
+| TASK | Create a task, with owner and due date |
+| ALERT | Fire one of the ${J.alerts.length} real-time alerts |
+| WAIT | Pause for a duration, or until a time relative to an appointment or date |
+| IF | Branch. Nested steps run when the condition holds; *otherwise* steps when it does not |
+| MOVE | Change the opportunity stage |
+| SET | Set a field or the status |
+| STOP | End the workflow |
+
+## Conventions that apply to every workflow
+
+- **Stop on reply.** Every sequence checks for an inbound reply before each send and stops if one has arrived. WF-24 handles the pause; each sequence still needs its own exit condition.
+- **Send window.** Anything the messaging kit marks "waits for the send window" sits behind a Wait until a time window step: 8am to 8pm, Monday to Saturday. Confirmations are exempt.
+- **Won kills sales.** WF-14 removes the contact from every sales sequence before it does anything else. Test it specifically: set a card to Won mid-chase and confirm nothing further sends.
+- **Error branches.** Every workflow gets an error branch that fires alert 11 with the workflow name and the contact.
+- **Human labels.** Dropdown fields store the label, not the form value, or the echo emails read "new-build".
+- **Required fields on entry.** Stages that need a field to send correctly require it on the stage change rather than reminding afterwards: assessment date, proposal due date, job dates, invoice number, PO number, photos captured.
+
+---
+
+${workflowsMd}`
+
 /* ---------------------------------------------------------------- write */
 const guard = (name, text) => {
   const dashes = (text.match(/\u2014/g) || []).length
@@ -541,7 +660,10 @@ const guard = (name, text) => {
 }
 guard('messaging', messaging)
 guard('tasks', tasks)
+guard('workflows', workflows)
 fs.writeFileSync(ROOT + 'CRM-MESSAGING.md', messaging)
 fs.writeFileSync(ROOT + 'CRM-TASKS-NOTIFICATIONS.md', tasks)
+fs.writeFileSync(ROOT + 'CRM-WORKFLOWS.md', workflows)
 console.log(`CRM-MESSAGING.md: ${count} messages (${emails} email, ${count - emails} sms), ${trade.length} trade-specific, ${mktg.length} marketing`)
 console.log(`CRM-TASKS-NOTIFICATIONS.md: ${J.alerts.length} alerts, ${taskCount} tasks`)
+console.log(`CRM-WORKFLOWS.md: ${J.workflows.length} workflows, ${sentBy.size} messages sent by them`)

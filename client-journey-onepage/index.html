@@ -32,14 +32,30 @@
       </div>
       <p class="eyebrow">The Spray It Solutions experience</p>
       <h1>Every message a customer receives, from the first enquiry to a <em>year after</em> the job</h1>
-      <p class="lede">This is the whole conversation a customer has with Spray It Solutions: what lands in their inbox and on their phone at each stage, in the words they will actually read. Under every message is what happens behind the scenes, the alert that reaches the team and the task that keeps the job moving. Two pipelines, one voice.</p>
+      <p class="lede">What lands in their inbox and on their phone at each stage, in the words they will actually read. Under every message is what happens behind the scenes: the alert that reaches your team, and the task that keeps the job moving.</p>
+
+      <div class="hero__cta">
+        <a class="btn btn--primary" href="guide.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5V5a2 2 0 0 1 2-2h13v18H6a2 2 0 0 1-2-1.5z"/><path d="M8 7h7M8 11h7"/></svg>
+          How to run it <span class="btn__sub">what you do, stage by stage</span>
+        </a>
+        <a class="btn" href="#residential/new-enquiry">Start at the first enquiry</a>
+      </div>
+      <p class="hint hint--client" style="margin-top:.9rem">Emma and Daniel are <span class="pzchip">sample customers</span>. The real person's name, address and dates fill in automatically.</p>
+
       <div class="stats">
-        <span class="stat"><b id="statStages">25</b><span>stages across two pipelines</span></span>
-        <span class="stat"><b id="statMessages">57</b><span>written messages</span></span>
-        <span class="stat"><b id="statEmails">35</b><span>emails, with subject and preheader</span></span>
-        <span class="stat"><b id="statSms">22</b><span>text messages</span></span>
-        <span class="stat"><b id="statTasks">40</b><span>tasks</span></span>
-        <span class="stat"><b id="statAlerts">11</b><span>alerts that interrupt</span></span>
+        <span class="stat"><b id="statStages">25</b><span>stages</span></span>
+        <span class="stat"><b id="statMessages">58</b><span>messages</span></span>
+        <span class="stat"><b id="statEmails">33</b><span>emails</span></span>
+        <span class="stat"><b id="statSms">25</b><span>texts</span></span>
+        <span class="stat"><b id="statTasks">41</b><span>tasks</span></span>
+        <span class="stat"><b id="statAlerts">11</b><span>alerts</span></span>
+      </div>
+
+      <div class="howto">
+        <div class="howto__step"><span class="howto__n">1</span><div><b>Pick a pipeline.</b> Residential is homes, sheds and new builds. Commercial is factories, warehouses and farms.</div></div>
+        <div class="howto__step"><span class="howto__n">2</span><div><b>Click a stage along the line.</b> Each one is a moment in the job.</div></div>
+        <div class="howto__step"><span class="howto__n">3</span><div><b>Read what the customer gets,</b> then what your team sees. Step through with the buttons at the bottom.</div></div>
       </div>
     </div>
   </section>
@@ -47,15 +63,9 @@
   <!-- ======================= CONTROLS ======================= -->
   <div class="controls">
     <div class="wrap">
-      <div class="controls__row">
+      <div class="controls__top">
+        <nav class="pagenav" id="pageNav" aria-label="Pages"></nav>
         <div class="seg" id="pipelineSeg" role="group" aria-label="Choose a pipeline"></div>
-        <div class="controls__right">
-          <span class="hint">Showing <span class="pzchip">sample customer</span> or <span class="tkchip">{{merge fields}}</span></span>
-          <div class="seg" id="viewSeg" role="group" aria-label="Preview mode">
-            <button type="button" data-view="preview" aria-pressed="true">Preview</button>
-            <button type="button" data-view="fields" aria-pressed="false">Fields</button>
-          </div>
-        </div>
       </div>
       <div class="rail" id="rail" role="tablist" aria-label="Stages"></div>
     </div>
@@ -70,56 +80,63 @@
     </nav>
   </main>
 
-  <!-- ======================= APPENDICES ======================= -->
-  <section class="appendix" id="values">
-    <div class="wrap">
-      <div class="sec-head"><span class="sec-n">A1</span><h2>Set once, used everywhere</h2></div>
-      <p class="sec-lede">Your name, your number, your links and the way the work is described all come from this one table. Change a value here and every message that uses it changes with it, so a new phone number or a new booking link is a one-line edit rather than a hunt through fifty messages.</p>
-      <div class="t-scroll"><table><thead><tr><th>Custom value</th><th>Spray It Solutions</th><th>Notes</th></tr></thead><tbody id="tblValues"></tbody></table></div>
-    </div>
-  </section>
+  <!-- ======================= MORE DETAIL ======================= -->
+  <details class="more" id="more">
+    <summary class="wrap">
+      <span class="more__t">More detail, if you want it</span>
+      <span class="more__s">The details every message draws from, the full list of messages, the alerts, who does what, when things send, and the rules behind it all.</span>
+    </summary>
 
-  <section class="appendix alt" id="index">
-    <div class="wrap">
-      <div class="sec-head"><span class="sec-n">A2</span><h2>All <span id="cntMessages">57</span> messages, in one place</h2></div>
-      <p class="sec-lede">Every message in the journey, with where it fires and which stages show it. Click a stage to jump to it.</p>
-      <div class="t-scroll"><table><thead><tr><th>ID</th><th>Channel</th><th>Trigger</th><th>Type</th><th>Subject</th><th>Appears in</th></tr></thead><tbody id="tblMessages"></tbody></table></div>
-    </div>
-  </section>
+    <section class="appendix" id="values">
+      <div class="wrap">
+        <div class="sec-head"><span class="sec-n">A1</span><h2>Set once, used everywhere</h2></div>
+        <p class="sec-lede">Your name, your number, your links and the way the work is described all come from this one table. Change a value here and every message that uses it changes with it, so a new phone number or a new booking link is a one-line edit rather than a hunt through fifty messages.</p>
+        <div class="t-scroll"><table><thead><tr><th>Detail</th><th>Spray It Solutions</th><th>Notes</th></tr></thead><tbody id="tblValues"></tbody></table></div>
+      </div>
+    </section>
 
-  <section class="appendix" id="alerts">
-    <div class="wrap">
-      <div class="sec-head"><span class="sec-n">A3</span><h2>The eleven alerts that interrupt</h2></div>
-      <p class="sec-lede">A notification is a request to do something. If nothing needs doing it is a report, and reports go in the daily digest. These eleven are the only things that ping a phone. Adding a twelfth should require an argument.</p>
-      <div class="t-scroll"><table><thead><tr><th>#</th><th>Alert</th><th>Fires when</th><th>To</th><th>Channel</th></tr></thead><tbody id="tblAlerts"></tbody></table></div>
-      <div class="sec-head" style="margin-top:2.4rem"><span class="sec-n">A4</span><h2>Who is who</h2></div>
-      <div class="t-scroll"><table><thead><tr><th>Role</th><th>At Spray It</th><th>Owns</th></tr></thead><tbody id="tblRoles"></tbody></table></div>
-    </div>
-  </section>
+    <section class="appendix alt" id="index">
+      <div class="wrap">
+        <div class="sec-head"><span class="sec-n">A2</span><h2>All <span id="cntMessages">58</span> messages, in one place</h2></div>
+        <p class="sec-lede">Every message in the journey, with when it sends and which stages show it. Click a stage to jump to it.</p>
+        <div class="t-scroll"><table><thead><tr><th>Channel</th><th>When it sends</th><th>Kind</th><th>Subject</th><th>Where it appears</th></tr></thead><tbody id="tblMessages"></tbody></table></div>
+      </div>
+    </section>
 
-  <section class="appendix alt" id="hours">
-    <div class="wrap">
-      <div class="sec-head"><span class="sec-n">A5</span><h2>When things send, and when they wait</h2></div>
-      <p class="sec-lede">Confirmations go straight away because the person is waiting for them. Chases, reminders and anything marketing wait for the window. Alerts follow the same shape, so nobody is woken at 2am by a lead that can wait until 7.</p>
-      <div class="t-scroll"><table><thead><tr><th>When</th><th>Alerts</th><th>Tasks</th><th>Customer messages</th></tr></thead><tbody id="tblQuiet"></tbody></table></div>
-    </div>
-  </section>
+    <section class="appendix" id="alerts">
+      <div class="wrap">
+        <div class="sec-head"><span class="sec-n">A3</span><h2>The <span id="cntAlerts">11</span> alerts that reach your phone</h2></div>
+        <p class="sec-lede">An alert is a request to do something. If nothing needs doing it goes in the morning summary instead. These are the only things that buzz a phone, so when one does, it matters.</p>
+        <div class="t-scroll"><table><thead><tr><th>#</th><th>Alert</th><th>Fires when</th><th>To</th><th>How</th></tr></thead><tbody id="tblAlerts"></tbody></table></div>
+        <div class="sec-head" style="margin-top:2.4rem"><span class="sec-n">A4</span><h2>Who does what</h2></div>
+        <div class="t-scroll"><table><thead><tr><th>Role</th><th>At Spray It</th><th>Looks after</th></tr></thead><tbody id="tblRoles"></tbody></table></div>
+      </div>
+    </section>
 
-  <section class="appendix" id="rules">
-    <div class="wrap">
-      <div class="sec-head"><span class="sec-n">A6</span><h2>The rules every message follows</h2></div>
-      <div class="cards" id="compliance"></div>
-      <div class="sec-head" style="margin-top:2.6rem"><span class="sec-n">A7</span><h2>What goes live first</h2></div>
-      <p class="sec-lede">Not all at once. In the order of what earns the most, soonest, so the parts that catch leads are working while the rest is still being finished.</p>
-      <ol class="ol" id="buildOrder"></ol>
-    </div>
-  </section>
+    <section class="appendix alt" id="hours">
+      <div class="wrap">
+        <div class="sec-head"><span class="sec-n">A5</span><h2>When things send, and when they wait</h2></div>
+        <p class="sec-lede">Confirmations go straight away because the person is waiting for them. Reminders, follow-ups and anything marketing wait for business hours. Alerts follow the same shape, so nobody is woken at 2am by a lead that can wait until 7.</p>
+        <div class="t-scroll"><table><thead><tr><th>When</th><th>Alerts</th><th>Tasks</th><th>Customer messages</th></tr></thead><tbody id="tblQuiet"></tbody></table></div>
+      </div>
+    </section>
+
+    <section class="appendix" id="rules">
+      <div class="wrap">
+        <div class="sec-head"><span class="sec-n">A6</span><h2>The rules every message follows</h2></div>
+        <div class="cards" id="compliance"></div>
+        <div class="sec-head" style="margin-top:2.6rem"><span class="sec-n">A7</span><h2>What goes live first</h2></div>
+        <p class="sec-lede">Not all at once. In the order of what earns the most, soonest, so the parts that catch leads are working while the rest is still being finished.</p>
+        <ol class="ol" id="buildOrder"></ol>
+      </div>
+    </section>
+  </details>
 
   <!-- ======================= CLOSING ======================= -->
   <section class="close">
     <div class="wrap">
       <p class="close__q">Automatic, but never <em>automated</em>. This is how Spray It Solutions looks after people from the first two minutes.</p>
-      <p class="close__s">Every word here is a starting point. The tone, the timing and the wording are all yours to change, and the page updates from one file so nothing drifts.</p>
+      <p class="close__s">Every word here is a starting point. The tone, the timing and the wording are all yours to change. Tell us what does not sound like you and we will change it.</p>
     </div>
   </section>
 

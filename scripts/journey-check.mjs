@@ -99,6 +99,78 @@ if (!Array.isArray(J.reuseSteps) || J.reuseSteps.length < 3) bad('reuseSteps mis
 if (!Array.isArray(J.goLive) || J.goLive.length < 5) bad('goLive checklist missing')
 ok(`${(J.customFields || []).length} field groups, ${(J.reuseSteps || []).length} reuse steps, ${(J.goLive || []).length} go-live checks`)
 
+/* workflows: ids unique, every send is a real message, every alert exists,
+   and every automated message is sent by at least one workflow */
+if (!Array.isArray(J.workflows) || !J.workflows.length) bad('workflows missing')
+else {
+  const seenIds = new Set()
+  const sent = new Set()
+  const walk = (steps, wid) => {
+    for (const st of steps) {
+      if (st.t === 'send') { sent.add(st.id); if (!J.messages[st.id]) bad(`${wid} sends unknown message ${st.id}`) }
+      if (st.t === 'alert' && !J.alerts[st.n - 1]) bad(`${wid} references alert ${st.n}`)
+      if (st.t === 'if') { walk(st.then || [], wid); walk(st.else || [], wid) }
+    }
+  }
+  for (const w of J.workflows) {
+    if (seenIds.has(w.id)) bad(`duplicate workflow id ${w.id}`)
+    seenIds.add(w.id)
+    for (const f of ['name', 'board', 'trigger', 'steps', 'stops']) if (!w[f]) bad(`${w.id} has no ${f}`)
+    walk(w.steps || [], w.id)
+  }
+  const unsent = Object.keys(J.messages).filter((id) => !sent.has(id) && !J.messages[id].manual)
+  if (unsent.length) bad(`no workflow sends: ${unsent.join(', ')}`)
+  ok(`${J.workflows.length} workflows, every automated message is sent by one`)
+}
+
+/* every task and notification carries a title and a description, because both
+   are fields that have to be filled in when the thing is built */
+{
+  let n = 0
+  const bad2 = []
+  const checkTask = (t, where) => {
+    n += 1
+    if (!t.title) bad2.push(`${where}: task with no title`)
+    if (!t.desc || t.desc.length < 40) bad2.push(`${where}: "${t.title}" has no usable description`)
+  }
+  for (const { p, s } of stages) for (const t of s.tasks || []) checkTask(t, `${p}/${s.key}`)
+  const walkTasks = (steps, id) => {
+    for (const st of steps) {
+      if (st.t === 'task') checkTask(st, id)
+      if (st.t === 'if') { walkTasks(st.then || [], id); walkTasks(st.else || [], id) }
+    }
+  }
+  for (const w of J.workflows || []) walkTasks(w.steps || [], w.id)
+  for (const a of J.alerts) {
+    if (!a.name) bad2.push(`alert ${a.n} has no title`)
+    if (!a.desc || a.desc.length < 40) bad2.push(`alert ${a.n} has no usable description`)
+    if (!a.body) bad2.push(`alert ${a.n} has no message text`)
+  }
+  if (bad2.length) for (const m of bad2) bad(m)
+  else ok(`${n} tasks and ${J.alerts.length} notifications all carry a title and a description`)
+}
+
+/* the client's guide: every stage has a "you do" list, and the guide text is agency-free */
+for (const { p, s } of stages) if (!Array.isArray(s.clientDo) || !s.clientDo.length) bad(`${p}/${s.key} has no clientDo list`)
+if (!J.guide || !J.guide.principle || !J.guide.howTo || !J.guide.alertActions) bad('guide content missing')
+else {
+  for (const a of J.alerts) if (!J.guide.alertActions[a.n]) bad(`guide has no action for alert ${a.n}`)
+  const guideText = []
+  for (const { p, s } of stages) for (const d of s.clientDo || []) guideText.push([`${p}/${s.key} clientDo`, d])
+  guideText.push(['principle', J.guide.principle.body])
+  for (const r of J.guide.routine) guideText.push(['routine', r.what])
+  for (const h of J.guide.howTo) guideText.push(['howTo ' + h.title, h.body])
+  for (const s of J.guide.never) guideText.push(['never', s])
+  for (const r of J.guide.ifNothing) guideText.push(['ifNothing', r.then])
+  for (const s of J.guide.ask) guideText.push(['ask', s])
+  for (const [k, v] of Object.entries(J.guide.alertActions)) guideText.push(['alert action ' + k, v])
+  for (const [where, text] of guideText) {
+    if (AGENCY_WORDS.test(text)) bad(`agency wording in the client guide: ${where}`)
+    if (/\{\{/.test(text)) bad(`merge field in the client guide: ${where}`)
+  }
+  ok('every stage has a "you do" list; the guide is free of agency wording and merge fields')
+}
+
 /* alerts referenced exist */
 for (const { p, s } of stages) for (const n of s.alerts || []) if (!J.alerts[n - 1]) bad(`${p}/${s.key} references alert ${n}`)
 ok(`${J.alerts.length} alerts`)

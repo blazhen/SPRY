@@ -9,7 +9,7 @@
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
     "build:live": "tsc -b && vite build --mode live",
-    "docs:crm": "node scripts/journey-check.mjs && node scripts/gen-crm-docs.mjs",
+    "docs:crm": "node scripts/journey-check.mjs && node scripts/gen-crm-docs.mjs && node scripts/gen-messaging-page.mjs && node scripts/gen-alerts-page.mjs",
     "docs:check": "node scripts/journey-check.mjs"
   },
   "dependencies": {

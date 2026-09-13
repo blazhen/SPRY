@@ -1,0 +1,928 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="robots" content="noindex, nofollow" />
+<title>SprayIT Alerts and Tasks</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+
+<style>
+  /* Tokens shared with the Pipeline Blueprint and the Messaging Kit, so the
+     three read as one system. Light is bare :root; dark values live once as
+     --d-* so the two dark selectors can only ever assign the same thing. */
+  :root {
+    --ground: #F5F8FC; --surface: #FFFFFF; --surface-2: #EAF0F9;
+    --ink: #0B1B3A; --ink-2: #47536D; --ink-3: #6C7890;
+    --line: #D6DFEC; --line-soft: #E5EBF4;
+    --navy: #002396; --navy-ink: #002396;
+    --lime: #5E9224; --lime-ink: #4F7D1C;
+    --steel: #4A5B7A; --hot: #B93B20;
+    --hot-wash: #FBEBE6; --lime-wash: #EEF6E2; --navy-wash: #E7ECFA;
+    --amber: #8A5A00; --amber-wash: #FBF0DC;
+    --code-bg: #F0F4FA;
+    --shadow: 0 1px 2px rgba(11,27,58,.05), 0 8px 24px -14px rgba(11,27,58,.22);
+
+    --d-ground: #0A1020; --d-surface: #121A2C; --d-surface-2: #1A2439;
+    --d-ink: #E7EDF8; --d-ink-2: #A6B2C8; --d-ink-3: #7D8AA3;
+    --d-line: #27334A; --d-line-soft: #1E2839;
+    --d-navy: #93AEFF; --d-navy-ink: #A8BEFF;
+    --d-lime: #A6D65C; --d-lime-ink: #B5E06D;
+    --d-steel: #93A3BF; --d-hot: #F08A6C;
+    --d-hot-wash: #33190F; --d-lime-wash: #1D2A12; --d-navy-wash: #16203C;
+    --d-amber: #E8B45C; --d-amber-wash: #2E2310;
+    --d-code-bg: #0E1626;
+    --d-shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px -14px rgba(0,0,0,.6);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground: var(--d-ground); --surface: var(--d-surface); --surface-2: var(--d-surface-2);
+      --ink: var(--d-ink); --ink-2: var(--d-ink-2); --ink-3: var(--d-ink-3);
+      --line: var(--d-line); --line-soft: var(--d-line-soft);
+      --navy: var(--d-navy); --navy-ink: var(--d-navy-ink);
+      --lime: var(--d-lime); --lime-ink: var(--d-lime-ink);
+      --steel: var(--d-steel); --hot: var(--d-hot);
+      --hot-wash: var(--d-hot-wash); --lime-wash: var(--d-lime-wash); --navy-wash: var(--d-navy-wash);
+      --amber: var(--d-amber); --amber-wash: var(--d-amber-wash);
+      --code-bg: var(--d-code-bg); --shadow: var(--d-shadow);
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --ground: var(--d-ground); --surface: var(--d-surface); --surface-2: var(--d-surface-2);
+    --ink: var(--d-ink); --ink-2: var(--d-ink-2); --ink-3: var(--d-ink-3);
+    --line: var(--d-line); --line-soft: var(--d-line-soft);
+    --navy: var(--d-navy); --navy-ink: var(--d-navy-ink);
+    --lime: var(--d-lime); --lime-ink: var(--d-lime-ink);
+    --steel: var(--d-steel); --hot: var(--d-hot);
+    --hot-wash: var(--d-hot-wash); --lime-wash: var(--d-lime-wash); --navy-wash: var(--d-navy-wash);
+    --amber: var(--d-amber); --amber-wash: var(--d-amber-wash);
+    --code-bg: var(--d-code-bg); --shadow: var(--d-shadow);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    background: var(--ground); color: var(--ink);
+    font-family: "IBM Plex Sans", ui-sans-serif, system-ui, -apple-system, sans-serif;
+    font-size: 16px; line-height: 1.62; -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap { max-width: 62rem; margin: 0 auto; padding: 0 1.5rem 6rem; }
+
+  h1, h2, h3, h4 {
+    font-family: Archivo, ui-sans-serif, system-ui, sans-serif;
+    text-wrap: balance; margin: 0; letter-spacing: -.015em;
+  }
+
+  p { margin: 0; max-width: 68ch; }
+  a { color: var(--navy-ink); text-underline-offset: 3px; }
+  code, .mono { font-family: "IBM Plex Mono", ui-monospace, Menlo, monospace; font-size: .86em; }
+  code {
+    background: var(--surface-2); border: 1px solid var(--line-soft);
+    border-radius: 4px; padding: .1em .38em; white-space: nowrap;
+  }
+  :focus-visible { outline: 2px solid var(--navy); outline-offset: 3px; border-radius: 3px; }
+
+  /* Masthead */
+  .masthead { border-bottom: 1px solid var(--line); background: var(--surface); margin-bottom: 3.5rem; }
+  .masthead-inner {
+    max-width: 62rem; margin: 0 auto; padding: 3.25rem 1.5rem 2.5rem;
+    display: flex; flex-direction: column; gap: 1.25rem;
+  }
+  .kicker {
+    font-family: "IBM Plex Mono", monospace; font-size: .72rem; letter-spacing: .16em;
+    text-transform: uppercase; color: var(--lime-ink); display: flex; align-items: center; gap: .7rem;
+  }
+  .kicker::before { content: ""; width: 1.9rem; height: 2px; background: var(--lime); }
+  h1 { font-size: clamp(2.1rem, 5.2vw, 3.1rem); font-weight: 800; line-height: 1.04; letter-spacing: -.03em; }
+  .standfirst { font-size: 1.075rem; color: var(--ink-2); max-width: 60ch; }
+  .meta {
+    display: flex; flex-wrap: wrap; gap: .5rem 2rem; padding-top: 1rem;
+    border-top: 1px solid var(--line-soft); font-size: .82rem; color: var(--ink-3);
+  }
+  .meta b {
+    display: block; font-family: "IBM Plex Mono", monospace; font-size: .68rem;
+    letter-spacing: .13em; text-transform: uppercase; font-weight: 500;
+    color: var(--ink-3); opacity: .8; margin-bottom: .1rem;
+  }
+  .meta span { color: var(--ink); font-weight: 500; }
+
+  /* Sections */
+  section { margin-bottom: 4rem; scroll-margin-top: 1.5rem; }
+  .sec-head {
+    display: flex; align-items: baseline; gap: .85rem; margin-bottom: 1.4rem;
+    padding-bottom: .8rem; border-bottom: 1px solid var(--line);
+  }
+  .sec-n {
+    font-family: "IBM Plex Mono", monospace; font-size: .8rem; font-weight: 500;
+    color: var(--ink-3); letter-spacing: .06em; flex: none;
+  }
+  h2 { font-size: 1.42rem; font-weight: 700; }
+  h3 { font-size: 1.02rem; font-weight: 700; margin: 2.1rem 0 .7rem; }
+  .stack { display: flex; flex-direction: column; gap: 1rem; }
+
+  /* Tables */
+  .t-scroll {
+    overflow-x: auto; border: 1px solid var(--line); border-radius: 10px;
+    background: var(--surface); box-shadow: var(--shadow);
+  }
+  table { width: 100%; border-collapse: collapse; font-size: .875rem; min-width: 34rem; }
+  thead th {
+    text-align: left; font-family: "IBM Plex Mono", monospace; font-size: .67rem;
+    font-weight: 500; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-3);
+    padding: .8rem 1rem; background: var(--surface-2); border-bottom: 1px solid var(--line); white-space: nowrap;
+  }
+  tbody td { padding: .74rem 1rem; border-bottom: 1px solid var(--line-soft); vertical-align: top; color: var(--ink-2); }
+  tbody tr:last-child td { border-bottom: 0; }
+  tbody td:first-child { color: var(--ink); font-weight: 500; }
+  td .num {
+    font-family: "IBM Plex Mono", monospace; font-variant-numeric: tabular-nums; color: var(--ink-3);
+  }
+  .urgent { color: var(--hot); font-weight: 500; }
+  tr.divider td {
+    background: var(--surface-2); color: var(--ink-3); font-family: "IBM Plex Mono", monospace;
+    font-size: .68rem; letter-spacing: .12em; text-transform: uppercase; font-weight: 500; padding: .5rem 1rem;
+  }
+
+  /* Channel chips. Encoded in form as well as word, so an alert table can be
+     scanned for "what will actually buzz my phone". */
+  .ch {
+    font-family: "IBM Plex Mono", monospace; font-size: .63rem; font-weight: 500;
+    letter-spacing: .09em; text-transform: uppercase; padding: .14rem .45rem;
+    border-radius: 4px; border: 1px solid transparent; white-space: nowrap; display: inline-block;
+  }
+  .ch-sms  { background: var(--hot-wash); color: var(--hot); border-color: var(--hot); }
+  .ch-app  { background: var(--surface-2); color: var(--ink-3); border-color: var(--line); }
+  .ch-eml  { background: var(--navy-wash); color: var(--navy-ink); border-color: var(--navy-ink); }
+
+  /* The one rule the document rests on. */
+  .keystone {
+    background: var(--surface); border: 1px solid var(--line); border-top: 3px solid var(--hot);
+    border-radius: 10px; box-shadow: var(--shadow); padding: 1.4rem 1.5rem;
+    display: flex; flex-direction: column; gap: .55rem;
+  }
+  .keystone p.big {
+    font-family: Archivo, sans-serif; font-size: 1.16rem; font-weight: 700;
+    line-height: 1.32; letter-spacing: -.015em; color: var(--ink); max-width: 46ch;
+  }
+  .keystone p.sub { font-size: .9rem; color: var(--ink-2); }
+
+  .why {
+    border-left: 3px solid var(--navy); background: var(--navy-wash);
+    border-radius: 0 8px 8px 0; padding: .95rem 1.15rem;
+  }
+  .why h4 { font-size: .82rem; font-weight: 700; margin-bottom: .3rem; color: var(--navy-ink); }
+  .why p { font-size: .9rem; color: var(--ink-2); }
+  .ask {
+    border-left: 3px solid var(--hot); background: var(--hot-wash);
+    border-radius: 0 8px 8px 0; padding: .95rem 1.15rem; font-size: .9rem; color: var(--ink-2);
+  }
+  .ask b { color: var(--hot); }
+
+  .cols { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); }
+  .rule {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 10px;
+    padding: 1.05rem 1.15rem; box-shadow: var(--shadow); border-top: 3px solid var(--rule-c, var(--steel));
+  }
+  .rule-yes { --rule-c: var(--lime); }
+  .rule-no  { --rule-c: var(--hot); }
+  .rule-esc { --rule-c: var(--navy); }
+  .rule h4 { font-family: Archivo, sans-serif; font-size: .9rem; font-weight: 700; margin: 0 0 .6rem; }
+  .rule ul { margin: 0; padding-left: 1.05rem; }
+  .rule li { font-size: .875rem; color: var(--ink-2); margin-bottom: .34rem; }
+  .rule li::marker { color: var(--rule-c); }
+
+  ul.plain { margin: 0; padding-left: 1.1rem; }
+  ul.plain li { margin-bottom: .42rem; color: var(--ink-2); max-width: 68ch; }
+  ul.plain li::marker { color: var(--ink-3); }
+  ul.plain b, .rule b { color: var(--ink); font-weight: 600; }
+
+  /* Digest and payload mockups. */
+  .screen {
+    background: var(--code-bg); border: 1px solid var(--line-soft); border-radius: 9px;
+    padding: 1rem 1.15rem; font-family: "IBM Plex Mono", monospace;
+    font-size: .795rem; line-height: 1.7; color: var(--ink);
+    white-space: pre-wrap; overflow-x: auto; margin: 0;
+  }
+  .screen-label {
+    font-family: "IBM Plex Mono", monospace; font-size: .66rem; letter-spacing: .13em;
+    text-transform: uppercase; color: var(--ink-3); font-weight: 500; margin-bottom: .45rem;
+  }
+
+  /* Escalation ladder. A sequence with escalating weight, so the rungs get
+     heavier as they go. */
+  .ladder { display: flex; flex-direction: column; gap: 0; list-style: none; margin: 0; padding: 0; }
+  .rung {
+    display: flex; gap: 1rem; align-items: baseline;
+    padding: .8rem 1.1rem; background: var(--surface);
+    border: 1px solid var(--line); border-bottom: 0;
+    border-left: 3px solid var(--rung-c, var(--line));
+  }
+  .rung:first-child { border-radius: 9px 9px 0 0; }
+  .rung:last-child { border-bottom: 1px solid var(--line); border-radius: 0 0 9px 9px; }
+  .rung-when {
+    font-family: "IBM Plex Mono", monospace; font-size: .74rem; font-weight: 500;
+    color: var(--ink-3); flex: none; width: 7rem; font-variant-numeric: tabular-nums;
+  }
+  .rung-what { font-size: .875rem; color: var(--ink-2); }
+  .rung-what b { color: var(--ink); font-weight: 600; }
+  .rung-1 { --rung-c: var(--line); }
+  .rung-2 { --rung-c: var(--steel); }
+  .rung-3 { --rung-c: var(--hot); background: var(--hot-wash); }
+  .rung-4 { --rung-c: var(--hot); }
+  .rung-5 { --rung-c: var(--line); }
+
+  .fine { font-size: .82rem; color: var(--ink-3); max-width: 68ch; }
+
+  /* Checklist */
+  ul.check { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: .55rem; }
+  ul.check li {
+    display: flex; gap: .7rem; align-items: baseline;
+    font-size: .9rem; color: var(--ink-2); max-width: 70ch;
+  }
+  ul.check li::before {
+    content: ""; flex: none; width: .85rem; height: .85rem;
+    border: 1.5px solid var(--line); border-radius: 3px;
+    background: var(--surface); transform: translateY(.1rem);
+  }
+</style>
+<style>body { margin: 0; }</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="masthead-inner">
+    <p class="kicker">Spray It Solutions &middot; Systemations &middot; Doc 3 of 3</p>
+    <h1>What the team gets told, and when</h1>
+    <p class="standfirst">
+      12 real-time alerts with what each one says, 42 tasks across both boards, two
+      escalation ladders and three digests. The messaging kit covers what the customer receives. This covers what
+      you receive.
+    </p>
+    <div class="meta">
+      <div><b>Prepared for</b><span>Glenn, Spray It Solutions</span></div>
+      <div><b>System</b><span>Systemations</span></div>
+      <div><b>Real-time alerts</b><span>11</span></div>
+      <div><b>Source of truth</b><span class="mono">journey-data.js</span></div>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <section id="principle">
+    <div class="sec-head"><span class="sec-n">01</span><h2>The governing principle</h2></div>
+    <div class="stack">
+      <div class="keystone">
+        <p class="big">A notification is a request to do something. If nothing needs doing, it is not a notification, it is a report.</p>
+        <p class="sub">Reports go in a digest. Only actions interrupt.</p>
+      </div>
+      <p>
+        This is the rule that decides everything below, and it is the one most CRM
+        builds get wrong. A system that pings on every stage change trains everyone to
+        ignore it inside a fortnight, and then the one alert that actually mattered gets
+        ignored too.
+      </p>
+      <p>
+        There are 12 real-time alerts in this document. Eleven were there from the start.
+        The twelfth had to argue its way in, which is the standard the next one is held to.
+      </p>
+    </div>
+  </section>
+
+  <section id="roles">
+    <div class="sec-head"><span class="sec-n">02</span><h2>Roles</h2></div>
+    <div class="stack">
+      <p>
+        Set up as users on the platform, then referenced by role throughout, so a change of staff
+        is a reassignment rather than a rewrite.
+      </p>
+      <div class="t-scroll">
+        <table>
+          <thead><tr><th>Role</th><th>Who at Spray It</th><th>Owns</th></tr></thead>
+          <tbody>
+            <tr><td><code>OWNER</code></td><td>Glenn</td><td>Commercial deals, pricing, anything escalated</td></tr>
+            <tr><td><code>OFFICE</code></td><td class="mono">to confirm</td><td>First response, booking, chasing, invoicing</td></tr>
+            <tr><td><code>ESTIMATOR</code></td><td class="mono">to confirm</td><td>Assessments and quotes</td></tr>
+            <tr><td><code>CREW_LEAD</code></td><td class="mono">per job</td><td>Delivery stages, site photos</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="ask">
+        <b>Needs Glenn:</b> who fills OFFICE and ESTIMATOR, and whether they are separate
+        people or both him. If they are both him, the escalation ladder in &sect;5 needs a
+        second name or it escalates to itself.
+      </div>
+      <div class="why">
+        <h4>Round robin, always</h4>
+        <p>
+          If more than one person can take a new lead, use the platform’s round robin
+          assignment on the New Enquiry trigger. Unassigned leads are the single most common
+          way a lead dies: everybody assumes somebody.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section id="alerts">
+    <div class="sec-head"><span class="sec-n">03</span><h2>The 12 real-time alerts</h2></div>
+
+    <div class="t-scroll">
+      <table>
+        <thead>
+          <tr><th>#</th><th>Alert</th><th>Trigger</th><th>To</th><th>Channel</th><th>Why it interrupts</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="num">1</td><td>New enquiry</td><td>Opportunity created</td><td>Assigned user</td><td><span class="ch ch-sms">SMS</span> <span class="ch ch-app">App</span></td><td>Speed to lead is the whole game.</td></tr>
+          <tr><td class="num">2</td><td>Missed call</td><td>Inbound call not answered</td><td>OFFICE</td><td><span class="ch ch-sms">SMS</span></td><td>The auto-reply already went. A human still has to ring back.</td></tr>
+          <tr><td class="num">3</td><td>Inbound reply</td><td>Contact replies by SMS</td><td>Assigned user</td><td><span class="ch ch-app">App</span> <span class="ch ch-sms">SMS</span></td><td>A reply is a live conversation. Every sequence on the card pauses.</td></tr>
+          <tr><td class="num">4</td><td>Booking made</td><td>Appointment booked</td><td>Assigned user</td><td><span class="ch ch-app">App</span></td><td>The diary changed.</td></tr>
+          <tr><td class="num">5</td><td>Booking cancelled</td><td>Appointment cancelled</td><td>Assigned user</td><td><span class="ch ch-sms">SMS</span></td><td>A hole in the day, recoverable if caught early.</td></tr>
+          <tr><td class="num">6</td><td>Commercial enquiry</td><td>Opportunity created on the Commercial board</td><td>OWNER</td><td><span class="ch ch-sms">SMS</span></td><td>Different sale, different person, immediately.</td></tr>
+          <tr><td class="num">7</td><td>Lead unattended for an hour</td><td>Still in New Enquiry after 60 minutes</td><td>Assigned user and OWNER</td><td><span class="ch ch-sms">SMS</span></td><td>The escalation ladder. Business hours only, and it pauses overnight.</td></tr>
+          <tr><td class="num">8</td><td>Quote accepted</td><td>Status set to Won</td><td>OWNER and OFFICE</td><td><span class="ch ch-sms">SMS</span></td><td>Triggers deposit, scheduling and crew.</td></tr>
+          <tr><td class="num">9</td><td>Deposit received</td><td>deposit_received_at is set</td><td>OFFICE</td><td><span class="ch ch-app">App</span></td><td>Unblocks scheduling on the jobs that take one.</td></tr>
+          <tr><td class="num">10</td><td>Negative review or complaint</td><td>Review under 4 stars, or a complaint tag</td><td>OWNER</td><td><span class="ch ch-sms">SMS</span></td><td>Reputation decays fast. A same-day call fixes most of them.</td></tr>
+          <tr><td class="num">11</td><td>Automation failure</td><td>Workflow error, or the lead webhook returns 4xx or 5xx</td><td>OWNER</td><td><span class="ch ch-eml">Email</span></td><td>A silent failure means leads are vanishing. The platform will not tell you loudly, so this is built deliberately.</td></tr>
+          <tr><td class="num">12</td><td>Missed appointment</td><td>Appointment marked no-show</td><td>Assigned user and OWNER</td><td><span class="ch ch-sms">SMS</span></td><td>A missed phone call costs a slot. A missed site visit costs a half day and a truck roll, and the rebooking works far better when a human rings the same day than when only the automatic text goes.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>What each one says</h3>
+    <p class="fine">Written so the person can act without opening the CRM. Each one is also shown under its stage on the <a href="../index.html">customer journey page</a>.</p>
+
+    <h3>Alert 1: New enquiry</h3>
+    <p>A website enquiry has been created and assigned. The message carries their name, number, property type, what needs doing, timeframe, postcode and where they came from, so it can be acted on without opening the CRM.</p>
+    <p class="screen-label">SMS payload</p>
+    <pre class="screen">NEW LEAD: {{contact.first_name}} {{contact.last_name}}
+{{contact.phone}}
+{{contact.property_type}} / {{contact.areas}}
+{{contact.timeframe}} / {{contact.postcode}}
+Source: {{contact.utm_source}}</pre>
+    <p class="fine" style="margin-top:.7rem">Enough to act without opening the CRM. Someone standing on a roof can read that and decide whether to climb down.</p>
+
+    <h3>Alert 2: Missed call</h3>
+    <p>An inbound call to the business number went unanswered. The caller has already had an automatic text back, so this is the reminder that a human still owes them a call.</p>
+    <p class="screen-label">SMS payload</p>
+    <pre class="screen">MISSED CALL: {{contact.phone}} ({{contact.first_name}}). Text-back sent. Ring them.</pre>
+
+    <h3>Alert 3: Inbound reply</h3>
+    <p>A customer has replied by text. Every outbound sequence on that contact pauses the moment it arrives, so nothing automatic talks over a live conversation.</p>
+    <p class="screen-label">SMS payload</p>
+    <pre class="screen">REPLY from {{contact.first_name}}: "{{message.body}}"</pre>
+
+    <h3>Alert 4: Booking made</h3>
+    <p>Somebody has booked a phone consult. It is in the diary and the confirmation has gone, so the point of the alert is to read their enquiry before the call.</p>
+    <p class="screen-label">In-app payload</p>
+    <pre class="screen">BOOKED: {{contact.first_name}}, {{appointment.start_time}}. Read the enquiry before the call.</pre>
+
+    <h3>Alert 5: Booking cancelled</h3>
+    <p>A booked call has been cancelled, leaving a hole in the day. Caught early, a short personal note usually saves the booking.</p>
+    <p class="screen-label">SMS payload</p>
+    <pre class="screen">CANCELLED: {{contact.first_name}}, {{appointment.start_time}}. Slot is open. A two-line personal note often saves it.</pre>
+
+    <h3>Alert 6: Commercial enquiry</h3>
+    <p>An enquiry has landed on the Commercial board. It carries the company as well as the contact, and it goes straight to the owner rather than through the round robin.</p>
+    <p class="screen-label">SMS payload</p>
+    <pre class="screen">COMMERCIAL LEAD: {{contact.first_name}} {{contact.last_name}}, {{contact.company}}
+{{contact.property_type}} / {{contact.postcode}}
+{{contact.phone}}</pre>
+
+    <h3>Alert 7: Lead unattended for an hour</h3>
+    <p>A new enquiry has sat in the first stage for an hour of business time. The card is reassigned to the office at the same moment, so this is a handover as well as a warning.</p>
+    <p class="screen-label">SMS payload</p>
+    <pre class="screen">UNATTENDED 60 MIN: {{contact.first_name}} {{contact.phone}}. Reassigned to office.</pre>
+
+    <h3>Alert 8: Quote accepted</h3>
+    <p>A job has been marked Won. It names the job and the value, and it is the signal to raise the deposit invoice and pick a date and a crew.</p>
+    <p class="screen-label">SMS payload</p>
+    <pre class="screen">WON: {{opportunity.name}}, {{opportunity.value}}. Deposit request sent. Schedule it.</pre>
+
+    <h3>Alert 9: Deposit received</h3>
+    <p>A deposit has been recorded against the card. Scheduling is unblocked, and the customer has been told the date will be confirmed within three business days.</p>
+    <p class="screen-label">In-app payload</p>
+    <pre class="screen">DEPOSIT IN: {{contact.first_name}}, {{opportunity.deposit_amount}}. Lock the date.</pre>
+
+    <h3>Alert 10: Negative review or complaint</h3>
+    <p>A review under four stars, or a contact tagged as a complaint. It carries the rating and the reviewer, so the call can be made the same day.</p>
+    <p class="screen-label">SMS payload</p>
+    <pre class="screen">REVIEW {{review.rating}} stars from {{review.author}}. Call them today.</pre>
+
+    <h3>Alert 11: Automation failure</h3>
+    <p>A workflow errored, or the website lead webhook returned a failure. It names the workflow and the contact. This is the only alert that means leads may be vanishing silently.</p>
+    <p class="screen-label">Email payload</p>
+    <pre class="screen">WORKFLOW FAILED: {{workflow.name}} on {{contact.first_name}} {{contact.last_name}}. {{error.message}}</pre>
+
+    <h3>Alert 12: Missed appointment</h3>
+    <p>A booked appointment has been marked no-show on either calendar. It names the appointment and the address. A missed site visit costs half a day and a truck, which makes it the only event in this journey that spends money the moment it happens.</p>
+    <p class="screen-label">SMS payload</p>
+    <pre class="screen">NO SHOW: {{contact.first_name}} {{contact.phone}}
+{{appointment.title}}, {{appointment.start_time}}
+{{opportunity.site_address}}</pre>
+    <p class="fine" style="margin-top:.7rem">The twelfth alert, added deliberately against the rule in section 1. The argument for it is money: every other alert protects a lead, this one protects a day of crew time that has already been spent.</p>
+
+    <h3>What deliberately does not alert</h3>
+    <div class="rule rule-no">
+      <h4>Listed so nobody adds them back later without a reason</h4>
+      <ul>
+        <li>Stage changes in general. Only Won and deposit do.</li>
+        <li>Emails opened or links clicked. Interesting, not actionable.</li>
+        <li>Form views, page views, chat opens.</li>
+        <li>Every message in a sequence sending as designed.</li>
+        <li>Nurture activity of any kind.</li>
+        <li>Delivery stage progression. The crew know where they are.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="tasks">
+    <div class="sec-head"><span class="sec-n">04</span><h2>Tasks</h2></div>
+
+    <div class="stack">
+      <p>
+        Alerts say <em>something happened</em>. Tasks say <em>you owe something</em>, and
+        they persist until closed. Anything with a deadline is a task, not an alert.
+        42 in total across both boards.
+      </p>
+
+      <h3>Naming convention</h3>
+      <pre class="screen">[VERB] [WHO]: [WHAT]
+
+CALL Emma: new enquiry, Underfloor, Roof or ceiling
+QUOTE Emma: 22 Ranelagh Drive, Mount Eliza
+CHASE Daniel: PO</pre>
+      <p class="fine" style="margin-top:.7rem">
+        Verb first, so a list of twenty tasks is scannable without opening any of them.
+      </p>
+    </div>
+
+    <h3>Residential</h3>
+    <div class="t-scroll">
+      <table>
+        <thead><tr><th>Stage</th><th>Task</th><th>Assigned</th><th>Due</th></tr></thead>
+        <tbody>
+          <tr><td>New Enquiry</td><td class="mono">CALL {{contact.first_name}}: new enquiry, {{contact.areas}}</td><td>Assigned user</td><td class="urgent">1 hour</td></tr>
+          <tr><td>Contacting</td><td class="mono">CALL {{contact.first_name}}: attempt 2</td><td>Assigned user</td><td class="num">Day 1</td></tr>
+          <tr><td>Contacting</td><td class="mono">CALL {{contact.first_name}}: attempt 3</td><td>Assigned user</td><td class="num">Day 2</td></tr>
+          <tr><td>Contacting</td><td class="mono">CALL {{contact.first_name}}: attempt 4</td><td>Assigned user</td><td class="num">Day 4</td></tr>
+          <tr><td>Contacting</td><td class="mono">CALL {{contact.first_name}}: final attempt</td><td>Assigned user</td><td class="num">Day 7</td></tr>
+          <tr><td>Qualified</td><td class="mono">BOOK {{contact.first_name}}: assessment</td><td>OFFICE</td><td class="num">3 days</td></tr>
+          <tr><td>Assessment Booked</td><td class="mono">ATTEND {{contact.first_name}}: assessment, {{opportunity.site_address}}</td><td>ESTIMATOR</td><td class="num">On the date</td></tr>
+          <tr><td>Quoting</td><td class="mono">QUOTE {{contact.first_name}}: {{opportunity.site_address}}</td><td>ESTIMATOR</td><td class="urgent">2 days</td></tr>
+          <tr><td>Quote Sent</td><td class="mono">CALL {{contact.first_name}}: quote follow up</td><td>Assigned user</td><td class="num">Day 2</td></tr>
+          <tr><td>Follow-up</td><td class="mono">DECIDE {{contact.first_name}}: close or nurture</td><td>Assigned user</td><td class="num">Day 21</td></tr>
+          <tr><td>Follow-up</td><td class="mono">LOG {{contact.first_name}}: lost reason</td><td>Assigned user</td><td class="num">Same day, on Lost</td></tr>
+          <tr><td>Nurture</td><td class="mono">REVIEW {{contact.first_name}}: still a fit?</td><td>OWNER</td><td class="num">Quarterly</td></tr>
+          <tr class="divider"><td colspan="4">Won is marked here</td></tr>
+          <tr><td>Won</td><td class="mono">INVOICE {{contact.first_name}}: deposit</td><td>OFFICE</td><td class="num">1 day, where a deposit applies</td></tr>
+          <tr><td>Won</td><td class="mono">SCHEDULE {{contact.first_name}}: allocate crew and date</td><td>OFFICE</td><td class="num">3 days</td></tr>
+          <tr><td>Scheduled</td><td class="mono">CONFIRM {{contact.first_name}}: day before</td><td>OFFICE</td><td class="num">Day before start</td></tr>
+          <tr><td>In Progress</td><td class="mono">PHOTOS {{opportunity.site_address}}</td><td>CREW_LEAD</td><td class="num">On completion</td></tr>
+          <tr><td>In Progress</td><td class="mono">VARIATIONS {{contact.first_name}}: record any extras</td><td>CREW_LEAD</td><td class="num">On completion</td></tr>
+          <tr><td>Invoiced</td><td class="mono">INVOICE {{contact.first_name}}: final</td><td>OFFICE</td><td class="num">1 day</td></tr>
+          <tr><td>Invoiced</td><td class="mono">CHASE {{contact.first_name}}: payment overdue</td><td>OFFICE</td><td class="num">Day 14</td></tr>
+          <tr><td>Paid &amp; Closed</td><td class="mono">REVIEW {{contact.first_name}}: did they leave one?</td><td>OFFICE</td><td class="num">Day 7</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Commercial &amp; Industrial</h3>
+    <div class="t-scroll">
+      <table>
+        <thead><tr><th>Stage</th><th>Task</th><th>Assigned</th><th>Due</th></tr></thead>
+        <tbody>
+          <tr><td>New Enquiry</td><td class="mono">CALL {{contact.first_name}}: commercial enquiry, {{contact.company}}</td><td>OWNER</td><td class="urgent">1 hour</td></tr>
+          <tr><td>Contacting</td><td class="mono">CALL {{contact.first_name}}: attempt 2</td><td>OWNER</td><td class="num">Day 1</td></tr>
+          <tr><td>Contacting</td><td class="mono">CALL {{contact.first_name}}: attempt 3</td><td>OWNER</td><td class="num">Day 3</td></tr>
+          <tr><td>Contacting</td><td class="mono">CALL {{contact.first_name}}: final attempt</td><td>OWNER</td><td class="num">Day 7</td></tr>
+          <tr><td>Qualified / Scoping</td><td class="mono">SCOPE {{contact.first_name}}: confirm decision maker and programme</td><td>OWNER</td><td class="num">5 days</td></tr>
+          <tr><td>Inspection Booked</td><td class="mono">ATTEND {{opportunity.site_address}}: inspection</td><td>OWNER</td><td class="num">On the date</td></tr>
+          <tr><td>Specifying</td><td class="mono">SPEC {{opportunity.site_address}}: product, access, staging, WHS</td><td>OWNER</td><td class="num">5 days</td></tr>
+          <tr><td>Proposal Submitted</td><td class="mono">CALL {{contact.first_name}}: confirm receipt</td><td>OWNER</td><td class="urgent">2 days</td></tr>
+          <tr><td>Commercial Review</td><td class="mono">CHASE {{contact.first_name}}: decision date</td><td>OWNER</td><td class="num">Day 7, then day 21</td></tr>
+          <tr><td>Awaiting PO</td><td class="mono">CHASE {{contact.first_name}}: PO</td><td>OWNER</td><td class="num">Weekly</td></tr>
+          <tr><td>Future Project</td><td class="mono">CHECK-IN {{contact.first_name}}: {{opportunity.site_address}}</td><td>OWNER</td><td class="num">Quarterly</td></tr>
+          <tr class="divider"><td colspan="4">Won is marked here</td></tr>
+          <tr><td>Won</td><td class="mono">MOBILISE {{opportunity.site_address}}: programme, inductions, SWMS, materials</td><td>OWNER</td><td class="urgent">2 working days</td></tr>
+          <tr><td>Mobilising</td><td class="mono">INDUCT crew: {{opportunity.site_address}}</td><td>CREW_LEAD</td><td class="num">Before start</td></tr>
+          <tr><td>Mobilising</td><td class="mono">SWMS {{opportunity.site_address}}: issue and confirm receipt</td><td>OWNER</td><td class="num">Before start</td></tr>
+          <tr><td>In Progress</td><td class="mono">UPDATE {{contact.first_name}}: weekly progress</td><td>OWNER</td><td class="num">Every Friday while live</td></tr>
+          <tr><td>In Progress</td><td class="mono">PHOTOS {{opportunity.site_address}}: this stage</td><td>CREW_LEAD</td><td class="num">End of each stage</td></tr>
+          <tr><td>In Progress</td><td class="mono">VARIATIONS {{opportunity.site_address}}: record and get signed</td><td>CREW_LEAD</td><td class="num">As they happen</td></tr>
+          <tr><td>Invoicing</td><td class="mono">CLAIM {{opportunity.site_address}}: issue per programme</td><td>OFFICE</td><td class="num">Per milestone</td></tr>
+          <tr><td>Invoicing</td><td class="mono">CHASE {{contact.first_name}}: claim overdue</td><td>OFFICE</td><td class="num">Day 30</td></tr>
+          <tr><td>Paid &amp; Closed</td><td class="mono">REFERENCE {{contact.first_name}}: ask, and record the answer</td><td>OWNER</td><td class="num">Day 7</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Always on</h3>
+    <div class="t-scroll">
+      <table>
+        <thead><tr><th>Stage</th><th>Task</th><th>Assigned</th><th>Due</th></tr></thead>
+        <tbody>
+          <tr><td>Any</td><td class="mono">RING BACK {{contact.first_name}}: missed call</td><td>OFFICE</td><td class="urgent">30 minutes</td></tr>
+          <tr><td>Any</td><td class="mono">REPLY {{contact.first_name}}: they messaged</td><td>Assigned user</td><td class="urgent">1 hour</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>What each task says</h3>
+    <p class="fine" style="margin-bottom:1rem">
+      Every task carries a title and a description. The title is what shows in a list, so it
+      leads with the verb. The description is what the person reads when they open it, and it
+      is written to stand on its own: what to do, what has already happened automatically, and
+      what moving the card triggers next.
+    </p>
+      <div class="why">
+        <h4>CALL {{contact.first_name}}: new enquiry, {{contact.areas}}</h4>
+        <p class="fine">New Enquiry &middot; Assigned user &middot; due 1 hour</p>
+        <p>Ring the new enquiry. The acknowledgement text and email have already gone, so this is the first human contact. Have their answers on screen: property type, what needs doing, timeframe and postcode. If it is a job worth having, move the card to Qualified. If you cannot reach them, log the attempt and the chase takes over.</p>
+      </div>
+      <div class="why">
+        <h4>CALL {{contact.first_name}}: attempt 2</h4>
+        <p class="fine">Contacting &middot; Assigned user &middot; due Day 1</p>
+        <p>Second call attempt. Try a different time of day from the first. Log it on the card either way, so the chase knows where it is up to.</p>
+      </div>
+      <div class="why">
+        <h4>CALL {{contact.first_name}}: attempt 3</h4>
+        <p class="fine">Contacting &middot; Assigned user &middot; due Day 2</p>
+        <p>Third call attempt. If the phone is not working, reply to their enquiry email instead and note it on the card.</p>
+      </div>
+      <div class="why">
+        <h4>CALL {{contact.first_name}}: attempt 4</h4>
+        <p class="fine">Contacting &middot; Assigned user &middot; due Day 4</p>
+        <p>Fourth call attempt. They have had two texts and an email by now, so keep it short: you are ringing about their enquiry and can talk whenever suits.</p>
+      </div>
+      <div class="why">
+        <h4>CALL {{contact.first_name}}: final attempt</h4>
+        <p class="fine">Contacting &middot; Assigned user &middot; due Day 7</p>
+        <p>Last call before the card is closed as Unreachable. The honest close email goes the same day and it is the one people answer, so check for a reply before closing.</p>
+      </div>
+      <div class="why">
+        <h4>BOOK {{contact.first_name}}: assessment</h4>
+        <p class="fine">Qualified &middot; OFFICE &middot; due 3 days</p>
+        <p>Get the site assessment in the diary. They have a booking link by text and email, so check whether they have used it before ringing. Confirm the address, who will be home, and access to the areas being sprayed.</p>
+      </div>
+      <div class="why">
+        <h4>ATTEND {{contact.first_name}}: assessment, {{opportunity.site_address}}</h4>
+        <p class="fine">Assessment Booked &middot; ESTIMATOR &middot; due On the date</p>
+        <p>Attend the site assessment. Before you leave, record on the card: the area in square metres, the foam type, access notes, and anything that will slow the crew down. Photos of problem areas help the quote. Mark it done and the card moves to Quoting.</p>
+      </div>
+      <div class="why">
+        <h4>QUOTE {{contact.first_name}}: {{opportunity.site_address}}</h4>
+        <p class="fine">Quoting &middot; ESTIMATOR &middot; due 2 days</p>
+        <p>Write and send the quote within two business days. The customer has been told that, so it is a promise. Put the quote number and the figure on the card, attach the document, then move the card to Quote Sent.</p>
+      </div>
+      <div class="why">
+        <h4>CALL {{contact.first_name}}: quote follow up</h4>
+        <p class="fine">Quote Sent &middot; Assigned user &middot; due Day 2</p>
+        <p>Ring two days after the quote went out. Ask whether it arrived and whether anything needs explaining. This one call converts more quotes than the whole automated sequence.</p>
+      </div>
+      <div class="why">
+        <h4>DECIDE {{contact.first_name}}: close or nurture</h4>
+        <p class="fine">Follow-up &middot; Assigned user &middot; due Day 21</p>
+        <p>Twenty-one days with no decision. Close the card: Won if they accepted, Lost with a reason if they went elsewhere, or Nurture if it is a real job at the wrong time. Never leave it sitting.</p>
+      </div>
+      <div class="why">
+        <h4>LOG {{contact.first_name}}: lost reason</h4>
+        <p class="fine">Follow-up &middot; Assigned user &middot; due Same day, on Lost</p>
+        <p>Record why the job was lost, from the fixed list. It is the only thing that makes the board teach anything, and the split between Price and Chose batts points at two completely different fixes.</p>
+      </div>
+      <div class="why">
+        <h4>REVIEW {{contact.first_name}}: still a fit?</h4>
+        <p class="fine">Nurture &middot; OWNER &middot; due Quarterly</p>
+        <p>Quarterly review of the nurture list. Remove anyone who is not a real job, and move anyone who has come back to Qualified. A clean list keeps the emails landing in inboxes rather than in spam.</p>
+      </div>
+      <div class="why">
+        <h4>INVOICE {{contact.first_name}}: deposit</h4>
+        <p class="fine">Won &middot; OFFICE &middot; due 1 day, where a deposit applies</p>
+        <p>Send the deposit invoice, on the jobs that take one. The amount is already on the card and the customer has been told to expect it. When the money lands, tick Deposit received, which confirms it to them and unblocks scheduling.</p>
+      </div>
+      <div class="why">
+        <h4>SCHEDULE {{contact.first_name}}: allocate crew and date</h4>
+        <p class="fine">Won &middot; OFFICE &middot; due 3 days</p>
+        <p>Pick a start date, a finish date and a crew, put all three on the card, then move it to Scheduled. That sends the booking text and the preparation email by itself.</p>
+      </div>
+      <div class="why">
+        <h4>CONFIRM {{contact.first_name}}: day before</h4>
+        <p class="fine">Scheduled &middot; OFFICE &middot; due Day before start</p>
+        <p>Quick check the afternoon before: access clear, pets sorted, somebody over eighteen home to let the crew in. The reminder text has gone; this is the call that catches what it does not.</p>
+      </div>
+      <div class="why">
+        <h4>PHOTOS {{opportunity.site_address}}</h4>
+        <p class="fine">In Progress &middot; CREW_LEAD &middot; due On completion</p>
+        <p>Photograph the finished work from the app before leaving site, and tick Photos captured. The card cannot move to Invoiced without them. They go to the customer in the completion email, and they are the only real proof-of-work images the business has.</p>
+      </div>
+      <div class="why">
+        <h4>VARIATIONS {{contact.first_name}}: record any extras</h4>
+        <p class="fine">In Progress &middot; CREW_LEAD &middot; due On completion</p>
+        <p>Write down anything agreed on site that was not in the quote, with the amount, and put it on the card the same day. Left to invoicing, it surprises the customer.</p>
+      </div>
+      <div class="why">
+        <h4>INVOICE {{contact.first_name}}: final</h4>
+        <p class="fine">Invoiced &middot; OFFICE &middot; due 1 day</p>
+        <p>Raise the final invoice, put the number on the card, and move it to Invoiced. The completion email with the photos and the invoice email go out separately by themselves.</p>
+      </div>
+      <div class="why">
+        <h4>CHASE {{contact.first_name}}: payment overdue</h4>
+        <p class="fine">Invoiced &middot; OFFICE &middot; due Day 14</p>
+        <p>Fourteen days unpaid. Ring rather than email: most late invoices are a question, not a refusal. Mark it paid the moment the money lands, which stops the reminders dead.</p>
+      </div>
+      <div class="why">
+        <h4>REVIEW {{contact.first_name}}: did they leave one?</h4>
+        <p class="fine">Paid &amp; Closed &middot; OFFICE &middot; due Day 7</p>
+        <p>Check whether the Google review arrived. If it did, nothing to do. If it did not, leave it. The ask goes once, by text, and chasing reviews costs more goodwill than it earns.</p>
+      </div>
+      <div class="why">
+        <h4>CALL {{contact.first_name}}: commercial enquiry, {{contact.company}}</h4>
+        <p class="fine">New Enquiry &middot; OWNER &middot; due 1 hour</p>
+        <p>Ring the commercial enquiry within the hour. Aim to come off the call knowing who decides, roughly how big it is, what the space is used for, whether it is operating during the works, and when they need it done.</p>
+      </div>
+      <div class="why">
+        <h4>SCOPE {{contact.first_name}}: confirm decision maker and programme</h4>
+        <p class="fine">Qualified / Scoping &middot; OWNER &middot; due 5 days</p>
+        <p>Confirm who decides, the scale and the programme, then put the site address and a site contact on the card. Leave the value at zero: commercial ranges from small to millions, and a guess here makes the forecast worthless.</p>
+      </div>
+      <div class="why">
+        <h4>ATTEND {{opportunity.site_address}}: inspection</h4>
+        <p class="fine">Inspection Booked &middot; OWNER &middot; due On the date</p>
+        <p>Attend the visit. Before you leave, record on the card: the area in square metres, the foam type, access notes, and anything that will slow the crew down. Photos of problem areas help the quote.</p>
+      </div>
+      <div class="why">
+        <h4>SPEC {{opportunity.site_address}}: product, access, staging, WHS</h4>
+        <p class="fine">Specifying &middot; OWNER &middot; due 5 days</p>
+        <p>Work out product, thickness, access, plant, staging and WHS, and build the proposal. Five days. The customer has been given that date by email, so it is a commitment.</p>
+      </div>
+      <div class="why">
+        <h4>CALL {{contact.first_name}}: confirm receipt</h4>
+        <p class="fine">Proposal Submitted &middot; OWNER &middot; due 2 days</p>
+        <p>Ring two days after the proposal to confirm it arrived and reached the right person. Ask what shape procurement needs it in, before they have to ask you to reissue it.</p>
+      </div>
+      <div class="why">
+        <h4>CHASE {{contact.first_name}}: decision date</h4>
+        <p class="fine">Commercial Review &middot; OWNER &middot; due Day 7, then day 21</p>
+        <p>Ask for a decision date, not for a decision. It is an easier question to answer, and it tells you whether to hold capacity.</p>
+      </div>
+      <div class="why">
+        <h4>CHASE {{contact.first_name}}: PO</h4>
+        <p class="fine">Awaiting PO &middot; OWNER &middot; due Weekly</p>
+        <p>Weekly chase for the purchase order. The job is verbally won but stays Open until the paperwork arrives, so this is the task that turns a promise into committed work.</p>
+      </div>
+      <div class="why">
+        <h4>CHECK-IN {{contact.first_name}}: {{opportunity.site_address}}</h4>
+        <p class="fine">Future Project &middot; OWNER &middot; due Quarterly</p>
+        <p>Quarterly check-in on a future-budget project. Offer to refresh the proposal against current material pricing, and ask which quarter to come back in if it has moved.</p>
+      </div>
+      <div class="why">
+        <h4>MOBILISE {{opportunity.site_address}}: programme, inductions, SWMS, materials</h4>
+        <p class="fine">Won &middot; OWNER &middot; due 2 working days</p>
+        <p>Purchase order received. Confirm the programme within two working days: start and finish dates, crew, site contact, induction dates and access windows, all on the card.</p>
+      </div>
+      <div class="why">
+        <h4>INDUCT crew: {{opportunity.site_address}}</h4>
+        <p class="fine">Mobilising &middot; CREW_LEAD &middot; due Before start</p>
+        <p>Get the crew inducted before the start date. Site inductions take longer than anyone plans for, and a crew turned away at the gate costs a full day.</p>
+      </div>
+      <div class="why">
+        <h4>SWMS {{opportunity.site_address}}: issue and confirm receipt</h4>
+        <p class="fine">Mobilising &middot; OWNER &middot; due Before start</p>
+        <p>Issue the SWMS and get written confirmation it has been received and accepted. The crew does not start without it, and on most sites the principal contractor will not let them on without it either.</p>
+      </div>
+      <div class="why">
+        <h4>UPDATE {{contact.first_name}}: weekly progress</h4>
+        <p class="fine">In Progress &middot; OWNER &middot; due Every Friday while live</p>
+        <p>Friday progress email from the saved template. Fill in three lines: what was completed this week, what is next, and what you need from them. Attach the week’s photos.</p>
+      </div>
+      <div class="why">
+        <h4>PHOTOS {{opportunity.site_address}}: this stage</h4>
+        <p class="fine">In Progress &middot; CREW_LEAD &middot; due End of each stage</p>
+        <p>Photograph each completed stage before moving on. On a staged job the photos are the evidence behind the progress claim, so they are needed at the end of every stage, not at the end of the job.</p>
+      </div>
+      <div class="why">
+        <h4>VARIATIONS {{opportunity.site_address}}: record and get signed</h4>
+        <p class="fine">In Progress &middot; CREW_LEAD &middot; due As they happen</p>
+        <p>Record every variation agreed on site and get it signed the same day. An unsigned variation on a commercial job is an argument waiting to happen at the final claim.</p>
+      </div>
+      <div class="why">
+        <h4>CLAIM {{opportunity.site_address}}: issue per programme</h4>
+        <p class="fine">Invoicing &middot; OFFICE &middot; due Per milestone</p>
+        <p>Issue the progress claim for the completed stage, put its invoice number on the card, and attach the photos and any sign-offs.</p>
+      </div>
+      <div class="why">
+        <h4>CHASE {{contact.first_name}}: claim overdue</h4>
+        <p class="fine">Invoicing &middot; OFFICE &middot; due Day 30</p>
+        <p>Thirty days on an unpaid claim. Commercial payment runs are slow and usually fine, so ask the accounts contact where it sits in the run rather than chasing the site contact.</p>
+      </div>
+      <div class="why">
+        <h4>REFERENCE {{contact.first_name}}: ask, and record the answer</h4>
+        <p class="fine">Paid &amp; Closed &middot; OWNER &middot; due Day 7</p>
+        <p>Ask whether they would take a reference call from a future client of similar scale, and write the answer on the card. A facilities manager’s word is worth more on a tender than any number of homeowner reviews.</p>
+      </div>
+      <div class="why">
+        <h4>RING BACK {{contact.first_name}}: missed call</h4>
+        <p class="fine">Any stage &middot; OFFICE &middot; due 30 minutes</p>
+        <p>A call came in and nobody answered. The caller already has a text saying you will ring back, so this is a promise with your name on it.</p>
+      </div>
+      <div class="why">
+        <h4>REPLY {{contact.first_name}}: they messaged</h4>
+        <p class="fine">Any stage &middot; Assigned user &middot; due 1 hour</p>
+        <p>A customer has replied, so every automatic message to them has paused. Answer from the conversations screen in the app, not your own phone, so the reply sits on their card and the pause holds.</p>
+      </div>
+
+    <div class="cols" style="margin-top:1.2rem">
+      <div class="rule rule-esc">
+        <h4>Rule one</h4>
+        <ul><li><b>Every task has an owner and a due date.</b> The platform will let you create one with neither. A task with no due date is a note.</li></ul>
+      </div>
+      <div class="rule rule-esc">
+        <h4>Rule two</h4>
+        <ul><li><b>Completing the task does not move the card.</b> Moving the card is a separate, deliberate act, or the board reflects who is tidy about tasks rather than where jobs actually are.</li></ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="escalation">
+    <div class="sec-head"><span class="sec-n">05</span><h2>Escalation</h2></div>
+
+    <h3>Unattended lead</h3>
+    <ol class="ladder">
+      <li class="rung rung-1"><span class="rung-when">0 min</span><span class="rung-what">Assign, notify, create the call task. Customer gets X-ACK-01.</span></li>
+      <li class="rung rung-2"><span class="rung-when">15 min</span><span class="rung-what">Reminder to the assigned user</span></li>
+      <li class="rung rung-3"><span class="rung-when">60 min</span><span class="rung-what"><b>Escalate.</b> SMS to assigned user and OWNER, reassign to OFFICE</span></li>
+      <li class="rung rung-4"><span class="rung-when">4 hours</span><span class="rung-what">SMS to OWNER: <em>this lead has been sitting since {{time}}</em></span></li>
+      <li class="rung rung-5"><span class="rung-when">Next morning</span><span class="rung-what">Top of the daily digest until it moves</span></li>
+    </ol>
+    <p class="fine" style="margin-top:.8rem">
+      Business hours only, and it pauses overnight. A lead arriving at 11pm starts its clock
+      when the office opens, otherwise everyone wakes to a false alarm and starts ignoring
+      the escalation.
+    </p>
+
+    <h3>Stalled card</h3>
+    <div class="t-scroll">
+      <table>
+        <thead><tr><th>Breach</th><th>Action</th></tr></thead>
+        <tbody>
+          <tr><td>First</td><td>Task reappears at the top of the assigned user's list</td></tr>
+          <tr><td>2&times; the stall time</td><td>Line item in the daily digest</td></tr>
+          <tr><td>3&times; the stall time</td><td>Named in the weekly review, with the card</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="why" style="margin-top:1rem">
+      <h4>Escalation here moves toward visibility, not toward more alarms</h4>
+      <p>
+        A card stuck in Follow-up for 40 days is not an emergency. It is a conversation to
+        have on Monday. Only the unattended lead ladder above uses SMS, because only that
+        one has an hour in which the outcome can still change.
+      </p>
+    </div>
+  </section>
+
+  <section id="digests">
+    <div class="sec-head"><span class="sec-n">06</span><h2>Digests</h2></div>
+    <p style="margin-bottom:1.2rem">Where everything that is not an emergency goes.</p>
+
+    <p class="screen-label">Daily, 7:00am, to OWNER and OFFICE</p>
+    <pre class="screen">YESTERDAY
+  New enquiries          {{count}}
+  Calls made             {{count}}
+  Quotes sent            {{count}}
+  Jobs won               {{count}}, {{value}}
+
+TODAY
+  Assessments            {{list with time and address}}
+  Jobs starting          {{list with crew}}
+  Calls booked           {{list with time}}
+
+NEEDS YOU
+  Leads unattended       {{list}}
+  Quotes overdue         {{list, over 2 days in Quoting}}
+  Follow-ups due         {{count}}
+  Invoices overdue       {{list with amount and days}}</pre>
+    <p class="fine" style="margin-top:.7rem">
+      <b>NEEDS YOU goes last on purpose.</b> It is the section people act on, so it should be
+      what their eye lands on when they stop scrolling.
+    </p>
+
+    <p class="screen-label" style="margin-top:1.8rem">Weekly, Monday 7:00am, to OWNER</p>
+    <pre class="screen">LAST WEEK
+  Enquiries              {{count}}, by source
+  Median time to first contact
+  Enquiry to Qualified   {{percent}}
+  Quotes sent            {{count}}, {{value}}
+  Won                    {{count}}, {{value}}
+  Lost                   {{count}}, by reason
+
+PIPELINE NOW
+  Open value             {{value}}      &lt;- the forecast
+  Won not yet delivered  {{value}}      &lt;- committed work
+  Cards stalled 3x       {{list}}
+
+DELIVERY
+  Jobs completed         {{count}}
+  Average days Won to Paid
+  Invoices outstanding   {{value}}</pre>
+    <div class="ask" style="margin-top:1rem">
+      <b>The two pipeline lines are separated on purpose.</b> The boards merged sales and
+      delivery, so an unfiltered pipeline figure is roughly double what is really in play.
+      The digest never shows one.
+    </div>
+
+    <p class="screen-label" style="margin-top:1.8rem">Monthly, to OWNER</p>
+    <p>
+      Cost per enquiry and cost per won job by <code>utm_source</code>, <code>gclid</code>
+      and <code>fbclid</code>, against <b>paid revenue</b>, not quotes sent. This is the
+      number that decides ad spend, and it only exists because attribution now survives all
+      the way to payment.
+    </p>
+  </section>
+
+  <section id="quiet">
+    <div class="sec-head"><span class="sec-n">07</span><h2>Quiet hours</h2></div>
+
+    <div class="t-scroll">
+      <table>
+        <thead><tr><th></th><th>Alerts</th><th>Tasks</th><th>Customer messages</th></tr></thead>
+        <tbody>
+          <tr><td>Mon to Fri, 7am to 6pm</td><td>All</td><td>Normal</td><td>Normal</td></tr>
+          <tr><td>Sat, 8am to 2pm</td><td>Critical only (1, 2, 6, 10, 11)</td><td>Held</td><td>Held</td></tr>
+          <tr><td>Outside those</td><td>None</td><td>Held</td><td>Held to next window</td></tr>
+          <tr><td>Sunday, public holidays</td><td>None</td><td>Held</td><td>Held</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p style="margin-top:1rem">
+      Held customer messages queue and release at the next window. Use Systemations's
+      <em>Wait until a time window</em> step; do not rely on nobody enquiring at midnight.
+    </p>
+
+    <div class="why" style="margin-top:1rem">
+      <h4>On the legal position</h4>
+      <p>
+        The Do Not Call industry standard sets permitted hours for telemarketing
+        <em>calls</em>. It does not govern SMS to someone who enquired, and transactional
+        messages are a different category again. The window above is policy, not a legal
+        minimum, and it exists because a 6am quote chase costs more goodwill than it earns.
+      </p>
+    </div>
+
+    <div class="ask" style="margin-top:1rem">
+      <b>Needs Glenn:</b> confirm trading hours, and whether Saturday work happens. The table
+      above is a placeholder shaped like a normal trades week.
+    </div>
+  </section>
+
+  <section id="template">
+    <div class="sec-head"><span class="sec-n">08</span><h2>What changes if the business changes</h2></div>
+
+    <div class="t-scroll">
+      <table>
+        <thead><tr><th>Layer</th><th>What changes</th></tr></thead>
+        <tbody>
+          <tr><td>Roles</td><td>Reassign OWNER, OFFICE, ESTIMATOR or CREW_LEAD when someone joins or leaves. Nothing else moves.</td></tr>
+          <tr><td>Alerts</td><td>Nothing. Not one of them depends on the product or the crew.</td></tr>
+          <tr><td>Tasks</td><td>Verbs may change (SPRAY to INSTALL). Structure holds.</td></tr>
+          <tr><td>Escalation</td><td>The 1 hour threshold is worth tuning as enquiry volume grows</td></tr>
+          <tr><td>Digests</td><td>Nothing, while the pipeline shape holds</td></tr>
+          <tr><td>Quiet hours</td><td>Follow the trading hours, whatever they become</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="why" style="margin-top:1rem">
+      <h4>The part worth protecting is &sect;1</h4>
+      <p>
+        More than any specific alert. The failure mode is always the same: a business asks to
+        be "notified on everything", gets it, and has stopped reading any of it by week
+        three.
+      </p>
+    </div>
+  </section>
+
+  <section id="golive">
+    <div class="sec-head"><span class="sec-n">09</span><h2>Before go-live</h2></div>
+    <ul class="check">
+      <li>Every workflow has an error branch that alerts, so failures are not silent</li>
+      <li>Round robin set on New Enquiry, no path leaves a lead unassigned</li>
+      <li>Escalation resolves to a <b>second person</b>, not back to the same one</li>
+      <li>Quiet hours applied to outbound customer messaging, not just internal alerts</li>
+      <li>Every sequence has a stop condition on reply</li>
+      <li>Setting status Won kills every sales sequence on the card</li>
+      <li>Alert volume measured after week one. More than about fifteen a day to one person means something above is wrong.</li>
+      <li>A test lead pushed end to end, watching what arrives and when</li>
+    </ul>
+  </section>
+
+</div>
+
+</body>
+</html>

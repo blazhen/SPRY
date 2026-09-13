@@ -39,6 +39,9 @@
      create and the go-live checklist. The client never needs those, so the
      client page leaves them out. */
   var AGENCY = window.JOURNEY_AGENCY === true || /[?&]agency\b/.test(location.search);
+  /* The client page. Plain words, no builder detail. */
+  var CLIENT = !AGENCY;
+  document.documentElement.classList.add(CLIENT ? 'is-client' : 'is-agency');
 
   var ICON = {
     email: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>',
@@ -46,7 +49,38 @@
     bell: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M12 2a7 7 0 0 0-7 7c0 3-2 5-2 5h18s-2-2-2-5a7 7 0 0 0-7-7Z"/><path d="M9 19a3 3 0 0 0 6 0"/></svg>',
     copy: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>',
     tick: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg>',
+    chev: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>',
   };
+
+  /* ----------------------------------------------------------- page switcher
+     Four pages, two audiences. The client pages never list the agency ones,
+     so a link cannot leak the build sheet into a client's hands. */
+  var PAGES = [
+    { file: 'index.html', label: 'Journey', who: 'client', desc: 'Every message a customer receives' },
+    { file: 'guide.html', label: 'How to run it', who: 'client', desc: 'What runs by itself, and what you do' },
+    { file: 'agency.html', label: 'Build sheet', who: 'agency', desc: 'Merge fields, values and setup' },
+    { file: 'workflows.html', label: 'Workflows', who: 'agency', desc: 'Every automation to build' },
+  ];
+  function currentFile() {
+    var f = location.pathname.split('/').pop();
+    return f && /\.html$/.test(f) ? f : 'index.html';
+  }
+  function renderPageNav() {
+    var host = $('#pageNav');
+    if (!host) return;
+    var here = currentFile();
+    var list = AGENCY ? PAGES : PAGES.filter(function (p) { return p.who === 'client'; });
+    var lastWho = null;
+    host.innerHTML = list.map(function (p) {
+      var out = '';
+      if (AGENCY && p.who !== lastWho) {
+        if (lastWho) out += '<span class="sep"></span>';
+        out += '<span class="pagenav__k">' + (p.who === 'client' ? 'Client' : 'Agency') + '</span>';
+        lastWho = p.who;
+      }
+      return out + '<a href="' + p.file + '"' + (p.file === here ? ' aria-current="page"' : '') + ' title="' + esc(p.desc) + '">' + esc(p.label) + '</a>';
+    }).join('');
+  }
 
   /* ------------------------------------------------------------- state */
   /* Builders paste merge fields, so the agency page opens in Fields mode. The
@@ -196,10 +230,10 @@
     html += '<div class="mail__head"><div class="' + avaCls + '">' + initials + '</div><div class="hdr">'
       + '<div class="hdr__row"><span class="k">From</span><span class="v"><b>' + renderTokens(fromName, mode, S) + '</b> <span class="addr">&lt;' + renderTokens('{{custom_values.business_email}}', mode, S) + '&gt;</span></span></div>'
       + '<div class="hdr__row"><span class="k">To</span><span class="v">' + toLine + '</span></div>'
-      + '<div class="hdr__row"><span class="k">Reply-to</span><span class="v">' + renderTokens('{{custom_values.business_email}}', mode, S) + '</span></div>'
+      + (AGENCY ? '<div class="hdr__row"><span class="k">Reply-to</span><span class="v">' + renderTokens('{{custom_values.business_email}}', mode, S) + '</span></div>' : '')
       + '</div></div>';
     html += '<div class="mail__subject"><div class="sk">Subject</div><div class="sv">' + renderTokens(m.subject, mode, S) + '</div></div>';
-    html += '<div class="mail__pre"><span class="sk">Preheader</span>' + renderTokens(m.preheader, mode, S) + '</div>';
+    if (AGENCY) html += '<div class="mail__pre"><span class="sk">Preheader</span>' + renderTokens(m.preheader, mode, S) + '</div>';
     html += '<div class="mail__body">' + bodyHtml(m.body, mode, S);
     if (m.sig) html += '<p class="sig">' + m.sig.map(function (l) { return '<span>' + renderTokens(l, mode, S) + '</span>'; }).join('') + '</p>';
     html += '</div>';
@@ -216,6 +250,10 @@
     var meta = st.chars + ' chars · ' + st.segments + (st.segments === 1 ? ' segment' : ' segments') + ' · ' + st.encoding;
     if (st.segments > 1) meta = '<span class="warn">' + meta + '</span>';
     var optout = m.type === 'MKTG' ? '<span>Reply STOP to opt out</span>' : '<span>Sender identified</span>';
+    if (CLIENT) {
+      meta = st.segments === 1 ? 'One text message' : st.segments + ' text messages';
+      optout = m.type === 'MKTG' ? '<span>Includes an opt-out</span>' : '<span>Signed off as ' + esc(J.brand.shortName) + '</span>';
+    }
     return '<div class="phone"><div class="phone__notch"></div>'
       + '<div class="phone__who"><b>' + esc(J.brand.name) + '</b>Text message</div>'
       + '<div class="phone__screen"><div class="tstamp">' + esc(stamp) + '</div>'
@@ -230,14 +268,16 @@
     art.setAttribute('data-msg', id);
     var meta = '<div class="note__meta">'
       + chip(m.channel, m.channel === 'sms' ? 'Text' : 'Email')
-      + '<span class="msgid">' + esc(id) + '</span>'
-      + '<span class="chip chip--' + m.type.toLowerCase() + '">' + (m.type === 'TRANS' ? 'Transactional' : 'Marketing') + '</span>'
+      + (AGENCY ? '<span class="msgid">' + esc(id) + '</span>' : '')
+      + (AGENCY ? '<span class="chip chip--' + m.type.toLowerCase() + '">' + (m.type === 'TRANS' ? 'Transactional' : 'Marketing') + '</span>' : (m.type === 'MKTG' ? '<span class="chip chip--mktg">Only if they opted in</span>' : ''))
       + (AGENCY ? '<span class="chip chip--' + m.reuse.toLowerCase() + '">' + (m.reuse === 'CORE' ? 'Core' : 'Trade specific') + '</span>' : '')
-      + (m.manual ? '<span class="chip chip--manual">Manual send</span>' : '')
+      + (m.manual ? '<span class="chip chip--manual">' + (CLIENT ? 'Sent by hand' : 'Manual send') + '</span>' : '')
       + '<span class="timing">' + esc(m.delay) + ' <small>· ' + esc(m.trigger) + '</small></span>'
-      + '<button type="button" class="copy" data-copy="' + esc(id) + '">' + ICON.copy + 'Copy</button>'
+      + (AGENCY ? '<button type="button" class="copy" data-copy="' + esc(id) + '">' + ICON.copy + 'Copy</button>' : '')
       + '</div>';
-    var stops = '<p class="stops"><b>Stops:</b> ' + esc(m.stops || '') + (m.window === 'business-hours' ? ' <b>Window:</b> waits for the send window.' : ' <b>Window:</b> sends immediately.') + '</p>';
+    var stops = CLIENT
+      ? '<p class="stops">' + esc(m.stops || '') + ' ' + (m.window === 'business-hours' ? 'Sent during business hours.' : 'Sent straight away.') + '</p>'
+      : '<p class="stops"><b>Stops:</b> ' + esc(m.stops || '') + (m.window === 'business-hours' ? ' <b>Window:</b> waits for the send window.' : ' <b>Window:</b> sends immediately.') + '</p>';
     var pair = m.channel === 'email'
       ? '<div class="pair solo">' + renderEmail(m, id, pipelineId) + '</div>'
       : '<div class="pair solo-sms">' + renderSms(m, id, pipelineId) + '</div>';
@@ -257,18 +297,21 @@
     (stage.alerts || []).forEach(function (n) {
       var a = J.alerts[n - 1];
       html += '<div class="trow"><span class="tprio ' + a.prio + '">' + ({ now: 'Act now', heads: 'Heads up', win: 'Win', fyi: 'Good to know' })[a.prio] + '</span>'
-        + '<div class="trow__b"><b>' + esc(a.name) + '</b> · ' + esc(a.to) + ', by ' + esc(a.channel)
-        + '<span class="when">Fires when: ' + esc(a.trigger) + '. ' + esc(a.why) + '</span>'
-        + '<pre>' + renderTokens(a.body, mode, S) + '</pre></div></div>';
+        + '<div class="trow__b"><b>' + esc(a.name) + '</b> · ' + esc(roleLabel(a.to)) + ', by ' + esc(a.channel)
+        + '<span class="desc">' + esc(a.desc) + '</span>'
+        + '<span class="when">Fires when: ' + esc(CLIENT && a.plain ? a.plain.toLowerCase() : a.trigger) + '.' + (AGENCY ? ' ' + esc(a.why) : '') + '</span>'
+        + '<pre class="' + (CLIENT ? 'notif' : '') + '">' + renderTokens(a.body, mode, S) + '</pre></div></div>';
     });
     html += '</div>';
 
     html += '<div class="team__col"><h4>Tasks that persist until closed</h4>';
     (stage.tasks || []).forEach(function (t) {
       html += '<div class="trow"><div class="trow__b"><span class="task">' + renderTokens(t.title, mode, S) + '</span><br>'
-        + '<span class="role">' + esc(t.role) + '</span><span class="when" style="display:inline">Due: ' + esc(t.due) + '</span></div></div>';
+        + '<span class="role">' + esc(roleLabel(t.role)) + '</span><span class="when" style="display:inline">Due: ' + esc(t.due) + '</span>'
+        + (t.desc ? '<span class="desc">' + esc(t.desc) + '</span>' : '')
+        + '</div></div>';
     });
-    if (stage.automation && stage.automation.length) {
+    if (AGENCY && stage.automation && stage.automation.length) {
       html += '<h4 style="margin-top:1rem">Automation on the card</h4><ul class="auto">' + stage.automation.map(function (a) { return '<li>' + esc(a) + '</li>'; }).join('') + '</ul>';
     }
     html += '</div></div>';
@@ -282,9 +325,10 @@
     var wonIdx = pipeline ? pipeline.stages.findIndex(function (s) { return s.won; }) : -1;
     var status = stage.won ? 'Status set to Won' : (idx > -1 && wonIdx > -1 && idx > wonIdx) ? 'Won · delivery' : 'Open · sales';
     var html = '<div class="facts">';
-    if (stage.exits) html += '<div class="fact"><b>Exits when</b><span>' + esc(stage.exits) + '</span></div>';
-    if (stage.stalls) html += '<div class="fact"><b>Stalls after</b><span>' + esc(stage.stalls) + '</span></div>';
-    if (pipeline) html += '<div class="fact' + (status.indexOf('Won') > -1 ? ' won' : '') + '"><b>Status</b><span>' + status + '</span></div>';
+    if (CLIENT) status = stage.won ? 'The sale is won here' : (idx > -1 && wonIdx > -1 && idx > wonIdx) ? 'Sale won, job underway' : 'Still winning the job';
+    if (stage.exits) html += '<div class="fact"><b>' + (CLIENT ? 'Moves on when' : 'Exits when') + '</b><span>' + esc(stage.exits) + '</span></div>';
+    if (stage.stalls) html += '<div class="fact"><b>' + (CLIENT ? 'Flag it after' : 'Stalls after') + '</b><span>' + esc(stage.stalls) + '</span></div>';
+    if (pipeline) html += '<div class="fact' + (status.indexOf('on') > -1 || status.indexOf('Won') > -1 ? ' won' : '') + '"><b>' + (CLIENT ? 'Where the sale is' : 'Status') + '</b><span>' + status + '</span></div>';
     return html + '</div>';
   }
 
@@ -381,11 +425,27 @@
 
     var hash = '#' + p.id + '/' + stage.key;
     if (location.hash !== hash) history.replaceState(null, '', hash);
-    if (!opts.silent) {
-      var ctl = $('.controls');
-      var y = ctl.getBoundingClientRect().bottom + window.scrollY - ctl.offsetHeight - 8;
-      window.scrollTo({ top: Math.max(0, y), behavior: opts.focus ? 'auto' : 'smooth' });
-    }
+    if (!opts.silent) scrollToStageTop(opts.focus);
+  }
+
+  /**
+   * Put the reader at the top of the stage they just chose.
+   *
+   * Measure the panel, never the controls. The controls are sticky, so once
+   * the hero has scrolled away both their rect and their offsetTop describe
+   * where they are pinned rather than where they belong, and the old sum
+   * resolved to the current scroll position: choosing a stage from halfway
+   * down a long panel left the reader exactly where they were. The panel is
+   * in normal flow, so its document position is the same no matter how far
+   * down the page we are.
+   */
+  function scrollToStageTop(instant) {
+    var ctl = $('.controls');
+    var panel = main && main.querySelector('.panel.on');
+    if (!ctl || !panel) return;
+    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var y = panel.getBoundingClientRect().top + window.scrollY - ctl.getBoundingClientRect().height - 12;
+    window.scrollTo({ top: Math.max(0, y), behavior: instant || reduce ? 'auto' : 'smooth' });
   }
 
   function paintPager(btn, stage, before) {
@@ -396,6 +456,9 @@
   }
 
   /* ----------------------------------------------------------- appendices */
+  var set = function (id, html) { var n = document.getElementById(id); if (n) n.innerHTML = html; return n; };
+  var text = function (id, t) { var n = document.getElementById(id); if (n) n.textContent = t; };
+
   function stagesUsing(id) {
     var out = [];
     J.pipelines.forEach(function (p) {
@@ -410,126 +473,348 @@
     return out.filter(function (u) { var k = (u.p ? u.p.id : 'always-on') + '/' + u.s.key; if (seen[k]) return false; seen[k] = 1; return true; });
   }
 
+  /* Plain label for a value key, for the client's table. */
+  var plainKey = function (key) {
+    var t = key.replace(/_/g, ' ').replace(/\be164\b/, 'international format').replace(/\bsms\b/, 'text').replace(/\burl\b/, 'link');
+    return t.charAt(0).toUpperCase() + t.slice(1);
+  };
+
   function buildAppendices() {
     /* custom values */
-    $('#tblValues').innerHTML = J.customValues.map(function (v) {
-      return '<tr><td><code>' + esc(v.key) + '</code></td><td>' + esc(v.value) + '</td><td>' + esc(v.note) + '</td></tr>';
-    }).join('');
+    set('tblValues', J.customValues.map(function (v) {
+      var note = CLIENT ? v.note.replace(/\{\{[^}]+\}\}/g, '').replace(/^"(.*)"$/, '$1') : v.note;
+      return '<tr><td>' + (CLIENT ? esc(plainKey(v.key)) : '<code>' + esc(v.key) + '</code>') + '</td><td>' + esc(v.value) + '</td><td>' + esc(note) + '</td></tr>';
+    }).join(''));
 
     /* message index */
     var ids = Object.keys(J.messages);
-    if (AGENCY) {
-      var typeTh = $('#tblMessages').parentNode.querySelector('thead th:nth-child(4)');
-      if (typeTh && !typeTh.nextElementSibling.textContent.match(/Reuse/)) typeTh.insertAdjacentHTML('afterend', '<th>Reuse</th>');
+    var tbl = document.getElementById('tblMessages');
+    if (tbl && AGENCY) {
+      var typeTh = tbl.parentNode.querySelector('thead th:nth-child(4)');
+      if (typeTh && !/Reuse/.test(typeTh.nextElementSibling.textContent)) typeTh.insertAdjacentHTML('afterend', '<th>Reuse</th>');
     }
-    $('#tblMessages').innerHTML = ids.map(function (id) {
+    set('tblMessages', ids.map(function (id) {
       var m = J.messages[id];
       var where = stagesUsing(id).map(function (u) {
         var pid = u.p ? u.p.id : 'always-on';
         return '<a href="#' + pid + '/' + u.s.key + '" data-jump="' + pid + '/' + u.s.key + '">' + esc((u.p ? u.p.short + ' · ' : '') + u.s.name) + '</a>';
       }).join(', ');
-      return '<tr><td><code>' + esc(id) + '</code></td><td>' + (m.channel === 'sms' ? 'SMS' : 'Email') + '</td>'
+      return '<tr><td>' + (CLIENT ? esc(m.channel === 'sms' ? 'Text' : 'Email') : '<code>' + esc(id) + '</code></td><td>' + (m.channel === 'sms' ? 'SMS' : 'Email')) + '</td>'
         + '<td>' + esc(m.trigger) + '<br><span style="color:var(--ink-3)">' + esc(m.delay) + '</span></td>'
-        + '<td><span class="chip chip--' + m.type.toLowerCase() + '">' + (m.type === 'TRANS' ? 'Trans' : 'Mktg') + '</span></td>'
+        + '<td>' + (CLIENT ? (m.type === 'TRANS' ? 'About their job' : 'Marketing, opt-in only') : '<span class="chip chip--' + m.type.toLowerCase() + '">' + (m.type === 'TRANS' ? 'Trans' : 'Mktg') + '</span>') + '</td>'
         + (AGENCY ? '<td><span class="chip chip--' + m.reuse.toLowerCase() + '">' + (m.reuse === 'CORE' ? 'Core' : 'Trade') + '</span></td>' : '')
         + '<td>' + (m.channel === 'email' ? esc(m.subject) : '') + '</td><td>' + where + '</td></tr>';
-    }).join('');
+    }).join(''));
 
-    /* alerts */
-    $('#tblAlerts').innerHTML = J.alerts.map(function (a) {
+    /* alerts, roles, quiet hours, compliance, build order */
+    set('tblAlerts', J.alerts.map(function (a) {
       return '<tr><td class="mono">' + a.n + '</td><td><b>' + esc(a.name) + '</b><br><span style="color:var(--ink-3)">' + esc(a.why) + '</span></td><td>' + esc(a.trigger) + '</td><td>' + esc(a.to) + '</td><td>' + esc(a.channel) + '</td></tr>';
-    }).join('');
-
-    /* roles */
-    $('#tblRoles').innerHTML = J.roles.map(function (r) {
+    }).join(''));
+    set('tblRoles', J.roles.map(function (r) {
       return '<tr><td><code>' + esc(r.key) + '</code></td><td>' + esc(r.who) + '</td><td>' + esc(r.owns) + '</td></tr>';
-    }).join('');
-
-    /* quiet hours */
-    $('#tblQuiet').innerHTML = J.quietHours.map(function (q) {
+    }).join(''));
+    set('tblQuiet', J.quietHours.map(function (q) {
       return '<tr><td>' + esc(q.when) + '</td><td>' + esc(q.alerts) + '</td><td>' + esc(q.tasks) + '</td><td>' + esc(q.customer) + '</td></tr>';
-    }).join('');
-
-    /* compliance */
-    $('#compliance').innerHTML = J.compliance.map(function (c) {
+    }).join(''));
+    set('compliance', J.compliance.map(function (c) {
       return '<div class="cx"><h3>' + esc(c.title) + '</h3><p>' + esc(c.body) + '</p></div>';
-    }).join('');
-
-    /* build order */
-    $('#buildOrder').innerHTML = J.buildOrder.map(function (b) {
-      return '<li><span><b>' + esc(b.ids)   + '</b> ' + esc(b.why) + '</span></li>';
-    }).join('');
+    }).join(''));
+    set('buildOrder', J.buildOrder.map(function (b) {
+      return '<li><span><b>' + esc(b.ids) + '</b> ' + esc(b.why) + '</span></li>';
+    }).join(''));
 
     /* agency page only: fields to create, reuse steps, go-live checklist */
-    var fieldsEl = $('#customFields');
-    if (fieldsEl && J.customFields) {
-      fieldsEl.innerHTML = J.customFields.map(function (g) {
-        return '<h3 class="fields__h">' + esc(g.group) + '</h3>'
-          + (g.note ? '<p class="sec-lede" style="margin-bottom:.9rem">' + esc(g.note) + '</p>' : '')
-          + '<div class="t-scroll" style="margin-bottom:1.6rem"><table><thead><tr>' + g.columns.map(function (c) { return '<th>' + esc(c) + '</th>'; }).join('') + '</tr></thead><tbody>'
-          + g.rows.map(function (r) {
-            return '<tr>' + r.map(function (cell, i) {
-              if (i === 0) return '<td>' + cell.split(', ').map(function (k) { return '<code>' + esc(k) + '</code>'; }).join(', ') + '</td>';
-              return '<td>' + esc(cell) + '</td>';
-            }).join('') + '</tr>';
-          }).join('') + '</tbody></table></div>';
-      }).join('');
-    }
-    var reuseEl = $('#reuseSteps');
-    if (reuseEl && J.reuseSteps) reuseEl.innerHTML = J.reuseSteps.map(function (s) { return '<li><span>' + esc(s) + '</span></li>'; }).join('');
-    var liveEl = $('#goLive');
-    if (liveEl && J.goLive) liveEl.innerHTML = J.goLive.map(function (s) { return '<li><label class="check"><input type="checkbox"> <span>' + esc(s) + '</span></label></li>'; }).join('');
+    if (J.customFields) set('customFields', J.customFields.map(function (g) {
+      return '<h3 class="fields__h">' + esc(g.group) + '</h3>'
+        + (g.note ? '<p class="sec-lede" style="margin-bottom:.9rem">' + esc(g.note) + '</p>' : '')
+        + '<div class="t-scroll" style="margin-bottom:1.6rem"><table><thead><tr>' + g.columns.map(function (c) { return '<th>' + esc(c) + '</th>'; }).join('') + '</tr></thead><tbody>'
+        + g.rows.map(function (r) {
+          return '<tr>' + r.map(function (cell, i) {
+            if (i === 0) return '<td>' + cell.split(', ').map(function (k) { return '<code>' + esc(k) + '</code>'; }).join(', ') + '</td>';
+            return '<td>' + esc(cell) + '</td>';
+          }).join('') + '</tr>';
+        }).join('') + '</tbody></table></div>';
+    }).join(''));
+    if (J.reuseSteps) set('reuseSteps', J.reuseSteps.map(function (s) { return '<li><span>' + esc(s) + '</span></li>'; }).join(''));
+    if (J.goLive) set('goLive', J.goLive.map(function (s) { return '<li><label class="check"><input type="checkbox"> <span>' + esc(s) + '</span></label></li>'; }).join(''));
 
     /* hero stats */
     var stages = 0, tasks = 0;
     J.pipelines.forEach(function (p) { p.stages.forEach(function (s) { if (!s.won) stages += 1; tasks += (s.tasks || []).length; }); });
     tasks += (J.alwaysOn.tasks || []).length;
     var emails = ids.filter(function (id) { return J.messages[id].channel === 'email'; }).length;
-    $('#statStages').textContent = stages;
-    $('#statMessages').textContent = ids.length;
-    $('#statEmails').textContent = emails;
-    $('#statSms').textContent = ids.length - emails;
-    $('#statTasks').textContent = tasks;
-    $('#statAlerts').textContent = J.alerts.length;
-    $('#cntMessages').textContent = ids.length;
+    text('statStages', stages);
+    text('statMessages', ids.length);
+    text('statEmails', emails);
+    text('statSms', ids.length - emails);
+    text('statTasks', tasks);
+    text('statAlerts', J.alerts.length);
+    text('cntAlerts', J.alerts.length);
+    text('statWorkflows', (J.workflows || []).length);
+    text('cntMessages', ids.length);
+  }
+
+  /* ------------------------------------------------------------ workflows */
+  /* The agency's build list. Each step renders as a typed chip and its text;
+     branches nest one level. Sends link to the stage that shows the message. */
+  var STEP_LABEL = { do: 'Do', send: 'Send', task: 'Task', alert: 'Alert', wait: 'Wait', if: 'If', move: 'Move', set: 'Set', stop: 'Stop' };
+
+  function msgLabel(id) {
+    var m = J.messages[id];
+    if (!m) return esc(id);
+    var S = samplesFor('residential');
+    var body = m.channel === 'email' ? m.subject : fillTokens(m.body, S);
+    if (body.length > 72) body = body.slice(0, 70).replace(/\s+\S*$/, '') + '…';
+    var u = stagesUsing(id)[0];
+    var href = u ? 'agency.html#' + (u.p ? u.p.id : 'always-on') + '/' + u.s.key : '#';
+    return '<a class="wf__msg" href="' + href + '"><code>' + esc(id) + '</code></a> <span class="wf__msgtext">' + (m.channel === 'sms' ? 'Text: ' : 'Email: ') + esc(body) + '</span>';
+  }
+
+  function stepHtml(st) {
+    var S = samplesFor('residential');
+    var body = '';
+    switch (st.t) {
+      case 'send': body = msgLabel(st.id) + (st.note ? ' <span class="wf__note">(' + esc(st.note) + ')</span>' : ''); break;
+      case 'task': body = '<span class="task">' + renderTokens(st.title, 'fields', S) + '</span> <span class="role">' + esc(st.role) + '</span><span class="wf__note">due ' + esc(st.due) + '</span>'
+        + (st.desc ? '<span class="desc">' + esc(st.desc) + '</span>' : ''); break;
+      case 'alert': var a = J.alerts[st.n - 1]; body = '<b>' + esc(a.name) + '</b> to ' + esc(a.to) + ', by ' + esc(a.channel); break;
+      case 'wait': body = esc(st.for); break;
+      case 'if': body = '<b>' + esc(st.cond) + '</b>'; break;
+      case 'move': body = 'Stage to <b>' + esc(st.stage) + '</b>'; break;
+      case 'set': body = '<code>' + esc(st.field) + '</code> = ' + esc(st.value); break;
+      case 'stop': body = esc(st.when); break;
+      default: body = esc(st.text || '');
+    }
+    var html = '<li class="wf__step wf__step--' + st.t + '"><span class="st st--' + st.t + '">' + STEP_LABEL[st.t] + '</span><div class="wf__body">' + body;
+    if (st.t === 'if') {
+      html += '<ol class="wf__branch">' + (st.then || []).map(stepHtml).join('') + '</ol>';
+      if (st.else && st.else.length) html += '<div class="wf__else">otherwise</div><ol class="wf__branch">' + st.else.map(stepHtml).join('') + '</ol>';
+    }
+    return html + '</div></li>';
+  }
+
+  function renderWorkflows() {
+    var host = $('#workflows');
+    if (!host || !J.workflows) return;
+    var filter = 'all';
+    var draw = function () {
+      /* Count every step, including the ones inside branches, so the summary
+         line says how big a job each workflow actually is. */
+      var deepCount = function (steps) {
+        return steps.reduce(function (n, s) { return n + 1 + (s.then ? deepCount(s.then) : 0) + (s.else ? deepCount(s.else) : 0); }, 0);
+      };
+      host.innerHTML = J.workflows.filter(function (w) { return filter === 'all' || w.board === filter || w.board === 'both'; }).map(function (w) {
+        var boardChip = w.board === 'both' ? '<span class="chip chip--trans">Both boards</span>' : '<span class="chip chip--email">' + (w.board === 'residential' ? 'Residential' : 'Commercial') + '</span>';
+        var n = deepCount(w.steps);
+        return '<details class="wf" id="' + esc(w.id.toLowerCase()) + '">'
+          + '<summary><div class="wf__sum"><span class="msgid">' + esc(w.id) + '</span><h3>' + esc(w.name) + '</h3>' + boardChip
+          + '<span class="wf__when">' + esc(w.trigger) + '</span>'
+          + '<span class="wf__steps-n">' + n + ' steps</span>' + ICON.chev.replace('class=', 'data-x=').replace('<svg ', '<svg class="wf__chev" ') + '</div></summary>'
+          + '<div class="wf__in">'
+          + '<div class="wf__trigger"><b>Trigger</b> ' + esc(w.trigger) + '</div>'
+          + (w.why ? '<p class="wf__why">' + esc(w.why) + '</p>' : '')
+          + '<ol class="wf__steps">' + w.steps.map(stepHtml).join('') + '</ol>'
+          + '<div class="wf__foot"><b>Stops</b> ' + esc(w.stops || '') + (w.error ? '<br><b>On error</b> ' + esc(w.error) : '') + '</div>'
+          + '</div></details>';
+      }).join('');
+      text('cntWorkflows', host.querySelectorAll('.wf').length);
+    };
+    var seg = $('#boardSeg');
+    if (seg) seg.addEventListener('click', function (e) {
+      var b = e.target.closest('button[data-board]');
+      if (!b) return;
+      filter = b.dataset.board;
+      seg.querySelectorAll('button').forEach(function (x) { x.setAttribute('aria-pressed', String(x.dataset.board === filter)); });
+      draw();
+    });
+    draw();
+    /* messages every workflow sends, for the coverage line */
+    var sent = {};
+    var walk = function (steps) { steps.forEach(function (s) { if (s.t === 'send') sent[s.id] = 1; if (s.then) walk(s.then); if (s.else) walk(s.else); }); };
+    J.workflows.forEach(function (w) { walk(w.steps); });
+    var manual = Object.keys(J.messages).filter(function (id) { return J.messages[id].manual; });
+    var unsent = Object.keys(J.messages).filter(function (id) { return !sent[id] && !J.messages[id].manual; });
+    text('cntSent', Object.keys(sent).length);
+    set('coverage', unsent.length
+      ? '<b>Not sent by any workflow:</b> ' + unsent.map(function (id) { return '<code>' + esc(id) + '</code>'; }).join(' ')
+      : 'Every automated message is sent by a workflow above. ' + manual.length + ' are sent by hand from a saved template: ' + manual.map(function (id) { return '<code>' + esc(id) + '</code>'; }).join(' ') + '.');
+  }
+
+  /* ---------------------------------------------------------------- guide */
+  /* The client's guide. Task and alert text is rendered with generic words in
+     place of merge fields, so "CALL the customer" rather than a sample name. */
+  var GENERIC = {
+    'contact.first_name': 'the customer', 'contact.last_name': '', 'contact.full_name': 'the customer', 'contact.company': 'the company',
+    'contact.areas': 'what needs doing', 'contact.phone': 'their number', 'contact.property_type': 'the property', 'contact.timeframe': 'their timeframe',
+    'contact.postcode': 'their postcode', 'contact.utm_source': 'where they came from', 'appointment.start_time': 'the time',
+    'opportunity.site_address': 'the site', 'opportunity.name': 'the job', 'opportunity.value': 'the value', 'opportunity.deposit_amount': 'the deposit',
+    'message.body': 'their message', 'review.rating': '2', 'review.author': 'a customer', 'workflow.name': 'a workflow', 'error.message': 'what broke', 'time': 'the time',
+  };
+  function plainTokens(t) { return renderTokens(t, 'preview', Object.assign({}, samplesFor('residential'), GENERIC)).replace(/ class="pz[^"]*"/g, ''); }
+
+  /* Role codes read as people on the client pages. */
+  function roleLabel(role) {
+    if (!CLIENT) return role;
+    var map = { OWNER: 'Glenn', OFFICE: 'The office', ESTIMATOR: 'The estimator', CREW_LEAD: 'The crew lead', 'Assigned user': 'Whoever it is assigned to' };
+    return String(role).replace(/Assigned user|OWNER|OFFICE|ESTIMATOR|CREW_LEAD/g, function (r) { return map[r] || r; });
+  }
+
+  function autoList(stage, pid) {
+    var out = [];
+    var seen = {};
+    var S = samplesFor(pid === 'commercial' ? 'commercial' : 'residential');
+    (stage.groups || []).forEach(function (g) {
+      g.messages.forEach(function (id) {
+        if (seen[id]) return; seen[id] = 1;
+        var m = J.messages[id]; if (!m || m.manual) return;
+        var label;
+        if (m.channel === 'email') label = '<b>Email:</b> ' + esc(fillTokens(m.subject, S)) + ' <span class="g-when-s">' + esc(m.delay.toLowerCase()) + '</span>';
+        else {
+          var body = fillTokens(m.body, S);
+          if (body.length > 96) body = body.slice(0, 94).replace(/\s+\S*$/, '') + '…';
+          label = '<b>Text:</b> ' + esc(body) + ' <span class="g-when-s">' + esc(m.delay.toLowerCase()) + '</span>';
+        }
+        out.push('<li>' + label + (m.type === 'MKTG' ? ' <span class="chip chip--mktg">Only if they opted in</span>' : '') + '</li>');
+      });
+    });
+    (stage.alerts || []).forEach(function (n) { var a = J.alerts[n - 1]; out.push('<li><b>Alert to ' + esc(roleLabel(a.to).replace(/^Whoever/, 'whoever').replace(/^The /, 'the ')) + ':</b> ' + esc(a.plain || a.name) + '</li>'); });
+    if (stage.escalation) out.push('<li><b>If nobody moves it:</b> ' + esc(stage.escalation) + '</li>');
+    return out.length ? '<ul class="g-list">' + out.join('') + '</ul>' : '<p class="g-none">Nothing sends here. This stage is a conversation.</p>';
+  }
+  function youList(stage) {
+    var out = (stage.clientDo || []).map(function (s) { return '<li>' + esc(s) + '</li>'; });
+    var html = out.length ? '<ul class="g-list g-list--you">' + out.join('') + '</ul>' : '<p class="g-none">Nothing. It runs by itself.</p>';
+    /* The same thing again, as it will appear in their task list: the title
+       they will see, and the description sitting inside it. */
+    if ((stage.tasks || []).length) {
+      html += '<h4 class="g-tasks__h">In your task list</h4><div class="g-tasks">'
+        + stage.tasks.map(function (t) {
+          return '<div class="g-task"><div class="g-task__t">' + esc(plainTokens(t.title).replace(/<[^>]+>/g, '')) + '</div>'
+            + '<div class="g-task__m">' + esc(roleLabel(t.role)) + ' · due ' + esc(t.due) + '</div>'
+            + (t.desc ? '<p class="g-task__d">' + esc(t.desc) + '</p>' : '') + '</div>';
+        }).join('') + '</div>';
+    }
+    return html;
+  }
+
+  function renderGuide() {
+    var host = $('#guideStages');
+    if (!host || !J.guide) return;
+    var g = J.guide;
+    set('gPrincipleTitle', esc(g.principle.title));
+    set('gPrincipleBody', esc(g.principle.body));
+    set('gRoutine', g.routine.map(function (r) { return '<div class="g-row"><div class="g-when">' + esc(r.when) + '</div><div>' + esc(r.what) + '</div></div>'; }).join(''));
+    set('gAlerts', J.alerts.map(function (a) {
+      return '<tr><td><b>' + esc(a.name) + '</b><br><span style="color:var(--ink-3)">' + esc(a.plain || a.trigger) + '</span></td><td>' + esc(roleLabel(a.to)) + '</td><td>' + esc(g.alertActions[a.n] || '') + '</td></tr>';
+    }).join(''));
+    set('gHowTo', g.howTo.map(function (h) { return '<div class="cx"><h3>' + esc(h.title) + '</h3><p>' + esc(h.body) + '</p></div>'; }).join(''));
+    set('gNever', g.never.map(function (s) { return '<li>' + esc(s) + '</li>'; }).join(''));
+    set('gIfNothing', g.ifNothing.map(function (r) { return '<div class="g-row"><div class="g-when">' + esc(r.when) + '</div><div>' + esc(r.then) + '</div></div>'; }).join(''));
+    set('gAsk', g.ask.map(function (s) { return '<li>' + esc(s) + '</li>'; }).join(''));
+
+    var pid = 'residential';
+    var draw = function () {
+      var p = pipelineById(pid);
+      host.innerHTML = p.stages.map(function (s, i) {
+        var num = s.won ? 'Won' : s.n ? String(s.n).padStart(2, '0') : 'All';
+        var todo = (s.clientDo || []).length;
+        return '<details class="g-stage' + (s.won ? ' g-stage--won' : '') + '"' + (i === 0 ? ' open' : '') + '>'
+          + '<summary><div class="g-stage__head"><span class="badge' + (s.won ? ' won' : '') + '">' + esc(num) + '</span>'
+          + '<div><h3>' + esc(s.name) + '</h3><p>' + esc(s.means || s.headline) + '</p></div>'
+          + '<span class="g-stage__count">' + (todo ? '<b>' + todo + '</b> for you' : 'nothing for you') + '</span>'
+          + ICON.chev.replace('<svg ', '<svg class="g-stage__chev" ') + '</div></summary>'
+          + '<div class="g-cols"><div class="g-col"><h4>Happens by itself</h4>' + autoList(s, pid) + '</div><div class="g-col g-col--you"><h4>You do</h4>' + youList(s) + '</div></div>'
+          + '</details>';
+      }).join('');
+    };
+    var seg = $('#guideSeg');
+    if (seg) {
+      seg.innerHTML = J.pipelines.map(function (p) { return '<button type="button" data-pipeline="' + p.id + '" aria-pressed="' + (p.id === pid) + '">' + esc(p.name) + '</button>'; }).join('')
+        + '<button type="button" data-pipeline="always-on" aria-pressed="false">Any time</button>';
+      seg.addEventListener('click', function (e) {
+        var b = e.target.closest('button[data-pipeline]');
+        if (!b) return;
+        pid = b.dataset.pipeline;
+        seg.querySelectorAll('button').forEach(function (x) { x.setAttribute('aria-pressed', String(x.dataset.pipeline === pid)); });
+        draw();
+      });
+    }
+    draw();
   }
 
   /* ------------------------------------------------------------- events */
-  segEl.addEventListener('click', function (e) {
+  if (segEl) segEl.addEventListener('click', function (e) {
     var b = e.target.closest('button[data-pipeline]');
     if (b) activate(b.dataset.pipeline, null);
   });
 
-  railEl.addEventListener('click', function (e) {
-    var b = e.target.closest('.node');
-    if (b) activate(state.pipeline, b.dataset.stage);
-  });
-  railEl.addEventListener('keydown', function (e) {
-    var nodes = Array.prototype.slice.call(railEl.querySelectorAll('.node'));
-    var i = nodes.indexOf(document.activeElement);
-    if (i < 0) return;
-    var k = i;
-    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') k = (i + 1) % nodes.length;
-    else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') k = (i - 1 + nodes.length) % nodes.length;
-    else if (e.key === 'Home') k = 0;
-    else if (e.key === 'End') k = nodes.length - 1;
-    else return;
-    e.preventDefault();
-    activate(state.pipeline, nodes[k].dataset.stage, { focus: true });
-  });
+  if (railEl) {
+    railEl.addEventListener('click', function (e) {
+      var b = e.target.closest('.node');
+      if (b) activate(state.pipeline, b.dataset.stage);
+    });
+    railEl.addEventListener('keydown', function (e) {
+      var nodes = Array.prototype.slice.call(railEl.querySelectorAll('.node'));
+      var i = nodes.indexOf(document.activeElement);
+      if (i < 0) return;
+      var k = i;
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') k = (i + 1) % nodes.length;
+      else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') k = (i - 1 + nodes.length) % nodes.length;
+      else if (e.key === 'Home') k = 0;
+      else if (e.key === 'End') k = nodes.length - 1;
+      else return;
+      e.preventDefault();
+      activate(state.pipeline, nodes[k].dataset.stage, { focus: true });
+    });
+  }
 
   [pagerPrev, pagerNext].forEach(function (b) {
-    b.addEventListener('click', function () { var g = b.getAttribute('data-goto'); if (g) activate(state.pipeline, g); });
+    if (b) b.addEventListener('click', function () { var g = b.getAttribute('data-goto'); if (g) activate(state.pipeline, g); });
   });
 
   document.addEventListener('click', function (e) {
     var c = e.target.closest('button[data-copy]');
     if (c) { var id = c.dataset.copy; copyToClipboard(copyText(J.messages[id], id), c); return; }
+    var a = e.target.closest('button[data-acc]');
+    if (a) {
+      var open = a.dataset.acc === 'open';
+      document.querySelectorAll(a.dataset.target).forEach(function (d) { d.open = open; });
+      return;
+    }
     var j = e.target.closest('a[data-jump]');
-    if (j) { e.preventDefault(); var parts = j.dataset.jump.split('/'); activate(parts[0], parts[1]); }
+    if (j && main) { e.preventDefault(); var parts = j.dataset.jump.split('/'); activate(parts[0], parts[1]); }
   });
 
-  $('#viewSeg').addEventListener('click', function (e) {
+  /* Open the workflow named in the address, so a link to WF-14 lands on it
+     expanded rather than on a closed row the reader has to hunt for. */
+  function openFromHash() {
+    var id = location.hash.replace(/^#/, '');
+    if (!id) return;
+    var t = document.getElementById(id);
+    if (t && t.tagName === 'DETAILS') {
+      t.open = true;
+      t.scrollIntoView({ block: 'start', behavior: 'auto' });
+    }
+  }
+
+  /* Which section of a long page am I in? Only used where there is a jump
+     menu to light up. */
+  function spy(navSel, sectionSel) {
+    var nav = $(navSel);
+    if (!nav || !('IntersectionObserver' in window)) return;
+    var links = {};
+    nav.querySelectorAll('a[href^="#"]').forEach(function (a) { links[a.getAttribute('href').slice(1)] = a; });
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (!en.isIntersecting) return;
+        Object.keys(links).forEach(function (k) { links[k].removeAttribute('aria-current'); });
+        if (links[en.target.id]) links[en.target.id].setAttribute('aria-current', 'true');
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    document.querySelectorAll(sectionSel).forEach(function (s) { if (s.id) io.observe(s); });
+  }
+
+  if ($('#viewSeg')) $('#viewSeg').addEventListener('click', function (e) {
     var b = e.target.closest('button[data-view]');
     if (!b) return;
     state.view = b.dataset.view;
@@ -539,15 +824,13 @@
     activate(state.pipeline, state.stage, { silent: true });
   });
 
-  $('#themeBtn').addEventListener('click', function () {
+  if ($('#themeBtn')) $('#themeBtn').addEventListener('click', function () {
     var root = document.documentElement;
     var dark = root.getAttribute('data-theme') === 'dark' || (!root.getAttribute('data-theme') && window.matchMedia('(prefers-color-scheme: dark)').matches);
     root.setAttribute('data-theme', dark ? 'light' : 'dark');
     try { localStorage.setItem('journey:theme', dark ? 'light' : 'dark'); } catch (err) {}
   });
-  $('#printBtn').addEventListener('click', function () { window.print(); });
-
-  window.addEventListener('hashchange', function () { fromHash(true); });
+  if ($('#printBtn')) $('#printBtn').addEventListener('click', function () { window.print(); });
 
   function fromHash(scroll) {
     var h = location.hash.replace(/^#/, '').split('/');
@@ -555,12 +838,23 @@
     if (!pipelineById(pid)) pid = 'residential';
     activate(pid, sk, { silent: !scroll });
   }
+  if (main) window.addEventListener('hashchange', function () { fromHash(true); });
 
   /* --------------------------------------------------------------- boot */
   try { var t = localStorage.getItem('journey:theme'); if (t) document.documentElement.setAttribute('data-theme', t); } catch (e) {}
-  $('#viewSeg').querySelectorAll('button').forEach(function (x) { x.setAttribute('aria-pressed', String(x.dataset.view === state.view)); });
-  buildSeg();
-  renderAll();
+  if ($('#viewSeg')) $('#viewSeg').querySelectorAll('button').forEach(function (x) { x.setAttribute('aria-pressed', String(x.dataset.view === state.view)); });
+  if (CLIENT) state.view = 'preview';
+  renderPageNav();
   buildAppendices();
-  fromHash(false);
+  renderWorkflows();
+  renderGuide();
+  if (main) {
+    buildSeg();
+    renderAll();
+    fromHash(false);
+  } else {
+    openFromHash();
+    window.addEventListener('hashchange', openFromHash);
+    spy('#gnav', '.gsec');
+  }
 })();
