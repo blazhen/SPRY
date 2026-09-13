@@ -128,8 +128,10 @@ table { border-collapse: collapse; width: 100%; font-size: .94rem; margin-top: 1
 th, td { text-align: left; padding: .6rem .8rem; border-bottom: 1px solid var(--line); vertical-align: top; }
 th { font-size: .7rem; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-3); background: var(--surface-2); white-space: nowrap; }
 .k { font-family: var(--mono); font-size: .86rem; background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: .1em .4em; color: var(--ink); white-space: nowrap; }
-.req { font-size: .68rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--navy); background: var(--navy-wash); border-radius: 100px; padding: .25em .6em; }
-.opt { font-size: .68rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-3); background: var(--surface-2); border-radius: 100px; padding: .25em .6em; }
+.req { font-size: .68rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--navy); background: var(--navy-wash); border-radius: 100px; padding: .25em .6em; white-space: nowrap; }
+.multi { font-size: .68rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--green-ink); background: var(--surface-2); border-radius: 100px; padding: .25em .6em; margin-left: .3rem; white-space: nowrap; }
+.opt { font-size: .68rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-3); background: var(--surface-2); border-radius: 100px; padding: .25em .6em; white-space: nowrap; }
+td:last-child:has(.req, .opt) { width: 1%; white-space: nowrap; }
 
 .ol { list-style: none; padding: 0; margin: 1.4rem 0 0; counter-reset: n; display: grid; gap: .9rem; }
 .ol li { counter-increment: n; display: grid; grid-template-columns: 2.2rem 1fr; gap: .7rem; align-items: baseline; font-size: .98rem; color: var(--ink-2); }

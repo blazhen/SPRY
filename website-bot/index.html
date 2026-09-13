@@ -34,7 +34,7 @@
     <p class="lede">Two jobs on the website. Answer what a visitor asks about spray foam and about Spray It Solutions, and collect exactly the same details the contact form collects, so the enquiry lands in the same place and the same follow-up runs. Everything it says comes from the five documents below, and nothing else.</p>
     <div class="stats">
       <span class="stat"><b>5</b><span>knowledge documents</span></span>
-      <span class="stat"><b>11</b><span>details on an enquiry</span></span>
+      <span class="stat"><b>12</b><span>questions on an enquiry</span></span>
       <span class="stat"><b>1</b><span>place the lead lands</span></span>
     </div>
   </div>
@@ -46,9 +46,10 @@
       <a href="#does">What it does</a>
       <a href="#persona">Bot instructions</a>
       <a href="#enquiry">Taking an enquiry</a>
-      <a href="#docs">The five documents</a>
-      <a href="#never">What it must never say</a>
-      <a href="#golive">Before switching it on</a>
+      <a href="#fields">Field updates</a>
+      <a href="#docs">Five documents</a>
+      <a href="#never">Never say</a>
+      <a href="#golive">Before go-live</a>
     </div>
   </div>
 </nav>
@@ -66,7 +67,7 @@
       </div>
       <div class="cx">
         <h3>Takes the enquiry</h3>
-        <p>The same eleven details the contact form asks for, gathered as a conversation rather than a form. The contact and the opportunity are created exactly as a form fill creates them.</p>
+        <p>The same twelve questions the contact form asks, in the form’s own words, gathered as a conversation. Seven of them it needs. The other five it offers, and lets go if the person does not want to answer.</p>
       </div>
       <div class="cx">
         <h3>Offers the call</h3>
@@ -146,28 +147,40 @@ answering, if any of these come up:
 - Anyone who sounds distressed or angry
 
 TAKING AN ENQUIRY
-Ask for these one or two at a time, in a conversation, not as a list. Never ask
-for all of them at once. If the person has already told you something, do not
-ask again.
-  1. First name and last name
-  2. Phone number
-  3. Email address
-  4. Property type: Home, New build, Shed or garage, Factory or warehouse,
-     Farm or agricultural, Something else
-  5. Building stage: Existing building (retrofit), Under construction,
-     Still planning
-  6. Areas to insulate: Roof or ceiling, Walls, Underfloor, Whole property,
-     Not sure yet
-  7. Timeframe: As soon as possible, Next 1 to 3 months, 3 months or more,
-     Just researching
-  8. Postcode of the property
-  9. Street and suburb, if they are happy to give it
- 10. Anything else about the job, in their own words
- 11. Company name, if it is a commercial enquiry
+The website form asks twelve questions. Ask the same twelve, in the same words,
+one or two at a time as a conversation. Never paste the whole list at someone.
+If they have already told you something, do not ask it again.
 
-"Not sure yet" is a real answer for areas. Accept it and move on. Do not push
-someone who is only researching. Take the details and let the follow-up do its
-work.
+THE SEVEN YOU NEED BEFORE YOU SUBMIT
+  1. First name
+  2. Last name
+  3. Mobile. An Australian number, such as 0400 000 000.
+  4. Email
+  5. Postcode of the property. Four digits.
+  6. "What are we insulating?" Exactly one of: Home, New build,
+     Shed or garage, Factory or warehouse, Farm or agricultural,
+     Something else
+  7. "Which parts?" Choose all that apply, so more than one answer is fine:
+     Roof or ceiling, Walls, Underfloor, Whole property, Not sure yet
+
+THE FIVE YOU OFFER
+Ask for each of these once. If the person does not want to answer, move on and
+submit without it. They are optional on the form and they are optional here.
+  8. Street address
+  9. Suburb
+ 10. "Stage" Exactly one of: Existing building (retrofit),
+     Under construction, Still planning
+ 11. "Timeframe" Exactly one of: As soon as possible, Next 1 to 3 months,
+     3 months or more, Just researching
+ 12. "Anything else?" Their own words. The form suggests rough size, access,
+     and when they need it done.
+
+"Not sure yet" is a real answer to which parts. Accept it and move on. Do not
+push someone who is only researching.
+
+Do not ask for a company name. The form does not ask for one, and it is asked
+later on the call. If someone gives you a business name anyway, put it in
+question 12 rather than inventing a question.
 
 BEFORE YOU SUBMIT
 Read the details back in one short message and ask if they are right.
@@ -198,34 +211,43 @@ Address: Factory 4, 114 Colemans Road, Carrum Downs, VIC 3201</div></div>
 <section class="sec" id="enquiry">
   <div class="wrap">
     <div class="sec-head"><span class="sec-n">03</span><h2>Taking an enquiry</h2></div>
-    <p class="sec-lede">These are the contact form's own fields, in the contact form's own wording. Matching them exactly is the whole point: a bot enquiry and a form enquiry become the same record, so nothing downstream has to know the difference.</p>
+    <p class="sec-lede">The contact form's own twelve questions, in its own wording. Matching them exactly is the whole point: a bot enquiry and a form enquiry become the same record, so nothing downstream has to know the difference. Seven are needed before the enquiry is worth submitting. The other five are offered once and dropped if the person would rather not say.</p>
 
     <div class="tablewrap">
       <table>
         <thead>
-          <tr><th>Ask for</th><th>Saves to</th><th>Choices</th><th></th></tr>
+          <tr><th>The form asks</th><th>Saves to</th><th>What it accepts</th><th></th></tr>
         </thead>
         <tbody>
-          <tr><td>Name</td><td><span class="k">first_name</span> <span class="k">last_name</span></td><td>Asked as two separate things</td><td><span class="req">Required</span></td></tr>
-          <tr><td>Phone number</td><td><span class="k">phone</span></td><td>Saved in international format, plus <span class="k">phone_raw</span> exactly as typed</td><td><span class="req">Required</span></td></tr>
-          <tr><td>Email address</td><td><span class="k">email</span></td><td></td><td><span class="req">Required</span></td></tr>
-          <tr><td>Property type</td><td><span class="k">property_type</span></td><td>Home, New build, Shed or garage, Factory or warehouse, Farm or agricultural, Something else</td><td><span class="req">Required</span></td></tr>
-          <tr><td>Building stage</td><td><span class="k">building_stage</span></td><td>Existing building (retrofit), Under construction, Still planning</td><td><span class="req">Required</span></td></tr>
-          <tr><td>Areas to insulate</td><td><span class="k">areas</span></td><td>Roof or ceiling, Walls, Underfloor, Whole property, Not sure yet</td><td><span class="req">Required</span></td></tr>
-          <tr><td>Timeframe</td><td><span class="k">timeframe</span></td><td>As soon as possible, Next 1 to 3 months, 3 months or more, Just researching</td><td><span class="req">Required</span></td></tr>
-          <tr><td>Postcode</td><td><span class="k">postcode</span></td><td>Of the property, not the person</td><td><span class="req">Required</span></td></tr>
-          <tr><td>Street and suburb</td><td><span class="k">street</span> <span class="k">suburb</span></td><td></td><td><span class="opt">Optional</span></td></tr>
-          <tr><td>Anything else</td><td><span class="k">enquiry_message</span></td><td>Their own words, kept as typed</td><td><span class="opt">Optional</span></td></tr>
-          <tr><td>Company</td><td><span class="k">company</span></td><td>Commercial enquiries only</td><td><span class="opt">Optional</span></td></tr>
+          <tr><td><b>First name</b></td><td><span class="k">first_name</span></td><td>Text</td><td><span class="req">Needs it</span></td></tr>
+          <tr><td><b>Last name</b></td><td><span class="k">last_name</span></td><td>Text</td><td><span class="req">Needs it</span></td></tr>
+          <tr><td><b>Mobile</b></td><td><span class="k">phone</span></td><td>Australian mobile. Also kept exactly as typed in <span class="k">phone_raw</span></td><td><span class="req">Needs it</span></td></tr>
+          <tr><td><b>Email</b></td><td><span class="k">email</span></td><td>Text</td><td><span class="req">Needs it</span></td></tr>
+          <tr><td><b>Postcode</b></td><td><span class="k">postcode</span></td><td>Four digits, of the property</td><td><span class="req">Needs it</span></td></tr>
+          <tr><td><b>Street address</b></td><td><span class="k">street</span></td><td>Text</td><td><span class="opt">Offers it</span></td></tr>
+          <tr><td><b>Suburb</b></td><td><span class="k">suburb</span></td><td>Text</td><td><span class="opt">Offers it</span></td></tr>
+          <tr><td><b>What are we insulating?</b></td><td><span class="k">property_type</span></td><td>One of: Home, New build, Shed or garage, Factory or warehouse, Farm or agricultural, Something else</td><td><span class="req">Needs it</span></td></tr>
+          <tr><td><b>Which parts?</b> <span class="multi">More than one</span></td><td><span class="k">areas</span></td><td>One or more of: Roof or ceiling, Walls, Underfloor, Whole property, Not sure yet</td><td><span class="req">Needs it</span></td></tr>
+          <tr><td><b>Stage</b></td><td><span class="k">building_stage</span></td><td>One of: Existing building (retrofit), Under construction, Still planning</td><td><span class="opt">Offers it</span></td></tr>
+          <tr><td><b>Timeframe</b></td><td><span class="k">timeframe</span></td><td>One of: As soon as possible, Next 1 to 3 months, 3 months or more, Just researching</td><td><span class="opt">Offers it</span></td></tr>
+          <tr><td><b>Anything else?</b></td><td><span class="k">enquiry_message</span></td><td>Their own words. The form prompts for rough size, access and when they need it done</td><td><span class="opt">Offers it</span></td></tr>
         </tbody>
       </table>
     </div>
 
-    <h3 style="margin-top:2rem;font-size:1.2rem">Two things that are easy to get wrong</h3>
+    <h3 style="margin-top:2rem;font-size:1.2rem">Three things that are easy to get wrong</h3>
     <div class="cards">
       <div class="cx">
         <h3>Store the words, not the codes</h3>
         <p>Save <b>New build</b>, not <span class="k">new-build</span>. Several of the emails read these fields straight back to the customer, and a confirmation that says "new-build" looks broken.</p>
+      </div>
+      <div class="cx">
+        <h3>Which parts takes more than one</h3>
+        <p>On the form it is a row of chips, not a dropdown, and the hint under it reads <b>Choose all that apply</b>. Somebody can say roof and underfloor. Save them as one comma separated list, which is exactly what the form sends.</p>
+      </div>
+      <div class="cx">
+        <h3>Company is not on this form</h3>
+        <p>It is asked later, on the scoping call, and only for commercial work. The bot should not go looking for it. If someone volunteers a business name, put it in the enquiry message rather than inventing a question the form does not ask.</p>
       </div>
       <div class="cx">
         <h3>Consent is asked, never assumed</h3>
@@ -239,10 +261,72 @@ Address: Factory 4, 114 Colemans Road, Carrum Downs, VIC 3201</div></div>
   </div>
 </section>
 
+<!-- ============================================================ FIELD UPDATES -->
+<section class="sec" id="fields">
+  <div class="wrap">
+    <div class="sec-head"><span class="sec-n">04</span><h2>The field updates to create</h2></div>
+    <p class="sec-lede">The agent writes each answer to the contact with an Add Contact Info action, one per field. Name, email and mobile are the exception: the platform takes those from the prompt, so they get no action. That leaves nine to build, and the wording in the third column is what goes in "What to update in the field".</p>
+
+    <div class="note">
+      <b>An action alone does nothing.</b> The field only fills if the prompt actually asks the question, which is why the twelve questions are written out in the instructions in section 02. Build the actions and paste the instructions together, or the agent will have somewhere to put an answer and no reason to ask for one.
+    </div>
+
+    <div class="tablewrap">
+      <table>
+        <thead>
+          <tr><th>Action name</th><th>Contact field</th><th>What to update in the field</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><span class="k">1. Postcode</span></td><td><span class="k">postcode</span></td><td>The four digit postcode of the property the customer wants insulated. If they give a different address for themselves, this is the property, not them.</td></tr>
+          <tr><td><span class="k">2. Street address</span></td><td><span class="k">street</span></td><td>The street number and name of the property to be insulated. Optional, so leave it empty if the customer did not give one.</td></tr>
+          <tr><td><span class="k">3. Suburb</span></td><td><span class="k">suburb</span></td><td>The suburb of the property to be insulated. Optional, so leave it empty if the customer did not give one.</td></tr>
+          <tr><td><span class="k">4. Property type</span></td><td><span class="k">property_type</span></td><td>What kind of building it is. Store one of these exactly: Home, New build, Shed or garage, Factory or warehouse, Farm or agricultural, Something else.</td></tr>
+          <tr><td><span class="k">5. Areas to insulate</span></td><td><span class="k">areas</span></td><td>Which parts of the building need insulating. One or more of these exactly: Roof or ceiling, Walls, Underfloor, Whole property, Not sure yet. If the customer names more than one, store them all, separated by a comma and a space.</td></tr>
+          <tr><td><span class="k">6. Building stage</span></td><td><span class="k">building_stage</span></td><td>Whether the building exists yet. Store one of these exactly: Existing building (retrofit), Under construction, Still planning. Optional, so leave it empty if the customer did not say.</td></tr>
+          <tr><td><span class="k">7. Timeframe</span></td><td><span class="k">timeframe</span></td><td>When the customer wants the work done. Store one of these exactly: As soon as possible, Next 1 to 3 months, 3 months or more, Just researching. Optional, so leave it empty if the customer did not say.</td></tr>
+          <tr><td><span class="k">8. Enquiry message</span></td><td><span class="k">enquiry_message</span></td><td>Anything else the customer said about the job, in their own words. Rough size, access, when they need it done, or a business name if they gave one. Optional.</td></tr>
+          <tr><td><span class="k">9. Marketing consent</span></td><td><span class="k">consent_marketing</span></td><td>Store yes only if the customer clearly agreed to receive SMS and email updates. Store no if they declined, or if they did not answer the question. Never leave this empty.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 style="margin-top:2rem;font-size:1.2rem">Four fields the agent should not set</h3>
+    <p class="sec-lede">These belong to the workflow that runs when a chat enquiry arrives, not to the conversation. They are fixed values or timestamps, and asking a language model to produce them is asking for drift.</p>
+    <div class="tablewrap">
+      <table>
+        <thead>
+          <tr><th>Field</th><th>Set to</th><th>Why not the agent</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><span class="k">consent_text</span></td><td>The exact wording and version the person was shown</td><td>It is the legal evidence. It has to be the stored string, character for character, not a paraphrase.</td></tr>
+          <tr><td><span class="k">consent_at</span></td><td>The time the answer was given</td><td>A timestamp the system knows and the conversation does not.</td></tr>
+          <tr><td><span class="k">source</span></td><td><span class="k">website chat</span></td><td>Fixed. This is what separates a chat enquiry from a form fill in reporting.</td></tr>
+          <tr><td><span class="k">form_name</span></td><td><span class="k">ai_chat</span></td><td>Fixed, and it matches the naming the form already uses.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="cards">
+      <div class="cx">
+        <h3>Store the words, not the codes</h3>
+        <p>The website form posts <span class="k">new-build</span> and the workflow turns it into <b>New build</b>. The agent has no such step, so it has to write the readable label straight in. Several emails read these fields back to the customer.</p>
+      </div>
+      <div class="cx">
+        <h3>Which parts is a list</h3>
+        <p>The form joins the chosen chips with a comma and a space before sending them. The field is a plain text field, not a multiple choice one, so the agent has to join them the same way or the two sources will not look alike.</p>
+      </div>
+      <div class="cx">
+        <h3>Empty beats wrong</h3>
+        <p>Every optional field says so in its own wording. A model asked to fill a field will fill it, so the instruction to leave it empty has to be in the field description, not only in the prompt.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ============================================================ THE DOCUMENTS -->
 <section class="sec" id="docs">
   <div class="wrap">
-    <div class="sec-head"><span class="sec-n">04</span><h2>The five knowledge documents</h2></div>
+    <div class="sec-head"><span class="sec-n">05</span><h2>The five knowledge documents</h2></div>
     <p class="sec-lede">One subject each, so the bot retrieves the right one instead of the nearest one. Copy each into its own rich text entry, using the title shown. Every fact below is already published on the website or confirmed by Glenn.</p>
 
     <!-- ---------------------------------------------------------- DOC 1 -->
@@ -528,7 +612,7 @@ Address: Factory 4, 114 Colemans Road, Carrum Downs, VIC 3201</div></div>
 <!-- ================================================================ NEVER -->
 <section class="sec" id="never">
   <div class="wrap">
-    <div class="sec-head"><span class="sec-n">05</span><h2>What the bot must never say</h2></div>
+    <div class="sec-head"><span class="sec-n">06</span><h2>What the bot must never say</h2></div>
     <p class="sec-lede">Some of these are commercial, some are legal, and some exist because the claim is not supported by its own source. They are worth reading once before the bot goes live, because every one of them was a real decision on this project.</p>
 
     <div class="never">
@@ -554,15 +638,15 @@ Address: Factory 4, 114 Colemans Road, Carrum Downs, VIC 3201</div></div>
 <!-- =============================================================== GO LIVE -->
 <section class="sec" id="golive">
   <div class="wrap">
-    <div class="sec-head"><span class="sec-n">06</span><h2>Before switching it on</h2></div>
+    <div class="sec-head"><span class="sec-n">07</span><h2>Before switching it on</h2></div>
     <p class="sec-lede">Six things to settle, in order. The first one matters most.</p>
 
     <ol class="ol">
-      <li><span><b>Point the crawler at the new site, and remove the old one.</b> The bot is currently trained on the previous website. That site is the version we have been correcting, including the performance claim in section 05 and the testimonials, so while it is still in the crawler the bot can answer from wording we have deliberately changed. The five documents cannot override a crawled page. The old source has to come out.</span></li>
+      <li><span><b>Point the crawler at the new site, and remove the old one.</b> The bot is currently trained on the previous website. That site is the version we have been correcting, including the performance claim in section 06 and the testimonials, so while it is still in the crawler the bot can answer from wording we have deliberately changed. The five documents cannot override a crawled page. The old source has to come out.</span></li>
       <li><span><b>Confirm the trading hours with Glenn.</b> The hours in Doc 1 are the ones currently on the website, and they are still marked for review. They are not just words: the bot uses them to decide between offering a call now and offering a callback, and they are published as structured data. If they are wrong, correct them in the site data and in Doc 1 together.</span></li>
       <li><span><b>Test the enquiry end to end.</b> Run a conversation through to submission and check the record that comes out carries all eleven details, stores the words rather than the codes, opens an opportunity at New Enquiry, and triggers the same first response a form fill triggers.</span></li>
       <li><span><b>Test the consent question.</b> Confirm it is asked in the exact wording, that it defaults to no, that a declined answer is recorded as no rather than left blank, and that the wording and timestamp are stored on the contact.</span></li>
-      <li><span><b>Try to break it.</b> Ask it for a price four different ways. Ask it what R-value to use. Tell it the last job was terrible. Ask it whether it is a robot. Ask it something it cannot know. Each one should land on the behaviour in section 05.</span></li>
+      <li><span><b>Try to break it.</b> Ask it for a price four different ways. Ask it what R-value to use. Tell it the last job was terrible. Ask it whether it is a robot. Ask it something it cannot know. Each one should land on the behaviour in section 06.</span></li>
       <li><span><b>Decide who sees a bot enquiry, and how fast.</b> A chat enquiry arrives while the person is still on the site, which makes it the warmest lead of the day. It should raise the same new enquiry alert the form does.</span></li>
     </ol>
   </div>
