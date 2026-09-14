@@ -267,6 +267,228 @@ One exception. If they have described their own building and a problem with it, 
       </div>
 
 
+    <h3 style="margin-top:2.4rem;font-size:1.2rem" id="flowacts">Every other action, with its description</h3>
+    <p class="sec-lede">The splitter and the general branch message are the two blocks above. These are the rest. The AI Message on General Questions uses block F2, and the AI Splitter uses block F1.</p>
+
+    <div class="note">
+      <b>A capture description and a field description are different sentences.</b> A capture step's description is about asking: what to say, and what a good answer looks like. An Add Contact Info description is about storing: what value belongs in the field. Both are needed, and pasting one where the other belongs produces a bot that either asks nothing or stores nothing.
+    </div>
+
+    <div class="acts">
+      <div class="act">
+        <div class="act__head">
+          <span class="act__n">1</span>
+          <span class="act__pair"><b>Action</b><span class="k">Continue Conversation</span></span>
+          <span class="act__pair"><b>Action name</b><span class="k">Wait for their next message</span></span>
+          <span class="act__pair"><b>Branch</b><span class="opt">General Questions</span></span>
+          <button type="button" class="btn" data-copy="x1" data-plain="1">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+            Copy
+          </button>
+        </div>
+        <div class="act__body"><span class="act__lbl">Description</span><div class="pre" id="x1-src">Wait for the visitor to reply, then send them back to the AI Splitter so their new message is read fresh. This is what lets someone ask five questions and then decide they want a quote.</div></div>
+      </div>
+      <div class="act">
+        <div class="act__head">
+          <span class="act__n">2</span>
+          <span class="act__pair"><b>Action</b><span class="k">AI Capture Information</span></span>
+          <span class="act__pair"><b>Action name</b><span class="k">Name</span></span>
+          <span class="act__pair"><b>Branch</b><span class="opt">Submit Enquiry</span></span>
+          <button type="button" class="btn" data-copy="x2" data-plain="1">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+            Copy
+          </button>
+        </div>
+        <div class="act__body"><span class="act__lbl">Description</span><div class="pre" id="x2-src">Ask for their name in one question: "What is your name?" Never ask for a first name and a last name separately. Split what they give you into a first name and a last name yourself. Skip this step entirely if the chat window already collected a name.</div></div>
+      </div>
+      <div class="act">
+        <div class="act__head">
+          <span class="act__n">3</span>
+          <span class="act__pair"><b>Action</b><span class="k">AI Capture Information</span></span>
+          <span class="act__pair"><b>Action name</b><span class="k">Mobile</span></span>
+          <span class="act__pair"><b>Branch</b><span class="opt">Submit Enquiry</span></span>
+          <button type="button" class="btn" data-copy="x3" data-plain="1">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+            Copy
+          </button>
+        </div>
+        <div class="act__body"><span class="act__lbl">Description</span><div class="pre" id="x3-src">Ask for the best number to reach them on. It has to be an Australian mobile, like 0400 000 000. If they give an overseas number, say we are an Australian contractor and ask whether there is an Australian number for them. If there is not, take the one they gave.</div></div>
+      </div>
+      <div class="act">
+        <div class="act__head">
+          <span class="act__n">4</span>
+          <span class="act__pair"><b>Action</b><span class="k">AI Capture Information</span></span>
+          <span class="act__pair"><b>Action name</b><span class="k">Email</span></span>
+          <span class="act__pair"><b>Branch</b><span class="opt">Submit Enquiry</span></span>
+          <button type="button" class="btn" data-copy="x4" data-plain="1">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+            Copy
+          </button>
+        </div>
+        <div class="act__body"><span class="act__lbl">Description</span><div class="pre" id="x4-src">Ask for the best email address for them. Skip this step if the chat window already collected one. This one is needed rather than offered, so if they would rather not give it, say the team sends the written quote by email and ask once more.</div></div>
+      </div>
+      <div class="act">
+        <div class="act__head">
+          <span class="act__n">5</span>
+          <span class="act__pair"><b>Action</b><span class="k">AI Capture Information</span></span>
+          <span class="act__pair"><b>Action name</b><span class="k">Postcode</span></span>
+          <span class="act__pair"><b>Branch</b><span class="opt">Submit Enquiry</span></span>
+          <button type="button" class="btn" data-copy="x5" data-plain="1">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+            Copy
+          </button>
+        </div>
+        <div class="act__body"><span class="act__lbl">Description</span><div class="pre" id="x5-src">Ask for the postcode of the property being insulated. Four digits. If they give their own address and it is somewhere else, the property is the one that matters, so ask which is which.</div></div>
+      </div>
+      <div class="act">
+        <div class="act__head">
+          <span class="act__n">6</span>
+          <span class="act__pair"><b>Action</b><span class="k">AI Capture Information</span></span>
+          <span class="act__pair"><b>Action name</b><span class="k">Property type</span></span>
+          <span class="act__pair"><b>Branch</b><span class="opt">Submit Enquiry</span></span>
+          <button type="button" class="btn" data-copy="x6" data-plain="1">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+            Copy
+          </button>
+        </div>
+        <div class="act__body"><span class="act__lbl">Description</span><div class="pre" id="x6-src">Ask: "Is it a home, a new build, a shed or garage, a factory or warehouse, or a farm?" Work out which of these six fits what they say, and keep exactly that label: Home, New build, Shed or garage, Factory or warehouse, Farm or agricultural, Something else.</div></div>
+      </div>
+      <div class="act">
+        <div class="act__head">
+          <span class="act__n">7</span>
+          <span class="act__pair"><b>Action</b><span class="k">AI Capture Information</span></span>
+          <span class="act__pair"><b>Action name</b><span class="k">Areas to insulate</span></span>
+          <span class="act__pair"><b>Branch</b><span class="opt">Submit Enquiry</span></span>
+          <button type="button" class="btn" data-copy="x7" data-plain="1">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+            Copy
+          </button>
+        </div>
+        <div class="act__body"><span class="act__lbl">Description</span><div class="pre" id="x7-src">Ask: "Which parts are we looking at? The roof or ceiling, the walls, underfloor, or the whole place?" They can name more than one. Keep exactly these labels: Roof or ceiling, Walls, Underfloor, Whole property, Not sure yet. Join several with a comma and a space.</div></div>
+      </div>
+      <div class="act">
+        <div class="act__head">
+          <span class="act__n">8</span>
+          <span class="act__pair"><b>Action</b><span class="k">AI Capture Information</span></span>
+          <span class="act__pair"><b>Action name</b><span class="k">Address</span></span>
+          <span class="act__pair"><b>Branch</b><span class="opt">Submit Enquiry</span></span>
+          <button type="button" class="btn" data-copy="x8" data-plain="1">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+            Copy
+          </button>
+        </div>
+        <div class="act__body"><span class="act__lbl">Description</span><div class="pre" id="x8-src">Ask: "Whereabouts is it? Street and suburb, if you are happy to say." This one is optional, so move straight on if they would rather not. A post office box is not a building, so if they give a PO Box, ask for the address of the property itself.</div></div>
+      </div>
+      <div class="act">
+        <div class="act__head">
+          <span class="act__n">9</span>
+          <span class="act__pair"><b>Action</b><span class="k">AI Capture Information</span></span>
+          <span class="act__pair"><b>Action name</b><span class="k">Building stage</span></span>
+          <span class="act__pair"><b>Branch</b><span class="opt">Submit Enquiry</span></span>
+          <button type="button" class="btn" data-copy="x9" data-plain="1">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+            Copy
+          </button>
+        </div>
+        <div class="act__body"><span class="act__lbl">Description</span><div class="pre" id="x9-src">Ask: "Is it an existing place, something under construction, or still at the planning stage?" Optional, so move on if they do not say. Keep exactly one of these labels: Existing building (retrofit), Under construction, Still planning.</div></div>
+      </div>
+      <div class="act">
+        <div class="act__head">
+          <span class="act__n">10</span>
+          <span class="act__pair"><b>Action</b><span class="k">AI Capture Information</span></span>
+          <span class="act__pair"><b>Action name</b><span class="k">Timeframe</span></span>
+          <span class="act__pair"><b>Branch</b><span class="opt">Submit Enquiry</span></span>
+          <button type="button" class="btn" data-copy="x10" data-plain="1">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+            Copy
+          </button>
+        </div>
+        <div class="act__body"><span class="act__lbl">Description</span><div class="pre" id="x10-src">Ask: "When are you hoping to get it done?" Optional, so move on if they do not say. Work out which of these four fits and keep exactly that label: As soon as possible, Next 1 to 3 months, 3 months or more, Just researching.</div></div>
+      </div>
+      <div class="act">
+        <div class="act__head">
+          <span class="act__n">11</span>
+          <span class="act__pair"><b>Action</b><span class="k">AI Capture Information</span></span>
+          <span class="act__pair"><b>Action name</b><span class="k">Anything else</span></span>
+          <span class="act__pair"><b>Branch</b><span class="opt">Submit Enquiry</span></span>
+          <button type="button" class="btn" data-copy="x11" data-plain="1">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+            Copy
+          </button>
+        </div>
+        <div class="act__body"><span class="act__lbl">Description</span><div class="pre" id="x11-src">Ask: "Anything else the team should know about it?" Optional. Keep their answer in their own words, as they said it, rather than tidying it into a summary. Rough size, access and when they need it done are all useful.</div></div>
+      </div>
+      <div class="act">
+        <div class="act__head">
+          <span class="act__n">12</span>
+          <span class="act__pair"><b>Action</b><span class="k">AI Capture Information</span></span>
+          <span class="act__pair"><b>Action name</b><span class="k">Marketing consent</span></span>
+          <span class="act__pair"><b>Branch</b><span class="opt">Submit Enquiry</span></span>
+          <button type="button" class="btn" data-copy="x12" data-plain="1">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+            Copy
+          </button>
+        </div>
+        <div class="act__body"><span class="act__lbl">Description</span><div class="pre" id="x12-src">Ask the consent question word for word, exactly as written in block F3. Do not reword it. Keep yes only if they clearly agree. Keep no if they decline, change the subject, or do not answer it.</div></div>
+      </div>
+      <div class="act">
+        <div class="act__head">
+          <span class="act__n">13</span>
+          <span class="act__pair"><b>Action</b><span class="k">AI Message</span></span>
+          <span class="act__pair"><b>Action name</b><span class="k">Read the details back</span></span>
+          <span class="act__pair"><b>Branch</b><span class="opt">Submit Enquiry</span></span>
+          <button type="button" class="btn" data-copy="x13" data-plain="1">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+            Copy
+          </button>
+        </div>
+        <div class="act__body"><span class="act__lbl">Description</span><div class="pre" id="x13-src">Read back what has actually been stored, in the stored words, and ask whether it is right. Do not paraphrase the conversation, and do not read back something different from what is in the fields. This is their last chance to correct anything.</div></div>
+      </div>
+      <div class="act">
+        <div class="act__head">
+          <span class="act__n">14</span>
+          <span class="act__pair"><b>Action</b><span class="k">Add Contact Info</span></span>
+          <span class="act__pair"><b>Action name</b><span class="k">Capture Data</span></span>
+          <span class="act__pair"><b>Branch</b><span class="opt">Submit Enquiry</span></span>
+          <button type="button" class="btn" data-copy="x14" data-plain="1">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+            Copy
+          </button>
+        </div>
+        <div class="act__body"><span class="act__lbl">Description</span><div class="pre" id="x14-src">One action holding the nine field updates in section 05. Each has its own name, contact field and description. These are about storing a value, not about asking a question, which is why the wording differs from the capture steps above.</div></div>
+      </div>
+      <div class="act">
+        <div class="act__head">
+          <span class="act__n">15</span>
+          <span class="act__pair"><b>Action</b><span class="k">AI Message</span></span>
+          <span class="act__pair"><b>Action name</b><span class="k">Confirm and close</span></span>
+          <span class="act__pair"><b>Branch</b><span class="opt">Submit Enquiry</span></span>
+          <button type="button" class="btn" data-copy="x15" data-plain="1">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+            Copy
+          </button>
+        </div>
+        <div class="act__body"><span class="act__lbl">Description</span><div class="pre" id="x15-src">Tell them we have got it, that one of the family will be in touch, usually the same working day, and that if it is urgent they can call 0428 26 36 26. Do not promise a time, a date, or a price.</div></div>
+      </div>
+      <div class="act">
+        <div class="act__head">
+          <span class="act__n">16</span>
+          <span class="act__pair"><b>Action</b><span class="k">Human Handover</span></span>
+          <span class="act__pair"><b>Action name</b><span class="k">Hand to a person</span></span>
+          <span class="act__pair"><b>Branch</b><span class="opt">Anywhere it comes up</span></span>
+          <button type="button" class="btn" data-copy="x16" data-plain="1">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+            Copy
+          </button>
+        </div>
+        <div class="act__body"><span class="act__lbl">Description</span><div class="pre" id="x16-src">Fire this on a complaint, a problem with work already done, anything about an invoice, a payment or a dispute, a warranty, insurance or legal question, a request for a formal specification, tender documents, a safety data sheet or a compliance certificate, someone asking for a named person, or anyone who sounds distressed or angry. Take their name and number first, and say a person will call.</div></div>
+      </div>
+    </div>
+
+    <div class="note">
+      <b>I have not seen the AI Capture Information panel.</b> These are written for a name and a description, because that is the shape every other action on this platform has used. If it also has a field to store into, use the matching contact field from section 05. If it has its own output examples, use the ones from section 05 too.
+    </div>
+
     <div class="note">
       <b>Human Handover belongs on this branch too.</b> A complaint, an invoice question or anything about work already done can arrive at any point. The hand-over triggers are listed in the Additional Information field, and the Human Handover action is what should fire on them rather than the bot trying to answer.
     </div>
