@@ -189,6 +189,10 @@ AI Splitter
    '-- No condition met   -&gt;  the same two actions as General Questions</div>
 
     <div class="note">
+      <b>Five hundred characters is the ceiling on a description field.</b> Every block below is written to fit it, and the count sits next to each one. The three Global Bot Configuration fields are the exception, because that panel budgets words rather than characters. If a field you meet has a tighter limit than 500, tell me which one and I will cut to it rather than you trimming a sentence that is carrying a rule.
+    </div>
+
+    <div class="note">
       <b>Point "No condition met" at the same pair as General Questions.</b> An unclassified message is still a person waiting for an answer. Leaving that branch empty is how a chat goes silent, which you have already seen once.
     </div>
 
@@ -196,37 +200,33 @@ AI Splitter
         <div class="doc__head">
           <span class="doc__n">F1</span>
           <span class="doc__t">AI Splitter, Description</span>
-          <span class="doc__meta">199 words</span>
+          <span class="doc__meta">497 of 500 characters</span>
           <button type="button" class="btn" data-copy="f1" data-plain="1">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
             Copy
           </button>
         </div>
-        <div class="doc__body"><div class="pre" id="f1-src">Decide whether this person is asking us something, or asking us to quote a job.
+        <div class="doc__body"><div class="pre" id="f1-src">Submit Enquiry: only when they want us to quote or look at their own building. They have asked what it would cost for their place, asked for a quote, asked to book or have someone come out, asked if we cover their area, or said yes when offered.
 
-Send to General Questions when they are asking about spray foam, about Spray It Solutions, about how the work is done, or anything else they want to know. This is where most people belong, and it is where anyone who says they are researching, just looking, or asking for a friend belongs.
+General Questions: everyone else, including anyone researching or asking in general. Asking what spray foam usually costs is not asking to be contacted.
 
-Send to Submit Enquiry only once they have shown they want us to quote or to visit. That means they have asked what it would cost for their own place, asked for a quote, asked to book or to have someone come out, asked whether we cover their area, or answered yes when offered. Someone who has described their own building and a problem with it, and has run out of questions, also belongs here.
-
-A question about price is not the same as a request to be contacted. Someone asking what spray foam usually costs is still a general question until they ask about their own building.
-
-If you cannot tell, send them to General Questions. Answering someone is never the wrong move. Asking a researcher for their phone number is.</div></div>
+If unsure, General Questions. Answering is never wrong. Asking a researcher for their number is.</div></div>
       </div>
       <div class="doc">
         <div class="doc__head">
           <span class="doc__n">F2</span>
           <span class="doc__t">General Questions, AI Message</span>
-          <span class="doc__meta">126 words</span>
+          <span class="doc__meta">483 of 500 characters</span>
           <button type="button" class="btn" data-copy="f2" data-plain="1">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
             Copy
           </button>
         </div>
-        <div class="doc__body"><div class="pre" id="f2-src">Answer what they asked, using the knowledge base. If the answer is not in there, say so plainly and offer to have one of the family call them, rather than guessing.
+        <div class="doc__body"><div class="pre" id="f2-src">Answer what they asked, from the knowledge base. If it is not in there, say so and offer to have one of the family call, rather than guessing.
 
-Do not ask for any of their details. Do not pitch, and do not put a sales line on the end of a good answer.
+Do not ask for any of their details, and do not put a sales line on the end of a good answer.
 
-One exception. If they have described their own building and a problem with it, and they seem to have finished asking, you may offer once: ask whether they would like one of the family to take a look and price it properly. Phrase it as a question they can say no to, and end the message there. If they decline, or just ask something else, do not raise it again.</div></div>
+One exception: if they have described their own building and seem to have finished asking, you may offer once to have someone look at it and price it properly. Phrase it so they can say no, and end there. If they decline, do not raise it again.</div></div>
       </div>
 
     <h3 style="margin-top:2rem;font-size:1.1rem">On the second trigger</h3>
