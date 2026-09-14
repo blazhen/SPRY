@@ -181,10 +181,12 @@ Phone 0428 26 36 26. Email info@sprayitsolutions.com.au. Address Factory 4, 114 
     <h3 style="margin-top:2.2rem;font-size:1.2rem" id="flow">The flow</h3>
     <p class="sec-lede">The splitter is the intent gate, moved out of the prompt and into something you can see. Everything the bot does before someone asks for a quote happens on one branch, and the enquiry happens on the other.</p>
 
-    <div class="pre" style="font-family:var(--mono);line-height:1.9">Conversation AI trigger, Chat Initiated
-   |
-AI Splitter
-   |-- General Questions  -&gt;  AI Message  -&gt;  Continue Conversation  -&gt;  back to the AI Splitter
+    <div class="pre" style="font-family:var(--mono);line-height:1.9">Trigger 1: Chat Initiated          Trigger 2: they ask for a quote
+        |                                      |
+        '------------------+-------------------'
+                           |
+                      AI Splitter
+   |-- General Questions  -&gt;  AI Message  -&gt;  Continue Conversation, and it keeps answering
    |-- Submit Enquiry     -&gt;  the capture sequence, then Add Contact Info
    '-- No condition met   -&gt;  the same two actions as General Questions</div>
 
@@ -229,9 +231,28 @@ Do not ask for any of their details, and do not put a sales line on the end of a
 One exception: if they have described their own building and seem to have finished asking, you may offer once to have someone look at it and price it properly. Phrase it so they can say no, and end there. If they decline, do not raise it again.</div></div>
       </div>
 
-    <h3 style="margin-top:2rem;font-size:1.1rem">On the second trigger</h3>
-    <p class="sec-lede">Try the loop before you add one. If Continue Conversation can return to the AI Splitter, every new message the person sends gets re-read, and the moment they ask for a quote the splitter moves them across on its own. That is one trigger, one gate, and one place to fix it when it misroutes.</p>
-    <p class="sec-lede">A second trigger is the fallback if the loop is not possible, and it costs something: intent then lives in two places, and a person who asks for a quote mid-answer can end up in both at once. If you do add one, have it enrol only contacts who are not already in the enquiry branch.</p>
+    <h3 style="margin-top:2rem;font-size:1.1rem">The second trigger</h3>
+    <p class="sec-lede">The general branch does not route anything. It answers, and keeps answering. The second trigger is what moves someone across when they decide they want a quote, by bringing them into the flow again on the enquiry branch.</p>
+    <p class="sec-lede">That gives each piece one job. The splitter reads the first message and decides which kind of conversation this is. The trigger watches the rest of the conversation for the moment that changes. Nothing sits between a person and their next answer.</p>
+
+      <div class="doc">
+        <div class="doc__head">
+          <span class="doc__n">F4</span>
+          <span class="doc__t">Trigger 2, the enquiry intent</span>
+          <span class="doc__meta">399 of 500 characters</span>
+          <button type="button" class="btn" data-copy="f4" data-plain="1">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+            Copy
+          </button>
+        </div>
+        <div class="doc__body"><div class="pre" id="f4-src">Fires when someone asks us to quote or look at their own building. That means asking what it would cost for their place, asking for a quote, asking to book or to have someone come out, asking if we cover their area, or saying yes when offered a look.
+
+Does not fire for someone asking what spray foam generally costs, or for anyone researching or asking in general. Those stay on the general branch.</div></div>
+      </div>
+
+    <div class="note">
+      <b>It has to enrol someone already in the flow.</b> The person is mid-conversation when this fires, so check the trigger can re-enrol a contact rather than skipping them as already enrolled. If it cannot, that is worth knowing before the rest is built on it.
+    </div>
 
     <div class="note">
       <b>The warning on that panel does not apply here.</b> It says to capture the details first because a splitter that branches on a stored value needs the value to exist. This one branches on what the person has said, which is already in the conversation. Nothing needs capturing before it.
@@ -279,14 +300,14 @@ One exception: if they have described their own building and seem to have finish
         <div class="act__head">
           <span class="act__n">1</span>
           <span class="act__pair"><b>Action</b><span class="k">Continue Conversation</span></span>
-          <span class="act__pair"><b>Action name</b><span class="k">Wait for their next message</span></span>
+          <span class="act__pair"><b>Action name</b><span class="k">Keep answering</span></span>
           <span class="act__pair"><b>Branch</b><span class="opt">General Questions</span></span>
           <button type="button" class="btn" data-copy="x1" data-plain="1">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
             Copy
           </button>
         </div>
-        <div class="act__body"><span class="act__lbl">Description</span><div class="pre" id="x1-src">Wait for the visitor to reply, then send them back to the AI Splitter so their new message is read fresh. This is what lets someone ask five questions and then decide they want a quote.</div></div>
+        <div class="act__body"><span class="act__lbl">Description</span><div class="pre" id="x1-src">Hand the conversation back to the bot so it keeps answering whatever they ask next, from the knowledge base. It does not come back through the splitter. If they later decide they want a quote, the second trigger picks that up and brings them in on the enquiry branch.</div></div>
       </div>
       <div class="act">
         <div class="act__head">
@@ -485,9 +506,401 @@ One exception: if they have described their own building and seem to have finish
       </div>
     </div>
 
+    <h3 style="margin-top:2.4rem;font-size:1.2rem" id="captures">The thirteen capture steps</h3>
+    <p class="sec-lede">Every setting on the AI Capture Information panel, for each step, in order. The objective is what it asks. The additional instructions are what it stores. They are different sentences on purpose.</p>
+
     <div class="note">
-      <b>I have not seen the AI Capture Information panel.</b> These are written for a name and a description, because that is the shape every other action on this platform has used. If it also has a field to store into, use the matching contact field from section 05. If it has its own output examples, use the ones from section 05 too.
+      <b>This replaces the separate Add Contact Info action.</b> Each capture step updates its own contact field, so the nine field updates in section 05 are not needed in the flow build. Section 05 is still the reference for what each field holds and what its dropdown is called, and its wording is what the additional instructions below are built from.
     </div>
+
+    <div class="note">
+      <b>Required and optional are now switches, not sentences.</b> "Do not proceed if criteria not met" is what makes the seven required fields required. The six that leave it off are the ones the website form lets a person skip. Last name is the odd one: the form needs it, but it is taken from the first answer rather than asked for, and blocking on it would trap anyone who gives a single name.
+    </div>
+
+    <div class="note">
+      <b>The response example is what the customer says, not what gets stored.</b> The panel asks what a valid response looks like, so these are real answers in a customer's own words, including the awkward ones from your test run. The exact label to store is in the additional instructions, where the storing rule belongs.
+    </div>
+
+    <div class="acts">
+      <div class="act">
+        <div class="act__head">
+          <span class="act__n">1</span>
+          <span class="act__pair"><b>Action name</b><span class="k">First name</span></span>
+          <span class="act__pair"><b>Update contact field</b><span class="k">First Name</span></span>
+        </div>
+        <div class="act__body">
+          <span class="act__lbl">Describe the objective <em>111 of 500</em></span>
+          <div class="pre" id="c1o-src">Ask for their name in one question: "What is your name?" Never ask for a first name and a last name separately.</div>
+          <button type="button" class="btn" data-copy="c1o" data-plain="1" style="margin-top:.5rem">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+            Copy the objective
+          </button>
+          <span class="act__lbl">Additional instructions</span>
+          <div class="pre" id="c1a-src">Store the first name only, as they wrote it.</div>
+          <button type="button" class="btn" data-copy="c1a" data-plain="1" style="margin-top:.5rem">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+            Copy the instructions
+          </button>
+          <span class="act__lbl">Response example <em>what the customer says, 13 of 300</em></span>
+          <ul class="egs"><li>Dave Mitchell</li></ul>
+          <span class="act__lbl">The three switches</span>
+          <div class="tablewrap"><table><tbody>
+            <tr><td>Skip if the field is already filled</td><td><span class="req">Yes</span></td></tr>
+            <tr><td>Maximum attempts</td><td><span class="k">2</span></td></tr>
+            <tr><td>Do not proceed if criteria not met</td><td><span class="req">Yes</span></td></tr>
+          </tbody></table></div>
+        </div>
+      </div>
+      <div class="act">
+        <div class="act__head">
+          <span class="act__n">2</span>
+          <span class="act__pair"><b>Action name</b><span class="k">Last name</span></span>
+          <span class="act__pair"><b>Update contact field</b><span class="k">Last Name</span></span>
+        </div>
+        <div class="act__body">
+          <span class="act__lbl">Describe the objective <em>106 of 500</em></span>
+          <div class="pre" id="c2o-src">Take the surname from the name they have already given you. Do not ask a second question about their name.</div>
+          <button type="button" class="btn" data-copy="c2o" data-plain="1" style="margin-top:.5rem">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+            Copy the objective
+          </button>
+          <span class="act__lbl">Additional instructions</span>
+          <div class="pre" id="c2a-src">Store the surname only. Leave empty if they gave one name.</div>
+          <button type="button" class="btn" data-copy="c2a" data-plain="1" style="margin-top:.5rem">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+            Copy the instructions
+          </button>
+          <span class="act__lbl">Response example <em>what the customer says, 13 of 300</em></span>
+          <ul class="egs"><li>Dave Mitchell</li></ul>
+          <span class="act__lbl">The three switches</span>
+          <div class="tablewrap"><table><tbody>
+            <tr><td>Skip if the field is already filled</td><td><span class="req">Yes</span></td></tr>
+            <tr><td>Maximum attempts</td><td><span class="k">1</span></td></tr>
+            <tr><td>Do not proceed if criteria not met</td><td><span class="opt">No</span></td></tr>
+          </tbody></table></div>
+        </div>
+      </div>
+      <div class="act">
+        <div class="act__head">
+          <span class="act__n">3</span>
+          <span class="act__pair"><b>Action name</b><span class="k">Mobile</span></span>
+          <span class="act__pair"><b>Update contact field</b><span class="k">Phone</span></span>
+        </div>
+        <div class="act__body">
+          <span class="act__lbl">Describe the objective <em>242 of 500</em></span>
+          <div class="pre" id="c3o-src">Ask for the best number to reach them on. It has to be an Australian mobile. If they give an overseas number, say we are an Australian contractor and ask whether there is an Australian one for them. If there is not, take the number they gave.</div>
+          <button type="button" class="btn" data-copy="c3o" data-plain="1" style="margin-top:.5rem">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+            Copy the objective
+          </button>
+          <span class="act__lbl">Additional instructions</span>
+          <div class="pre" id="c3a-src">Store the number as they gave it.</div>
+          <button type="button" class="btn" data-copy="c3a" data-plain="1" style="margin-top:.5rem">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+            Copy the instructions
+          </button>
+          <span class="act__lbl">Response example <em>what the customer says, 12 of 300</em></span>
+          <ul class="egs"><li>0412 345 678</li></ul>
+          <span class="act__lbl">The three switches</span>
+          <div class="tablewrap"><table><tbody>
+            <tr><td>Skip if the field is already filled</td><td><span class="req">Yes</span></td></tr>
+            <tr><td>Maximum attempts</td><td><span class="k">2</span></td></tr>
+            <tr><td>Do not proceed if criteria not met</td><td><span class="req">Yes</span></td></tr>
+          </tbody></table></div>
+        </div>
+      </div>
+      <div class="act">
+        <div class="act__head">
+          <span class="act__n">4</span>
+          <span class="act__pair"><b>Action name</b><span class="k">Email</span></span>
+          <span class="act__pair"><b>Update contact field</b><span class="k">Email</span></span>
+        </div>
+        <div class="act__body">
+          <span class="act__lbl">Describe the objective <em>182 of 500</em></span>
+          <div class="pre" id="c4o-src">Ask for the best email address for them. This one is needed rather than offered, so if they would rather not give it, say the team sends the written quote by email and ask once more.</div>
+          <button type="button" class="btn" data-copy="c4o" data-plain="1" style="margin-top:.5rem">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+            Copy the objective
+          </button>
+          <span class="act__lbl">Additional instructions</span>
+          <div class="pre" id="c4a-src">Store the address as they gave it.</div>
+          <button type="button" class="btn" data-copy="c4a" data-plain="1" style="margin-top:.5rem">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+            Copy the instructions
+          </button>
+          <span class="act__lbl">Response example <em>what the customer says, 25 of 300</em></span>
+          <ul class="egs"><li>dave.mitchell@example.com</li></ul>
+          <span class="act__lbl">The three switches</span>
+          <div class="tablewrap"><table><tbody>
+            <tr><td>Skip if the field is already filled</td><td><span class="req">Yes</span></td></tr>
+            <tr><td>Maximum attempts</td><td><span class="k">2</span></td></tr>
+            <tr><td>Do not proceed if criteria not met</td><td><span class="req">Yes</span></td></tr>
+          </tbody></table></div>
+        </div>
+      </div>
+      <div class="act">
+        <div class="act__head">
+          <span class="act__n">5</span>
+          <span class="act__pair"><b>Action name</b><span class="k">Postcode</span></span>
+          <span class="act__pair"><b>Update contact field</b><span class="k">Postal Code</span></span>
+        </div>
+        <div class="act__body">
+          <span class="act__lbl">Describe the objective <em>158 of 500</em></span>
+          <div class="pre" id="c5o-src">Ask for the postcode of the property being insulated. If they give their own address and the property is somewhere else, the property is the one that matters.</div>
+          <button type="button" class="btn" data-copy="c5o" data-plain="1" style="margin-top:.5rem">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+            Copy the objective
+          </button>
+          <span class="act__lbl">Additional instructions</span>
+          <div class="pre" id="c5a-src">Four digits, of the property.</div>
+          <button type="button" class="btn" data-copy="c5a" data-plain="1" style="margin-top:.5rem">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+            Copy the instructions
+          </button>
+          <span class="act__lbl">Response example <em>what the customer says, 4 of 300</em></span>
+          <ul class="egs"><li>3931</li></ul>
+          <span class="act__lbl">The three switches</span>
+          <div class="tablewrap"><table><tbody>
+            <tr><td>Skip if the field is already filled</td><td><span class="opt">No</span></td></tr>
+            <tr><td>Maximum attempts</td><td><span class="k">2</span></td></tr>
+            <tr><td>Do not proceed if criteria not met</td><td><span class="req">Yes</span></td></tr>
+          </tbody></table></div>
+        </div>
+      </div>
+      <div class="act">
+        <div class="act__head">
+          <span class="act__n">6</span>
+          <span class="act__pair"><b>Action name</b><span class="k">Property type</span></span>
+          <span class="act__pair"><b>Update contact field</b><span class="k">Property type</span></span>
+        </div>
+        <div class="act__body">
+          <span class="act__lbl">Describe the objective <em>86 of 500</em></span>
+          <div class="pre" id="c6o-src">Ask: "Is it a home, a new build, a shed or garage, a factory or warehouse, or a farm?"</div>
+          <button type="button" class="btn" data-copy="c6o" data-plain="1" style="margin-top:.5rem">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+            Copy the objective
+          </button>
+          <span class="act__lbl">Additional instructions</span>
+          <div class="pre" id="c6a-src">Store exactly one of: Home, New build, Shed or garage, Factory or warehouse, Farm or agricultural, Something else. Store the label alone, never with their own words added to it.</div>
+          <button type="button" class="btn" data-copy="c6a" data-plain="1" style="margin-top:.5rem">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+            Copy the instructions
+          </button>
+          <span class="act__lbl">Response example <em>what the customer says, 55 of 300</em></span>
+          <ul class="egs"><li>its just our house, weatherboard place built in the 60s</li></ul>
+          <span class="act__lbl">The three switches</span>
+          <div class="tablewrap"><table><tbody>
+            <tr><td>Skip if the field is already filled</td><td><span class="opt">No</span></td></tr>
+            <tr><td>Maximum attempts</td><td><span class="k">2</span></td></tr>
+            <tr><td>Do not proceed if criteria not met</td><td><span class="req">Yes</span></td></tr>
+          </tbody></table></div>
+        </div>
+      </div>
+      <div class="act">
+        <div class="act__head">
+          <span class="act__n">7</span>
+          <span class="act__pair"><b>Action name</b><span class="k">Areas to insulate</span></span>
+          <span class="act__pair"><b>Update contact field</b><span class="k">Areas to insulate</span></span>
+        </div>
+        <div class="act__body">
+          <span class="act__lbl">Describe the objective <em>130 of 500</em></span>
+          <div class="pre" id="c7o-src">Ask: "Which parts are we looking at? The roof or ceiling, the walls, underfloor, or the whole place?" They can name more than one.</div>
+          <button type="button" class="btn" data-copy="c7o" data-plain="1" style="margin-top:.5rem">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+            Copy the objective
+          </button>
+          <span class="act__lbl">Additional instructions</span>
+          <div class="pre" id="c7a-src">Store one or more of: Roof or ceiling, Walls, Underfloor, Whole property, Not sure yet. Join several with a comma and a space. Store the labels alone.</div>
+          <button type="button" class="btn" data-copy="c7a" data-plain="1" style="margin-top:.5rem">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+            Copy the instructions
+          </button>
+          <span class="act__lbl">Response example <em>what the customer says, 48 of 300</em></span>
+          <ul class="egs"><li>under the floor mainly but the walls are bad too</li></ul>
+          <span class="act__lbl">The three switches</span>
+          <div class="tablewrap"><table><tbody>
+            <tr><td>Skip if the field is already filled</td><td><span class="opt">No</span></td></tr>
+            <tr><td>Maximum attempts</td><td><span class="k">2</span></td></tr>
+            <tr><td>Do not proceed if criteria not met</td><td><span class="req">Yes</span></td></tr>
+          </tbody></table></div>
+        </div>
+      </div>
+      <div class="act">
+        <div class="act__head">
+          <span class="act__n">8</span>
+          <span class="act__pair"><b>Action name</b><span class="k">Street address</span></span>
+          <span class="act__pair"><b>Update contact field</b><span class="k">Street Address</span></span>
+        </div>
+        <div class="act__body">
+          <span class="act__lbl">Describe the objective <em>219 of 500</em></span>
+          <div class="pre" id="c8o-src">Ask: "Whereabouts is it? Street and suburb, if you are happy to say." Move straight on if they would rather not. A post office box is not a building, so if they give a PO Box, ask for the address of the property itself.</div>
+          <button type="button" class="btn" data-copy="c8o" data-plain="1" style="margin-top:.5rem">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+            Copy the objective
+          </button>
+          <span class="act__lbl">Additional instructions</span>
+          <div class="pre" id="c8a-src">Street number and name only, without the suburb, state or postcode. Leave empty if they would rather not say.</div>
+          <button type="button" class="btn" data-copy="c8a" data-plain="1" style="margin-top:.5rem">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+            Copy the instructions
+          </button>
+          <span class="act__lbl">Response example <em>what the customer says, 31 of 300</em></span>
+          <ul class="egs"><li>12 Example Street, Carrum Downs</li></ul>
+          <span class="act__lbl">The three switches</span>
+          <div class="tablewrap"><table><tbody>
+            <tr><td>Skip if the field is already filled</td><td><span class="opt">No</span></td></tr>
+            <tr><td>Maximum attempts</td><td><span class="k">1</span></td></tr>
+            <tr><td>Do not proceed if criteria not met</td><td><span class="opt">No</span></td></tr>
+          </tbody></table></div>
+        </div>
+      </div>
+      <div class="act">
+        <div class="act__head">
+          <span class="act__n">9</span>
+          <span class="act__pair"><b>Action name</b><span class="k">Suburb</span></span>
+          <span class="act__pair"><b>Update contact field</b><span class="k">City</span></span>
+        </div>
+        <div class="act__body">
+          <span class="act__lbl">Describe the objective <em>109 of 500</em></span>
+          <div class="pre" id="c9o-src">Take the suburb from the address they have already given you. Do not ask a second question about where it is.</div>
+          <button type="button" class="btn" data-copy="c9o" data-plain="1" style="margin-top:.5rem">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+            Copy the objective
+          </button>
+          <span class="act__lbl">Additional instructions</span>
+          <div class="pre" id="c9a-src">The suburb only. Leave empty if none was given.</div>
+          <button type="button" class="btn" data-copy="c9a" data-plain="1" style="margin-top:.5rem">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+            Copy the instructions
+          </button>
+          <span class="act__lbl">Response example <em>what the customer says, 31 of 300</em></span>
+          <ul class="egs"><li>12 Example Street, Carrum Downs</li></ul>
+          <span class="act__lbl">The three switches</span>
+          <div class="tablewrap"><table><tbody>
+            <tr><td>Skip if the field is already filled</td><td><span class="opt">No</span></td></tr>
+            <tr><td>Maximum attempts</td><td><span class="k">1</span></td></tr>
+            <tr><td>Do not proceed if criteria not met</td><td><span class="opt">No</span></td></tr>
+          </tbody></table></div>
+        </div>
+      </div>
+      <div class="act">
+        <div class="act__head">
+          <span class="act__n">10</span>
+          <span class="act__pair"><b>Action name</b><span class="k">Building stage</span></span>
+          <span class="act__pair"><b>Update contact field</b><span class="k">Building stage</span></span>
+        </div>
+        <div class="act__body">
+          <span class="act__lbl">Describe the objective <em>121 of 500</em></span>
+          <div class="pre" id="c10o-src">Ask: "Is it an existing place, something under construction, or still at the planning stage?" Move on if they do not say.</div>
+          <button type="button" class="btn" data-copy="c10o" data-plain="1" style="margin-top:.5rem">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+            Copy the objective
+          </button>
+          <span class="act__lbl">Additional instructions</span>
+          <div class="pre" id="c10a-src">Store exactly one of: Existing building (retrofit), Under construction, Still planning. Leave empty if they did not say.</div>
+          <button type="button" class="btn" data-copy="c10a" data-plain="1" style="margin-top:.5rem">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+            Copy the instructions
+          </button>
+          <span class="act__lbl">Response example <em>what the customer says, 24 of 300</em></span>
+          <ul class="egs"><li>existing house obviously</li></ul>
+          <span class="act__lbl">The three switches</span>
+          <div class="tablewrap"><table><tbody>
+            <tr><td>Skip if the field is already filled</td><td><span class="opt">No</span></td></tr>
+            <tr><td>Maximum attempts</td><td><span class="k">1</span></td></tr>
+            <tr><td>Do not proceed if criteria not met</td><td><span class="opt">No</span></td></tr>
+          </tbody></table></div>
+        </div>
+      </div>
+      <div class="act">
+        <div class="act__head">
+          <span class="act__n">11</span>
+          <span class="act__pair"><b>Action name</b><span class="k">Timeframe</span></span>
+          <span class="act__pair"><b>Update contact field</b><span class="k">Timeframe</span></span>
+        </div>
+        <div class="act__body">
+          <span class="act__lbl">Describe the objective <em>70 of 500</em></span>
+          <div class="pre" id="c11o-src">Ask: "When are you hoping to get it done?" Move on if they do not say.</div>
+          <button type="button" class="btn" data-copy="c11o" data-plain="1" style="margin-top:.5rem">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+            Copy the objective
+          </button>
+          <span class="act__lbl">Additional instructions</span>
+          <div class="pre" id="c11a-src">Store exactly one of: As soon as possible, Next 1 to 3 months, 3 months or more, Just researching. Leave empty if they did not say.</div>
+          <button type="button" class="btn" data-copy="c11a" data-plain="1" style="margin-top:.5rem">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+            Copy the instructions
+          </button>
+          <span class="act__lbl">Response example <em>what the customer says, 46 of 300</em></span>
+          <ul class="egs"><li>hoping to get it done in the next month or two</li></ul>
+          <span class="act__lbl">The three switches</span>
+          <div class="tablewrap"><table><tbody>
+            <tr><td>Skip if the field is already filled</td><td><span class="opt">No</span></td></tr>
+            <tr><td>Maximum attempts</td><td><span class="k">1</span></td></tr>
+            <tr><td>Do not proceed if criteria not met</td><td><span class="opt">No</span></td></tr>
+          </tbody></table></div>
+        </div>
+      </div>
+      <div class="act">
+        <div class="act__head">
+          <span class="act__n">12</span>
+          <span class="act__pair"><b>Action name</b><span class="k">Anything else</span></span>
+          <span class="act__pair"><b>Update contact field</b><span class="k">Enquiry message</span></span>
+        </div>
+        <div class="act__body">
+          <span class="act__lbl">Describe the objective <em>150 of 500</em></span>
+          <div class="pre" id="c12o-src">Ask: "Anything else the team should know about it?" Rough size, access and when they need it done are all useful. Move on if they have nothing to add.</div>
+          <button type="button" class="btn" data-copy="c12o" data-plain="1" style="margin-top:.5rem">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+            Copy the objective
+          </button>
+          <span class="act__lbl">Additional instructions</span>
+          <div class="pre" id="c12a-src">Keep their own words, as they said them. Do not summarise. Leave empty if they said nothing else.</div>
+          <button type="button" class="btn" data-copy="c12a" data-plain="1" style="margin-top:.5rem">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+            Copy the instructions
+          </button>
+          <span class="act__lbl">Response example <em>what the customer says, 63 of 300</em></span>
+          <ul class="egs"><li>floor is freezing in winter and theres a gap near the back door</li></ul>
+          <span class="act__lbl">The three switches</span>
+          <div class="tablewrap"><table><tbody>
+            <tr><td>Skip if the field is already filled</td><td><span class="opt">No</span></td></tr>
+            <tr><td>Maximum attempts</td><td><span class="k">1</span></td></tr>
+            <tr><td>Do not proceed if criteria not met</td><td><span class="opt">No</span></td></tr>
+          </tbody></table></div>
+        </div>
+      </div>
+      <div class="act">
+        <div class="act__head">
+          <span class="act__n">13</span>
+          <span class="act__pair"><b>Action name</b><span class="k">Marketing consent</span></span>
+          <span class="act__pair"><b>Update contact field</b><span class="k">Marketing consent</span></span>
+        </div>
+        <div class="act__body">
+          <span class="act__lbl">Describe the objective <em>265 of 500</em></span>
+          <div class="pre" id="c13o-src">Ask, word for word: "Would you also like occasional SMS and email updates from Spray It Solutions about quotes, offers and services? You can opt out any time by replying STOP or using the unsubscribe link. This is optional and your enquiry goes through either way."</div>
+          <button type="button" class="btn" data-copy="c13o" data-plain="1" style="margin-top:.5rem">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+            Copy the objective
+          </button>
+          <span class="act__lbl">Additional instructions</span>
+          <div class="pre" id="c13a-src">Store yes only if they clearly agreed. Store no if they declined, changed the subject, or did not answer. Lower case. Never leave this empty.</div>
+          <button type="button" class="btn" data-copy="c13a" data-plain="1" style="margin-top:.5rem">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+            Copy the instructions
+          </button>
+          <span class="act__lbl">Response example <em>what the customer says, 25 of 300</em></span>
+          <ul class="egs"><li>no thanks, just the quote</li></ul>
+          <span class="act__lbl">The three switches</span>
+          <div class="tablewrap"><table><tbody>
+            <tr><td>Skip if the field is already filled</td><td><span class="opt">No</span></td></tr>
+            <tr><td>Maximum attempts</td><td><span class="k">1</span></td></tr>
+            <tr><td>Do not proceed if criteria not met</td><td><span class="opt">No</span></td></tr>
+          </tbody></table></div>
+        </div>
+      </div>
+    </div>
+
 
     <div class="note">
       <b>Human Handover belongs on this branch too.</b> A complaint, an invoice question or anything about work already done can arrive at any point. The hand-over triggers are listed in the Additional Information field, and the Human Handover action is what should fire on them rather than the bot trying to answer.
