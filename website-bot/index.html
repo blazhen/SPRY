@@ -371,18 +371,30 @@ Never mention a price. Do not use long dashes.</div></div>
     </div>
 
     <h3 style="margin-top:2.4rem;font-size:1.2rem" id="captures">The thirteen capture steps</h3>
-    <p class="sec-lede">Every setting on the AI Capture Information panel, for each step, in order. The objective is what it asks. The additional instructions are what it stores. They are different sentences on purpose.</p>
+    <p class="sec-lede">Every setting on the AI Capture Information panel, for each step, in order. Four pieces of text each, and three switches.</p>
 
     <div class="note">
-      <b>This replaces the separate Add Contact Info action.</b> Each capture step updates its own contact field, so the nine field updates in section 05 are not needed in the flow build. Section 05 is still the reference for what each field holds and what its dropdown is called, and its wording is what the additional instructions below are built from.
+      <b>The four boxes do four different jobs.</b> The objective is what it asks. The additional instructions are what it stores. The response example is what counts as a valid answer. The closing message is what it says when it cannot get one. They are not interchangeable, and pasting the wrong one into the wrong box gives a bot that asks nothing, stores nothing, or accepts anything.
     </div>
 
     <div class="note">
-      <b>Required and optional are now switches, not sentences.</b> "Do not proceed if criteria not met" is what makes the seven required fields required. The six that leave it off are the ones the website form lets a person skip. Last name is the odd one: the form needs it, but it is taken from the first answer rather than asked for, and blocking on it would trap anyone who gives a single name.
+      <b>The response example is a small validation spec, not a sample answer.</b> Each one says what a valid answer is, gives several in different shapes, and says what to reject. That is what stops a step taking "n/a" as a phone number or "test@test" as an email. Loose where people are genuinely varied, such as how someone describes their own building, and tight where a wrong value is expensive.
     </div>
 
     <div class="note">
-      <b>The response example is what the customer says, not what gets stored.</b> The panel asks what a valid response looks like, so these are real answers in a customer's own words, including the awkward ones from your test run. The exact label to store is in the additional instructions, where the storing rule belongs.
+      <b>The closing message only appears on a blocking step.</b> Six steps have one, because six refuse to move on without an answer. It is what the person hears when they will not give it after the last attempt, so none of them push. Each one accepts the no, hands over the phone number, and stops.
+    </div>
+
+    <div class="note">
+      <b>This replaces the separate Add Contact Info action.</b> Each capture step updates its own contact field, so the nine field updates in section 05 are not needed in the flow build. Section 05 is still the reference for what each field holds and what its dropdown is called.
+    </div>
+
+    <div class="note">
+      <b>Required and optional are switches, not sentences.</b> "Do not proceed if criteria not met" is what makes the six required steps required. Last name is the odd one: the form needs it, but it is taken from the first answer rather than asked for, and blocking on it would trap anyone who gives a single name.
+    </div>
+
+    <div class="note">
+      <b>Human Handover belongs on this branch as well.</b> A complaint, an invoice question or anything about work already done can arrive in the middle of an enquiry, not just at the start. It is action four in the list above, and it should be reachable from here rather than only from the general branch.
     </div>
 
     <div class="acts">
@@ -399,15 +411,25 @@ Never mention a price. Do not use long dashes.</div></div>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
             Copy the objective
           </button>
-          <span class="act__lbl">Additional instructions</span>
+          <span class="act__lbl">Additional instructions <em>44 of 500</em></span>
           <div class="pre" id="c1a-src">Store the first name only, as they wrote it.</div>
           <button type="button" class="btn" data-copy="c1a" data-plain="1" style="margin-top:.5rem">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
             Copy the instructions
           </button>
-          <span class="act__lbl">Response example <em>what the customer says, 13 of 300</em></span>
-          <ul class="egs"><li>Dave Mitchell</li></ul>
-          <span class="act__lbl">The three switches</span>
+          <span class="act__lbl">Response example <em>222 of 300</em></span>
+          <div class="pre" id="c1e-src">A first name as plain text. Examples: John, Sarah, Mike, Dave. Accept any reasonable name including non-English names. Reject only if they give a full sentence, refuse, or type a clearly fake placeholder like asdf or test.</div>
+          <button type="button" class="btn" data-copy="c1e" data-plain="1" style="margin-top:.5rem">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+            Copy the example
+          </button>
+          <span class="act__lbl">Closing message <em>shown only because this one blocks, 127 characters</em></span>
+          <div class="pre" id="c1c-src">No worries. If you would rather not type it out, give us a call on 0428 26 36 26 and one of the family will take it from there.</div>
+          <button type="button" class="btn" data-copy="c1c" data-plain="1" style="margin-top:.5rem">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+            Copy the closing message
+          </button>
+          <span class="act__lbl">The switches</span>
           <div class="tablewrap"><table><tbody>
             <tr><td>Skip if the field is already filled</td><td><span class="req">Yes</span></td></tr>
             <tr><td>Maximum attempts</td><td><span class="k">2</span></td></tr>
@@ -428,15 +450,20 @@ Never mention a price. Do not use long dashes.</div></div>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
             Copy the objective
           </button>
-          <span class="act__lbl">Additional instructions</span>
+          <span class="act__lbl">Additional instructions <em>58 of 500</em></span>
           <div class="pre" id="c2a-src">Store the surname only. Leave empty if they gave one name.</div>
           <button type="button" class="btn" data-copy="c2a" data-plain="1" style="margin-top:.5rem">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
             Copy the instructions
           </button>
-          <span class="act__lbl">Response example <em>what the customer says, 13 of 300</em></span>
-          <ul class="egs"><li>Dave Mitchell</li></ul>
-          <span class="act__lbl">The three switches</span>
+          <span class="act__lbl">Response example <em>205 of 300</em></span>
+          <div class="pre" id="c2e-src">A surname as plain text. Examples: Mitchell, Nguyen, O’Brien, Papadopoulos. Accept any reasonable surname. Leave empty if they gave only one name. Reject a full sentence or a placeholder like asdf or test.</div>
+          <button type="button" class="btn" data-copy="c2e" data-plain="1" style="margin-top:.5rem">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+            Copy the example
+          </button>
+
+          <span class="act__lbl">The switches</span>
           <div class="tablewrap"><table><tbody>
             <tr><td>Skip if the field is already filled</td><td><span class="req">Yes</span></td></tr>
             <tr><td>Maximum attempts</td><td><span class="k">1</span></td></tr>
@@ -457,15 +484,25 @@ Never mention a price. Do not use long dashes.</div></div>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
             Copy the objective
           </button>
-          <span class="act__lbl">Additional instructions</span>
+          <span class="act__lbl">Additional instructions <em>33 of 500</em></span>
           <div class="pre" id="c3a-src">Store the number as they gave it.</div>
           <button type="button" class="btn" data-copy="c3a" data-plain="1" style="margin-top:.5rem">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
             Copy the instructions
           </button>
-          <span class="act__lbl">Response example <em>what the customer says, 12 of 300</em></span>
-          <ul class="egs"><li>0412 345 678</li></ul>
-          <span class="act__lbl">The three switches</span>
+          <span class="act__lbl">Response example <em>219 of 300</em></span>
+          <div class="pre" id="c3e-src">A phone number in any format. Examples: 0412 345 678, +61 412 345 678, (03) 9876 5432, 03 9876 5432. Accept international formats too. Reject only if clearly not a number (none, n/a) or obviously fake (123, 0000000000).</div>
+          <button type="button" class="btn" data-copy="c3e" data-plain="1" style="margin-top:.5rem">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+            Copy the example
+          </button>
+          <span class="act__lbl">Closing message <em>shown only because this one blocks, 112 characters</em></span>
+          <div class="pre" id="c3c-src">That is alright. The quickest way from here is a call. Ring 0428 26 36 26 and one of the family will pick it up.</div>
+          <button type="button" class="btn" data-copy="c3c" data-plain="1" style="margin-top:.5rem">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+            Copy the closing message
+          </button>
+          <span class="act__lbl">The switches</span>
           <div class="tablewrap"><table><tbody>
             <tr><td>Skip if the field is already filled</td><td><span class="req">Yes</span></td></tr>
             <tr><td>Maximum attempts</td><td><span class="k">2</span></td></tr>
@@ -486,15 +523,25 @@ Never mention a price. Do not use long dashes.</div></div>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
             Copy the objective
           </button>
-          <span class="act__lbl">Additional instructions</span>
+          <span class="act__lbl">Additional instructions <em>34 of 500</em></span>
           <div class="pre" id="c4a-src">Store the address as they gave it.</div>
           <button type="button" class="btn" data-copy="c4a" data-plain="1" style="margin-top:.5rem">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
             Copy the instructions
           </button>
-          <span class="act__lbl">Response example <em>what the customer says, 25 of 300</em></span>
-          <ul class="egs"><li>dave.mitchell@example.com</li></ul>
-          <span class="act__lbl">The three switches</span>
+          <span class="act__lbl">Response example <em>210 of 300</em></span>
+          <div class="pre" id="c4e-src">A valid email address with @ and a domain. Examples: john@company.com, sarah.smith@gmail.com, alex@startup.com.au. Reject if missing @, missing domain, contains spaces, or is clearly fake like test@test or a@b.</div>
+          <button type="button" class="btn" data-copy="c4e" data-plain="1" style="margin-top:.5rem">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+            Copy the example
+          </button>
+          <span class="act__lbl">Closing message <em>shown only because this one blocks, 101 characters</em></span>
+          <div class="pre" id="c4c-src">No problem. Give us a call on 0428 26 36 26 instead and we will sort the quote out with you directly.</div>
+          <button type="button" class="btn" data-copy="c4c" data-plain="1" style="margin-top:.5rem">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+            Copy the closing message
+          </button>
+          <span class="act__lbl">The switches</span>
           <div class="tablewrap"><table><tbody>
             <tr><td>Skip if the field is already filled</td><td><span class="req">Yes</span></td></tr>
             <tr><td>Maximum attempts</td><td><span class="k">2</span></td></tr>
@@ -515,15 +562,25 @@ Never mention a price. Do not use long dashes.</div></div>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
             Copy the objective
           </button>
-          <span class="act__lbl">Additional instructions</span>
+          <span class="act__lbl">Additional instructions <em>29 of 500</em></span>
           <div class="pre" id="c5a-src">Four digits, of the property.</div>
           <button type="button" class="btn" data-copy="c5a" data-plain="1" style="margin-top:.5rem">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
             Copy the instructions
           </button>
-          <span class="act__lbl">Response example <em>what the customer says, 4 of 300</em></span>
-          <ul class="egs"><li>3931</li></ul>
-          <span class="act__lbl">The three switches</span>
+          <span class="act__lbl">Response example <em>209 of 300</em></span>
+          <div class="pre" id="c5e-src">An Australian postcode, four digits. Examples: 3201, 3931, 3000, 6000. Accept it with or without the state written after it. Reject anything that is not four digits, or an obviously fake one like 0000 or 1234.</div>
+          <button type="button" class="btn" data-copy="c5e" data-plain="1" style="margin-top:.5rem">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+            Copy the example
+          </button>
+          <span class="act__lbl">Closing message <em>shown only because this one blocks, 91 characters</em></span>
+          <div class="pre" id="c5c-src">No worries. Give us a call on 0428 26 36 26 and we will work out whether we can get to you.</div>
+          <button type="button" class="btn" data-copy="c5c" data-plain="1" style="margin-top:.5rem">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+            Copy the closing message
+          </button>
+          <span class="act__lbl">The switches</span>
           <div class="tablewrap"><table><tbody>
             <tr><td>Skip if the field is already filled</td><td><span class="opt">No</span></td></tr>
             <tr><td>Maximum attempts</td><td><span class="k">2</span></td></tr>
@@ -544,15 +601,25 @@ Never mention a price. Do not use long dashes.</div></div>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
             Copy the objective
           </button>
-          <span class="act__lbl">Additional instructions</span>
+          <span class="act__lbl">Additional instructions <em>177 of 500</em></span>
           <div class="pre" id="c6a-src">Store exactly one of: Home, New build, Shed or garage, Factory or warehouse, Farm or agricultural, Something else. Store the label alone, never with their own words added to it.</div>
           <button type="button" class="btn" data-copy="c6a" data-plain="1" style="margin-top:.5rem">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
             Copy the instructions
           </button>
-          <span class="act__lbl">Response example <em>what the customer says, 55 of 300</em></span>
-          <ul class="egs"><li>its just our house, weatherboard place built in the 60s</li></ul>
-          <span class="act__lbl">The three switches</span>
+          <span class="act__lbl">Response example <em>237 of 300</em></span>
+          <div class="pre" id="c6e-src">A building, described in any wording. Examples: our house, a home, new build, we are building it, shed, garage, factory, warehouse, farm, dairy, cool room. Accept a plain description. Reject a refusal or something that is not a building.</div>
+          <button type="button" class="btn" data-copy="c6e" data-plain="1" style="margin-top:.5rem">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+            Copy the example
+          </button>
+          <span class="act__lbl">Closing message <em>shown only because this one blocks, 119 characters</em></span>
+          <div class="pre" id="c6c-src">That is fine, it is easier to explain out loud. Call 0428 26 36 26 and one of the family will talk it through with you.</div>
+          <button type="button" class="btn" data-copy="c6c" data-plain="1" style="margin-top:.5rem">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+            Copy the closing message
+          </button>
+          <span class="act__lbl">The switches</span>
           <div class="tablewrap"><table><tbody>
             <tr><td>Skip if the field is already filled</td><td><span class="opt">No</span></td></tr>
             <tr><td>Maximum attempts</td><td><span class="k">2</span></td></tr>
@@ -573,15 +640,25 @@ Never mention a price. Do not use long dashes.</div></div>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
             Copy the objective
           </button>
-          <span class="act__lbl">Additional instructions</span>
+          <span class="act__lbl">Additional instructions <em>150 of 500</em></span>
           <div class="pre" id="c7a-src">Store one or more of: Roof or ceiling, Walls, Underfloor, Whole property, Not sure yet. Join several with a comma and a space. Store the labels alone.</div>
           <button type="button" class="btn" data-copy="c7a" data-plain="1" style="margin-top:.5rem">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
             Copy the instructions
           </button>
-          <span class="act__lbl">Response example <em>what the customer says, 48 of 300</em></span>
-          <ul class="egs"><li>under the floor mainly but the walls are bad too</li></ul>
-          <span class="act__lbl">The three switches</span>
+          <span class="act__lbl">Response example <em>259 of 300</em></span>
+          <div class="pre" id="c7e-src">One or more parts of a building, in any wording. Examples: underfloor, under the floor, walls, roof, ceiling, the lot, whole place, not sure yet. Accept more than one in a sentence. Reject a refusal or an answer about something other than parts of a building.</div>
+          <button type="button" class="btn" data-copy="c7e" data-plain="1" style="margin-top:.5rem">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+            Copy the example
+          </button>
+          <span class="act__lbl">Closing message <em>shown only because this one blocks, 114 characters</em></span>
+          <div class="pre" id="c7c-src">No worries, that is often easier on the phone. Call 0428 26 36 26 and one of the family will work it out with you.</div>
+          <button type="button" class="btn" data-copy="c7c" data-plain="1" style="margin-top:.5rem">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+            Copy the closing message
+          </button>
+          <span class="act__lbl">The switches</span>
           <div class="tablewrap"><table><tbody>
             <tr><td>Skip if the field is already filled</td><td><span class="opt">No</span></td></tr>
             <tr><td>Maximum attempts</td><td><span class="k">2</span></td></tr>
@@ -602,15 +679,20 @@ Never mention a price. Do not use long dashes.</div></div>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
             Copy the objective
           </button>
-          <span class="act__lbl">Additional instructions</span>
+          <span class="act__lbl">Additional instructions <em>109 of 500</em></span>
           <div class="pre" id="c8a-src">Street number and name only, without the suburb, state or postcode. Leave empty if they would rather not say.</div>
           <button type="button" class="btn" data-copy="c8a" data-plain="1" style="margin-top:.5rem">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
             Copy the instructions
           </button>
-          <span class="act__lbl">Response example <em>what the customer says, 31 of 300</em></span>
-          <ul class="egs"><li>12 Example Street, Carrum Downs</li></ul>
-          <span class="act__lbl">The three switches</span>
+          <span class="act__lbl">Response example <em>226 of 300</em></span>
+          <div class="pre" id="c8e-src">A street number and name, with or without the suburb. Examples: 12 Example Street, 114 Colemans Road Carrum Downs, 5 Smith St. Accept a partial address. Reject a PO Box or GPO Box. Accept no answer, since this one is optional.</div>
+          <button type="button" class="btn" data-copy="c8e" data-plain="1" style="margin-top:.5rem">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+            Copy the example
+          </button>
+
+          <span class="act__lbl">The switches</span>
           <div class="tablewrap"><table><tbody>
             <tr><td>Skip if the field is already filled</td><td><span class="opt">No</span></td></tr>
             <tr><td>Maximum attempts</td><td><span class="k">1</span></td></tr>
@@ -631,15 +713,20 @@ Never mention a price. Do not use long dashes.</div></div>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
             Copy the objective
           </button>
-          <span class="act__lbl">Additional instructions</span>
+          <span class="act__lbl">Additional instructions <em>47 of 500</em></span>
           <div class="pre" id="c9a-src">The suburb only. Leave empty if none was given.</div>
           <button type="button" class="btn" data-copy="c9a" data-plain="1" style="margin-top:.5rem">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
             Copy the instructions
           </button>
-          <span class="act__lbl">Response example <em>what the customer says, 31 of 300</em></span>
-          <ul class="egs"><li>12 Example Street, Carrum Downs</li></ul>
-          <span class="act__lbl">The three switches</span>
+          <span class="act__lbl">Response example <em>162 of 300</em></span>
+          <div class="pre" id="c9e-src">A suburb name. Examples: Carrum Downs, Frankston, Mornington, Berwick. Accept it on its own or taken from an address already given. Leave empty if none was given.</div>
+          <button type="button" class="btn" data-copy="c9e" data-plain="1" style="margin-top:.5rem">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+            Copy the example
+          </button>
+
+          <span class="act__lbl">The switches</span>
           <div class="tablewrap"><table><tbody>
             <tr><td>Skip if the field is already filled</td><td><span class="opt">No</span></td></tr>
             <tr><td>Maximum attempts</td><td><span class="k">1</span></td></tr>
@@ -660,15 +747,20 @@ Never mention a price. Do not use long dashes.</div></div>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
             Copy the objective
           </button>
-          <span class="act__lbl">Additional instructions</span>
+          <span class="act__lbl">Additional instructions <em>120 of 500</em></span>
           <div class="pre" id="c10a-src">Store exactly one of: Existing building (retrofit), Under construction, Still planning. Leave empty if they did not say.</div>
           <button type="button" class="btn" data-copy="c10a" data-plain="1" style="margin-top:.5rem">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
             Copy the instructions
           </button>
-          <span class="act__lbl">Response example <em>what the customer says, 24 of 300</em></span>
-          <ul class="egs"><li>existing house obviously</li></ul>
-          <span class="act__lbl">The three switches</span>
+          <span class="act__lbl">Response example <em>221 of 300</em></span>
+          <div class="pre" id="c10e-src">A stage, in any wording. Examples: existing, it is already built, we live in it, under construction, being built now, framed up, still planning, not started yet. Accept a plain description. Leave empty if they do not say.</div>
+          <button type="button" class="btn" data-copy="c10e" data-plain="1" style="margin-top:.5rem">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+            Copy the example
+          </button>
+
+          <span class="act__lbl">The switches</span>
           <div class="tablewrap"><table><tbody>
             <tr><td>Skip if the field is already filled</td><td><span class="opt">No</span></td></tr>
             <tr><td>Maximum attempts</td><td><span class="k">1</span></td></tr>
@@ -689,15 +781,20 @@ Never mention a price. Do not use long dashes.</div></div>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
             Copy the objective
           </button>
-          <span class="act__lbl">Additional instructions</span>
+          <span class="act__lbl">Additional instructions <em>131 of 500</em></span>
           <div class="pre" id="c11a-src">Store exactly one of: As soon as possible, Next 1 to 3 months, 3 months or more, Just researching. Leave empty if they did not say.</div>
           <button type="button" class="btn" data-copy="c11a" data-plain="1" style="margin-top:.5rem">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
             Copy the instructions
           </button>
-          <span class="act__lbl">Response example <em>what the customer says, 46 of 300</em></span>
-          <ul class="egs"><li>hoping to get it done in the next month or two</li></ul>
-          <span class="act__lbl">The three switches</span>
+          <span class="act__lbl">Response example <em>220 of 300</em></span>
+          <div class="pre" id="c11e-src">A rough timeframe, in any wording. Examples: asap, as soon as you can, next month, in a month or two, before winter, later this year, no rush, just looking. Accept anything that says when. Leave empty if they do not say.</div>
+          <button type="button" class="btn" data-copy="c11e" data-plain="1" style="margin-top:.5rem">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+            Copy the example
+          </button>
+
+          <span class="act__lbl">The switches</span>
           <div class="tablewrap"><table><tbody>
             <tr><td>Skip if the field is already filled</td><td><span class="opt">No</span></td></tr>
             <tr><td>Maximum attempts</td><td><span class="k">1</span></td></tr>
@@ -718,15 +815,20 @@ Never mention a price. Do not use long dashes.</div></div>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
             Copy the objective
           </button>
-          <span class="act__lbl">Additional instructions</span>
+          <span class="act__lbl">Additional instructions <em>97 of 500</em></span>
           <div class="pre" id="c12a-src">Keep their own words, as they said them. Do not summarise. Leave empty if they said nothing else.</div>
           <button type="button" class="btn" data-copy="c12a" data-plain="1" style="margin-top:.5rem">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
             Copy the instructions
           </button>
-          <span class="act__lbl">Response example <em>what the customer says, 63 of 300</em></span>
-          <ul class="egs"><li>floor is freezing in winter and theres a gap near the back door</li></ul>
-          <span class="act__lbl">The three switches</span>
+          <span class="act__lbl">Response example <em>225 of 300</em></span>
+          <div class="pre" id="c12e-src">Anything they want to add, in their own words, one sentence or several. Examples: floor is freezing in winter, double garage about 6 by 6, access is tight down one side. Accept anything. Leave empty if they say no or nothing.</div>
+          <button type="button" class="btn" data-copy="c12e" data-plain="1" style="margin-top:.5rem">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+            Copy the example
+          </button>
+
+          <span class="act__lbl">The switches</span>
           <div class="tablewrap"><table><tbody>
             <tr><td>Skip if the field is already filled</td><td><span class="opt">No</span></td></tr>
             <tr><td>Maximum attempts</td><td><span class="k">1</span></td></tr>
@@ -747,15 +849,20 @@ Never mention a price. Do not use long dashes.</div></div>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
             Copy the objective
           </button>
-          <span class="act__lbl">Additional instructions</span>
+          <span class="act__lbl">Additional instructions <em>141 of 500</em></span>
           <div class="pre" id="c13a-src">Store yes only if they clearly agreed. Store no if they declined, changed the subject, or did not answer. Lower case. Never leave this empty.</div>
           <button type="button" class="btn" data-copy="c13a" data-plain="1" style="margin-top:.5rem">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
             Copy the instructions
           </button>
-          <span class="act__lbl">Response example <em>what the customer says, 25 of 300</em></span>
-          <ul class="egs"><li>no thanks, just the quote</li></ul>
-          <span class="act__lbl">The three switches</span>
+          <span class="act__lbl">Response example <em>181 of 300</em></span>
+          <div class="pre" id="c13e-src">A clear yes or no. Yes looks like: yes, yes please, sure, go on then. No looks like: no, no thanks, just the quote, not for now. Treat anything unclear, and no answer at all, as no.</div>
+          <button type="button" class="btn" data-copy="c13e" data-plain="1" style="margin-top:.5rem">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+            Copy the example
+          </button>
+
+          <span class="act__lbl">The switches</span>
           <div class="tablewrap"><table><tbody>
             <tr><td>Skip if the field is already filled</td><td><span class="opt">No</span></td></tr>
             <tr><td>Maximum attempts</td><td><span class="k">1</span></td></tr>
@@ -764,12 +871,6 @@ Never mention a price. Do not use long dashes.</div></div>
         </div>
       </div>
     </div>
-
-
-    <div class="note">
-      <b>Human Handover belongs on this branch too.</b> A complaint, an invoice question or anything about work already done can arrive at any point. The hand-over triggers are listed in the Additional Information field, and the Human Handover action is what should fire on them rather than the bot trying to answer.
-    </div>
-  </div>
 </section>
 
 <!-- ============================================================= CHAT WINDOW -->
