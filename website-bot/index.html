@@ -196,6 +196,14 @@ Chat Initiated                      Wants a call
     </div>
 
     <div class="note">
+      <b>A price question does not route. A yes does.</b> Someone asking what it would cost for their place is asking a question with a good answer: we cannot price it without seeing the building, here is what drives it, would you like a call. That answer belongs on General Questions. Only when they say yes, or ask for a call outright, does the trigger fire. Routing on the question itself is what made it ask for a name mid-sentence.
+    </div>
+
+    <div class="note">
+      <b>The first reply never offers.</b> The opening answer just answers. Nothing else was forbidding it, and after two sentences about a cold timber floor a bot can fairly argue it understands the building, so the rule has to be flat rather than conditional. The offer lives in Continue conversation, and only after more than a question or two.
+    </div>
+
+    <div class="note">
       <b>The branch is called Phone Call, not Enquiry.</b> The next step after someone gets in touch is the fifteen minute call, not a quote, and the site already offers exactly that. It also changes what the bot is asking a person to agree to. "Can I set up a quick call with one of the family" is a smaller thing to say yes to than "let me take your details", and it is the truer description of what happens next.
     </div>
 
@@ -207,31 +215,33 @@ Chat Initiated                      Wants a call
         <div class="doc__head">
           <span class="doc__n">F1</span>
           <span class="doc__t">AI Splitter, Description</span>
-          <span class="doc__meta">498 of 500 characters</span>
+          <span class="doc__meta">420 of 500 characters</span>
           <button type="button" class="btn" data-copy="f1" data-plain="1">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
             Copy
           </button>
         </div>
-        <div class="doc__body"><div class="pre" id="f1-src">Phone Call: only when they want us to look at their own building or talk it through. They have asked what it would cost for their place, asked for a quote, asked to book or have someone out, asked if we cover their area, or said yes when offered.
+        <div class="doc__body"><div class="pre" id="f1-src">Phone Call: only when they have asked for a call or a visit, or said yes to one being offered.
 
-General Questions: everyone else, including anyone researching or asking in general. Asking what spray foam usually costs is not asking to be contacted.
+General Questions: everything else. A price question, whether we cover an area, what the foams do, anyone researching. Asking what something costs is a question to answer, not a request to be contacted.
 
-If unsure, General Questions. Answering is never wrong. Asking a researcher for their number is.</div></div>
+If unsure, General Questions. Answering is never wrong. Asking someone for their number before they asked for a call is.</div></div>
       </div>
       <div class="doc">
         <div class="doc__head">
           <span class="doc__n">F2</span>
           <span class="doc__t">General Questions, the AI message</span>
-          <span class="doc__meta">331 of 500 characters</span>
+          <span class="doc__meta">347 of 500 characters</span>
           <button type="button" class="btn" data-copy="f2" data-plain="1">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
             Copy
           </button>
         </div>
-        <div class="doc__body"><div class="pre" id="f2-src">Answer the question they asked, from the knowledge base. If the answer is not in there, say so plainly rather than guessing, and offer to have one of the family call them.
+        <div class="doc__body"><div class="pre" id="f2-src">Answer the question they asked, from the knowledge base. If the answer is not in there, say so plainly rather than guessing.
 
-Keep it short. Do not ask for any of their details, and do not put a sales line on the end of a good answer. Do not use long dashes, use commas or full stops.</div></div>
+This is your first reply, so just answer it. Do not offer a call. Do not ask for any of their details. Do not put a sales line on the end of a good answer. Keep it short.
+
+Do not use long dashes, use commas or full stops.</div></div>
       </div>
 
     <h3 style="margin-top:2rem;font-size:1.1rem">The second trigger</h3>
@@ -242,7 +252,7 @@ Keep it short. Do not ask for any of their details, and do not put a sales line 
         <div class="doc__head">
           <span class="doc__n">F4</span>
           <span class="doc__t">Custom trigger, every setting</span>
-          <span class="doc__meta">363 of 500 characters</span>
+          <span class="doc__meta">417 of 500 characters</span>
           <button type="button" class="btn" data-copy="f4" data-plain="1">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
             Copy the condition
@@ -256,9 +266,9 @@ Keep it short. Do not ask for any of their details, and do not put a sales line 
             <tr><td>Sensitivity</td><td><span class="k">Medium</span> to start, and drop to Low if it misfires</td></tr>
           </tbody></table></div>
           <span class="act__lbl">Describe the trigger condition</span>
-          <div class="pre" id="f4-src">The person has asked us to look at their own building or to talk it through. That means asking what it would cost for their place, asking for a quote, asking to book or to have someone come out, asking if we cover their area, or saying yes when offered a call.
+          <div class="pre" id="f4-src">The person has clearly asked for a call or a visit, or said yes to one being offered. That means saying yes when offered a call, asking to book, asking to speak to someone, asking for a callback, or asking to have someone come out and look at the building.
 
-Not someone asking what spray foam generally costs, and not someone researching or asking in general.</div>
+Asking what something costs is not this. Asking whether we cover an area is not this. Describing their building is not this. Those are all questions to answer.</div>
         </div>
       </div>
 
@@ -310,11 +320,11 @@ Not someone asking what spray foam generally costs, and not someone researching 
             Copy
           </button>
         </div>
-        <div class="act__body"><span class="act__lbl">Description <em>494 of 500</em></span><div class="pre" id="x1-src">Answer clearly and concisely from the knowledge base. Stay curious, ask about their building before moving on. Once you understand the building and what is wrong with it, offer a quick call with one of the family, rather than asking more.
+        <div class="act__body"><span class="act__lbl">Description <em>487 of 500</em></span><div class="pre" id="x1-src">Answer clearly and concisely from the knowledge base. Stay curious, ask about their building. While they are still asking things, keep answering. Never offer a call to someone who has asked only one or two questions.
 
-If they want a call, want someone to come out, or ask for a person, do not handle it yourself and do not escalate. Let it route to the correct branch. Do NOT capture name, email, phone or postcode yourself.
+Offer a quick call with one of the family once, when they ask the cost for their own place or have run out of questions. Ask so they can say no. If they do, drop it.
 
-Never mention a price. Do not use long dashes.</div></div>
+Never mention a price. Do NOT capture name, email, phone or postcode yourself. Do not use long dashes.</div></div>
       </div>
       <div class="act">
         <div class="act__head">
