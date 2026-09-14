@@ -615,6 +615,26 @@ Address: Factory 4, 114 Colemans Road, Carrum Downs, VIC 3201</div></div>
       </div>
     </div>
 
+    <h3 style="margin-top:2rem;font-size:1.2rem">When it stops answering</h3>
+    <p class="sec-lede">A chat that goes silent mid-enquiry is almost never the prompt. The prompt can make it say the wrong thing, but it cannot make it say nothing. Work down this list in order, because it is ordered by how often each one is the answer.</p>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Check</th><th>What you are looking for</th></tr></thead>
+        <tbody>
+          <tr><td>A pause on the contact</td><td>Look at the contact and at the agent settings for a pause, snooze or auto-pilot-off flag, and for how long it lasts. A seven day pause is a common default. If something suspended the bot on this contact, every later test with the same person fails silently no matter what else you fix. Test with a fresh contact each time.</td></tr>
+          <tr><td>Where exactly it stopped</td><td>Note the last answer the customer gave. If it was the first one that writes to a custom field, which in the asking order is the building type, the field update for that one is the suspect. Standard fields like Postal Code can work fine while a custom field is broken.</td></tr>
+          <tr><td>Whether the action saved at all</td><td>The custom fields refuse to save without at least two output examples. An action abandoned at that error is not there, and the agent has nowhere to put the answer.</td></tr>
+          <tr><td>Whether the field is a dropdown</td><td>If the custom field is a single select rather than free text, it accepts only its own options. Writing anything else fails. Its options have to match the labels in the description exactly, character for character.</td></tr>
+          <tr><td>What the agent tried to write</td><td>An earlier run produced "Home, 60s weatherboard" where the label is "Home". Free text would swallow that. A dropdown would reject it.</td></tr>
+          <tr><td>The conversation log</td><td>The platform records the action it attempted and the error it got. That turns all of the above from a guess into a fact, so look here first if you can.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="note">
+      <b>Build all nine before testing again.</b> Testing a nine field sequence with three of them built means the run stops at the first gap every time, and each gap looks like a fresh mystery. It is quicker to finish the set than to diagnose it one field at a time.
+    </div>
+
     <h3 style="margin-top:2rem;font-size:1.2rem">Four fields the agent should not set</h3>
     <p class="sec-lede">These belong to the workflow that runs when a chat enquiry arrives, not to the conversation. They are fixed values or timestamps, and asking a language model to produce them is asking for drift.</p>
     <div class="tablewrap">
