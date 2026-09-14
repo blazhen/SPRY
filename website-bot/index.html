@@ -47,7 +47,7 @@
       <a href="#persona">Instructions</a>
       <a href="#window">Chat window</a>
       <a href="#enquiry">The enquiry</a>
-      <a href="#fields">Field updates</a>
+      <a href="#fields">Fields</a>
       <a href="#docs">Documents</a>
       <a href="#never">Never say</a>
       <a href="#test">Test it</a>
@@ -275,34 +275,7 @@ Not someone asking what spray foam generally costs, and not someone researching 
     </div>
 
     <h3 style="margin-top:2rem;font-size:1.1rem">The Enquiry branch</h3>
-    <p class="sec-lede">Ten questions, in this order, each its own step so the flow asks one thing and waits. Send me the AI Capture Information panel and I will write the wording for each step the way I did for the field descriptions.</p>
-    <ol class="ol">
-      <li><span><b>Name.</b> One question, one answer, split into first and last. The chat window may already have it, in which case skip the step.</span></li>
-      <li><span><b>Mobile.</b> Australian number. The website form rejects anything else.</span></li>
-      <li><span><b>Email.</b></span></li>
-      <li><span><b>Postcode.</b> Four digits, and it belongs to the property, not the person.</span></li>
-      <li><span><b>What kind of building.</b> One of the six labels.</span></li>
-      <li><span><b>Which parts.</b> One or more of the five labels, joined with a comma and a space. The only step that takes more than one answer.</span></li>
-      <li><span><b>Where it is.</b> Street and suburb, skippable. A PO Box is not a building.</span></li>
-      <li><span><b>The stage.</b> One of the three labels, skippable.</span></li>
-      <li><span><b>The timeframe.</b> One of the four labels, skippable.</span></li>
-      <li><span><b>Anything else.</b> Their own words, kept as written, skippable.</span></li>
-    </ol>
-    <p class="sec-lede">Then the consent question below, a readback of what was stored rather than a paraphrase, and the nine Add Contact Info field updates from section 05.</p>
-
-      <div class="doc">
-        <div class="doc__head">
-          <span class="doc__n">F3</span>
-          <span class="doc__t">The consent question, word for word</span>
-          <span class="doc__meta">42 words</span>
-          <button type="button" class="btn" data-copy="f3" data-plain="1">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
-            Copy
-          </button>
-        </div>
-        <div class="doc__body"><div class="pre" id="f3-src">Would you also like occasional SMS and email updates from Spray It Solutions about quotes, offers and services? You can opt out any time by replying STOP or using the unsubscribe link. This is optional and your enquiry goes through either way.</div><p style="margin-top:.7rem">Under the Spam Act the evidence is the wording a person was actually shown, so this is not a sentence to improve. It defaults to no, and it is the one field never left empty. Store no if they decline, change the subject, or are never asked.</p></div>
-      </div>
-
+    <p class="sec-lede">Thirteen capture steps, then one message handing off to the enquiry workflow. Every setting for every step is below, under The thirteen capture steps. Nothing else goes on this branch.</p>
 
     <h3 style="margin-top:2.4rem;font-size:1.2rem" id="flowacts">The other three actions</h3>
     <p class="sec-lede">In flow order. On General Questions the AI message answers the question they opened with, using block F2 above, and Continue conversation runs everything after that. On Enquiry one message hands off to the enquiry workflow after the thirteen capture steps below. Human Handover can fire anywhere.</p>
@@ -376,6 +349,10 @@ Never mention a price. Do not use long dashes.</div></div>
 
     <div class="note">
       <b>The response example is a small validation spec, not a sample answer.</b> Each one says what a valid answer is, gives several in different shapes, and says what to reject. That is what stops a step taking "n/a" as a phone number or "test@test" as an email. Loose where people are genuinely varied, such as how someone describes their own building, and tight where a wrong value is expensive.
+    </div>
+
+    <div class="note">
+      <b>The consent question is not a sentence to improve.</b> Step thirteen carries it word for word, and it has to stay that way. Under the Spam Act the evidence is the wording a person was actually shown, so a tidier version of it is a worse record. It defaults to no, and it is the one field never left empty.
     </div>
 
     <div class="note">
@@ -1015,8 +992,12 @@ Never mention a price. Do not use long dashes.</div></div>
 <!-- ============================================================ FIELD UPDATES -->
 <section class="sec" id="fields">
   <div class="wrap">
-    <div class="sec-head"><span class="sec-n">05</span><h2>The field updates to create</h2></div>
-    <p class="sec-lede">One Add Contact Info action holds all of them, each added with <b>Add new field</b>. Name, email and mobile are the exception: the platform takes those from the prompt, so they get no field here. That leaves nine, each needing an action name, a contact field and a one line description. The descriptions below are written to fit that single line.</p>
+    <div class="sec-head"><span class="sec-n">05</span><h2>The contact fields</h2></div>
+    <p class="sec-lede">What each field is called in the dropdown, and what belongs in it. This is the reference the capture steps are built from, and the wording here is what their additional instructions say.</p>
+
+    <div class="note">
+      <b>You do not need to build this action for the flow bot.</b> Each capture step in section 02 updates its own contact field, so the nine updates below are already covered. Keep this section for the field names, for the storing rules, and for the day someone wants the same nine on a different bot or a workflow.
+    </div>
 
     <div class="note">
       <b>The custom fields ask for at least two output examples.</b> The standard ones, Postal Code and Street Address, do not, so those are listed below as a fallback in case yours does. The examples are picked to show the shape rather than to be typical: the bracket kept on the retrofit label, one area and a joined pair, lower case on consent. The description stays short because it is a single line, so everything that would otherwise repeat across nine fields is said once in the instructions instead.
@@ -1628,7 +1609,7 @@ Never mention a price. Do not use long dashes.</div></div>
           <span class="act__lbl">You type</span>
           <div class="pre">floor is freezing in winter and theres a gap near the back door you can see daylight through</div>
           <span class="act__lbl eg-if">It should</span>
-          <p>Goes in the enquiry message in roughly his words, not summarised into a sentence of its own. Then it should read the details back and ask the marketing question.</p>
+          <p>Goes in the enquiry message in roughly his words, not summarised into a sentence of its own. Then it should ask the marketing question, in its exact wording.</p>
         </div>
       </div>
       <div class="turn">
@@ -1722,7 +1703,7 @@ Never mention a price. Do not use long dashes.</div></div>
     </div>
 
     <div class="note">
-      <b>The readback is not the record.</b> What the agent types in the chat and what the field update wrote are two different things, and they can disagree. A readback reading "Home, 60s weatherboard" may sit above a field holding exactly "Home". Judge it on the contact record every time. If the readback is wrong but the field is right, that is still worth fixing, because the customer reads the readback and it is the last chance they get to correct anything.
+      <b>The chat is not the record.</b> What the agent says and what the capture step wrote are two different things, and they can disagree. A chat line reading "Home, 60s weatherboard" may sit above a field holding exactly "Home". Judge it on the contact record every time, never on what the conversation looked like. The acknowledgement email is where the customer gets to check their own details, so that is the other thing to open.
     </div>
 
     <div class="note">
@@ -1771,7 +1752,7 @@ Never mention a price. Do not use long dashes.</div></div>
     <ol class="ol">
       <li><span><b>Point the crawler at the new site, and remove the old one.</b> The bot is currently trained on the previous website. That site is the version we have been correcting, including the performance claim in section 07 and the testimonials, so while it is still in the crawler the bot can answer from wording we have deliberately changed. The five documents cannot override a crawled page. The old source has to come out.</span></li>
       <li><span><b>Confirm the trading hours with Glenn.</b> The hours in Doc 1 are the ones currently on the website, and they are still marked for review. They are not just words: the bot uses them to decide between offering a call now and offering a callback, and they are published as structured data. If they are wrong, correct them in the site data and in Doc 1 together.</span></li>
-      <li><span><b>Test the enquiry end to end.</b> Run a conversation through to submission and check the record that comes out carries all eleven details, stores the words rather than the codes, opens an opportunity at New Enquiry, and triggers the same first response a form fill triggers.</span></li>
+      <li><span><b>Test the enquiry end to end.</b> Run a conversation through to submission and check the record that comes out carries all twelve details, stores the words rather than the codes, opens an opportunity at New Enquiry, and triggers the same first response a form fill triggers.</span></li>
       <li><span><b>Test the consent question.</b> Confirm it is asked in the exact wording, that it defaults to no, that a declined answer is recorded as no rather than left blank, and that the wording and timestamp are stored on the contact.</span></li>
       <li><span><b>Run the test conversation.</b> Section 08 is a full enquiry to type in, with what should come back at each turn and the record it should leave behind, followed by seven single lines that probe the rules a single conversation cannot reach.</span></li>
       <li><span><b>Decide who sees a bot enquiry, and how fast.</b> A chat enquiry arrives while the person is still on the site, which makes it the warmest lead of the day. It should raise the same new enquiry alert the form does.</span></li>
