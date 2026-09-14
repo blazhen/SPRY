@@ -181,16 +181,15 @@ Phone 0428 26 36 26. Email info@sprayitsolutions.com.au. Address Factory 4, 114 
     <h3 style="margin-top:2.2rem;font-size:1.2rem" id="flow">The flow</h3>
     <p class="sec-lede">The splitter is the intent gate, moved out of the prompt and into something you can see. Everything the bot does before someone asks for a quote happens on one branch, and the enquiry happens on the other.</p>
 
-    <div class="pre" style="font-family:var(--mono);line-height:1.9">Conversation AI trigger, Chat Initiated
-        |
-   AI Splitter
-   |-- General Questions  -&gt;  AI Message  -&gt;  Continue Conversation  -&gt;  END
-   |-- Enquiry            -&gt;  the thirteen capture steps           -&gt;  END
-   '-- No condition met   -&gt;  the same two actions as General Questions
-
-Custom Scenario trigger, armed once the run above has completed
-        |
-        '-&gt;  moves them onto the Enquiry branch when they ask for a quote</div>
+    <div class="pre" style="font-family:var(--mono);line-height:1.9">Conversation AI trigger              Custom trigger
+Chat Initiated                      Wants a quote
+        |                                  :
+   AI splitter                             :
+   |-- No condition met   -&gt; END           :
+   |-- General Questions  -&gt; AI message    :
+   |                        Continue conversation -&gt; END
+   '-- Enquiry &lt;............................'
+          the thirteen capture steps, the readback, the close -&gt; END</div>
 
     <div class="note">
       <b>Five hundred characters is the ceiling on a description field.</b> Every block below is written to fit it, and the count sits next to each one. The three Global Bot Configuration fields are the exception, because that panel budgets words rather than characters. If a field you meet has a tighter limit than 500, tell me which one and I will cut to it rather than you trimming a sentence that is carrying a rule.
@@ -219,18 +218,16 @@ If unsure, General Questions. Answering is never wrong. Asking a researcher for 
       <div class="doc">
         <div class="doc__head">
           <span class="doc__n">F2</span>
-          <span class="doc__t">General Questions, AI Message</span>
-          <span class="doc__meta">483 of 500 characters</span>
+          <span class="doc__t">General Questions, the AI message</span>
+          <span class="doc__meta">331 of 500 characters</span>
           <button type="button" class="btn" data-copy="f2" data-plain="1">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
             Copy
           </button>
         </div>
-        <div class="doc__body"><div class="pre" id="f2-src">Answer what they asked, from the knowledge base. If it is not in there, say so and offer to have one of the family call, rather than guessing.
+        <div class="doc__body"><div class="pre" id="f2-src">Answer the question they asked, from the knowledge base. If the answer is not in there, say so plainly rather than guessing, and offer to have one of the family call them.
 
-Do not ask for any of their details, and do not put a sales line on the end of a good answer.
-
-One exception: if they have described their own building and seem to have finished asking, you may offer once to have someone look at it and price it properly. Phrase it so they can say no, and end there. If they decline, do not raise it again.</div></div>
+Keep it short. Do not ask for any of their details, and do not put a sales line on the end of a good answer. Do not use long dashes, use commas or full stops.</div></div>
       </div>
 
     <h3 style="margin-top:2rem;font-size:1.1rem">The second trigger</h3>
@@ -308,7 +305,11 @@ Not someone asking what spray foam generally costs, and not someone researching 
 
 
     <h3 style="margin-top:2.4rem;font-size:1.2rem" id="flowacts">The other four actions</h3>
-    <p class="sec-lede">In flow order. On General Questions the AI Message comes first, using block F2 above, and Continue Conversation goes straight after it. On Enquiry these two sit after the thirteen capture steps below. Human Handover can fire anywhere.</p>
+    <p class="sec-lede">In flow order. On General Questions the AI message answers the question they opened with, using block F2 above, and Continue conversation runs everything after that. On Enquiry the readback and the close sit after the thirteen capture steps below. Human Handover can fire anywhere.</p>
+
+    <div class="note">
+      <b>Continue conversation is the real prompt for the general branch.</b> The AI message sends one answer. Continue conversation governs every exchange after it, for as long as the person keeps asking things, which is most of the conversation. It is also the only place that tells the bot not to capture anything itself, because on this branch capturing is the trigger's job, not the bot's.
+    </div>
 
     <div class="acts">
       <div class="act">
@@ -322,7 +323,11 @@ Not someone asking what spray foam generally costs, and not someone researching 
             Copy
           </button>
         </div>
-        <div class="act__body"><span class="act__lbl">Description <em>276 of 500</em></span><div class="pre" id="x1-src">Goes straight after the AI Message. Hands the conversation back to the bot so it keeps answering whatever they ask next, from the knowledge base. It sends them nowhere. This is the end of the branch, and the run has to reach END here or the Custom Scenario trigger never arms.</div></div>
+        <div class="act__body"><span class="act__lbl">Description <em>496 of 500</em></span><div class="pre" id="x1-src">Answer clearly and concisely from the knowledge base. Stay curious, ask about their building before moving on. Once you understand the building and what is wrong with it, offer to have one of the family look at it, rather than asking more.
+
+If they want a quote, want someone to come out, or ask for a person, do not handle it yourself and do not escalate. Let it route to the correct branch. Do NOT capture name, email, phone or postcode yourself.
+
+Never mention a price. Do not use long dashes.</div></div>
       </div>
       <div class="act">
         <div class="act__head">
