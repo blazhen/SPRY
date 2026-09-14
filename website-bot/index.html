@@ -181,14 +181,16 @@ Phone 0428 26 36 26. Email info@sprayitsolutions.com.au. Address Factory 4, 114 
     <h3 style="margin-top:2.2rem;font-size:1.2rem" id="flow">The flow</h3>
     <p class="sec-lede">The splitter is the intent gate, moved out of the prompt and into something you can see. Everything the bot does before someone asks for a quote happens on one branch, and the enquiry happens on the other.</p>
 
-    <div class="pre" style="font-family:var(--mono);line-height:1.9">Trigger 1: Chat Initiated          Trigger 2: they ask for a quote
-        |                                      |
-        '------------------+-------------------'
-                           |
-                      AI Splitter
-   |-- General Questions  -&gt;  AI Message  -&gt;  Continue Conversation, and it keeps answering
-   |-- Submit Enquiry     -&gt;  the capture sequence, then Add Contact Info
-   '-- No condition met   -&gt;  the same two actions as General Questions</div>
+    <div class="pre" style="font-family:var(--mono);line-height:1.9">Conversation AI trigger, Chat Initiated
+        |
+   AI Splitter
+   |-- General Questions  -&gt;  AI Message  -&gt;  Continue Conversation  -&gt;  END
+   |-- Enquiry            -&gt;  the thirteen capture steps           -&gt;  END
+   '-- No condition met   -&gt;  the same two actions as General Questions
+
+Custom Scenario trigger, armed once the run above has completed
+        |
+        '-&gt;  moves them onto the Enquiry branch when they ask for a quote</div>
 
     <div class="note">
       <b>Five hundred characters is the ceiling on a description field.</b> Every block below is written to fit it, and the count sits next to each one. The three Global Bot Configuration fields are the exception, because that panel budgets words rather than characters. If a field you meet has a tighter limit than 500, tell me which one and I will cut to it rather than you trimming a sentence that is carrying a rule.
@@ -238,20 +240,37 @@ One exception: if they have described their own building and seem to have finish
       <div class="doc">
         <div class="doc__head">
           <span class="doc__n">F4</span>
-          <span class="doc__t">Trigger 2, the enquiry intent</span>
-          <span class="doc__meta">399 of 500 characters</span>
+          <span class="doc__t">Custom trigger, every setting</span>
+          <span class="doc__meta">353 of 500 characters</span>
           <button type="button" class="btn" data-copy="f4" data-plain="1">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
-            Copy
+            Copy the condition
           </button>
         </div>
-        <div class="doc__body"><div class="pre" id="f4-src">Fires when someone asks us to quote or look at their own building. That means asking what it would cost for their place, asking for a quote, asking to book or to have someone come out, asking if we cover their area, or saying yes when offered a look.
+        <div class="doc__body">
+          <div class="tablewrap"><table><tbody>
+            <tr><td>Workflow trigger name</td><td><span class="k">Wants a quote</span></td></tr>
+            <tr><td>Choose custom trigger</td><td><span class="k">Custom scenario</span></td></tr>
+            <tr><td>Priority</td><td><span class="k">8</span>, the default</td></tr>
+            <tr><td>Sensitivity</td><td><span class="k">Medium</span> to start, and drop to Low if it misfires</td></tr>
+          </tbody></table></div>
+          <span class="act__lbl">Describe the trigger condition</span>
+          <div class="pre" id="f4-src">The person has asked us to quote or to look at their own building. That means asking what it would cost for their place, asking for a quote, asking to book or to have someone come out, asking if we cover their area, or saying yes when offered a look.
 
-Does not fire for someone asking what spray foam generally costs, or for anyone researching or asking in general. Those stay on the general branch.</div></div>
+Not someone asking what spray foam generally costs, and not someone researching or asking in general.</div>
+        </div>
       </div>
 
     <div class="note">
-      <b>It has to enrol someone already in the flow.</b> The person is mid-conversation when this fires, so check the trigger can re-enrol a contact rather than skipping them as already enrolled. If it cannot, that is worth knowing before the rest is built on it.
+      <b>It arms only after the main run finishes.</b> The panel says so: a custom scenario fires once the primary workflow has completed, and firing moves the contact to the alternate branch. So the general branch has to actually finish. Continue Conversation needs to be the last thing on it, reaching END, or the run never completes and the trigger never arms. If someone asks for a quote and nothing happens, that is the first thing to check.
+    </div>
+
+    <div class="note">
+      <b>Sensitivity: start at Medium, and only ever move down.</b> The two mistakes are not equally expensive. Too sensitive and a person asking a general question gets pulled into the enquiry and asked for their phone number, which is the behaviour you objected to in the first place. Not sensitive enough and someone who wants a quote gets another good answer instead, then asks again more plainly. One of those loses a customer's goodwill, the other costs a message.
+    </div>
+
+    <div class="note">
+      <b>Priority only matters once there are two scenarios.</b> Leave it on 8 while this is the only one. When a second is added, most likely a complaint or handover scenario, that one has to win over the enquiry, because someone complaining about a finished job must never be routed into a quote. The panel does not say whether a higher number wins, so set the two and test it rather than assuming.
     </div>
 
     <div class="note">
