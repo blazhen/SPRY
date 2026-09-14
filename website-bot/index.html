@@ -182,17 +182,21 @@ Phone 0428 26 36 26. Email info@sprayitsolutions.com.au. Address Factory 4, 114 
     <p class="sec-lede">The splitter is the intent gate, moved out of the prompt and into something you can see. Everything the bot does before someone asks for a quote happens on one branch, and the enquiry happens on the other.</p>
 
     <div class="pre" style="font-family:var(--mono);line-height:1.9">Conversation AI trigger              Custom trigger
-Chat Initiated                      Wants a quote
+Chat Initiated                      Wants a call
         |                                  :
    AI splitter                             :
    |-- No condition met   -&gt; END           :
    |-- General Questions  -&gt; AI message    :
    |                        Continue conversation -&gt; END
-   '-- Enquiry &lt;............................'
+   '-- Phone Call &lt;........................'
           the thirteen capture steps, then hand off to the enquiry workflow -&gt; END</div>
 
     <div class="note">
       <b>Five hundred characters is the ceiling on a description field.</b> Every block below is written to fit it, and the count sits next to each one. The three Global Bot Configuration fields are the exception, because that panel budgets words rather than characters. If a field you meet has a tighter limit than 500, tell me which one and I will cut to it rather than you trimming a sentence that is carrying a rule.
+    </div>
+
+    <div class="note">
+      <b>The branch is called Phone Call, not Enquiry.</b> The next step after someone gets in touch is the fifteen minute call, not a quote, and the site already offers exactly that. It also changes what the bot is asking a person to agree to. "Can I set up a quick call with one of the family" is a smaller thing to say yes to than "let me take your details", and it is the truer description of what happens next.
     </div>
 
     <div class="note">
@@ -203,13 +207,13 @@ Chat Initiated                      Wants a quote
         <div class="doc__head">
           <span class="doc__n">F1</span>
           <span class="doc__t">AI Splitter, Description</span>
-          <span class="doc__meta">497 of 500 characters</span>
+          <span class="doc__meta">498 of 500 characters</span>
           <button type="button" class="btn" data-copy="f1" data-plain="1">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
             Copy
           </button>
         </div>
-        <div class="doc__body"><div class="pre" id="f1-src">Enquiry: only when they want us to quote or look at their own building. They have asked what it would cost for their place, asked for a quote, asked to book or have someone come out, asked if we cover their area, or said yes when offered.
+        <div class="doc__body"><div class="pre" id="f1-src">Phone Call: only when they want us to look at their own building or talk it through. They have asked what it would cost for their place, asked for a quote, asked to book or have someone out, asked if we cover their area, or said yes when offered.
 
 General Questions: everyone else, including anyone researching or asking in general. Asking what spray foam usually costs is not asking to be contacted.
 
@@ -238,7 +242,7 @@ Keep it short. Do not ask for any of their details, and do not put a sales line 
         <div class="doc__head">
           <span class="doc__n">F4</span>
           <span class="doc__t">Custom trigger, every setting</span>
-          <span class="doc__meta">353 of 500 characters</span>
+          <span class="doc__meta">363 of 500 characters</span>
           <button type="button" class="btn" data-copy="f4" data-plain="1">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
             Copy the condition
@@ -246,13 +250,13 @@ Keep it short. Do not ask for any of their details, and do not put a sales line 
         </div>
         <div class="doc__body">
           <div class="tablewrap"><table><tbody>
-            <tr><td>Workflow trigger name</td><td><span class="k">Wants a quote</span></td></tr>
+            <tr><td>Workflow trigger name</td><td><span class="k">Wants a call</span></td></tr>
             <tr><td>Choose custom trigger</td><td><span class="k">Custom scenario</span></td></tr>
             <tr><td>Priority</td><td><span class="k">8</span>, the default</td></tr>
             <tr><td>Sensitivity</td><td><span class="k">Medium</span> to start, and drop to Low if it misfires</td></tr>
           </tbody></table></div>
           <span class="act__lbl">Describe the trigger condition</span>
-          <div class="pre" id="f4-src">The person has asked us to quote or to look at their own building. That means asking what it would cost for their place, asking for a quote, asking to book or to have someone come out, asking if we cover their area, or saying yes when offered a look.
+          <div class="pre" id="f4-src">The person has asked us to look at their own building or to talk it through. That means asking what it would cost for their place, asking for a quote, asking to book or to have someone come out, asking if we cover their area, or saying yes when offered a call.
 
 Not someone asking what spray foam generally costs, and not someone researching or asking in general.</div>
         </div>
@@ -274,7 +278,7 @@ Not someone asking what spray foam generally costs, and not someone researching 
       <b>The warning on that panel does not apply here.</b> It says to capture the details first because a splitter that branches on a stored value needs the value to exist. This one branches on what the person has said, which is already in the conversation. Nothing needs capturing before it.
     </div>
 
-    <h3 style="margin-top:2rem;font-size:1.1rem">The Enquiry branch</h3>
+    <h3 style="margin-top:2rem;font-size:1.1rem">The Phone Call branch</h3>
     <p class="sec-lede">Thirteen capture steps, then one message handing off to the enquiry workflow. Every setting for every step is below, under The thirteen capture steps. Nothing else goes on this branch.</p>
 
     <h3 style="margin-top:2.4rem;font-size:1.2rem" id="flowacts">The other three actions</h3>
@@ -306,9 +310,9 @@ Not someone asking what spray foam generally costs, and not someone researching 
             Copy
           </button>
         </div>
-        <div class="act__body"><span class="act__lbl">Description <em>496 of 500</em></span><div class="pre" id="x1-src">Answer clearly and concisely from the knowledge base. Stay curious, ask about their building before moving on. Once you understand the building and what is wrong with it, offer to have one of the family look at it, rather than asking more.
+        <div class="act__body"><span class="act__lbl">Description <em>494 of 500</em></span><div class="pre" id="x1-src">Answer clearly and concisely from the knowledge base. Stay curious, ask about their building before moving on. Once you understand the building and what is wrong with it, offer a quick call with one of the family, rather than asking more.
 
-If they want a quote, want someone to come out, or ask for a person, do not handle it yourself and do not escalate. Let it route to the correct branch. Do NOT capture name, email, phone or postcode yourself.
+If they want a call, want someone to come out, or ask for a person, do not handle it yourself and do not escalate. Let it route to the correct branch. Do NOT capture name, email, phone or postcode yourself.
 
 Never mention a price. Do not use long dashes.</div></div>
       </div>
@@ -317,13 +321,13 @@ Never mention a price. Do not use long dashes.</div></div>
           <span class="act__n">2</span>
           <span class="act__pair"><b>Action</b><span class="k">AI Message</span></span>
           <span class="act__pair"><b>Action name</b><span class="k">Hand off to the enquiry workflow</span></span>
-          <span class="act__pair"><b>Branch</b><span class="opt">Enquiry</span></span>
+          <span class="act__pair"><b>Branch</b><span class="opt">Phone Call</span></span>
           <button type="button" class="btn" data-copy="x2" data-plain="1">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
             Copy
           </button>
         </div>
-        <div class="act__body"><span class="act__lbl">Description <em>409 of 500</em></span><div class="pre" id="x2-src">Goes after the thirteen capture steps, before handing off to the enquiry workflow. Tell them that is everything you need and their enquiry is in. Read their email address back to them, so a typo gets caught now, and say the confirmation is on its way there. Say one of the family will be in touch, usually the same working day, and give 0428 26 36 26 if it is urgent. Do not promise a time, a date or a price.</div></div>
+        <div class="act__body"><span class="act__lbl">Description <em>376 of 500</em></span><div class="pre" id="x2-src">Goes after the thirteen capture steps, before handing off to the enquiry workflow. Tell them that is everything you need. Read their email address back to them, so a typo gets caught now, and say a confirmation is on its way there. Say one of the family will call, usually the same working day, and give 0428 26 36 26 if it is urgent. Do not promise a time, a date or a price.</div></div>
       </div>
       <div class="act">
         <div class="act__head">
@@ -368,7 +372,7 @@ Never mention a price. Do not use long dashes.</div></div>
     </div>
 
     <div class="note">
-      <b>Human Handover belongs on this branch as well.</b> A complaint, an invoice question or anything about work already done can arrive in the middle of an enquiry, not just at the start. It is action four in the list above, and it should be reachable from here rather than only from the general branch.
+      <b>Human Handover belongs on the Phone Call branch as well.</b> A complaint, an invoice question or anything about work already done can arrive in the middle of an enquiry, not just at the start. It is action four in the list above, and it should be reachable from here rather than only from the general branch.
     </div>
 
     <div class="acts">
@@ -872,7 +876,7 @@ Never mention a price. Do not use long dashes.</div></div>
             Copy
           </button>
         </div>
-        <div class="act__body"><span class="act__lbl">Put this in</span><div class="pre" id="w2-src">I am the Spray It Solutions website assistant. Ask me anything about spray foam insulation, or tell me what needs doing and I will take the details for a quote.</div><span class="act__lbl eg-if">Replaces the default</span><ul class="egs"><li>Enter your question below and a representative will get right back to you.</li></ul></div>
+        <div class="act__body"><span class="act__lbl">Put this in</span><div class="pre" id="w2-src">I am the Spray It Solutions website assistant. Ask me anything about spray foam insulation. If you want a price on your own place, I can set up a quick call with one of the family.</div><span class="act__lbl eg-if">Replaces the default</span><ul class="egs"><li>Enter your question below and a representative will get right back to you.</li></ul></div>
       </div>
       <div class="act">
         <div class="act__head">
