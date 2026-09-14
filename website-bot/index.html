@@ -382,6 +382,14 @@ Never mention a price. Do NOT capture name, email, phone or postcode yourself. N
     </div>
 
     <div class="note">
+      <b>Skip if already filled is on everywhere except consent.</b> If the record already holds the answer, asking again is friction that buys nothing: a filled field will not be written anyway. Consent is the exception. It is legal evidence of what someone agreed to this time, so it is asked every time rather than inherited from an earlier enquiry.
+    </div>
+
+    <div class="note">
+      <b>That switch does not cover a person who mentioned it in passing.</b> It reads the contact field, and nothing fills a field during the general conversation, because Continue conversation is forbidden from capturing. So every objective that asks something also says: if they have already told you earlier in the conversation, take it from there and do not ask again. A capture step can read the whole chat, so someone who opened with "I have a house and a container" should never be asked what kind of building it is.
+    </div>
+
+    <div class="note">
       <b>Required and optional are switches, not sentences.</b> "Do not proceed if criteria not met" is what makes the six required steps required. Last name is the odd one: the form needs it, but it is taken from the first answer rather than asked for, and blocking on it would trap anyone who gives a single name.
     </div>
 
@@ -397,8 +405,8 @@ Never mention a price. Do NOT capture name, email, phone or postcode yourself. N
           <span class="act__pair"><b>Update contact field</b><span class="k">First Name</span></span>
         </div>
         <div class="act__body">
-          <span class="act__lbl">Describe the objective <em>111 of 500</em></span>
-          <div class="pre" id="c1o-src">Ask what their name is. One question only, never a first name and a surname separately. Store only the words they answer with. Never store the question you asked, and never store a placeholder name the chat window generated for an unknown visitor.</div>
+          <span class="act__lbl">Describe the objective <em>352 of 500</em></span>
+          <div class="pre" id="c1o-src">Ask what their name is. One question only, never a first name and a surname separately. Store only the words they answer with. Never store the question you asked, and never store a placeholder name the chat window generated for an unknown visitor. If they have already told you this earlier in the conversation, take it from there and do not ask again.</div>
           <button type="button" class="btn" data-copy="c1o" data-plain="1" style="margin-top:.5rem">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
             Copy the objective
@@ -470,8 +478,8 @@ Never mention a price. Do NOT capture name, email, phone or postcode yourself. N
           <span class="act__pair"><b>Update contact field</b><span class="k">Phone</span></span>
         </div>
         <div class="act__body">
-          <span class="act__lbl">Describe the objective <em>242 of 500</em></span>
-          <div class="pre" id="c3o-src">Ask for the best number to reach them on. It has to be an Australian mobile. If they give an overseas number, say we are an Australian contractor and ask whether there is an Australian one for them. If there is not, take the number they gave.</div>
+          <span class="act__lbl">Describe the objective <em>347 of 500</em></span>
+          <div class="pre" id="c3o-src">Ask for the best number to reach them on. It has to be an Australian mobile. If they give an overseas number, say we are an Australian contractor and ask whether there is an Australian one for them. If there is not, take the number they gave. If they have already told you this earlier in the conversation, take it from there and do not ask again.</div>
           <button type="button" class="btn" data-copy="c3o" data-plain="1" style="margin-top:.5rem">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
             Copy the objective
@@ -509,8 +517,8 @@ Never mention a price. Do NOT capture name, email, phone or postcode yourself. N
           <span class="act__pair"><b>Update contact field</b><span class="k">Email</span></span>
         </div>
         <div class="act__body">
-          <span class="act__lbl">Describe the objective <em>182 of 500</em></span>
-          <div class="pre" id="c4o-src">Ask for the best email address for them. This one is needed rather than offered, so if they would rather not give it, say the team sends the written quote by email and ask once more.</div>
+          <span class="act__lbl">Describe the objective <em>287 of 500</em></span>
+          <div class="pre" id="c4o-src">Ask for the best email address for them. This one is needed rather than offered, so if they would rather not give it, say the team sends the written quote by email and ask once more. If they have already told you this earlier in the conversation, take it from there and do not ask again.</div>
           <button type="button" class="btn" data-copy="c4o" data-plain="1" style="margin-top:.5rem">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
             Copy the objective
@@ -548,8 +556,8 @@ Never mention a price. Do NOT capture name, email, phone or postcode yourself. N
           <span class="act__pair"><b>Update contact field</b><span class="k">Postal Code</span></span>
         </div>
         <div class="act__body">
-          <span class="act__lbl">Describe the objective <em>158 of 500</em></span>
-          <div class="pre" id="c5o-src">Ask for the postcode of the property being insulated. If they give their own address and the property is somewhere else, the property is the one that matters.</div>
+          <span class="act__lbl">Describe the objective <em>263 of 500</em></span>
+          <div class="pre" id="c5o-src">Ask for the postcode of the property being insulated. If they give their own address and the property is somewhere else, the property is the one that matters. If they have already told you this earlier in the conversation, take it from there and do not ask again.</div>
           <button type="button" class="btn" data-copy="c5o" data-plain="1" style="margin-top:.5rem">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
             Copy the objective
@@ -574,7 +582,7 @@ Never mention a price. Do NOT capture name, email, phone or postcode yourself. N
           </button>
           <span class="act__lbl">The switches</span>
           <div class="tablewrap"><table><tbody>
-            <tr><td>Skip if the field is already filled</td><td><span class="opt">No</span></td></tr>
+            <tr><td>Skip if the field is already filled</td><td><span class="req">Yes</span></td></tr>
             <tr><td>Maximum attempts</td><td><span class="k">2</span></td></tr>
             <tr><td>Do not proceed if criteria not met</td><td><span class="req">Yes</span></td></tr>
           </tbody></table></div>
@@ -587,8 +595,8 @@ Never mention a price. Do NOT capture name, email, phone or postcode yourself. N
           <span class="act__pair"><b>Update contact field</b><span class="k">Property type</span></span>
         </div>
         <div class="act__body">
-          <span class="act__lbl">Describe the objective <em>86 of 500</em></span>
-          <div class="pre" id="c6o-src">Ask: "Is it a home, a new build, a shed or garage, a factory or warehouse, or a farm?"</div>
+          <span class="act__lbl">Describe the objective <em>191 of 500</em></span>
+          <div class="pre" id="c6o-src">Ask: "Is it a home, a new build, a shed or garage, a factory or warehouse, or a farm?" If they have already told you this earlier in the conversation, take it from there and do not ask again.</div>
           <button type="button" class="btn" data-copy="c6o" data-plain="1" style="margin-top:.5rem">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
             Copy the objective
@@ -613,7 +621,7 @@ Never mention a price. Do NOT capture name, email, phone or postcode yourself. N
           </button>
           <span class="act__lbl">The switches</span>
           <div class="tablewrap"><table><tbody>
-            <tr><td>Skip if the field is already filled</td><td><span class="opt">No</span></td></tr>
+            <tr><td>Skip if the field is already filled</td><td><span class="req">Yes</span></td></tr>
             <tr><td>Maximum attempts</td><td><span class="k">2</span></td></tr>
             <tr><td>Do not proceed if criteria not met</td><td><span class="req">Yes</span></td></tr>
           </tbody></table></div>
@@ -626,8 +634,8 @@ Never mention a price. Do NOT capture name, email, phone or postcode yourself. N
           <span class="act__pair"><b>Update contact field</b><span class="k">Areas to insulate</span></span>
         </div>
         <div class="act__body">
-          <span class="act__lbl">Describe the objective <em>130 of 500</em></span>
-          <div class="pre" id="c7o-src">Ask: "Which parts are we looking at? The roof or ceiling, the walls, underfloor, or the whole place?" They can name more than one.</div>
+          <span class="act__lbl">Describe the objective <em>235 of 500</em></span>
+          <div class="pre" id="c7o-src">Ask: "Which parts are we looking at? The roof or ceiling, the walls, underfloor, or the whole place?" They can name more than one. If they have already told you this earlier in the conversation, take it from there and do not ask again.</div>
           <button type="button" class="btn" data-copy="c7o" data-plain="1" style="margin-top:.5rem">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
             Copy the objective
@@ -652,7 +660,7 @@ Never mention a price. Do NOT capture name, email, phone or postcode yourself. N
           </button>
           <span class="act__lbl">The switches</span>
           <div class="tablewrap"><table><tbody>
-            <tr><td>Skip if the field is already filled</td><td><span class="opt">No</span></td></tr>
+            <tr><td>Skip if the field is already filled</td><td><span class="req">Yes</span></td></tr>
             <tr><td>Maximum attempts</td><td><span class="k">2</span></td></tr>
             <tr><td>Do not proceed if criteria not met</td><td><span class="req">Yes</span></td></tr>
           </tbody></table></div>
@@ -665,8 +673,8 @@ Never mention a price. Do NOT capture name, email, phone or postcode yourself. N
           <span class="act__pair"><b>Update contact field</b><span class="k">Street Address</span></span>
         </div>
         <div class="act__body">
-          <span class="act__lbl">Describe the objective <em>219 of 500</em></span>
-          <div class="pre" id="c8o-src">Ask: "Whereabouts is it? Street and suburb, if you are happy to say." Move straight on if they would rather not. A post office box is not a building, so if they give a PO Box, ask for the address of the property itself.</div>
+          <span class="act__lbl">Describe the objective <em>324 of 500</em></span>
+          <div class="pre" id="c8o-src">Ask: "Whereabouts is it? Street and suburb, if you are happy to say." Move straight on if they would rather not. A post office box is not a building, so if they give a PO Box, ask for the address of the property itself. If they have already told you this earlier in the conversation, take it from there and do not ask again.</div>
           <button type="button" class="btn" data-copy="c8o" data-plain="1" style="margin-top:.5rem">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
             Copy the objective
@@ -686,7 +694,7 @@ Never mention a price. Do NOT capture name, email, phone or postcode yourself. N
 
           <span class="act__lbl">The switches</span>
           <div class="tablewrap"><table><tbody>
-            <tr><td>Skip if the field is already filled</td><td><span class="opt">No</span></td></tr>
+            <tr><td>Skip if the field is already filled</td><td><span class="req">Yes</span></td></tr>
             <tr><td>Maximum attempts</td><td><span class="k">1</span></td></tr>
             <tr><td>Do not proceed if criteria not met</td><td><span class="opt">No</span></td></tr>
           </tbody></table></div>
@@ -720,7 +728,7 @@ Never mention a price. Do NOT capture name, email, phone or postcode yourself. N
 
           <span class="act__lbl">The switches</span>
           <div class="tablewrap"><table><tbody>
-            <tr><td>Skip if the field is already filled</td><td><span class="opt">No</span></td></tr>
+            <tr><td>Skip if the field is already filled</td><td><span class="req">Yes</span></td></tr>
             <tr><td>Maximum attempts</td><td><span class="k">1</span></td></tr>
             <tr><td>Do not proceed if criteria not met</td><td><span class="opt">No</span></td></tr>
           </tbody></table></div>
@@ -733,8 +741,8 @@ Never mention a price. Do NOT capture name, email, phone or postcode yourself. N
           <span class="act__pair"><b>Update contact field</b><span class="k">Building stage</span></span>
         </div>
         <div class="act__body">
-          <span class="act__lbl">Describe the objective <em>121 of 500</em></span>
-          <div class="pre" id="c10o-src">Ask: "Is it an existing place, something under construction, or still at the planning stage?" Move on if they do not say.</div>
+          <span class="act__lbl">Describe the objective <em>226 of 500</em></span>
+          <div class="pre" id="c10o-src">Ask: "Is it an existing place, something under construction, or still at the planning stage?" Move on if they do not say. If they have already told you this earlier in the conversation, take it from there and do not ask again.</div>
           <button type="button" class="btn" data-copy="c10o" data-plain="1" style="margin-top:.5rem">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
             Copy the objective
@@ -754,7 +762,7 @@ Never mention a price. Do NOT capture name, email, phone or postcode yourself. N
 
           <span class="act__lbl">The switches</span>
           <div class="tablewrap"><table><tbody>
-            <tr><td>Skip if the field is already filled</td><td><span class="opt">No</span></td></tr>
+            <tr><td>Skip if the field is already filled</td><td><span class="req">Yes</span></td></tr>
             <tr><td>Maximum attempts</td><td><span class="k">1</span></td></tr>
             <tr><td>Do not proceed if criteria not met</td><td><span class="opt">No</span></td></tr>
           </tbody></table></div>
@@ -767,8 +775,8 @@ Never mention a price. Do NOT capture name, email, phone or postcode yourself. N
           <span class="act__pair"><b>Update contact field</b><span class="k">Timeframe</span></span>
         </div>
         <div class="act__body">
-          <span class="act__lbl">Describe the objective <em>70 of 500</em></span>
-          <div class="pre" id="c11o-src">Ask: "When are you hoping to get it done?" Move on if they do not say.</div>
+          <span class="act__lbl">Describe the objective <em>175 of 500</em></span>
+          <div class="pre" id="c11o-src">Ask: "When are you hoping to get it done?" Move on if they do not say. If they have already told you this earlier in the conversation, take it from there and do not ask again.</div>
           <button type="button" class="btn" data-copy="c11o" data-plain="1" style="margin-top:.5rem">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
             Copy the objective
@@ -788,7 +796,7 @@ Never mention a price. Do NOT capture name, email, phone or postcode yourself. N
 
           <span class="act__lbl">The switches</span>
           <div class="tablewrap"><table><tbody>
-            <tr><td>Skip if the field is already filled</td><td><span class="opt">No</span></td></tr>
+            <tr><td>Skip if the field is already filled</td><td><span class="req">Yes</span></td></tr>
             <tr><td>Maximum attempts</td><td><span class="k">1</span></td></tr>
             <tr><td>Do not proceed if criteria not met</td><td><span class="opt">No</span></td></tr>
           </tbody></table></div>
@@ -801,8 +809,8 @@ Never mention a price. Do NOT capture name, email, phone or postcode yourself. N
           <span class="act__pair"><b>Update contact field</b><span class="k">Enquiry message</span></span>
         </div>
         <div class="act__body">
-          <span class="act__lbl">Describe the objective <em>150 of 500</em></span>
-          <div class="pre" id="c12o-src">Ask: "Anything else the team should know about it?" Rough size, access and when they need it done are all useful. Move on if they have nothing to add.</div>
+          <span class="act__lbl">Describe the objective <em>255 of 500</em></span>
+          <div class="pre" id="c12o-src">Ask: "Anything else the team should know about it?" Rough size, access and when they need it done are all useful. Move on if they have nothing to add. If they have already told you this earlier in the conversation, take it from there and do not ask again.</div>
           <button type="button" class="btn" data-copy="c12o" data-plain="1" style="margin-top:.5rem">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
             Copy the objective
@@ -822,7 +830,7 @@ Never mention a price. Do NOT capture name, email, phone or postcode yourself. N
 
           <span class="act__lbl">The switches</span>
           <div class="tablewrap"><table><tbody>
-            <tr><td>Skip if the field is already filled</td><td><span class="opt">No</span></td></tr>
+            <tr><td>Skip if the field is already filled</td><td><span class="req">Yes</span></td></tr>
             <tr><td>Maximum attempts</td><td><span class="k">1</span></td></tr>
             <tr><td>Do not proceed if criteria not met</td><td><span class="opt">No</span></td></tr>
           </tbody></table></div>
