@@ -189,7 +189,7 @@ Chat Initiated                      Wants a quote
    |-- General Questions  -&gt; AI message    :
    |                        Continue conversation -&gt; END
    '-- Enquiry &lt;............................'
-          the thirteen capture steps, the readback, the close -&gt; END</div>
+          the thirteen capture steps, then hand off to the enquiry workflow -&gt; END</div>
 
     <div class="note">
       <b>Five hundred characters is the ceiling on a description field.</b> Every block below is written to fit it, and the count sits next to each one. The three Global Bot Configuration fields are the exception, because that panel budgets words rather than characters. If a field you meet has a tighter limit than 500, tell me which one and I will cut to it rather than you trimming a sentence that is carrying a rule.
@@ -304,8 +304,18 @@ Not someone asking what spray foam generally costs, and not someone researching 
       </div>
 
 
-    <h3 style="margin-top:2.4rem;font-size:1.2rem" id="flowacts">The other four actions</h3>
-    <p class="sec-lede">In flow order. On General Questions the AI message answers the question they opened with, using block F2 above, and Continue conversation runs everything after that. On Enquiry the readback and the close sit after the thirteen capture steps below. Human Handover can fire anywhere.</p>
+    <h3 style="margin-top:2.4rem;font-size:1.2rem" id="flowacts">The other three actions</h3>
+    <p class="sec-lede">In flow order. On General Questions the AI message answers the question they opened with, using block F2 above, and Continue conversation runs everything after that. On Enquiry one message hands off to the enquiry workflow after the thirteen capture steps below. Human Handover can fire anywhere.</p>
+
+    <div class="note">
+      <b>No readback, and no separate closing message.</b> The acknowledgement email already lists the property type, the areas, the building stage, the timeframe and the postcode, and tells the customer to reply if any of it is wrong. Doing that in the chat first repeats work that is done better a minute later, in writing, where they can keep it and act on it.
+    </div>
+
+    <div class="note">
+      <b>Except the email address itself.</b> That is the one field the echo cannot check, because a wrong address means the echo never arrives and nobody finds out. The capture step's validator catches a malformed address, not a plausible typo like gmial.com. So the single hand-off message reads the address back, which costs one line and closes the only gap the email leaves.
+    </div>
+
+
 
     <div class="note">
       <b>Continue conversation is the real prompt for the general branch.</b> The AI message sends one answer. Continue conversation governs every exchange after it, for as long as the person keeps asking things, which is most of the conversation. It is also the only place that tells the bot not to capture anything itself, because on this branch capturing is the trigger's job, not the bot's.
@@ -333,40 +343,27 @@ Never mention a price. Do not use long dashes.</div></div>
         <div class="act__head">
           <span class="act__n">2</span>
           <span class="act__pair"><b>Action</b><span class="k">AI Message</span></span>
-          <span class="act__pair"><b>Action name</b><span class="k">Read the details back</span></span>
+          <span class="act__pair"><b>Action name</b><span class="k">Hand off to the enquiry workflow</span></span>
           <span class="act__pair"><b>Branch</b><span class="opt">Enquiry</span></span>
           <button type="button" class="btn" data-copy="x2" data-plain="1">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
             Copy
           </button>
         </div>
-        <div class="act__body"><span class="act__lbl">Description <em>281 of 500</em></span><div class="pre" id="x2-src">Goes after the thirteen capture steps. Read back what has actually been stored, in the stored words, and ask whether it is right. Do not paraphrase the conversation, and do not read back something different from what is in the fields. This is their last chance to correct anything.</div></div>
+        <div class="act__body"><span class="act__lbl">Description <em>409 of 500</em></span><div class="pre" id="x2-src">Goes after the thirteen capture steps, before handing off to the enquiry workflow. Tell them that is everything you need and their enquiry is in. Read their email address back to them, so a typo gets caught now, and say the confirmation is on its way there. Say one of the family will be in touch, usually the same working day, and give 0428 26 36 26 if it is urgent. Do not promise a time, a date or a price.</div></div>
       </div>
       <div class="act">
         <div class="act__head">
           <span class="act__n">3</span>
-          <span class="act__pair"><b>Action</b><span class="k">AI Message</span></span>
-          <span class="act__pair"><b>Action name</b><span class="k">Confirm and close</span></span>
-          <span class="act__pair"><b>Branch</b><span class="opt">Enquiry</span></span>
+          <span class="act__pair"><b>Action</b><span class="k">Human Handover</span></span>
+          <span class="act__pair"><b>Action name</b><span class="k">Hand to a person</span></span>
+          <span class="act__pair"><b>Branch</b><span class="opt">Anywhere it comes up</span></span>
           <button type="button" class="btn" data-copy="x3" data-plain="1">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
             Copy
           </button>
         </div>
-        <div class="act__body"><span class="act__lbl">Description <em>193 of 500</em></span><div class="pre" id="x3-src">Tell them we have got it, that one of the family will be in touch, usually the same working day, and that if it is urgent they can call 0428 26 36 26. Do not promise a time, a date, or a price.</div></div>
-      </div>
-      <div class="act">
-        <div class="act__head">
-          <span class="act__n">4</span>
-          <span class="act__pair"><b>Action</b><span class="k">Human Handover</span></span>
-          <span class="act__pair"><b>Action name</b><span class="k">Hand to a person</span></span>
-          <span class="act__pair"><b>Branch</b><span class="opt">Anywhere it comes up</span></span>
-          <button type="button" class="btn" data-copy="x4" data-plain="1">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
-            Copy
-          </button>
-        </div>
-        <div class="act__body"><span class="act__lbl">Description <em>395 of 500</em></span><div class="pre" id="x4-src">Fire this on a complaint, a problem with work already done, anything about an invoice, a payment or a dispute, a warranty, insurance or legal question, a request for a formal specification, tender documents, a safety data sheet or a compliance certificate, someone asking for a named person, or anyone who sounds distressed or angry. Take their name and number first, and say a person will call.</div></div>
+        <div class="act__body"><span class="act__lbl">Description <em>395 of 500</em></span><div class="pre" id="x3-src">Fire this on a complaint, a problem with work already done, anything about an invoice, a payment or a dispute, a warranty, insurance or legal question, a request for a formal specification, tender documents, a safety data sheet or a compliance certificate, someone asking for a named person, or anyone who sounds distressed or angry. Take their name and number first, and say a person will call.</div></div>
       </div>
     </div>
 
