@@ -394,19 +394,19 @@ Never mention a price. Do NOT capture name, email, phone or postcode yourself. D
         </div>
         <div class="act__body">
           <span class="act__lbl">Describe the objective <em>111 of 500</em></span>
-          <div class="pre" id="c1o-src">Ask for their name in one question: "What is your name?" Never ask for a first name and a last name separately.</div>
+          <div class="pre" id="c1o-src">Ask what their name is. One question only, never a first name and a surname separately. Store only the words they answer with. Never store the question you asked, and never store a placeholder name the chat window generated for an unknown visitor.</div>
           <button type="button" class="btn" data-copy="c1o" data-plain="1" style="margin-top:.5rem">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
             Copy the objective
           </button>
           <span class="act__lbl">Additional instructions <em>44 of 500</em></span>
-          <div class="pre" id="c1a-src">Store the first name only, as they wrote it.</div>
+          <div class="pre" id="c1a-src">Store the first name only, as they wrote it. If the value would contain a question mark, or the words "your name", or the word "Visitor", it is wrong: leave it empty instead.</div>
           <button type="button" class="btn" data-copy="c1a" data-plain="1" style="margin-top:.5rem">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
             Copy the instructions
           </button>
           <span class="act__lbl">Response example <em>222 of 300</em></span>
-          <div class="pre" id="c1e-src">A first name as plain text. Examples: John, Sarah, Mike, Dave. Accept any reasonable name including non-English names. Reject only if they give a full sentence, refuse, or type a clearly fake placeholder like asdf or test.</div>
+          <div class="pre" id="c1e-src">A first name as plain text. Examples: John, Sarah, Mike, Dave. Accept any reasonable name including non-English names. Reject a full sentence, anything with a question mark, a generated name like Visitor biuam, and a placeholder like asdf or test.</div>
           <button type="button" class="btn" data-copy="c1e" data-plain="1" style="margin-top:.5rem">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
             Copy the example
@@ -433,19 +433,19 @@ Never mention a price. Do NOT capture name, email, phone or postcode yourself. D
         </div>
         <div class="act__body">
           <span class="act__lbl">Describe the objective <em>106 of 500</em></span>
-          <div class="pre" id="c2o-src">Take the surname from the name they have already given you. Do not ask a second question about their name.</div>
+          <div class="pre" id="c2o-src">Take the surname from the words they answered with. Do not ask a second question about their name. Never store the question you asked, and never store a placeholder name the chat window generated for an unknown visitor.</div>
           <button type="button" class="btn" data-copy="c2o" data-plain="1" style="margin-top:.5rem">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
             Copy the objective
           </button>
           <span class="act__lbl">Additional instructions <em>58 of 500</em></span>
-          <div class="pre" id="c2a-src">Store the surname only. Leave empty if they gave one name.</div>
+          <div class="pre" id="c2a-src">Store the surname only. Leave empty if they gave one name. If the value would contain a question mark, or the words "your name", or the word "Visitor", it is wrong: leave it empty instead.</div>
           <button type="button" class="btn" data-copy="c2a" data-plain="1" style="margin-top:.5rem">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
             Copy the instructions
           </button>
           <span class="act__lbl">Response example <em>205 of 300</em></span>
-          <div class="pre" id="c2e-src">A surname as plain text. Examples: Mitchell, Nguyen, O’Brien, Papadopoulos. Accept any reasonable surname. Leave empty if they gave only one name. Reject a full sentence or a placeholder like asdf or test.</div>
+          <div class="pre" id="c2e-src">A surname as plain text. Examples: Mitchell, Nguyen, O’Brien, Papadopoulos. Accept any reasonable surname. Leave empty if only one name was given. Reject a full sentence, anything with a question mark, and a generated name like Visitor biuam.</div>
           <button type="button" class="btn" data-copy="c2e" data-plain="1" style="margin-top:.5rem">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
             Copy the example
@@ -1714,6 +1714,14 @@ Never mention a price. Do NOT capture name, email, phone or postcode yourself. D
           <tr><td><span class="k">Marketing consent</span></td><td><span class="k">no</span></td></tr>
         </tbody>
       </table>
+    </div>
+
+    <div class="note">
+      <b>Delete the test contact before every run, or the results are meaningless.</b> A field that already holds a value does not get written again. On a second run the steps still execute and still show green in the log, but nothing changes, and a wrong value from an earlier test survives every attempt to correct it. Use a fresh email and phone each time, or delete the contact first.
+    </div>
+
+    <div class="note">
+      <b>What that looks like when it happens.</b> In one run the bot never asked about the property type, the parts or the building stage, yet all three steps logged as executed and the record held answers. They were from the run before. Timeframe is the tell: it was asked, answered "next month or so", and still read "floor is freezing in winter" from a previous test. If the log says executed and the chat never asked, the field was already full.
     </div>
 
     <div class="note">
