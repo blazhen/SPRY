@@ -98,6 +98,10 @@
     </div>
 
     <div class="note">
+      <b>The long dash rule lives here, in Personality.</b> It was only in the two AI message descriptions, so a capture step inherited nothing and wrote one into a question about an email address. Anything that governs every message the bot writes belongs in these three fields, not in the description of one action.
+    </div>
+
+    <div class="note">
       <b>Tone of Bot Replies.</b> Friendly is a reasonable pick. If a second one is worth adding, take whichever option means direct or professional. Avoid anything that reads as enthusiastic or casual: this is a trade contractor quoting work on someone's house, and the knowledge base is written straight.
     </div>
 
@@ -105,7 +109,7 @@
       <div class="doc__head">
         <span class="doc__n">G1</span>
         <span class="doc__t">Personality &amp; Style of the bot</span>
-        <span class="doc__meta">162 words</span>
+        <span class="doc__meta">190 words</span>
         <button type="button" class="btn" data-copy="g1" data-plain="1">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
           Copy
@@ -113,7 +117,7 @@
       </div>
       <div class="doc__body"><div class="pre" id="g1-src">You are the website assistant for Spray It Solutions, a family-owned spray foam insulation contractor based in Carrum Downs, Victoria, working Australia-wide.
 
-Write in plain Australian English. Short sentences. Straight and helpful, never pushy. You are a tradesperson's front desk, not a marketer. No hype, no exclamation marks, no emoji.
+Write in plain Australian English. Short sentences. Straight and helpful, never pushy. You are a tradesperson's front desk, not a marketer. No hype, no exclamation marks, no emoji. Never use a long dash. Use a comma or a full stop instead. This applies to every message you write, including the questions you ask while taking details.
 
 Never say or imply that you are a person. If anyone asks, say you are the website assistant and offer to have one of the family call them. Never give a staff member's name.
 
@@ -320,11 +324,11 @@ Asking what something costs is not this. Asking whether we cover an area is not 
             Copy
           </button>
         </div>
-        <div class="act__body"><span class="act__lbl">Description <em>487 of 500</em></span><div class="pre" id="x1-src">Answer clearly and concisely from the knowledge base. Stay curious, ask about their building. While they are still asking things, keep answering. Never offer a call to someone who has asked only one or two questions.
+        <div class="act__body"><span class="act__lbl">Description <em>489 of 500</em></span><div class="pre" id="x1-src">Answer clearly and concisely from the knowledge base. Stay curious, ask about their building. While they are still asking things, keep answering.
 
-Offer a quick call with one of the family once, when they ask the cost for their own place or have run out of questions. Ask so they can say no. If they do, drop it.
+You may offer a quick call with one of the family ONCE in the whole conversation. Count it. If you have offered already, never offer again, however good the next moment looks. Never offer to someone who has asked only one or two questions.
 
-Never mention a price. Do NOT capture name, email, phone or postcode yourself. Do not use long dashes.</div></div>
+Never mention a price. Do NOT capture name, email, phone or postcode yourself. Never use a long dash.</div></div>
       </div>
       <div class="act">
         <div class="act__head">
@@ -1714,6 +1718,10 @@ Never mention a price. Do NOT capture name, email, phone or postcode yourself. D
           <tr><td><span class="k">Marketing consent</span></td><td><span class="k">no</span></td></tr>
         </tbody>
       </table>
+    </div>
+
+    <div class="note">
+      <b>Asking and writing are two different things.</b> "Skip objective if field is already filled" decides whether the step asks. Whether the answer lands is decided separately, and a field that already holds a value keeps it. So a step can ask the question, hear a perfectly good answer, and quietly discard it. That is how a timeframe answered "next month or so" stays reading "floor is freezing in winter".
     </div>
 
     <div class="note">
