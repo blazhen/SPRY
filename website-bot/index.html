@@ -1011,18 +1011,36 @@ Never mention a price. Do NOT capture name, email, phone or postcode yourself. N
 <section class="sec" id="fields">
   <div class="wrap">
     <div class="sec-head"><span class="sec-n">05</span><h2>The contact fields</h2></div>
-    <p class="sec-lede">What each field is called in the dropdown, and what belongs in it. This is the reference the capture steps are built from, and the wording here is what their additional instructions say.</p>
+    <p class="sec-lede">All thirteen fields the bot writes to, what each is called in the dropdown, and what belongs in it. Four are set by capture steps and nine can also be set by an Add Contact Info action. This is the reference the capture steps were built from, and the wording here is what their additional instructions say.</p>
 
     <div class="note">
       <b>You do not need to build this action for the flow bot.</b> Each capture step in section 02 updates its own contact field, so the nine updates below are already covered. Keep this section for the field names, for the storing rules, and for the day someone wants the same nine on a different bot or a workflow.
     </div>
 
     <div class="note">
+      <b>Four fields are not in this list, and that is deliberate.</b> The platform excludes name, phone and email from Add Contact Info, and says to handle them in the prompt instead. In the flow build they are capture steps 1 to 4 in section 02, which carry their own wording. The table below says which field each one writes to, so this section is still a complete map of the thirteen.
+    </div>
+
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Field</th><th>Contact field</th><th>Where it is set up</th></tr></thead>
+        <tbody>
+          <tr><td>First name</td><td><span class="k">First Name</span></td><td>Capture step 1, section 02</td></tr>
+          <tr><td>Last name</td><td><span class="k">Last Name</span></td><td>Capture step 2, section 02</td></tr>
+          <tr><td>Mobile</td><td><span class="k">Phone</span></td><td>Capture step 3, section 02</td></tr>
+          <tr><td>Email</td><td><span class="k">Email</span></td><td>Capture step 4, section 02</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 style="margin-top:2rem;font-size:1.2rem">The nine that Add Contact Info can set</h3>
+
+    <div class="note">
       <b>The custom fields ask for at least two output examples.</b> The standard ones, Postal Code and Street Address, do not, so those are listed below as a fallback in case yours does. The examples are picked to show the shape rather than to be typical: the bracket kept on the retrofit label, one area and a joined pair, lower case on consent. The description stays short because it is a single line, so everything that would otherwise repeat across nine fields is said once in the instructions instead.
     </div>
 
     <div class="note">
-      <b>An action alone does nothing.</b> A field only fills if the prompt actually asks the question, which is why the twelve questions are written out in the instructions in section 02. Build the fields and paste the instructions together, or the agent will have somewhere to put an answer and no reason to ask for one.
+      <b>An action alone does nothing.</b> A field only fills if something actually asks the question. In the flow build that is the capture step's own objective, in section 02. A field with nowhere asking for it stays empty forever, and nothing warns you.
     </div>
 
     <div class="note">
