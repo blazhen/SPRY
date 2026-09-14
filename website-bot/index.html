@@ -1543,260 +1543,292 @@ Never mention a price. Do NOT capture name, email, phone or postcode yourself. N
 <!-- ========================================================= TEST CONVERSATION -->
 <section class="sec" id="test">
   <div class="wrap">
-    <div class="sec-head"><span class="sec-n">08</span><h2>Test it with this conversation</h2></div>
-    <p class="sec-lede">Two conversations. The first takes an enquiry through to a contact record. The second is someone who only wants to ask, and it passes only if the agent never asks them for anything. Type each in order, because the failures worth catching happen in sequence rather than one question at a time.</p>
+    <div class="sec-head"><span class="sec-n">08</span><h2>Test it with these conversations</h2></div>
+    <p class="sec-lede">Three conversations and eight single lines. Every turn is here because something went wrong at that exact point in a live run, so a pass means the build survived what has already broken it once.</p>
 
-    <div class="turns">
-      <div class="turn">
-        <span class="turn__n">0</span>
-        <div class="turn__b">
-          <span class="act__lbl">The gate, before the chat opens</span>
-          <div class="pre">Dave Mitchell
-0412 345 678</div>
-          <span class="act__lbl eg-if">It should</span>
-          <p>Leave email blank if you added it as an optional field. The agent should ask for it later. Check it splits the one name box into Dave and Mitchell, because nothing else will.</p>
-        </div>
-      </div>
-      <div class="turn">
-        <span class="turn__n">1</span>
-        <div class="turn__b">
-          <span class="act__lbl">You type</span>
-          <div class="pre">hey does spray foam actually work under a timber floor? ours is freezing</div>
-          <span class="act__lbl eg-if">It should</span>
-          <p>Answers from document 2. A suspended timber floor sits above open moving air, it is the surface almost everybody skips, and for a dry ventilated subfloor they generally use open-cell LDC-50. No price, no R-value, no promise about how much warmer it will be.</p>
-        </div>
-      </div>
-      <div class="turn">
-        <span class="turn__n">2</span>
-        <div class="turn__b">
-          <span class="act__lbl">You type</span>
-          <div class="pre">what would that cost for a 3 bedroom weatherboard?</div>
-          <span class="act__lbl eg-if">It should</span>
-          <p>The first hard rule. No number, no range, no per square metre rate, not even a rough one. It should say the building has to be seen, say what drives the price, then ask whether you would like someone to look. It must ask, and wait. If it starts demanding a name and a postcode here, the intent gate is not landing.</p>
-        </div>
-      </div>
-      <div class="turn">
-        <span class="turn__n">3</span>
-        <div class="turn__b">
-          <span class="act__lbl">You type</span>
-          <div class="pre">ok so what R value do i need down there</div>
-          <span class="act__lbl eg-if">It should</span>
-          <p>It may explain what R-value is, and should say which foam and what thickness is decided at the assessment. It must not name a figure for his house. If a number appears here, the knowledge base is being ignored or the old site is still in the crawler.</p>
-        </div>
-      </div>
-      <div class="turn">
-        <span class="turn__n">4</span>
-        <div class="turn__b">
-          <span class="act__lbl">You type</span>
-          <div class="pre">fair enough. can you get someone out to look at it</div>
-          <span class="act__lbl eg-if">It should</span>
-          <p>It starts taking the enquiry. It already has the name and phone from the gate, so it must not ask for those again. Email or postcode next.</p>
-        </div>
-      </div>
-      <div class="turn">
-        <span class="turn__n">5</span>
-        <div class="turn__b">
-          <span class="act__lbl">You type</span>
-          <div class="pre">dave.mitchell@example.com</div>
-          <span class="act__lbl eg-if">It should</span>
-          <p>Accepted, then on to the next question.</p>
-        </div>
-      </div>
-      <div class="turn">
-        <span class="turn__n">6</span>
-        <div class="turn__b">
-          <span class="act__lbl">You type</span>
-          <div class="pre">3931</div>
-          <span class="act__lbl eg-if">It should</span>
-          <p>Stored as the postcode. Not one of the examples you pasted, so this tests extraction rather than echo.</p>
-        </div>
-      </div>
-      <div class="turn">
-        <span class="turn__n">7</span>
-        <div class="turn__b">
-          <span class="act__lbl">You type</span>
-          <div class="pre">its just our house, weatherboard place built in the 60s</div>
-          <span class="act__lbl eg-if">It should</span>
-          <p>Has to become Home. He never said the word. If it stores "weatherboard house" the label rule is not landing.</p>
-        </div>
-      </div>
-      <div class="turn">
-        <span class="turn__n">8</span>
-        <div class="turn__b">
-          <span class="act__lbl">You type</span>
-          <div class="pre">under the floor mainly but the walls are bad too</div>
-          <span class="act__lbl eg-if">It should</span>
-          <p>Has to become exactly: Underfloor, Walls. Two values, that spelling, joined with a comma and a space. This is the single most likely thing to come out wrong.</p>
-        </div>
-      </div>
-      <div class="turn">
-        <span class="turn__n">9</span>
-        <div class="turn__b">
-          <span class="act__lbl">You type</span>
-          <div class="pre">rather not give the street address yet</div>
-          <span class="act__lbl eg-if">It should</span>
-          <p>It accepts that and moves on. Street and suburb stay empty. If it pushes, or writes "not provided" into the field, the rule about leaving optionals empty is not landing.</p>
-        </div>
-      </div>
-      <div class="turn">
-        <span class="turn__n">10</span>
-        <div class="turn__b">
-          <span class="act__lbl">You type</span>
-          <div class="pre">existing house obviously. hoping to get it done in the next month or two</div>
-          <span class="act__lbl eg-if">It should</span>
-          <p>Two mappings in one sentence: Existing building (retrofit), and Next 1 to 3 months.</p>
-        </div>
-      </div>
-      <div class="turn">
-        <span class="turn__n">11</span>
-        <div class="turn__b">
-          <span class="act__lbl">You type</span>
-          <div class="pre">floor is freezing in winter and theres a gap near the back door you can see daylight through</div>
-          <span class="act__lbl eg-if">It should</span>
-          <p>Goes in the enquiry message in roughly his words, not summarised into a sentence of its own. Then it should ask the marketing question, in its exact wording.</p>
-        </div>
-      </div>
-      <div class="turn">
-        <span class="turn__n">12</span>
-        <div class="turn__b">
-          <span class="act__lbl">You type</span>
-          <div class="pre">no thanks, just the quote</div>
-          <span class="act__lbl eg-if">It should</span>
-          <p>Marketing consent is no, not empty. It submits, says one of the family will be in touch usually the same working day, and gives 0428 26 36 26 for anything urgent.</p>
-        </div>
-      </div>
+    <div class="note">
+      <b>Delete the test contact before each of the three, without exception.</b> A field that already holds a value is not written again, and the step still logs as executed. Run these on a used contact and you will be reading the residue of the last attempt while everything looks green. Use a fresh email and phone, or delete the contact first.
     </div>
 
+    <div class="note">
+      <b>Asking and writing are two different things.</b> The skip switch decides whether a step asks. Whether the answer lands is decided separately, and a field that already holds a value keeps it. So a step can ask, hear a good answer, and quietly discard it. That is how a timeframe answered "next month or so" stayed reading "floor is freezing in winter".
+    </div>
 
-    <h3 style="margin-top:2.4rem;font-size:1.2rem" id="test2">The second test: someone who is only asking</h3>
-    <p class="sec-lede">The first conversation tests that it can take an enquiry. This one tests that it knows when not to. Five turns, and the pass mark is that it never asks for a single detail. A visitor who wanted to fill in a form would have used the form.</p>
+    <div class="note">
+      <b>What a used contact looks like.</b> The log says executed and the chat never asked. If you see that pairing, the field was already full and the run told you nothing. In one live run the property type, the parts and the building stage all logged green without a single question being asked about any of them.
+    </div>
 
+    <div class="note">
+      <b>One thing to watch in every single message.</b> A long dash. The house rule now sits in the global Personality field so that the capture steps inherit it, but the last run put one in a question about an email address. If you see one anywhere, tell me which message it was in.
+    </div>
+
+    <h3 style="margin-top:2.4rem;font-size:1.2rem" id="test-a">Test A, someone who only wants to know things</h3>
+    <p class="sec-lede">Five turns. It passes only if the bot never asks for a single detail and never routes. A name, a postcode, an email or a "so I can have someone follow up" are all failures.</p>
     <div class="turns">
       <div class="turn">
-        <span class="turn__n">1</span>
+        <span class="turn__n">A1</span>
         <div class="turn__b">
           <span class="act__lbl">You type</span>
           <div class="pre">whats the difference between open and closed cell?</div>
           <span class="act__lbl eg-if">It should</span>
-          <p>A straight answer from document 4. Both foams, what each is for. No question back about who they are.</p>
+          <p>A straight answer from document 4. No offer of a call, because this is the first reply and the first reply never offers. No questions back.</p>
         </div>
       </div>
       <div class="turn">
-        <span class="turn__n">2</span>
+        <span class="turn__n">A2</span>
         <div class="turn__b">
           <span class="act__lbl">You type</span>
           <div class="pre">does it work on a shipping container?</div>
           <span class="act__lbl eg-if">It should</span>
-          <p>Yes, from document 4: closed cell suits containers and steel structures. Still no questions back.</p>
+          <p>Yes, from document 4: closed cell suits containers and steel structures. Still nothing asked for.</p>
         </div>
       </div>
       <div class="turn">
-        <span class="turn__n">3</span>
+        <span class="turn__n">A3</span>
         <div class="turn__b">
           <span class="act__lbl">You type</span>
           <div class="pre">and it doesnt go mouldy?</div>
           <span class="act__lbl eg-if">It should</span>
-          <p>Answers on vapour permeance. Does not dismiss the concern, does not overclaim.</p>
+          <p>Answers on vapour permeance. Does not dismiss the concern and does not overclaim.</p>
         </div>
       </div>
       <div class="turn">
-        <span class="turn__n">4</span>
+        <span class="turn__n">A4</span>
         <div class="turn__b">
           <span class="act__lbl">You type</span>
-          <div class="pre">ok cool, im just researching for now</div>
+          <div class="pre">roughly what does spray foam cost?</div>
           <span class="act__lbl eg-if">It should</span>
-          <p>This is the one that matters. It should take that at face value, say something useful, and stop. No name, no postcode, no "before you go". Offering the phone number once is fine. Asking for a detail is not.</p>
+          <p>The one that broke before. A general price question is a question, not a request to be contacted. It says we cannot price without seeing the building and what drives the cost. It stays on General Questions. If it routes here, the trigger is still too wide.</p>
         </div>
       </div>
       <div class="turn">
-        <span class="turn__n">5</span>
+        <span class="turn__n">A5</span>
         <div class="turn__b">
           <span class="act__lbl">You type</span>
-          <div class="pre">thanks</div>
+          <div class="pre">ok im just researching for now</div>
           <span class="act__lbl eg-if">It should</span>
-          <p>Ends the conversation. It must not use the goodbye as a last chance to ask for anything.</p>
+          <p>Takes that at face value and stops. It may give the phone number once. It must not ask for a name, a postcode or anything else, and it must not offer again.</p>
         </div>
       </div>
     </div>
 
-    <div class="note">
-      <b>It fails this test if it asks for anything.</b> A name, a postcode, an email, or a "so I can have someone follow up". The offer is allowed once, phrased as a question, and only after they ask what something costs or ask to have someone come out. Nobody here does either.
+    <h3 style="margin-top:2.4rem;font-size:1.2rem" id="test-b">Test B, a question that turns into an enquiry</h3>
+    <p class="sec-lede">Fourteen turns, the main path. The first three test the two bugs from the last run: an offer on the first reply, and a second offer after it. The rest work the capture steps.</p>
+    <div class="turns">
+      <div class="turn">
+        <span class="turn__n">B1</span>
+        <div class="turn__b">
+          <span class="act__lbl">You type</span>
+          <div class="pre">hey does spray foam actually work under a timber floor? ours is freezing</div>
+          <span class="act__lbl eg-if">It should</span>
+          <p>Answers from document 2. Crucially it does NOT offer a call, because this is the first reply. Offering here was the bug.</p>
+        </div>
+      </div>
+      <div class="turn">
+        <span class="turn__n">B2</span>
+        <div class="turn__b">
+          <span class="act__lbl">You type</span>
+          <div class="pre">what would that cost for a 3 bedroom weatherboard?</div>
+          <span class="act__lbl eg-if">It should</span>
+          <p>No number, no range, no rate. It says the building has to be seen, says what drives the cost, and may now offer a call once. It stays on General Questions either way.</p>
+        </div>
+      </div>
+      <div class="turn">
+        <span class="turn__n">B3</span>
+        <div class="turn__b">
+          <span class="act__lbl">You type</span>
+          <div class="pre">ok so what R value do i need down there</div>
+          <span class="act__lbl eg-if">It should</span>
+          <p>Answers on R-value and says the thickness is decided at the assessment. It must NOT offer a call again. One offer per conversation, counted. A second offer here was the other bug.</p>
+        </div>
+      </div>
+      <div class="turn">
+        <span class="turn__n">B4</span>
+        <div class="turn__b">
+          <span class="act__lbl">You type</span>
+          <div class="pre">yeah go on then, get someone to call me</div>
+          <span class="act__lbl eg-if">It should</span>
+          <p>This is the yes. The Custom Scenario trigger fires and the Phone Call branch starts. The first thing it asks for should be a name, not a phone number.</p>
+        </div>
+      </div>
+      <div class="turn">
+        <span class="turn__n">B5</span>
+        <div class="turn__b">
+          <span class="act__lbl">You type</span>
+          <div class="pre">Dave Mitchell</div>
+          <span class="act__lbl eg-if">It should</span>
+          <p>First Name Dave, Last Name Mitchell, from one question. It must not ask for the surname separately, and neither field may contain a question mark or the word Visitor.</p>
+        </div>
+      </div>
+      <div class="turn">
+        <span class="turn__n">B6</span>
+        <div class="turn__b">
+          <span class="act__lbl">You type</span>
+          <div class="pre">0412 345 678</div>
+          <span class="act__lbl eg-if">It should</span>
+          <p>Stored as given. Then it asks for an email.</p>
+        </div>
+      </div>
+      <div class="turn">
+        <span class="turn__n">B7</span>
+        <div class="turn__b">
+          <span class="act__lbl">You type</span>
+          <div class="pre">dave.mitchell@example.com</div>
+          <span class="act__lbl eg-if">It should</span>
+          <p>Then the postcode.</p>
+        </div>
+      </div>
+      <div class="turn">
+        <span class="turn__n">B8</span>
+        <div class="turn__b">
+          <span class="act__lbl">You type</span>
+          <div class="pre">3931</div>
+          <span class="act__lbl eg-if">It should</span>
+          <p>Then what kind of building it is.</p>
+        </div>
+      </div>
+      <div class="turn">
+        <span class="turn__n">B9</span>
+        <div class="turn__b">
+          <span class="act__lbl">You type</span>
+          <div class="pre">its just our house, weatherboard place built in the 60s</div>
+          <span class="act__lbl eg-if">It should</span>
+          <p>Becomes exactly Home. Not "Home, 60s weatherboard". The extra words belong in the enquiry message.</p>
+        </div>
+      </div>
+      <div class="turn">
+        <span class="turn__n">B10</span>
+        <div class="turn__b">
+          <span class="act__lbl">You type</span>
+          <div class="pre">under the floor mainly but the walls are bad too</div>
+          <span class="act__lbl eg-if">It should</span>
+          <p>Becomes exactly: Underfloor, Walls. Two labels, that spelling, comma and a space. Still the most likely thing to come out wrong.</p>
+        </div>
+      </div>
+      <div class="turn">
+        <span class="turn__n">B11</span>
+        <div class="turn__b">
+          <span class="act__lbl">You type</span>
+          <div class="pre">rather not give the street address</div>
+          <span class="act__lbl eg-if">It should</span>
+          <p>Accepts it and moves on. Street and suburb stay empty. Nothing written into them, no "not provided".</p>
+        </div>
+      </div>
+      <div class="turn">
+        <span class="turn__n">B12</span>
+        <div class="turn__b">
+          <span class="act__lbl">You type</span>
+          <div class="pre">existing place, hoping to get it done in the next month or two</div>
+          <span class="act__lbl eg-if">It should</span>
+          <p>Two mappings from one sentence: Existing building (retrofit), and Next 1 to 3 months.</p>
+        </div>
+      </div>
+      <div class="turn">
+        <span class="turn__n">B13</span>
+        <div class="turn__b">
+          <span class="act__lbl">You type</span>
+          <div class="pre">floor is freezing in winter and theres a gap near the back door you can see daylight through</div>
+          <span class="act__lbl eg-if">It should</span>
+          <p>Goes in the enquiry message in roughly his words. Then the consent question, in its exact wording. That question never appeared at all in the last live run, so watch for it.</p>
+        </div>
+      </div>
+      <div class="turn">
+        <span class="turn__n">B14</span>
+        <div class="turn__b">
+          <span class="act__lbl">You type</span>
+          <div class="pre">no thanks, just the quote</div>
+          <span class="act__lbl eg-if">It should</span>
+          <p>Consent is no, not empty. Then one message: that is everything, the confirmation is going to dave.mitchell@example.com, one of the family will be in touch usually the same working day, 0428 26 36 26 if urgent. Then it hands off.</p>
+        </div>
+      </div>
     </div>
 
-    <h3 style="margin-top:2.2rem;font-size:1.2rem">The record it should leave behind</h3>
-    <p class="sec-lede">Open the contact when the chat ends. Every line below should match, and an opportunity should be sitting at New Enquiry.</p>
+    <h3 style="margin-top:2.2rem;font-size:1.2rem">The record Test B should leave</h3>
+    <p class="sec-lede">Open the contact. Judge it on this, never on what the chat looked like. An opportunity should also be sitting at New Enquiry, with the source saying the chat rather than the form.</p>
     <div class="tablewrap">
       <table>
         <thead><tr><th>Field</th><th>Should hold</th></tr></thead>
         <tbody>
-          <tr><td><span class="k">First name</span></td><td><span class="k">Dave</span></td></tr>
-          <tr><td><span class="k">Last name</span></td><td><span class="k">Mitchell</span></td></tr>
-          <tr><td><span class="k">Phone</span></td><td><span class="k">0412 345 678, stored in international form</span></td></tr>
+          <tr><td><span class="k">First Name</span></td><td><span class="k">Dave</span></td></tr>
+          <tr><td><span class="k">Last Name</span></td><td><span class="k">Mitchell</span></td></tr>
+          <tr><td><span class="k">Phone</span></td><td><span class="k">0412 345 678</span></td></tr>
           <tr><td><span class="k">Email</span></td><td><span class="k">dave.mitchell@example.com</span></td></tr>
           <tr><td><span class="k">Postal Code</span></td><td><span class="k">3931</span></td></tr>
-          <tr><td><span class="k">Street Address</span></td><td><span class="opt">Leave empty</span></td></tr>
-          <tr><td><span class="k">City</span></td><td><span class="opt">Leave empty</span></td></tr>
+          <tr><td><span class="k">Street Address</span></td><td><span class="opt">Genuinely empty</span></td></tr>
+          <tr><td><span class="k">City</span></td><td><span class="opt">Genuinely empty</span></td></tr>
           <tr><td><span class="k">Property type</span></td><td><span class="k">Home</span></td></tr>
           <tr><td><span class="k">Areas to insulate</span></td><td><span class="k">Underfloor, Walls</span></td></tr>
           <tr><td><span class="k">Building stage</span></td><td><span class="k">Existing building (retrofit)</span></td></tr>
           <tr><td><span class="k">Timeframe</span></td><td><span class="k">Next 1 to 3 months</span></td></tr>
-          <tr><td><span class="k">Enquiry message</span></td><td><span class="k">his own words about the freezing floor and the daylight gap</span></td></tr>
+          <tr><td><span class="k">Enquiry message</span></td><td><span class="k">his own words about the floor and the daylight gap</span></td></tr>
           <tr><td><span class="k">Marketing consent</span></td><td><span class="k">no</span></td></tr>
         </tbody>
       </table>
     </div>
 
-    <div class="note">
-      <b>Asking and writing are two different things.</b> "Skip objective if field is already filled" decides whether the step asks. Whether the answer lands is decided separately, and a field that already holds a value keeps it. So a step can ask the question, hear a perfectly good answer, and quietly discard it. That is how a timeframe answered "next month or so" stays reading "floor is freezing in winter".
+    <h3 style="margin-top:2.4rem;font-size:1.2rem" id="test-c">Test C, someone who says everything up front</h3>
+    <p class="sec-lede">Four turns. This is the one your own question raised: a person who mentions the building and the parts in passing must not then be asked about them. It passes only if the bot asks for what it genuinely does not know, and nothing more.</p>
+    <div class="turns">
+      <div class="turn">
+        <span class="turn__n">C1</span>
+        <div class="turn__b">
+          <span class="act__lbl">You type</span>
+          <div class="pre">gday, weatherboard place in frankston. floor is freezing and the walls are bad too. can someone come out and price it up?</div>
+          <span class="act__lbl eg-if">It should</span>
+          <p>One message carrying the building, the parts, the location and an explicit request for a visit. The trigger should fire on it.</p>
+        </div>
+      </div>
+      <div class="turn">
+        <span class="turn__n">C2</span>
+        <div class="turn__b">
+          <span class="act__lbl">You type</span>
+          <div class="pre">Sarah Nguyen</div>
+          <span class="act__lbl eg-if">It should</span>
+          <p>The name step asks, the rest should not. It must NOT ask what kind of building it is, and it must NOT ask which parts. Both were said in the first message, and every asking step is told to take an answer given earlier in the conversation.</p>
+        </div>
+      </div>
+      <div class="turn">
+        <span class="turn__n">C3</span>
+        <div class="turn__b">
+          <span class="act__lbl">You type</span>
+          <div class="pre">0498 765 432</div>
+          <span class="act__lbl eg-if">It should</span>
+          <p>Then email, then postcode if it did not take Frankston as one.</p>
+        </div>
+      </div>
+      <div class="turn">
+        <span class="turn__n">C4</span>
+        <div class="turn__b">
+          <span class="act__lbl">You type</span>
+          <div class="pre">sarah.nguyen@example.com</div>
+          <span class="act__lbl eg-if">It should</span>
+          <p>From here it should only be asking for things she genuinely has not said. If it asks her which parts need doing, the context rule is not landing.</p>
+        </div>
+      </div>
     </div>
 
     <div class="note">
-      <b>Delete the test contact before every run, or the results are meaningless.</b> A field that already holds a value does not get written again. On a second run the steps still execute and still show green in the log, but nothing changes, and a wrong value from an earlier test survives every attempt to correct it. Use a fresh email and phone each time, or delete the contact first.
+      <b>Test C has a loose end worth watching.</b> Nothing captures a second building. If someone says "a house and a container", the container should end up in the enquiry message, because there is no field for it. If it vanishes entirely, that is a real gap and worth telling me about.
     </div>
 
-    <div class="note">
-      <b>What that looks like when it happens.</b> In one run the bot never asked about the property type, the parts or the building stage, yet all three steps logged as executed and the record held answers. They were from the run before. Timeframe is the tell: it was asked, answered "next month or so", and still read "floor is freezing in winter" from a previous test. If the log says executed and the chat never asked, the field was already full.
-    </div>
-
-    <div class="note">
-      <b>The chat is not the record.</b> What the agent says and what the capture step wrote are two different things, and they can disagree. A chat line reading "Home, 60s weatherboard" may sit above a field holding exactly "Home". Judge it on the contact record every time, never on what the conversation looked like. The acknowledgement email is where the customer gets to check their own details, so that is the other thing to open.
-    </div>
-
-    <div class="note">
-      <b>Two things to look at that are not fields.</b> The source should say the enquiry came from the chat and not the form, or you will never know what the bot is worth. And the same first response a form fill triggers should have gone out, to the same person, in the same words.
-    </div>
-
-    <h3 style="margin-top:2.2rem;font-size:1.2rem">Seven things to try after that</h3>
-    <p class="sec-lede">One line each, in a fresh chat. These are the rules a single conversation cannot reach.</p>
+    <h3 style="margin-top:2.4rem;font-size:1.2rem">Eight single lines, each in a fresh chat</h3>
+    <p class="sec-lede">The rules a conversation cannot reach.</p>
     <div class="tablewrap">
       <table>
         <thead><tr><th>Ask it</th><th>It should</th></tr></thead>
         <tbody>
-          <tr><td><span class="k">are you a real person?</span></td><td>Says it is the website assistant and offers to have one of the family call. It must not dodge the question or claim to be staff.</td></tr>
-          <tr><td><span class="k">roughly what do you charge per square metre?</span></td><td>The price rule again, asked a different way. Still no number.</td></tr>
-          <tr><td><span class="k">the crew who came last month left a mess</span></td><td>Stops. Takes name and number, says a person will call, does not defend or explain.</td></tr>
-          <tr><td><span class="k">can you send me the safety data sheet for LD-C-50?</span></td><td>Hands it to the team rather than answering or linking anything.</td></tr>
-          <tr><td><span class="k">do you do asbestos removal?</span></td><td>Not in the knowledge base. It should say so plainly and offer a call, not reason its way to a guess.</td></tr>
-          <tr><td><span class="k">can you book me in for next Tuesday?</span></td><td>No appointment, no date. It takes the details and says the team confirms timing.</td></tr>
-          <tr><td><span class="k">my mate said foam causes mould, is that right?</span></td><td>Answers on vapour permeance from document 4, and should not dismiss the concern or overclaim.</td></tr>
+          <tr><td><span class="k">are you a real person?</span></td><td>Says it is the website assistant and offers to have one of the family call. It must not dodge or imply otherwise.</td></tr>
+          <tr><td><span class="k">whats your best price per square metre</span></td><td>No number, asked a different way.</td></tr>
+          <tr><td><span class="k">the crew who came last month left a mess</span></td><td>Human Handover. Takes a name and number, says a person will call, does not defend or explain.</td></tr>
+          <tr><td><span class="k">can you email me the safety data sheet for LD-C-50?</span></td><td>Hands it to the team rather than answering or linking anything.</td></tr>
+          <tr><td><span class="k">do you do asbestos removal?</span></td><td>Not in the knowledge base. Says so plainly and offers a call, rather than reasoning its way to a guess.</td></tr>
+          <tr><td><span class="k">can you book me in for next Tuesday morning?</span></td><td>No date, no time. Takes the details and says the team confirms timing.</td></tr>
+          <tr><td><span class="k">my mate reckons foam causes mould, true?</span></td><td>Answers on vapour permeance from document 4, without dismissing the concern.</td></tr>
+          <tr><td><span class="k">do you cover Geelong?</span></td><td>Answers from document 1: Australia-wide, and take the details so the team can confirm. This is a question, so it should not route on its own.</td></tr>
         </tbody>
       </table>
     </div>
   </div>
-
-    <h3 style="margin-top:2.2rem;font-size:1.2rem">What the first live run found</h3>
-    <p class="sec-lede">Run on 14 September 2026, against the instructions as they stood then. The underfloor answer and the price refusal were both correct. Four things were not, and all four are now covered in section 02.</p>
-    <div class="tablewrap">
-      <table>
-        <thead><tr><th>What happened</th><th>Why it matters</th></tr></thead>
-        <tbody>
-          <tr><td>Took an overseas mobile without comment</td><td>The website form rejects any number that is not Australian. The agent had no such rule, so a lead arrived that nobody can ring.</td></tr>
-          <tr><td>Accepted a GPO Box as the property address</td><td>A post office box cannot be insulated. It went in as the address and was never questioned.</td></tr>
-          <tr><td>Confirmed one postcode, read back another</td><td>It agreed to 1000, then read back Melbourne VIC 3001, and never asked which one was the property.</td></tr>
-          <tr><td>Read back conversation instead of labels</td><td>"Home, 60s weatherboard" and "Underfloor mainly, walls also (whole property not sure)". Check the contact record to see whether the fields themselves were also wrong.</td></tr>
-        </tbody>
-      </table>
-    </div>
 </section>
 
 <!-- =============================================================== GO LIVE -->
