@@ -178,20 +178,97 @@ CONTACT DETAILS YOU MAY GIVE OUT
 Phone 0428 26 36 26. Email info@sprayitsolutions.com.au. Address Factory 4, 114 Colemans Road, Carrum Downs, VIC 3201.</div></div>
     </div>
 
-    <h3 style="margin-top:2.2rem;font-size:1.2rem">What the flow builder has to hold</h3>
-    <p class="sec-lede">Everything above is behaviour. The enquiry itself is a sequence, and a sequence belongs in the flow where it can be seen and fixed, rather than in a paragraph hoping the model follows it. I have not seen the builder yet, so this is what it needs to do rather than how to build it.</p>
-    <ol class="ol">
-      <li><span><b>One step per question, in this order.</b> Name, mobile, email, postcode, what kind of building, which parts. Then offer the address, the stage, the timeframe and anything else, and let each of those be skipped.</span></li>
-      <li><span><b>The name step captures one answer and splits it.</b> The chat window takes a name as a single box, so asking for a first name and a last name separately is wrong twice over.</span></li>
-      <li><span><b>Which parts accepts more than one answer</b> and joins them with a comma and a space. Every other fixed-choice step accepts exactly one.</span></li>
-      <li><span><b>Each step writes its own field</b> using the nine descriptions in section 05, which are what constrain the value.</span></li>
-      <li><span><b>The consent question, in exactly these words.</b> "Would you also like occasional SMS and email updates from Spray It Solutions about quotes, offers and services? You can opt out any time by replying STOP or using the unsubscribe link. This is optional and your enquiry goes through either way." Under the Spam Act the evidence is the wording a person was shown, so this is not a sentence to improve. It defaults to no, and it is the one field never left empty.</span></li>
-      <li><span><b>A readback before submitting,</b> showing what was stored rather than a paraphrase of the conversation.</span></li>
-      <li><span><b>An entry condition, not an opening.</b> The flow starts only when the person has shown they want a quote. Everything before that is the bot answering questions.</span></li>
-    </ol>
+    <h3 style="margin-top:2.2rem;font-size:1.2rem" id="flow">The flow</h3>
+    <p class="sec-lede">The splitter is the intent gate, moved out of the prompt and into something you can see. Everything the bot does before someone asks for a quote happens on one branch, and the enquiry happens on the other.</p>
+
+    <div class="pre" style="font-family:var(--mono);line-height:1.9">Conversation AI trigger, Chat Initiated
+   |
+AI Splitter
+   |-- General Questions  -&gt;  AI Message  -&gt;  Continue Conversation  -&gt;  back to the AI Splitter
+   |-- Submit Enquiry     -&gt;  the capture sequence, then Add Contact Info
+   '-- No condition met   -&gt;  the same two actions as General Questions</div>
 
     <div class="note">
-      <b>Send me the Flow Builder screen when you open it.</b> The steps above are what has to happen. Whether a step can hold a field description, whether a choice step can take more than one answer, and whether a step can be skipped are all things I would be guessing at, and guessing is how the last two rounds of oddities happened.
+      <b>Point "No condition met" at the same pair as General Questions.</b> An unclassified message is still a person waiting for an answer. Leaving that branch empty is how a chat goes silent, which you have already seen once.
+    </div>
+
+      <div class="doc">
+        <div class="doc__head">
+          <span class="doc__n">F1</span>
+          <span class="doc__t">AI Splitter, Description</span>
+          <span class="doc__meta">199 words</span>
+          <button type="button" class="btn" data-copy="f1" data-plain="1">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+            Copy
+          </button>
+        </div>
+        <div class="doc__body"><div class="pre" id="f1-src">Decide whether this person is asking us something, or asking us to quote a job.
+
+Send to General Questions when they are asking about spray foam, about Spray It Solutions, about how the work is done, or anything else they want to know. This is where most people belong, and it is where anyone who says they are researching, just looking, or asking for a friend belongs.
+
+Send to Submit Enquiry only once they have shown they want us to quote or to visit. That means they have asked what it would cost for their own place, asked for a quote, asked to book or to have someone come out, asked whether we cover their area, or answered yes when offered. Someone who has described their own building and a problem with it, and has run out of questions, also belongs here.
+
+A question about price is not the same as a request to be contacted. Someone asking what spray foam usually costs is still a general question until they ask about their own building.
+
+If you cannot tell, send them to General Questions. Answering someone is never the wrong move. Asking a researcher for their phone number is.</div></div>
+      </div>
+      <div class="doc">
+        <div class="doc__head">
+          <span class="doc__n">F2</span>
+          <span class="doc__t">General Questions, AI Message</span>
+          <span class="doc__meta">126 words</span>
+          <button type="button" class="btn" data-copy="f2" data-plain="1">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+            Copy
+          </button>
+        </div>
+        <div class="doc__body"><div class="pre" id="f2-src">Answer what they asked, using the knowledge base. If the answer is not in there, say so plainly and offer to have one of the family call them, rather than guessing.
+
+Do not ask for any of their details. Do not pitch, and do not put a sales line on the end of a good answer.
+
+One exception. If they have described their own building and a problem with it, and they seem to have finished asking, you may offer once: ask whether they would like one of the family to take a look and price it properly. Phrase it as a question they can say no to, and end the message there. If they decline, or just ask something else, do not raise it again.</div></div>
+      </div>
+
+    <h3 style="margin-top:2rem;font-size:1.1rem">On the second trigger</h3>
+    <p class="sec-lede">Try the loop before you add one. If Continue Conversation can return to the AI Splitter, every new message the person sends gets re-read, and the moment they ask for a quote the splitter moves them across on its own. That is one trigger, one gate, and one place to fix it when it misroutes.</p>
+    <p class="sec-lede">A second trigger is the fallback if the loop is not possible, and it costs something: intent then lives in two places, and a person who asks for a quote mid-answer can end up in both at once. If you do add one, have it enrol only contacts who are not already in the enquiry branch.</p>
+
+    <div class="note">
+      <b>The warning on that panel does not apply here.</b> It says to capture the details first because a splitter that branches on a stored value needs the value to exist. This one branches on what the person has said, which is already in the conversation. Nothing needs capturing before it.
+    </div>
+
+    <h3 style="margin-top:2rem;font-size:1.1rem">The Submit Enquiry branch</h3>
+    <p class="sec-lede">Ten questions, in this order, each its own step so the flow asks one thing and waits. Send me the AI Capture Information panel and I will write the wording for each step the way I did for the field descriptions.</p>
+    <ol class="ol">
+      <li><span><b>Name.</b> One question, one answer, split into first and last. The chat window may already have it, in which case skip the step.</span></li>
+      <li><span><b>Mobile.</b> Australian number. The website form rejects anything else.</span></li>
+      <li><span><b>Email.</b></span></li>
+      <li><span><b>Postcode.</b> Four digits, and it belongs to the property, not the person.</span></li>
+      <li><span><b>What kind of building.</b> One of the six labels.</span></li>
+      <li><span><b>Which parts.</b> One or more of the five labels, joined with a comma and a space. The only step that takes more than one answer.</span></li>
+      <li><span><b>Where it is.</b> Street and suburb, skippable. A PO Box is not a building.</span></li>
+      <li><span><b>The stage.</b> One of the three labels, skippable.</span></li>
+      <li><span><b>The timeframe.</b> One of the four labels, skippable.</span></li>
+      <li><span><b>Anything else.</b> Their own words, kept as written, skippable.</span></li>
+    </ol>
+    <p class="sec-lede">Then the consent question below, a readback of what was stored rather than a paraphrase, and the nine Add Contact Info field updates from section 05.</p>
+
+      <div class="doc">
+        <div class="doc__head">
+          <span class="doc__n">F3</span>
+          <span class="doc__t">The consent question, word for word</span>
+          <span class="doc__meta">42 words</span>
+          <button type="button" class="btn" data-copy="f3" data-plain="1">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+            Copy
+          </button>
+        </div>
+        <div class="doc__body"><div class="pre" id="f3-src">Would you also like occasional SMS and email updates from Spray It Solutions about quotes, offers and services? You can opt out any time by replying STOP or using the unsubscribe link. This is optional and your enquiry goes through either way.</div><p style="margin-top:.7rem">Under the Spam Act the evidence is the wording a person was actually shown, so this is not a sentence to improve. It defaults to no, and it is the one field never left empty. Store no if they decline, change the subject, or are never asked.</p></div>
+      </div>
+
+
+    <div class="note">
+      <b>Human Handover belongs on this branch too.</b> A complaint, an invoice question or anything about work already done can arrive at any point. The hand-over triggers are listed in the Additional Information field, and the Human Handover action is what should fire on them rather than the bot trying to answer.
     </div>
   </div>
 </section>
