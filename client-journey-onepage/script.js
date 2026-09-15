@@ -345,6 +345,11 @@
     return Object.keys(found).sort();
   }
 
+  function stageTag(stage, pipeline) {
+    if (!pipeline || pipeline.system) return '';
+    return 'stage-' + (pipeline.id === 'residential' ? 'res' : 'com') + '-' + stage.key;
+  }
+
   function stageFacts(stage, pipeline) {
     var idx = pipeline ? pipeline.stages.indexOf(stage) : -1;
     var wonIdx = pipeline ? pipeline.stages.findIndex(function (s) { return s.won; }) : -1;
@@ -355,6 +360,8 @@
     if (stage.stalls) html += '<div class="fact"><b>' + (CLIENT ? 'Flag it after' : 'Stalls after') + '</b><span>' + esc(stage.stalls) + '</span></div>';
     if (pipeline) html += '<div class="fact' + (status.indexOf('on') > -1 || status.indexOf('Won') > -1 ? ' won' : '') + '"><b>' + (CLIENT ? 'Where the sale is' : 'Status') + '</b><span>' + status + '</span></div>';
     if (AGENCY) {
+      var tg = stageTag(stage, pipeline);
+      if (tg) html += '<div class="fact fact--tag"><b>Tag on the contact</b><span><code>' + esc(tg) + '</code></span></div>';
       var wfs = workflowsFor(stage);
       html += '<div class="fact fact--wf"><b>Built by</b><span>'
         + (wfs.length
@@ -591,6 +598,21 @@
     }).join(''));
 
     /* agency page only: fields to create, reuse steps, go-live checklist */
+    if (J.tags) set('tagList',
+      '<p class="sec-lede" style="margin-bottom:1rem">' + esc(J.tags.stageRule) + '</p>'
+      + '<div class="tagfam">' + J.tags.families.map(function (f) {
+        return '<div class="tagfam__i"><code>' + esc(f.k) + '</code><b>' + esc(f.life) + '</b><p>' + esc(f.why) + '</p></div>';
+      }).join('') + '</div>'
+      + '<table class="tagtbl"><thead><tr><th>Tag</th><th>What it means</th><th>Set by</th></tr></thead><tbody>'
+      + J.tags.list.map(function (t) {
+        var by = (J.workflows || []).filter(function (w) { return w.tags && (w.tags.add || []).indexOf(t.t) > -1; }).map(function (w) { return w.id; });
+        var off = (J.workflows || []).filter(function (w) { return w.tags && (w.tags.remove || []).indexOf(t.t) > -1; }).map(function (w) { return w.id; });
+        return '<tr><td><code>' + esc(t.t) + '</code></td><td>' + esc(t.why) + '</td><td>'
+          + (by.length ? by.join(', ') : '<span class="tag__none">' + esc(t.by || 'nothing sets this yet') + '</span>')
+          + (off.length ? '<br><span class="tag__off">off again: ' + off.join(', ') + '</span>' : '')
+          + '</td></tr>';
+      }).join('') + '</tbody></table>');
+
     if (J.customFields) set('customFields', J.customFields.map(function (g) {
       return '<h3 class="fields__h">' + esc(g.group) + '</h3>'
         + (g.note ? '<p class="sec-lede" style="margin-bottom:.9rem">' + esc(g.note) + '</p>' : '')
@@ -684,6 +706,11 @@
           + '<div class="wf__trigger"><b>Trigger</b> ' + esc(w.trigger) + '</div>'
           + (w.why ? '<p class="wf__why">' + esc(w.why) + '</p>' : '')
           + '<ol class="wf__steps">' + w.steps.map(stepHtml).join('') + '</ol>'
+          + (w.tags ? '<div class="wf__tags">'
+            + (w.tags.add || []).map(function (t) { return '<span class="tag tag--add">+ ' + esc(t) + '</span>'; }).join('')
+            + (w.tags.remove || []).map(function (t) { return '<span class="tag tag--rm">- ' + esc(t) + '</span>'; }).join('')
+            + (w.tags.note ? '<span class="tag__note">' + esc(w.tags.note) + '</span>' : '')
+            + '</div>' : '')
           + '<div class="wf__foot"><b>Stops</b> ' + esc(w.stops || '') + (w.error ? '<br><b>On error</b> ' + esc(w.error) : '') + '</div>'
           + '</div></details>';
       };

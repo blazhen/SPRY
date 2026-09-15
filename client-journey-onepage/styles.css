@@ -527,6 +527,22 @@ td .chip { font-size: .58rem; }
 .wf__msg { text-decoration: none; }
 .wf__msgtext { color: var(--ink-2); }
 .wf__note { color: var(--ink-3); font-size: .84rem; margin-left: .35rem; }
+/* ------------------------------------------------------------------ tags */
+.wf__tags { display: flex; flex-wrap: wrap; align-items: center; gap: .35rem; margin-top: .9rem; }
+.tag {
+  font-family: var(--mono); font-size: .78rem; border-radius: 6px; padding: .2em .55em; white-space: nowrap;
+}
+.tag--add { background: var(--green-wash); color: var(--green-ink); border: 1px solid var(--green); }
+.tag--rm { background: var(--surface-2); color: var(--ink-3); border: 1px solid var(--line); text-decoration: line-through; }
+.tag__note { font-size: .86rem; color: var(--ink-3); flex-basis: 100%; }
+.fact--tag code { font-family: var(--mono); font-size: .86rem; color: var(--navy); }
+.tagfam { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(230px, 100%), 1fr)); gap: .8rem; margin-bottom: 1.4rem; }
+.tagfam__i { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: .9rem 1rem; }
+.tagfam__i code { font-family: var(--mono); font-size: .95rem; color: var(--navy); font-weight: 600; }
+.tagfam__i b { display: block; font-size: .7rem; letter-spacing: .1em; text-transform: uppercase; color: var(--green-ink); margin: .3rem 0 .4rem; }
+.tagfam__i p { font-size: .92rem; color: var(--ink-2); margin: 0; }
+.tagtbl code { font-family: var(--mono); font-size: .86rem; white-space: nowrap; }
+.tag__none, .tag__off { font-size: .84rem; color: var(--ink-3); }
 .wf__foot { margin-top: .9rem; padding-top: .8rem; border-top: 1px solid var(--line-soft); font-size: .93rem; color: var(--ink-2); }
 .wf__foot b { font-size: .64rem; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-3); margin-right: .5rem; }
 .st { display: inline-block; font-size: .66rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; padding: .34em .6em; border-radius: 6px; white-space: nowrap; text-align: center; margin-top: .15rem; }

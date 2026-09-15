@@ -144,6 +144,37 @@ else {
     if (nums.join(',') !== [...nums].sort().join(',')) bad('folders are not in number order')
     ok(`${J.folders.length} folders, all ${J.workflows.length} workflows filed exactly once`)
   }
+
+  /* tags: every reference resolves, every named tag has a job, and anything
+     a workflow puts on has something that can take it off again */
+  if (!J.tags || !Array.isArray(J.tags.list)) bad('tags missing')
+  else {
+    const named = new Set(J.tags.list.map((t) => t.t))
+    if (named.size !== J.tags.list.length) bad('a tag is listed twice')
+    for (const t of J.tags.list) {
+      if (!t.why) bad(`${t.t} has no note saying what it means`)
+      if (!/^(been|is|from)-/.test(t.t)) bad(`${t.t} is not in a family`)
+    }
+    /* a tag nothing sets has to say why, or it is just a tag nobody uses */
+    const setBy = new Set(J.workflows.flatMap((w) => (w.tags && w.tags.add) || []))
+    for (const t of J.tags.list) {
+      if (!setBy.has(t.t) && !t.by) bad(`${t.t} is set by no workflow and does not say what does set it`)
+    }
+    const added = new Set(); const removed = new Set()
+    for (const w of J.workflows) {
+      if (!w.tags) continue
+      for (const t of w.tags.add || []) { if (!named.has(t)) bad(`${w.id} adds unknown tag ${t}`); added.add(t) }
+      for (const t of w.tags.remove || []) { if (!named.has(t)) bad(`${w.id} removes unknown tag ${t}`); removed.add(t) }
+    }
+    for (const t of J.tags.list) {
+      if (t.t.startsWith('is-') && added.has(t.t) && !removed.has(t.t) && t.t !== 'is-no-marketing' && t.t !== 'is-complaint') {
+        bad(`${t.t} goes on and nothing takes it off`)
+      }
+    }
+    const stage = J.pipelines.flatMap((p) => p.stages.map((st) => 'stage-' + (p.id === 'residential' ? 'res' : 'com') + '-' + st.key))
+    if (new Set(stage).size !== stage.length) bad('two stages derive the same tag')
+    ok(`${J.tags.list.length} named tags in ${J.tags.families.length} tag families, plus ${stage.length} derived stage tags`)
+  }
 }
 
 /* every task and notification carries a title and a description, because both

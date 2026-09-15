@@ -1717,6 +1717,48 @@ window.JOURNEY = {
    * priority makes a poor filing system: the missed call text-back is built
    * first and lives in Intake with everything else from that moment.
    */
+  /**
+   * Tags, in three families plus a source.
+   *
+   * The families exist because lifetime is what makes a tag list usable. A
+   * stage tag is true now and wrong tomorrow. A been- tag is true forever. An
+   * is- tag is true until it is not. Mixing those three in one flat list is
+   * how a CRM ends up with four hundred tags nobody trusts.
+   *
+   * The stage tags are not listed here. They are derived: stage-res- or
+   * stage-com- plus the stage key, one per stage, so the 27 of them cannot
+   * fall out of step with the 27 stages. Applied on entry, previous one
+   * removed, by whichever workflow moves the card.
+   */
+  tags: {
+    stageRule: 'stage- plus res or com plus the stage key. One at a time, swapped on every move.',
+    families: [
+      { k: 'stage-', life: 'One at a time', why: 'Where they are right now. The card carries the stage too, but the card closes and the person does not.' },
+      { k: 'been-', life: 'Never removed', why: 'What has happened to them. The family that answers quoted but never won, or assessed and never booked.' },
+      { k: 'is-', life: 'Cleared when false', why: 'What is true right now. Every one of these has something that takes it off again.' },
+      { k: 'from-', life: 'Set once', why: 'How they arrived. Set on the way in and left alone.' },
+    ],
+    list: [
+      { t: 'been-enquired', why: 'They got in touch. Set on the very first contact, whichever way it came.' },
+      { t: 'been-contacted', why: 'Somebody from the team actually reached them. Not the same as having tried.' },
+      { t: 'been-consulted', why: 'The phone consult happened. Booking one is not this.' },
+      { t: 'been-assessed', why: 'Somebody stood in the building. The point where a real number becomes possible.' },
+      { t: 'been-quoted', why: 'A written price went out, on either board.' },
+      { t: 'been-won', why: 'They said yes at least once.' },
+      { t: 'been-lost', why: 'A quote died. Kept forever, because a lost lead two years ago is a warm one today.' },
+      { t: 'been-customer', why: 'They paid. The one tag worth having a segment for on its own.' },
+      { t: 'been-reviewed', why: 'They left a review. Stops the ask going out twice.', by: 'Nothing here sets it. WF-29 only fires under four stars, so a good review is noticed by the review integration or by hand.' },
+      { t: 'is-stalled', why: 'The card has sat too long. Removed the moment anything moves.' },
+      { t: 'is-unresponsive', why: 'Chased and heard nothing back. Removed on any reply.' },
+      { t: 'is-nurturing', why: 'On the long drip. Removed when they come back or unsubscribe.' },
+      { t: 'is-no-marketing', why: 'They said STOP or unsubscribed. Nothing marketing may send while this is on.' },
+      { t: 'is-complaint', why: 'An open complaint. A human owns them until it comes off.' },
+      { t: 'from-website', why: 'The quote form.' },
+      { t: 'from-phone', why: 'They rang, including a missed call.' },
+      { t: 'from-chat', why: 'The website assistant.', by: 'The chat sets it on the way in, before any workflow runs.' },
+    ],
+  },
+
   folders: [
     { n: '01', name: "Intake", why: "The first few minutes, before anybody has read the lead.", ids: ["WF-01","WF-02","WF-22","WF-23"] },
     { n: '02', name: "Contact and qualify", why: "Getting hold of them, and working out whether it is a job.", ids: ["WF-03","WF-04","WF-05","WF-06"] },
@@ -1732,6 +1774,7 @@ window.JOURNEY = {
   workflows: [
     {
       id: 'WF-01',
+      tags: { add: ["from-website","been-enquired"], note: "and the New Enquiry stage tag for whichever board it lands on" },
       folder: '01', name: 'Website lead intake', board: 'both',
       trigger: 'Inbound webhook from the website quote form',
       why: 'Everything downstream depends on this one being right: the contact, the consent record, the attribution, and which board the card lands on.',
@@ -1775,6 +1818,7 @@ window.JOURNEY = {
     },
     {
       id: 'WF-03',
+      tags: { add: ["been-contacted"], note: "is-unresponsive goes on instead if the ladder reaches its honest close" },
       folder: '02', name: 'The chase', board: 'both',
       trigger: 'Stage changed to Contacting',
       why: 'Five attempts over seven days, then an honest close. Capped, so a card never rots here.',
@@ -1797,6 +1841,7 @@ window.JOURNEY = {
     },
     {
       id: 'WF-04',
+      tags: { add: ["been-contacted"] },
       folder: '02', name: 'Phone consult booked', board: 'both',
       trigger: 'Appointment booked in the phone consult calendar',
       why: 'Confirm, remind twice, and make sure the person who calls has read the enquiry.',
@@ -1814,6 +1859,7 @@ window.JOURNEY = {
     },
     {
       id: 'WF-05',
+      tags: { add: ["is-unresponsive"], note: "only on a no-show, not on a reschedule" },
       folder: '02', name: 'Consult changed, cancelled or missed', board: 'both',
       trigger: 'Appointment status changed: rescheduled, cancelled, or no-show',
       why: 'A hole in the diary is recoverable if it is caught early.',
@@ -1826,6 +1872,7 @@ window.JOURNEY = {
     },
     {
       id: 'WF-06',
+      tags: { add: ["been-consulted"] },
       folder: '02', name: 'Qualified', board: 'residential',
       trigger: 'Stage changed to Qualified',
       why: 'The deal becomes real here. A forecast value is set and the customer is pointed at the assessment calendar.',
@@ -1840,6 +1887,7 @@ window.JOURNEY = {
     },
     {
       id: 'WF-07',
+      tags: { add: ["been-consulted"] },
       folder: '03', name: 'Assessment or inspection booked', board: 'both',
       trigger: 'Appointment booked in the assessment calendar, or stage changed to Assessment Booked / Inspection Booked',
       why: 'One confirmation with the address, one text on the morning, and a task for whoever is going.',
@@ -1881,6 +1929,7 @@ window.JOURNEY = {
     },
     {
       id: 'WF-09',
+      tags: { add: ["been-assessed","been-quoted"] },
       folder: '04', name: 'Quote sent and the follow-up', board: 'residential',
       trigger: 'Stage changed to Quote Sent',
       why: 'The follow-up that converts quotes: day 2, 5, 10, 21, then a decision. Never left sitting.',
@@ -1905,6 +1954,7 @@ window.JOURNEY = {
     },
     {
       id: 'WF-10',
+      tags: { add: ["been-quoted"] },
       folder: '04', name: 'Proposal submitted and the review', board: 'commercial',
       trigger: 'Stage changed to Proposal Submitted',
       why: 'The commercial follow-up: slower, plainer, and it asks for a decision date.',
@@ -1934,6 +1984,7 @@ window.JOURNEY = {
     },
     {
       id: 'WF-12',
+      tags: { add: ["been-lost"] },
       folder: '05', name: 'Lost', board: 'both',
       trigger: 'Status changed to Lost',
       why: 'A Lost with no reason teaches nothing. A graceful goodbye brings a surprising number of jobs back.',
@@ -1948,6 +1999,7 @@ window.JOURNEY = {
     },
     {
       id: 'WF-13',
+      tags: { add: ["is-nurturing"] },
       folder: '05', name: 'Nurture drip', board: 'both',
       trigger: 'Stage changed to Nurture or Future Project, or the tag nurture added',
       why: 'Right job, wrong time. Marketing, so consent-gated, with a permission reset at ninety days.',
@@ -1971,6 +2023,7 @@ window.JOURNEY = {
     },
     {
       id: 'WF-14',
+      tags: { add: ["been-won"], remove: ["is-nurturing","is-stalled","is-unresponsive"] },
       folder: '05', name: 'Won', board: 'both',
       trigger: 'Status changed to Won',
       why: 'Kills every sales sequence, thanks the customer, and hands the office its two tasks.',
@@ -2092,6 +2145,7 @@ window.JOURNEY = {
     },
     {
       id: 'WF-21',
+      tags: { add: ["been-customer"], note: 'been-reviewed goes on only when a review actually lands, which stops the ask repeating' },
       folder: '07', name: 'Paid & Closed', board: 'both',
       trigger: 'Stage changed to Paid & Closed',
       why: 'The most valuable stage on the board: review, referral, and a check-in a year out.',
@@ -2114,6 +2168,7 @@ window.JOURNEY = {
     },
     {
       id: 'WF-22',
+      tags: { add: ["from-phone","been-enquired"] },
       folder: '01', name: 'Missed call text-back', board: 'both',
       trigger: 'Inbound call to the business number not answered',
       why: 'For a trade business where the phone rings while someone is up a ladder, the single highest-value automation on the list.',
@@ -2139,6 +2194,7 @@ window.JOURNEY = {
     },
     {
       id: 'WF-24',
+      tags: { remove: ["is-unresponsive","is-stalled"] },
       folder: '08', name: 'Customer replied', board: 'both',
       trigger: 'Inbound SMS or email from a contact with an open opportunity',
       why: 'A reply is a live conversation. Nothing automatic should talk over it.',
@@ -2152,6 +2208,7 @@ window.JOURNEY = {
     },
     {
       id: 'WF-25',
+      tags: { add: ["is-no-marketing"], remove: ["is-nurturing"] },
       folder: '08', name: 'STOP and unsubscribe', board: 'both',
       trigger: 'Inbound SMS reads STOP, or an email unsubscribe link is used',
       why: 'The platform handles most of this natively. This confirms what it does and adds the bit it does not.',
@@ -2164,6 +2221,7 @@ window.JOURNEY = {
     },
     {
       id: 'WF-26',
+      tags: { add: ["is-stalled"] },
       folder: '08', name: 'Stalled card monitor', board: 'both',
       trigger: 'Scheduled, daily at 6:45am',
       why: 'Escalation toward visibility, not more alarms. A card stuck for forty days is a conversation to have on Monday, not an emergency.',
@@ -2199,8 +2257,9 @@ window.JOURNEY = {
     },
     {
       id: 'WF-29',
+      tags: { add: ["is-complaint"] },
       folder: '08', name: 'Negative review or complaint', board: 'both',
-      trigger: 'Review received under 4 stars, or the tag complaint added to a contact',
+      trigger: 'Review received under 4 stars, or is-complaint added to a contact',
       why: 'Reputation decays fast. A same-day call fixes most of them.',
       steps: [
         { t: 'alert', n: 10 },
@@ -2211,6 +2270,7 @@ window.JOURNEY = {
     },
     {
       id: 'WF-30',
+      tags: { add: ["is-unresponsive"], note: "only on a no-show" },
       folder: '03', name: 'Site visit cancelled or missed', board: 'both',
       trigger: 'Appointment in the assessment calendar cancelled or rescheduled, or marked no-show',
       why: 'A site visit that does not happen is the most expensive failure in the journey. Without this the card sits in Assessment Booked with nothing in the diary, and nobody is told.',

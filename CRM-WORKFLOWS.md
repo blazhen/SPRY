@@ -669,7 +669,7 @@ Escalation toward visibility, not more alarms. A card stuck for forty days is a 
 ### WF-29 · Negative review or complaint
 
 **Board:** Both boards
-**Trigger:** Review received under 4 stars, or the tag complaint added to a contact
+**Trigger:** Review received under 4 stars, or is-complaint added to a contact
 
 Reputation decays fast. A same-day call fixes most of them.
 
