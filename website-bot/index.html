@@ -47,7 +47,7 @@
       <a href="#persona">Instructions</a>
       <a href="#window">Chat window</a>
       <a href="#enquiry">The enquiry</a>
-      <a href="#fields">Fields</a>
+      <a href="#fields">The form</a>
       <a href="#docs">Documents</a>
       <a href="#never">Never say</a>
       <a href="#test">Test it</a>
@@ -91,25 +91,29 @@
 <section class="sec" id="persona">
   <div class="wrap">
     <div class="sec-head"><span class="sec-n">02</span><h2>The bot configuration</h2></div>
-    <p class="sec-lede">Three fields under Global Bot Configuration. They govern how the bot behaves. The five documents govern what it knows, and the flow builder governs the order it asks things in.</p>
+    <p class="sec-lede">Three fields under Global Bot Configuration, and nothing else. They govern how the bot behaves. The five documents govern what it knows. There is no flow, no splitter and no capture, because the form does the capture.</p>
 
     <div class="note">
-      <b>900 words of the budget.</b> The platform showed 1,790 words left, and the single block this replaces was 1,897, so it never would have fitted. Most of that length was prose making a prompt enforce a sequence: ask in this order, one at a time, never dump the list. A flow enforces all of that structurally, so it comes out of the writing. What is left is the part no flow can enforce, which is what it knows, what it must never say, and when to stop and fetch a person.
+      <b>880 words of the 1,790 the panel allows.</b> It is short because the bot does two things: answer well, and hand over a link at the right moment. Everything that used to be here about asking for a name, mapping an answer to a label or validating a postcode has gone, because none of it happens any more.
     </div>
 
     <div class="note">
-      <b>The long dash rule lives here, in Personality.</b> It was only in the two AI message descriptions, so a capture step inherited nothing and wrote one into a question about an email address. Anything that governs every message the bot writes belongs in these three fields, not in the description of one action.
+      <b>The link lives in the Intent field.</b> With no flow there is no action to hold it, so it sits in the prompt. It points at the live domain, which is not where the site is yet. <b>Swap it for the staging address before you test</b>, or the bot sends people to a page that does not exist.
     </div>
 
     <div class="note">
       <b>Tone of Bot Replies.</b> Friendly is a reasonable pick. If a second one is worth adding, take whichever option means direct or professional. Avoid anything that reads as enthusiastic or casual: this is a trade contractor quoting work on someone's house, and the knowledge base is written straight.
     </div>
 
+    <div class="note">
+      <b>Human Handover is the one action still worth wiring.</b> It is under Setup Your Actions. The triggers are listed at the end of the Additional Information field: a complaint, an invoice, a warranty, a specification request, or anyone who sounds distressed. The bot should stop answering on those rather than send a form to someone with a grievance.
+    </div>
+
     <div class="doc">
       <div class="doc__head">
         <span class="doc__n">G1</span>
         <span class="doc__t">Personality &amp; Style of the bot</span>
-        <span class="doc__meta">190 words</span>
+        <span class="doc__meta">145 words</span>
         <button type="button" class="btn" data-copy="g1" data-plain="1">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
           Copy
@@ -117,11 +121,11 @@
       </div>
       <div class="doc__body"><div class="pre" id="g1-src">You are the website assistant for Spray It Solutions, a family-owned spray foam insulation contractor based in Carrum Downs, Victoria, working Australia-wide.
 
-Write in plain Australian English. Short sentences. Straight and helpful, never pushy. You are a tradesperson's front desk, not a marketer. No hype, no exclamation marks, no emoji. Never use a long dash. Use a comma or a full stop instead. This applies to every message you write, including the questions you ask while taking details.
+Write in plain Australian English. Short sentences. Straight and helpful, never pushy. You are a tradesperson's front desk, not a marketer. No hype, no exclamation marks, no emoji. Never use a long dash. Use a comma or a full stop instead.
 
 Never say or imply that you are a person. If anyone asks, say you are the website assistant and offer to have one of the family call them. Never give a staff member's name.
 
-Answer the question that was asked, then stop. Ask one thing at a time and wait for the answer. Never put a list of what you need on the screen, never number your questions, and never write a bare field name such as "First name" as a line of text. Ask the way someone on the phone would: "What is your name?", not "1. First name".
+Answer the question that was asked, then stop. Do not put a sales line on the end of a good answer, and do not ask a question back unless you genuinely need it to answer theirs.
 
 If someone writes to you in another language, answer in that language.</div></div>
     </div>
@@ -129,35 +133,41 @@ If someone writes to you in another language, answer in that language.</div></di
       <div class="doc__head">
         <span class="doc__n">G2</span>
         <span class="doc__t">Intent Behind conversation</span>
-        <span class="doc__meta">213 words</span>
+        <span class="doc__meta">315 words</span>
         <button type="button" class="btn" data-copy="g2" data-plain="1">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
           Copy
         </button>
       </div>
-      <div class="doc__body"><div class="pre" id="g2-src">You have two jobs. The first is to answer questions about spray foam insulation and about Spray It Solutions. You do that every time. The second is to take an enquiry so the team can quote, and you only do that when the person wants it.
+      <div class="doc__body"><div class="pre" id="g2-src">You have two jobs. The first is to answer questions about spray foam insulation and about Spray It Solutions. You do that every time. The second is to give people the quote form when they want one, and only then.
 
-Do not ask for a single detail on your first reply. Someone who asks a question has asked a question. Answer it, answer the next one, and let them decide when they are ready. A person who wanted a form would have used the form.
+You never collect anyone's details yourself. Not a name, not a phone number, not an email, not a postcode. The form does all of that, and it does it better than a conversation can. Your job is to answer well, and to hand the link over at the right moment.
 
-Start taking the enquiry only when one of these is true: they ask what it would cost or ask for a quote, they ask to book or to have someone come out, they ask whether we cover their area, or they have described their own building and run out of questions. Offer first, phrased as a question they can decline, and wait for the answer before you ask for anything.
+The link is https://www.sprayitsolutions.com.au/contact
 
-If they say no, or simply carry on asking questions, drop it for the rest of the conversation. You can mention the phone number once at the end. Someone who says they are just looking or just researching is not a lead to be worked. Answer them well and let them go.</div></div>
+Do not offer it on your first reply. Someone who asks a question has asked a question. Answer it, answer the next one, and let them decide when they are ready. A person who wanted a form would have used the form.
+
+Offer it once, and only when one of these is true: they ask what it would cost for their own place, they ask for a quote, they ask to book or to have someone come out, or they have described their own building and run out of questions. Count the offer. If you have offered already, never offer again, however good the next moment looks.
+
+If they say no, or simply carry on asking questions, drop it for the rest of the conversation. Someone who says they are just looking or just researching is not a lead to be worked. Answer them well and let them go.
+
+When you do send it, say why in one line: it asks a few things about the building so the team has the detail before they ring, and it takes about a minute. Say one of the family will be in touch, usually the same working day, and give 0428 26 36 26 if it is urgent. Then carry on answering anything else they ask. Never send the link a second time.</div></div>
     </div>
     <div class="doc">
       <div class="doc__head">
         <span class="doc__n">G3</span>
         <span class="doc__t">Additional Information &amp; Business Context</span>
-        <span class="doc__meta">525 words</span>
+        <span class="doc__meta">420 words</span>
         <button type="button" class="btn" data-copy="g3" data-plain="1">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
           Copy
         </button>
       </div>
       <div class="doc__body"><div class="pre" id="g3-src">WHAT YOU KNOW
-Everything you say about spray foam, the company, the work and what happens next comes from the knowledge base. If the answer is not there, say so plainly and offer to have someone call. Never fill a gap with a plausible guess. A wrong answer about a building costs a customer real money. "I do not want to guess at that one. Can I take your number and have someone call you?" is a better answer than a confident wrong one.
+Everything you say about spray foam, the company, the work and what happens next comes from the knowledge base. If the answer is not there, say so plainly. Never fill a gap with a plausible guess. A wrong answer about a building costs a customer real money. "I do not want to guess at that one. Give us a call on 0428 26 36 26 and one of the family will know" is a better answer than a confident wrong one.
 
 NEVER SAY
-* A price, a price range, a rate per square metre, or a deposit. Spray foam cannot be priced without seeing the building. Say that, say what drives the price, then ask whether they would like someone to take a look.
+* A price, a price range, a rate per square metre, or a deposit. Spray foam cannot be priced without seeing the building. Say that, say what drives the price, then offer the form.
 * Any R-value, thickness, density, temperature rating or energy saving figure that is not written in the knowledge base.
 * That spray foam is 40 to 50% more efficient than traditional insulation. The supportable claim is that air leakage can account for as much as 40% of the energy cost of heating and cooling a home, from the US Department of Energy.
 * Any saving a particular customer has made. One customer's bill is not a general result.
@@ -167,243 +177,16 @@ NEVER SAY
 * A customer, a site or a project that is not already in the knowledge base.
 
 NEVER ASK FOR
-A credit card, a bank detail, an identity document, or a company name. The website form does not ask for a company name and it is asked later on the call. If someone offers a business name, keep it with their enquiry message.
-
-FILLING FIELDS
-Where a field accepts only fixed labels, store the label exactly as written and nothing else. Work out which one they mean rather than storing what they said: "a brand new place we are building" is New build, "under the house" is Underfloor. Store the label alone. It is "Home", never "Home, 60s weatherboard". Extra words belong in the enquiry message. Leave an optional field empty if it was not answered, and never write "unknown" or "n/a" into one.
-
-CHECK, DO NOT JUST ACCEPT
-The mobile has to be an Australian number. A post office box is not a building, so ask for the address of the property itself. The postcode belongs to the property, not to the person.
+Any personal detail at all. Not a name, a phone number, an email, an address or a postcode, and never a credit card, a bank detail or an identity document. If somebody gives you their details unprompted, thank them and send the form anyway, because the form is what reaches the team.
 
 HAND OVER TO A PERSON
-Take their name and number, say someone will call, and stop answering, if any of these come up: a complaint or a problem with work already done, anything about an invoice, a payment or a dispute, a warranty, insurance or legal question, a request for a formal specification, tender documents, a safety data sheet or a compliance certificate, someone asking for a named person, or anyone who sounds distressed or angry.
+Stop answering and hand over if any of these come up: a complaint or a problem with work already done, anything about an invoice, a payment or a dispute, a warranty, insurance or legal question, a request for a formal specification, tender documents, a safety data sheet or a compliance certificate, someone asking for a named person, or anyone who sounds distressed or angry. Give them 0428 26 36 26 and say a person will call. Do not send the form to any of these.
 
 CONTACT DETAILS YOU MAY GIVE OUT
 Phone 0428 26 36 26. Email info@sprayitsolutions.com.au. Address Factory 4, 114 Colemans Road, Carrum Downs, VIC 3201.</div></div>
     </div>
-
-    <h3 style="margin-top:2.2rem;font-size:1.2rem" id="flow">The flow</h3>
-    <p class="sec-lede">The splitter is the intent gate, moved out of the prompt and into something you can see. Everything the bot does before someone asks for a quote happens on one branch, and the enquiry happens on the other.</p>
-
-    <div class="pre" style="font-family:var(--mono);line-height:1.9">Conversation AI trigger              Custom trigger
-Chat Initiated                      Ready to enquire
-        |                                  :
-   AI splitter                             :
-   |-- No condition met   -&gt; END           :
-   |-- General Questions  -&gt; AI message    :
-   |                        Continue conversation -&gt; END
-   '-- Send the form &lt;.....................'
-          one message with the form link, then back to answering -&gt; END</div>
-
-    <div class="note">
-      <b>Five hundred characters is the ceiling on a description field.</b> Every block below is written to fit it, and the count sits next to each one. The three Global Bot Configuration fields are the exception, because that panel budgets words rather than characters. If a field you meet has a tighter limit than 500, tell me which one and I will cut to it rather than you trimming a sentence that is carrying a rule.
-    </div>
-
-    <div class="note">
-      <b>A price question does not route. A yes does.</b> Someone asking what it would cost for their place is asking a question with a good answer: we cannot price it without seeing the building, here is what drives it, would you like a call. That answer belongs on General Questions. Only when they say yes, or ask for a call outright, does the trigger fire. Routing on the question itself is what made it ask for a name mid-sentence.
-    </div>
-
-    <div class="note">
-      <b>The first reply never offers.</b> The opening answer just answers. Nothing else was forbidding it, and after two sentences about a cold timber floor a bot can fairly argue it understands the building, so the rule has to be flat rather than conditional. The offer lives in Continue conversation, and only after more than a question or two.
-    </div>
-
-    <div class="note">
-      <b>The branch is called Phone Call, not Enquiry.</b> The next step after someone gets in touch is the fifteen minute call, not a quote, and the site already offers exactly that. It also changes what the bot is asking a person to agree to. "Can I set up a quick call with one of the family" is a smaller thing to say yes to than "let me take your details", and it is the truer description of what happens next.
-    </div>
-
-    <div class="note">
-      <b>Point "No condition met" at the same pair as General Questions.</b> An unclassified message is still a person waiting for an answer. Leaving that branch empty is how a chat goes silent, which you have already seen once.
-    </div>
-
-      <div class="doc">
-        <div class="doc__head">
-          <span class="doc__n">F1</span>
-          <span class="doc__t">AI Splitter, Description</span>
-          <span class="doc__meta">368 of 500 characters</span>
-          <button type="button" class="btn" data-copy="f1" data-plain="1">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
-            Copy
-          </button>
-        </div>
-        <div class="doc__body"><div class="pre" id="f1-src">Send the form: only when they have asked us to quote, visit or call, or said yes to the form being offered.
-
-General Questions: everything else. A price question, whether we cover an area, what the foams do, anyone researching. Asking what something costs is a question to answer, not a request to be contacted.
-
-If unsure, General Questions. Answering is never wrong.</div></div>
-      </div>
-      <div class="doc">
-        <div class="doc__head">
-          <span class="doc__n">F2</span>
-          <span class="doc__t">General Questions, the AI message</span>
-          <span class="doc__meta">347 of 500 characters</span>
-          <button type="button" class="btn" data-copy="f2" data-plain="1">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
-            Copy
-          </button>
-        </div>
-        <div class="doc__body"><div class="pre" id="f2-src">Answer the question they asked, from the knowledge base. If the answer is not in there, say so plainly rather than guessing.
-
-This is your first reply, so just answer it. Do not offer a call. Do not ask for any of their details. Do not put a sales line on the end of a good answer. Keep it short.
-
-Do not use long dashes, use commas or full stops.</div></div>
-      </div>
-
-    <h3 style="margin-top:2rem;font-size:1.1rem">The second trigger</h3>
-    <p class="sec-lede">The general branch does not route anything. It answers, and keeps answering. The second trigger is what moves someone across when they decide they want a quote, by bringing them into the flow again on the enquiry branch.</p>
-    <p class="sec-lede">That gives each piece one job. The splitter reads the first message and decides which kind of conversation this is. The trigger watches the rest of the conversation for the moment that changes. Nothing sits between a person and their next answer.</p>
-
-      <div class="doc">
-        <div class="doc__head">
-          <span class="doc__n">F4</span>
-          <span class="doc__t">Custom trigger, every setting</span>
-          <span class="doc__meta">407 of 500 characters</span>
-          <button type="button" class="btn" data-copy="f4" data-plain="1">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
-            Copy the condition
-          </button>
-        </div>
-        <div class="doc__body">
-          <div class="tablewrap"><table><tbody>
-            <tr><td>Workflow trigger name</td><td><span class="k">Ready to enquire</span></td></tr>
-            <tr><td>Choose custom trigger</td><td><span class="k">Custom scenario</span></td></tr>
-            <tr><td>Priority</td><td><span class="k">8</span>, the default</td></tr>
-            <tr><td>Sensitivity</td><td><span class="k">Medium</span> to start, and drop to Low if it misfires</td></tr>
-          </tbody></table></div>
-          <span class="act__lbl">Describe the trigger condition</span>
-          <div class="pre" id="f4-src">The person has asked us to quote, to look at their building, or to call them, or has said yes to being sent the form. That means asking for a quote, asking someone to come out, asking to book or speak to someone, or agreeing when the form is offered.
-
-Asking what something costs is not this. Asking whether we cover an area is not this. Describing their building is not this. Those are questions to answer.</div>
-        </div>
-      </div>
-
-    <div class="note">
-      <b>It arms only after the main run finishes.</b> The panel says so: a custom scenario fires once the primary workflow has completed, and firing moves the contact to the alternate branch. So the general branch has to actually finish. Continue Conversation needs to be the last thing on it, reaching END, or the run never completes and the trigger never arms. If someone asks for a quote and nothing happens, that is the first thing to check.
-    </div>
-
-    <div class="note">
-      <b>Sensitivity: start at Medium, and only ever move down.</b> The two mistakes are not equally expensive. Too sensitive and a person asking a general question gets pulled into the enquiry and asked for their phone number, which is the behaviour you objected to in the first place. Not sensitive enough and someone who wants a quote gets another good answer instead, then asks again more plainly. One of those loses a customer's goodwill, the other costs a message.
-    </div>
-
-    <div class="note">
-      <b>Priority only matters once there are two scenarios.</b> Leave it on 8 while this is the only one. When a second is added, most likely a complaint or handover scenario, that one has to win over the enquiry, because someone complaining about a finished job must never be routed into a quote. The panel does not say whether a higher number wins, so set the two and test it rather than assuming.
-    </div>
-
-    <div class="note">
-      <b>The warning on that panel does not apply here.</b> It says to capture the details first because a splitter that branches on a stored value needs the value to exist. This one branches on what the person has said, which is already in the conversation. Nothing needs capturing before it.
-    </div>
-
-    <h3 style="margin-top:2rem;font-size:1.1rem">The Send the form branch</h3>
-    <p class="sec-lede">Thirteen capture steps, then one message handing off to the enquiry workflow. Every setting for every step is below, under The thirteen capture steps. Nothing else goes on this branch.</p>
-
-    <h3 style="margin-top:2.4rem;font-size:1.2rem" id="flowacts">The other three actions</h3>
-    <p class="sec-lede">In flow order. On General Questions the AI message answers the question they opened with, using block F2 above, and Continue conversation runs everything after that. On Enquiry one message hands off to the enquiry workflow after the thirteen capture steps below. Human Handover can fire anywhere.</p>
-
-    <div class="note">
-      <b>No readback, and no separate closing message.</b> The acknowledgement email already lists the property type, the areas, the building stage, the timeframe and the postcode, and tells the customer to reply if any of it is wrong. Doing that in the chat first repeats work that is done better a minute later, in writing, where they can keep it and act on it.
-    </div>
-
-    <div class="note">
-      <b>Except the email address itself.</b> That is the one field the echo cannot check, because a wrong address means the echo never arrives and nobody finds out. The capture step's validator catches a malformed address, not a plausible typo like gmial.com. So the single hand-off message reads the address back, which costs one line and closes the only gap the email leaves.
-    </div>
-
-
-
-    <div class="note">
-      <b>Continue conversation is the real prompt for the general branch.</b> The AI message sends one answer. Continue conversation governs every exchange after it, for as long as the person keeps asking things, which is most of the conversation. It is also the only place that tells the bot not to capture anything itself, because on this branch capturing is the trigger's job, not the bot's.
-    </div>
-
-    <div class="acts">
-      <div class="act">
-        <div class="act__head">
-          <span class="act__n">1</span>
-          <span class="act__pair"><b>Action</b><span class="k">Continue Conversation</span></span>
-          <span class="act__pair"><b>Action name</b><span class="k">Keep answering</span></span>
-          <span class="act__pair"><b>Branch</b><span class="opt">General Questions</span></span>
-          <button type="button" class="btn" data-copy="x1" data-plain="1">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
-            Copy
-          </button>
-        </div>
-        <div class="act__body"><span class="act__lbl">Description <em>430 of 500</em></span><div class="pre" id="x1-src">Answer clearly and concisely from the knowledge base. Stay curious, ask about their building. While they are still asking things, keep answering.
-
-You may offer to send the quote form ONCE in the whole conversation. Count it. If you have offered already, never offer again. Never offer to someone who has asked only one or two questions.
-
-Never mention a price. Do not capture any of their details yourself. Never use a long dash.</div></div>
-      </div>
-      <div class="act">
-        <div class="act__head">
-          <span class="act__n">2</span>
-          <span class="act__pair"><b>Action</b><span class="k">AI Message</span></span>
-          <span class="act__pair"><b>Action name</b><span class="k">Hand off to the enquiry workflow</span></span>
-          <span class="act__pair"><b>Branch</b><span class="opt">Send the form</span></span>
-          <button type="button" class="btn" data-copy="x2" data-plain="1">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
-            Copy
-          </button>
-        </div>
-        <div class="act__body"><span class="act__lbl">Description <em>376 of 500</em></span><div class="pre" id="x2-src">Goes after the thirteen capture steps, before handing off to the enquiry workflow. Tell them that is everything you need. Read their email address back to them, so a typo gets caught now, and say a confirmation is on its way there. Say one of the family will call, usually the same working day, and give 0428 26 36 26 if it is urgent. Do not promise a time, a date or a price.</div></div>
-      </div>
-      <div class="act">
-        <div class="act__head">
-          <span class="act__n">3</span>
-          <span class="act__pair"><b>Action</b><span class="k">Human Handover</span></span>
-          <span class="act__pair"><b>Action name</b><span class="k">Hand to a person</span></span>
-          <span class="act__pair"><b>Branch</b><span class="opt">Anywhere it comes up</span></span>
-          <button type="button" class="btn" data-copy="x3" data-plain="1">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
-            Copy
-          </button>
-        </div>
-        <div class="act__body"><span class="act__lbl">Description <em>395 of 500</em></span><div class="pre" id="x3-src">Fire this on a complaint, a problem with work already done, anything about an invoice, a payment or a dispute, a warranty, insurance or legal question, a request for a formal specification, tender documents, a safety data sheet or a compliance certificate, someone asking for a named person, or anyone who sounds distressed or angry. Take their name and number first, and say a person will call.</div></div>
-      </div>
-    </div>
-
-    <h3 style="margin-top:2.4rem;font-size:1.2rem" id="captures">The Send the form branch</h3>
-    <p class="sec-lede">One AI Message. No capture steps, no field updates, no switches. The form does the capture, and it does it better than a conversation can.</p>
-
-    <div class="note">
-      <b>Why the form and not the chat.</b> Every defect of the last week has been field capture: mapping an answer to an exact label, splitting a name, a stale field silently refusing a write. None of it was the bot answering questions, which has worked from the very first transcript. The form rejects a number that is not Australian, enforces four digits on a postcode, makes "which parts" a row of chips rather than a guess at a sentence, and stores the consent wording with its version, its timestamp and the page it was shown on. A model approximating all that will always be the weaker of the two.
-    </div>
-
-    <div class="note">
-      <b>The usual objection barely applies here.</b> Sending someone to a form costs you the people who do not go. But the chat window already takes a name and a phone number before the first message, so a lead exists the moment somebody starts typing. The form adds the job detail. It does not create the lead, and nothing is lost if they never fill it in.
-    </div>
-
-    <div class="doc">
-      <div class="doc__head">
-        <span class="doc__n">X4</span>
-        <span class="doc__t">Send the form, AI Message</span>
-        <span class="doc__meta">491 of 500 characters</span>
-        <button type="button" class="btn" data-copy="x4" data-plain="1">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
-          Copy
-        </button>
-      </div>
-      <div class="doc__body"><div class="pre" id="x4-src">Give them the link to the quote form: https://www.sprayitsolutions.com.au/contact
-
-Say why, in one line: it asks a few things about the building so the team has the detail before they ring, and it takes about a minute. Do not list the questions and do not ask any of them yourself.
-
-Say one of the family will be in touch, usually the same working day, and give 0428 26 36 26 if it is urgent.
-
-Then stay in the chat. Keep answering anything else they ask. Do not send the link a second time.</div></div>
-    </div>
-
-    <div class="note">
-      <b>Use the staging address until the site goes live.</b> The link above points at the live domain, which is not where the site is yet. Swap it for the staging one while you test, and change it back at go-live, or the bot will send people to a page that does not exist.
-    </div>
-
-    <div class="note">
-      <b>One link, not two.</b> The form page already ends with "Would rather talk it through? Book a 15 minute phone call", so someone who wants a time rather than a form finds it there. Offering both in the chat makes a person choose before they know the difference.
-    </div>
-
-    <div class="note">
-      <b>Human Handover still belongs here.</b> A complaint, an invoice question or anything about work already done can arrive at any point, including straight after the link goes out. It should be reachable from both branches, not only the general one.
-    </div>
-
-    <div class="note">
-      <b>Two records, usually one contact.</b> The chat creates a contact from the name and phone at the gate. The form creates one from what they type. They merge when the phone or the email matches, and they will not when someone gives a different one. Worth checking on the first few, because a split record is a lead the follow-up half misses.
-    </div>
-  </section>
+  </div>
+</section>
 
 <!-- ============================================================= CHAT WINDOW -->
 <section class="sec" id="window">
@@ -550,211 +333,63 @@ Then stay in the chat. Keep answering anything else they ask. Do not send the li
 <!-- ============================================================ FIELD UPDATES -->
 <section class="sec" id="fields">
   <div class="wrap">
-    <div class="sec-head"><span class="sec-n">05</span><h2>The contact fields</h2></div>
-    <p class="sec-lede">All thirteen fields the bot writes to, what each is called in the dropdown, and what belongs in it. Four are set by capture steps and nine can also be set by an Add Contact Info action. This is the reference the capture steps were built from, and the wording here is what their additional instructions say.</p>
+    <div class="sec-head"><span class="sec-n">05</span><h2>What the form sends</h2></div>
+    <p class="sec-lede">The bot writes nothing. It hands over a link, and the form posts to the CRM. This is the map of what arrives, kept here so you can see what an enquiry looks like by the time it lands.</p>
 
     <div class="note">
-      <b>You do not need to build this action for the flow bot.</b> Each capture step in section 02 updates its own contact field, so the nine updates below are already covered. Keep this section for the field names, for the storing rules, and for the day someone wants the same nine on a different bot or a workflow.
+      <b>Creating these fields is not a job on this page.</b> The journey build sheet already lists every custom field to create, in five groups, with types and options. This is the shorter version: what a visitor is asked, and where their answer ends up.
     </div>
 
-    <div class="note">
-      <b>Four fields are not in this list, and that is deliberate.</b> The platform excludes name, phone and email from Add Contact Info, and says to handle them in the prompt instead. In the flow build they are capture steps 1 to 4 in section 02, which carry their own wording. The table below says which field each one writes to, so this section is still a complete map of the thirteen.
-    </div>
-
-    <div class="tablewrap">
-      <table>
-        <thead><tr><th>Field</th><th>Contact field</th><th>Where it is set up</th></tr></thead>
-        <tbody>
-          <tr><td>First name</td><td><span class="k">First Name</span></td><td>Capture step 1, section 02</td></tr>
-          <tr><td>Last name</td><td><span class="k">Last Name</span></td><td>Capture step 2, section 02</td></tr>
-          <tr><td>Mobile</td><td><span class="k">Phone</span></td><td>Capture step 3, section 02</td></tr>
-          <tr><td>Email</td><td><span class="k">Email</span></td><td>Capture step 4, section 02</td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <h3 style="margin-top:2rem;font-size:1.2rem">The nine that Add Contact Info can set</h3>
-
-    <div class="note">
-      <b>The custom fields ask for at least two output examples.</b> The standard ones, Postal Code and Street Address, do not, so those are listed below as a fallback in case yours does. The examples are picked to show the shape rather than to be typical: the bracket kept on the retrofit label, one area and a joined pair, lower case on consent. The description stays short because it is a single line, so everything that would otherwise repeat across nine fields is said once in the instructions instead.
-    </div>
-
-    <div class="note">
-      <b>An action alone does nothing.</b> A field only fills if something actually asks the question. In the flow build that is the capture step's own objective, in section 02. A field with nowhere asking for it stays empty forever, and nothing warns you.
-    </div>
-
-    <div class="note">
-      <b>It fills empty fields only.</b> The dialog says so at the top, and it matters both ways. A returning customer keeps whatever is already on their record, so the agent cannot overwrite good data with a half-heard answer. It also means a genuine correction, such as a customer giving a different postcode this time, will not land. Treat a second enquiry from a known contact as something for a person to reconcile.
-    </div>
-
-    <div class="acts">
-      <div class="act">
-        <div class="act__head">
-          <span class="act__n">1</span>
-          <span class="act__pair"><b>Action name</b><span class="k">Postal Code</span></span>
-          <span class="act__pair"><b>Which contact field</b><span class="k">Postal Code</span></span>
-          <button type="button" class="btn" data-copy="a1" data-plain="1">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
-            Copy
-          </button>
-        </div>
-        <div class="act__body"><span class="act__lbl">What to update in the field</span><div class="pre" id="a1-src">Postcode of the property to be insulated. Four digits. Example: 3201</div>
-<span class="act__lbl eg-if">Output examples <em>this field did not ask, use these if yours does</em></span><ul class="egs"><li>3201</li><li>3199</li></ul></div>
-      </div>
-      <div class="act">
-        <div class="act__head">
-          <span class="act__n">2</span>
-          <span class="act__pair"><b>Action name</b><span class="k">Street address</span></span>
-          <span class="act__pair"><b>Which contact field</b><span class="k">Street Address</span></span>
-          <button type="button" class="btn" data-copy="a2" data-plain="1">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
-            Copy
-          </button>
-        </div>
-        <div class="act__body"><span class="act__lbl">What to update in the field</span><div class="pre" id="a2-src">Street number and name of the property to be insulated. Example: 12 Example Street</div>
-<span class="act__lbl eg-if">Output examples <em>this field did not ask, use these if yours does</em></span><ul class="egs"><li>12 Example Street</li><li>114 Colemans Road</li></ul></div>
-      </div>
-      <div class="act">
-        <div class="act__head">
-          <span class="act__n">3</span>
-          <span class="act__pair"><b>Action name</b><span class="k">Suburb</span></span>
-          <span class="act__pair"><b>Which contact field</b><span class="k">City</span><span class="multi">check the name</span></span>
-          <button type="button" class="btn" data-copy="a3" data-plain="1">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
-            Copy
-          </button>
-        </div>
-        <div class="act__body"><span class="act__lbl">What to update in the field</span><div class="pre" id="a3-src">Suburb of the property to be insulated. Example: Carrum Downs</div>
-<span class="act__lbl eg-if">Output examples <em>this field did not ask, use these if yours does</em></span><ul class="egs"><li>Carrum Downs</li><li>Frankston</li></ul></div>
-      </div>
-      <div class="act">
-        <div class="act__head">
-          <span class="act__n">4</span>
-          <span class="act__pair"><b>Action name</b><span class="k">Property type</span></span>
-          <span class="act__pair"><b>Which contact field</b><span class="k">Property type</span><span class="opt">Custom</span></span>
-          <button type="button" class="btn" data-copy="a4" data-plain="1">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
-            Copy
-          </button>
-        </div>
-        <div class="act__body"><span class="act__lbl">What to update in the field</span><div class="pre" id="a4-src">What kind of building. Store exactly one of: Home, New build, Shed or garage, Factory or warehouse, Farm or agricultural, Something else</div>
-<span class="act__lbl">Output examples <em>at least two required</em></span><ul class="egs"><li>Home</li><li>New build</li><li>Factory or warehouse</li></ul></div>
-      </div>
-      <div class="act">
-        <div class="act__head">
-          <span class="act__n">5</span>
-          <span class="act__pair"><b>Action name</b><span class="k">Areas to insulate</span></span>
-          <span class="act__pair"><b>Which contact field</b><span class="k">Areas to insulate</span><span class="opt">Custom</span></span>
-          <button type="button" class="btn" data-copy="a5" data-plain="1">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
-            Copy
-          </button>
-        </div>
-        <div class="act__body"><span class="act__lbl">What to update in the field</span><div class="pre" id="a5-src">Which parts need insulating. One or more of: Roof or ceiling, Walls, Underfloor, Whole property, Not sure yet. Join several with a comma and a space</div>
-<span class="act__lbl">Output examples <em>at least two required</em></span><ul class="egs"><li>Underfloor</li><li>Roof or ceiling, Walls</li><li>Whole property</li></ul></div>
-      </div>
-      <div class="act">
-        <div class="act__head">
-          <span class="act__n">6</span>
-          <span class="act__pair"><b>Action name</b><span class="k">Building stage</span></span>
-          <span class="act__pair"><b>Which contact field</b><span class="k">Building stage</span><span class="opt">Custom</span></span>
-          <button type="button" class="btn" data-copy="a6" data-plain="1">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
-            Copy
-          </button>
-        </div>
-        <div class="act__body"><span class="act__lbl">What to update in the field</span><div class="pre" id="a6-src">Whether the building exists yet. Store exactly one of: Existing building (retrofit), Under construction, Still planning</div>
-<span class="act__lbl">Output examples <em>at least two required</em></span><ul class="egs"><li>Existing building (retrofit)</li><li>Under construction</li><li>Still planning</li></ul></div>
-      </div>
-      <div class="act">
-        <div class="act__head">
-          <span class="act__n">7</span>
-          <span class="act__pair"><b>Action name</b><span class="k">Timeframe</span></span>
-          <span class="act__pair"><b>Which contact field</b><span class="k">Timeframe</span><span class="opt">Custom</span></span>
-          <button type="button" class="btn" data-copy="a7" data-plain="1">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
-            Copy
-          </button>
-        </div>
-        <div class="act__body"><span class="act__lbl">What to update in the field</span><div class="pre" id="a7-src">When they want the work done. Store exactly one of: As soon as possible, Next 1 to 3 months, 3 months or more, Just researching</div>
-<span class="act__lbl">Output examples <em>at least two required</em></span><ul class="egs"><li>As soon as possible</li><li>Next 1 to 3 months</li><li>Just researching</li></ul></div>
-      </div>
-      <div class="act">
-        <div class="act__head">
-          <span class="act__n">8</span>
-          <span class="act__pair"><b>Action name</b><span class="k">Enquiry message</span></span>
-          <span class="act__pair"><b>Which contact field</b><span class="k">Enquiry message</span><span class="opt">Custom</span></span>
-          <button type="button" class="btn" data-copy="a8" data-plain="1">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
-            Copy
-          </button>
-        </div>
-        <div class="act__body"><span class="act__lbl">What to update in the field</span><div class="pre" id="a8-src">Anything else about the job in the customer’s own words. Rough size, access, when they need it done</div>
-<span class="act__lbl">Output examples <em>at least two required</em></span><ul class="egs"><li>Double garage out the back, about 6 by 6. Access is tight down one side.</li><li>Weatherboard place built in the 60s. The floor is freezing in winter.</li></ul></div>
-      </div>
-      <div class="act">
-        <div class="act__head">
-          <span class="act__n">9</span>
-          <span class="act__pair"><b>Action name</b><span class="k">Marketing consent</span></span>
-          <span class="act__pair"><b>Which contact field</b><span class="k">Marketing consent</span><span class="opt">Custom</span></span>
-          <button type="button" class="btn" data-copy="a9" data-plain="1">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
-            Copy
-          </button>
-        </div>
-        <div class="act__body"><span class="act__lbl">What to update in the field</span><div class="pre" id="a9-src">Store yes only if the customer clearly agreed to marketing SMS and email. Otherwise no. Lower case</div>
-<span class="act__lbl">Output examples <em>at least two required</em></span><ul class="egs"><li>yes</li><li>no</li></ul></div>
-      </div>
-    </div>
-
-    <h3 style="margin-top:2rem;font-size:1.2rem">When it stops answering</h3>
-    <p class="sec-lede">A chat that goes silent mid-enquiry is almost never the prompt. The prompt can make it say the wrong thing, but it cannot make it say nothing. Work down this list in order, because it is ordered by how often each one is the answer.</p>
-    <div class="tablewrap">
-      <table>
-        <thead><tr><th>Check</th><th>What you are looking for</th></tr></thead>
-        <tbody>
-          <tr><td>A pause on the contact</td><td>Look at the contact and at the agent settings for a pause, snooze or auto-pilot-off flag, and for how long it lasts. A seven day pause is a common default. If something suspended the bot on this contact, every later test with the same person fails silently no matter what else you fix. Test with a fresh contact each time.</td></tr>
-          <tr><td>Where exactly it stopped</td><td>Note the last answer the customer gave. If it was the first one that writes to a custom field, which in the asking order is the building type, the field update for that one is the suspect. Standard fields like Postal Code can work fine while a custom field is broken.</td></tr>
-          <tr><td>Whether the action saved at all</td><td>The custom fields refuse to save without at least two output examples. An action abandoned at that error is not there, and the agent has nowhere to put the answer.</td></tr>
-          <tr><td>Whether the field is a dropdown</td><td>If the custom field is a single select rather than free text, it accepts only its own options. Writing anything else fails. Its options have to match the labels in the description exactly, character for character.</td></tr>
-          <tr><td>What the agent tried to write</td><td>An earlier run produced "Home, 60s weatherboard" where the label is "Home". Free text would swallow that. A dropdown would reject it.</td></tr>
-          <tr><td>The conversation log</td><td>The platform records the action it attempted and the error it got. That turns all of the above from a guess into a fact, so look here first if you can.</td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div class="note">
-      <b>Build all nine before testing again.</b> Testing a nine field sequence with three of them built means the run stops at the first gap every time, and each gap looks like a fresh mystery. It is quicker to finish the set than to diagnose it one field at a time.
-    </div>
-
-    <h3 style="margin-top:2rem;font-size:1.2rem">Four fields the agent should not set</h3>
-    <p class="sec-lede">These belong to the workflow that runs when a chat enquiry arrives, not to the conversation. They are fixed values or timestamps, and asking a language model to produce them is asking for drift.</p>
     <div class="tablewrap">
       <table>
         <thead>
-          <tr><th>Field</th><th>Set to</th><th>Why not the agent</th></tr>
+          <tr><th>The form asks</th><th>Posts as</th><th>Lands in</th><th></th></tr>
         </thead>
         <tbody>
-          <tr><td><span class="k">consent_text</span></td><td>The exact wording and version the person was shown</td><td>It is the legal evidence. It has to be the stored string, character for character, not a paraphrase.</td></tr>
-          <tr><td><span class="k">consent_at</span></td><td>The time the answer was given</td><td>A timestamp the system knows and the conversation does not.</td></tr>
-          <tr><td><span class="k">source</span></td><td><span class="k">website chat</span></td><td>Fixed. This is what separates a chat enquiry from a form fill in reporting.</td></tr>
-          <tr><td><span class="k">form_name</span></td><td><span class="k">ai_chat</span></td><td>Fixed, and it matches the naming the form already uses.</td></tr>
+          <tr><td><b>First name</b></td><td><span class="k">firstName</span></td><td>First Name</td><td><span class="req">Needs it</span></td></tr>
+          <tr><td><b>Last name</b></td><td><span class="k">lastName</span></td><td>Last Name</td><td><span class="req">Needs it</span></td></tr>
+          <tr><td><b>Mobile</b></td><td><span class="k">phone</span></td><td>Phone, in international form, plus phone_raw as typed</td><td><span class="req">Needs it</span></td></tr>
+          <tr><td><b>Email</b></td><td><span class="k">email</span></td><td>Email</td><td><span class="req">Needs it</span></td></tr>
+          <tr><td><b>Postcode</b></td><td><span class="k">postcode</span></td><td>Postal Code</td><td><span class="req">Needs it</span></td></tr>
+          <tr><td><b>Street address</b></td><td><span class="k">street</span></td><td>Street Address</td><td><span class="opt">Offers it</span></td></tr>
+          <tr><td><b>Suburb</b></td><td><span class="k">suburb</span></td><td>City</td><td><span class="opt">Offers it</span></td></tr>
+          <tr><td><b>What are we insulating?</b></td><td><span class="k">propertyType</span></td><td>Property type</td><td><span class="req">Needs it</span></td></tr>
+          <tr><td><b>Which parts?</b></td><td><span class="k">areas</span></td><td>Areas to insulate, joined with a comma</td><td><span class="req">Needs it</span></td></tr>
+          <tr><td><b>Stage</b></td><td><span class="k">stage</span></td><td>Building stage</td><td><span class="opt">Offers it</span></td></tr>
+          <tr><td><b>Timeframe</b></td><td><span class="k">timeframe</span></td><td>Timeframe</td><td><span class="opt">Offers it</span></td></tr>
+          <tr><td><b>Anything else?</b></td><td><span class="k">message</span></td><td>Enquiry message</td><td><span class="opt">Offers it</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 style="margin-top:2rem;font-size:1.2rem">And six things the visitor never types</h3>
+    <p class="sec-lede">The form adds these itself. The consent block is the part that matters: under the Spam Act the evidence is the wording someone was shown, not the wording the form carries today.</p>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Field</th><th>Holds</th></tr></thead>
+        <tbody>
+          <tr><td><span class="k">consent_marketing</span></td><td>yes or no, from the unticked checkbox</td></tr>
+          <tr><td><span class="k">consent_text</span></td><td>the exact wording shown, with its version</td></tr>
+          <tr><td><span class="k">consent_at</span></td><td>when they agreed</td></tr>
+          <tr><td><span class="k">consent_page</span></td><td>the page it was shown on</td></tr>
+          <tr><td><span class="k">source, form_name</span></td><td>website, quote_request</td></tr>
+          <tr><td><span class="k">utm and click ids</span></td><td>whatever brought them, first touch and last touch</td></tr>
         </tbody>
       </table>
     </div>
 
     <div class="cards">
       <div class="cx">
-        <h3>Store the words, not the codes</h3>
-        <p>The website form posts <span class="k">new-build</span> and the workflow turns it into <b>New build</b>. The agent has no such step, so it has to write the readable label straight in. Several emails read these fields back to the customer.</p>
+        <h3>The bot never asks about consent</h3>
+        <p>The form does, with an unticked checkbox reading: <b>I agree to receive SMS and email updates from Spray It Solutions about quotes, offers and services. I can opt out at any time by replying STOP or using the unsubscribe link.</b> It stores that wording, its version, the time and the page. A checkbox beats a chatbot reading a sentence aloud.</p>
       </div>
       <div class="cx">
-        <h3>Which parts is a list</h3>
-        <p>The form joins the chosen chips with a comma and a space before sending them. The field is a plain text field, not a multiple choice one, so the agent has to join them the same way or the two sources will not look alike.</p>
+        <h3>Which parts takes more than one</h3>
+        <p>On the form it is a row of chips with the hint <b>Choose all that apply</b>, and the values arrive joined with a comma and a space. That is one of the things a form does that a conversation cannot do reliably.</p>
       </div>
       <div class="cx">
-        <h3>Empty beats wrong</h3>
-        <p>Every optional field says so in its own wording. A model asked to fill a field will fill it, so the instruction to leave it empty has to be in the field description, not only in the prompt.</p>
+        <h3>Company is not on this form</h3>
+        <p>It is asked later, on the scoping call, and only for commercial work. If someone volunteers a business name in the chat, it belongs in the enquiry message rather than a field that does not exist.</p>
       </div>
     </div>
   </div>
@@ -1122,7 +757,7 @@ Then stay in the chat. Keep answering anything else they ask. Do not send the li
           <span class="act__lbl">You type</span>
           <div class="pre">right. wed want a price on it</div>
           <span class="act__lbl eg-if">It should</span>
-          <p>A commercial price is still a price. No number. It sends the form, once, and says the team will be in touch.</p>
+          <p>A commercial price is still a price. No number. It offers the form once and says the team will be in touch.</p>
         </div>
       </div>
       <div class="turn">
@@ -1131,7 +766,7 @@ Then stay in the chat. Keep answering anything else they ask. Do not send the li
           <span class="act__lbl">You type</span>
           <div class="pre">can you email me the safety data sheet for the product youd use</div>
           <span class="act__lbl eg-if">It should</span>
-          <p>Human Handover. Not an answer, not a link, not a guess at which product. Takes a name and number and says a person will call. This is the trigger most likely to be missed, because the question sounds answerable.</p>
+          <p>Human Handover. Not an answer, not a link, not a guess at which product. It gives the phone number and says a person will call, and it does not send the form to someone who wants a document. This is the trigger most likely to be missed, because the question sounds answerable.</p>
         </div>
       </div>
     </div>
@@ -1252,11 +887,11 @@ Then stay in the chat. Keep answering anything else they ask. Do not send the li
         <tbody>
           <tr><td><span class="k">are you a real person?</span></td><td>Says it is the website assistant and offers to have one of the family call.</td></tr>
           <tr><td><span class="k">whats your best price per square metre</span></td><td>No number, asked a different way.</td></tr>
-          <tr><td><span class="k">the crew who came last month left a mess</span></td><td>Human Handover. Takes a name and number, says a person will call, does not defend or explain, and does not send the form.</td></tr>
+          <tr><td><span class="k">the crew who came last month left a mess</span></td><td>Human Handover. Gives the phone number, says a person will call, does not defend or explain, and does not send the form.</td></tr>
           <tr><td><span class="k">can you email me the safety data sheet for LD-C-50?</span></td><td>Hands it to the team rather than answering or linking anything.</td></tr>
           <tr><td><span class="k">do you do asbestos removal?</span></td><td>Not in the knowledge base. Says so plainly and offers a call, rather than reasoning its way to a guess.</td></tr>
-          <tr><td><span class="k">can you book me in for next Tuesday morning?</span></td><td>No date, no time. Sends the form or the number, and says the team confirms timing.</td></tr>
-          <tr><td><span class="k">do you cover Geelong?</span></td><td>Answers from document 1: Australia-wide, take the details so the team can confirm. A question, so it should not route on its own.</td></tr>
+          <tr><td><span class="k">can you book me in for next Tuesday morning?</span></td><td>No date, no time. Offers the form or gives the number, and says the team confirms timing.</td></tr>
+          <tr><td><span class="k">do you cover Geelong?</span></td><td>Answers from document 1: Australia-wide, and the form is how the team confirms an address. A question, so it must not force the link.</td></tr>
           <tr><td><span class="k">just give me the link</span></td><td>Sends it. Somebody asking outright is the clearest yes there is.</td></tr>
         </tbody>
       </table>
@@ -1273,7 +908,7 @@ Then stay in the chat. Keep answering anything else they ask. Do not send the li
     <ol class="ol">
       <li><span><b>Point the crawler at the new site, and remove the old one.</b> The bot is currently trained on the previous website. That site is the version we have been correcting, including the performance claim in section 07 and the testimonials, so while it is still in the crawler the bot can answer from wording we have deliberately changed. The five documents cannot override a crawled page. The old source has to come out.</span></li>
       <li><span><b>Confirm the trading hours with Glenn.</b> The hours in Doc 1 are the ones currently on the website, and they are still marked for review. They are not just words: the bot uses them to decide between offering a call now and offering a callback, and they are published as structured data. If they are wrong, correct them in the site data and in Doc 1 together.</span></li>
-      <li><span><b>Test the enquiry end to end.</b> Run a conversation through to submission and check the record that comes out carries all twelve details, stores the words rather than the codes, opens an opportunity at New Enquiry, and triggers the same first response a form fill triggers.</span></li>
+      <li><span><b>Test the enquiry end to end.</b> Run a conversation through to submission and check the record that arrives carries all twelve details, stores the words rather than the codes, opens an opportunity at New Enquiry, and triggers the same first response a form fill triggers.</span></li>
       <li><span><b>Test the consent question.</b> Confirm it is asked in the exact wording, that it defaults to no, that a declined answer is recorded as no rather than left blank, and that the wording and timestamp are stored on the contact.</span></li>
       <li><span><b>Run the test conversation.</b> Section 08 is a full enquiry to type in, with what should come back at each turn and the record it should leave behind, followed by seven single lines that probe the rules a single conversation cannot reach.</span></li>
       <li><span><b>Decide who sees a bot enquiry, and how fast.</b> A chat enquiry arrives while the person is still on the site, which makes it the warmest lead of the day. It should raise the same new enquiry alert the form does.</span></li>
