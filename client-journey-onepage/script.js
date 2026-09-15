@@ -320,6 +320,31 @@
     return wrap;
   }
 
+  /* Every workflow names the messages it sends, including inside an if
+     branch, and every stage names its messages. So which workflows build a
+     stage is derivable rather than a field somebody has to remember to fill. */
+  var WF_BY_MESSAGE = null;
+  function workflowsFor(stage) {
+    if (!J.workflows) return [];
+    if (!WF_BY_MESSAGE) {
+      WF_BY_MESSAGE = {};
+      var walk = function (steps, id) {
+        (steps || []).forEach(function (st) {
+          if (st.t === 'send' && st.id) (WF_BY_MESSAGE[st.id] = WF_BY_MESSAGE[st.id] || []).push(id);
+          if (st.t === 'if') { walk(st.then, id); walk(st.else, id); }
+        });
+      };
+      J.workflows.forEach(function (w) { walk(w.steps, w.id); });
+    }
+    var found = {};
+    (stage.groups || []).forEach(function (g) {
+      (g.messages || []).forEach(function (mid) {
+        (WF_BY_MESSAGE[mid] || []).forEach(function (w) { found[w] = 1; });
+      });
+    });
+    return Object.keys(found).sort();
+  }
+
   function stageFacts(stage, pipeline) {
     var idx = pipeline ? pipeline.stages.indexOf(stage) : -1;
     var wonIdx = pipeline ? pipeline.stages.findIndex(function (s) { return s.won; }) : -1;
@@ -329,6 +354,14 @@
     if (stage.exits) html += '<div class="fact"><b>' + (CLIENT ? 'Moves on when' : 'Exits when') + '</b><span>' + esc(stage.exits) + '</span></div>';
     if (stage.stalls) html += '<div class="fact"><b>' + (CLIENT ? 'Flag it after' : 'Stalls after') + '</b><span>' + esc(stage.stalls) + '</span></div>';
     if (pipeline) html += '<div class="fact' + (status.indexOf('on') > -1 || status.indexOf('Won') > -1 ? ' won' : '') + '"><b>' + (CLIENT ? 'Where the sale is' : 'Status') + '</b><span>' + status + '</span></div>';
+    if (AGENCY) {
+      var wfs = workflowsFor(stage);
+      html += '<div class="fact fact--wf"><b>Built by</b><span>'
+        + (wfs.length
+          ? wfs.map(function (w) { return '<a href="workflows.html#' + esc(w.toLowerCase()) + '">' + esc(w) + '</a>'; }).join(' ')
+          : 'No automated message here')
+        + '</span></div>';
+    }
     return html + '</div>';
   }
 
@@ -395,7 +428,8 @@
     var p = pipelineById(state.pipeline);
     var wonIdx = p.stages.findIndex(function (s) { return s.won; });
     railEl.innerHTML = p.stages.map(function (s, i) {
-      var cls = 'node' + (s.won ? ' won' : '') + (wonIdx > -1 && i > wonIdx ? ' delivery' : '') + (p.system ? ' sys' : '');
+      var here = p.stages.findIndex(function (x) { return x.key === state.stage; });
+      var cls = 'node' + (s.won ? ' won' : '') + (wonIdx > -1 && i > wonIdx ? ' delivery' : '') + (p.system ? ' sys' : '') + (here > -1 && i < here ? ' done' : '');
       var num = s.won ? 'Won' : s.n ? String(s.n).padStart(2, '0') : '';
       var count = msgCount(s);
       return '<button type="button" class="' + cls + '" role="tab" data-stage="' + esc(s.key) + '" aria-selected="' + (s.key === state.stage) + '" tabindex="' + (s.key === state.stage ? 0 : -1) + '">'
@@ -415,6 +449,15 @@
 
   /* Is there more rail than screen, and on which side? Drives the grab
      cursor, the drag hint and the fade on each edge. */
+  function railPosition() {
+    var pos = $('.railpos');
+    if (!pos || !railEl) return;
+    var nodes = railEl.querySelectorAll('.node');
+    var at = railEl.querySelector('.node[aria-selected="true"]');
+    var i = Array.prototype.indexOf.call(nodes, at);
+    pos.textContent = i > -1 && nodes.length ? 'Stage ' + (i + 1) + ' of ' + nodes.length : '';
+  }
+
   function railEdges() {
     if (!railEl) return;
     var over = railEl.scrollWidth - railEl.clientWidth;
@@ -440,6 +483,7 @@
       if (opts.focus) active.focus();
     }
     railEdges();
+    railPosition();
     main.querySelectorAll('.panel').forEach(function (pn) { pn.classList.toggle('on', pn.id === 'p-' + p.id + '-' + stage.key); });
 
     var i = p.stages.indexOf(stage);

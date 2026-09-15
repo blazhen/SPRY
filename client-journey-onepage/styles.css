@@ -162,6 +162,11 @@ h1 em { font-style: normal; color: var(--navy); }
 /* One sticky bar per page, never two. It carries the page switcher, whatever
    that page filters by, and the stage rail where there is one. */
 .controls { position: sticky; top: 0; z-index: 30; background: var(--surface); border-block: 1px solid var(--line); box-shadow: var(--shadow-s); }
+/* The prose below wants a reading measure. The stage rail wants room. Above a
+   laptop, give the bar the width it has: at 1140px it hid 415px of itself. */
+@media (min-width: 1280px) {
+  .controls .wrap { max-width: none; padding-inline: clamp(1.1rem, 2.2vw, 1.9rem); }
+}
 .controls__top { display: flex; align-items: center; gap: .6rem 1rem; padding: .4rem 0 .1rem; flex-wrap: wrap; }
 .controls__top > .seg { margin-left: auto; }
 .controls__top > .seg ~ .seg { margin-left: 0; }
@@ -199,6 +204,12 @@ h1 em { font-style: normal; color: var(--navy); }
 }
 .rail-over + .railhint { display: flex; }
 .railhint svg { width: 15px; height: 15px; opacity: .75; }
+.railpos { font-weight: 700; color: var(--ink-2); }
+.railpos:not(:empty)::after { content: '·'; margin: 0 .5rem; color: var(--ink-3); font-weight: 400; }
+.railhint:not(.rail-over + .railhint) { display: flex; }
+.railhint:not(.rail-over + .railhint) svg, .railhint:not(.rail-over + .railhint) .m,
+.railhint:not(.rail-over + .railhint) .t { display: none; }
+.railhint:not(.rail-over + .railhint) .railpos::after { content: none; }
 @media (hover: none) { .railhint .m { display: none; } }
 @media (hover: hover) { .railhint .t { display: none; } }
 .hint .pzchip { border-bottom: 1.5px dashed var(--green); color: var(--green-ink); font-weight: 600; }
@@ -227,7 +238,14 @@ h1 em { font-style: normal; color: var(--navy); }
 .node .num { font-family: var(--mono); font-size: .74rem; color: var(--ink-3); }
 .node:hover .lbl { color: var(--ink); }
 .node:hover .bead { border-color: var(--navy); }
+.node.done::before { background: var(--navy); opacity: .5; }
+.node.done .bead { border-color: var(--navy); }
+.node.done .lbl { color: var(--ink-2); }
 .node[aria-selected="true"] .bead { background: var(--navy); border-color: var(--navy); box-shadow: 0 0 0 5px var(--navy-wash-2); }
+.node[aria-selected="true"] .lbl { font-weight: 700; }
+.node[aria-selected="true"] .lbl, .node[aria-selected="true"] .num {
+  background: var(--navy-wash); border-radius: 7px; padding: .1em .5em;
+}
 .node[aria-selected="true"] .lbl { color: var(--ink); }
 .node[aria-selected="true"] .num { color: var(--navy); }
 .node.won .bead { border-color: var(--green); border-width: 3.5px; width: 21px; height: 21px; }
