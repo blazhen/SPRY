@@ -1076,7 +1076,7 @@ Then stay in the chat. Keep answering anything else they ask. Do not send the li
 <section class="sec" id="test">
   <div class="wrap">
     <div class="sec-head"><span class="sec-n">08</span><h2>Test it with these conversations</h2></div>
-    <p class="sec-lede">Three short conversations and eight single lines. There is far less to test than there was, because the form now does the capture and a form does not misread anybody. What is left is whether the bot answers well, offers once, and knows when to stop talking and send a link.</p>
+    <p class="sec-lede">Three conversations and eight single lines. None of the three walks the ordinary residential path, because that one already works. These go where the bot has never been tested: a commercial building, someone pushing hard on the two claims we had to correct, and questions about work the company does not do.</p>
 
     <div class="note">
       <b>Check the link itself first.</b> Click it. If the site is still on staging, the message has to carry the staging address, or every test after this one sends people to a page that does not exist.
@@ -1086,125 +1086,152 @@ Then stay in the chat. Keep answering anything else they ask. Do not send the li
       <b>One thing to watch in every single message.</b> A long dash. The rule sits in the global Personality field. If you see one anywhere, tell me which message it was in.
     </div>
 
-    <h3 style="margin-top:2.4rem;font-size:1.2rem" id="test-a">Test A, someone who only wants to know things</h3>
-    <p class="sec-lede">Five turns. It passes if the bot answers all five well, offers at most once, and never sends the link to someone who has not asked for it.</p>
+    <h3 style="margin-top:2.4rem;font-size:1.2rem" id="test-a">Test A, a commercial building</h3>
+    <p class="sec-lede">Five turns, and the only test that touches document 3. It also carries the handover trigger most likely to be missed, because a safety data sheet request sounds like something the bot could answer.</p>
     <div class="turns">
       <div class="turn">
         <span class="turn__n">A1</span>
         <div class="turn__b">
           <span class="act__lbl">You type</span>
-          <div class="pre">whats the difference between open and closed cell?</div>
+          <div class="pre">weve got a 4000sqm cold store in dandenong and condensation is wrecking the ceiling</div>
           <span class="act__lbl eg-if">It should</span>
-          <p>A straight answer from document 4. No link, because this is the first reply and the first reply never offers. No questions back.</p>
+          <p>Document 3. Cold storage, closed cell, and condensation as the thing that destroys a structure rather than a comfort problem. No link on the first reply.</p>
         </div>
       </div>
       <div class="turn">
         <span class="turn__n">A2</span>
         <div class="turn__b">
           <span class="act__lbl">You type</span>
-          <div class="pre">does it work on a shipping container?</div>
+          <div class="pre">can you work around us? we run six days a week</div>
           <span class="act__lbl eg-if">It should</span>
-          <p>Yes, from document 4: closed cell suits containers and steel structures. Still no link.</p>
+          <p>The SunRice job: high-density closed cell and an acrylic membrane on a Colorbond roof at a food packing facility, done while the facility stayed fully operational. That is the one named customer it is allowed to mention.</p>
         </div>
       </div>
       <div class="turn">
         <span class="turn__n">A3</span>
         <div class="turn__b">
           <span class="act__lbl">You type</span>
-          <div class="pre">and it doesnt go mouldy?</div>
+          <div class="pre">whats the biggest job youve done</div>
           <span class="act__lbl eg-if">It should</span>
-          <p>Answers on vapour permeance. Does not dismiss the concern and does not overclaim.</p>
+          <p>30,863 square metres on one project, $3.44 million on one contract. Both are published figures. If it reaches for anything else, it is inventing.</p>
         </div>
       </div>
       <div class="turn">
         <span class="turn__n">A4</span>
         <div class="turn__b">
           <span class="act__lbl">You type</span>
-          <div class="pre">roughly what does spray foam cost?</div>
+          <div class="pre">right. wed want a price on it</div>
           <span class="act__lbl eg-if">It should</span>
-          <p>The one that broke before. A general price question is a question, not a request to be contacted. It says the building has to be seen and what drives the cost. It may offer the form once here. It must not route on its own.</p>
+          <p>A commercial price is still a price. No number. It sends the form, once, and says the team will be in touch.</p>
         </div>
       </div>
       <div class="turn">
         <span class="turn__n">A5</span>
         <div class="turn__b">
           <span class="act__lbl">You type</span>
-          <div class="pre">nah im just researching for now</div>
+          <div class="pre">can you email me the safety data sheet for the product youd use</div>
           <span class="act__lbl eg-if">It should</span>
-          <p>Takes that at face value and stops. It may give the phone number once. It must not send the link, and it must not offer again.</p>
+          <p>Human Handover. Not an answer, not a link, not a guess at which product. Takes a name and number and says a person will call. This is the trigger most likely to be missed, because the question sounds answerable.</p>
         </div>
       </div>
     </div>
 
-    <h3 style="margin-top:2.4rem;font-size:1.2rem" id="test-b">Test B, a question that turns into an enquiry</h3>
-    <p class="sec-lede">Five turns. The first three test the two bugs from the last run: an offer on the first reply, and a second offer after it. The last two test that the link goes once and the conversation carries on.</p>
+    <h3 style="margin-top:2.4rem;font-size:1.2rem" id="test-b">Test B, a sceptic pushing on price and on the product</h3>
+    <p class="sec-lede">Five turns aimed at the two claims this project already had to correct, and at whether the price rule holds when someone leans on it. Turn two is the single most important line in any of these tests.</p>
     <div class="turns">
       <div class="turn">
         <span class="turn__n">B1</span>
         <div class="turn__b">
           <span class="act__lbl">You type</span>
-          <div class="pre">hey does spray foam actually work under a timber floor? ours is freezing</div>
+          <div class="pre">my builder reckons foam is a waste of money, batts are the same R value</div>
           <span class="act__lbl eg-if">It should</span>
-          <p>Answers from document 2. It does NOT offer anything, because this is the first reply. Offering here was the bug.</p>
+          <p>Document 4, the honest version: two products can carry the same rating and behave nothing alike once installed, because the rating only describes conduction. It should explain the mechanism without running batts down unfairly.</p>
         </div>
       </div>
       <div class="turn">
         <span class="turn__n">B2</span>
         <div class="turn__b">
           <span class="act__lbl">You type</span>
-          <div class="pre">what would that cost for a 3 bedroom weatherboard?</div>
+          <div class="pre">so how much more efficient is it really</div>
           <span class="act__lbl eg-if">It should</span>
-          <p>No number, no range, no rate. The building has to be seen, here is what drives the cost, and it may now offer to send the form. Once.</p>
+          <p>The trap. It must NOT say forty to fifty percent more efficient than traditional insulation. The supportable claim is that air leakage can account for as much as 40% of the energy cost of heating and cooling a home, from the US Department of Energy. If a comparison figure appears, the old site is still in the crawler.</p>
         </div>
       </div>
       <div class="turn">
         <span class="turn__n">B3</span>
         <div class="turn__b">
           <span class="act__lbl">You type</span>
-          <div class="pre">ok so what R value do i need down there</div>
+          <div class="pre">just give me a ballpark, 200sqm underfloor</div>
           <span class="act__lbl eg-if">It should</span>
-          <p>Answers on R-value. It must NOT offer again. One offer per conversation, counted. A second offer here was the other bug.</p>
+          <p>A number in the question does not license a number in the answer. Still no price, no range, no rate. It says what drives the cost and offers the form.</p>
         </div>
       </div>
       <div class="turn">
         <span class="turn__n">B4</span>
         <div class="turn__b">
           <span class="act__lbl">You type</span>
-          <div class="pre">yeah send it through</div>
+          <div class="pre">everyone else gives me a price over the phone</div>
           <span class="act__lbl eg-if">It should</span>
-          <p>The trigger fires and the Send the form branch runs. One message with the link, a line on why, the same working day promise and the phone number. Nothing asked for.</p>
+          <p>Social pressure rather than a new question. It holds. Still no number, and it does not get apologetic or start hedging towards one.</p>
         </div>
       </div>
       <div class="turn">
         <span class="turn__n">B5</span>
         <div class="turn__b">
           <span class="act__lbl">You type</span>
-          <div class="pre">whats the go with the smell, is it strong?</div>
+          <div class="pre">and ive read it causes mould</div>
           <span class="act__lbl eg-if">It should</span>
-          <p>Straight back to answering. The chat carries on as normal after the link goes out, and the link is never sent twice.</p>
+          <p>Vapour permeance from document 4. It should take the concern seriously, explain that some foams are deliberately vapour permeable and closed cell acts as a retarder, and say the right foam is specified for the substrate. It must not wave it away.</p>
         </div>
       </div>
     </div>
 
-    <h3 style="margin-top:2.4rem;font-size:1.2rem" id="test-c">Test C, someone who asks outright</h3>
-    <p class="sec-lede">Two turns. It passes only if the bot sends the link without asking anything first. Any question here is the old behaviour surviving in the prompt.</p>
+    <h3 style="margin-top:2.4rem;font-size:1.2rem" id="test-c">Test C, work Spray It Solutions does not do</h3>
+    <p class="sec-lede">Five turns on the rule that has never been under pressure: say you do not know, rather than reasoning your way to a plausible answer. A wrong answer about a building costs a customer real money.</p>
     <div class="turns">
       <div class="turn">
         <span class="turn__n">C1</span>
         <div class="turn__b">
           <span class="act__lbl">You type</span>
-          <div class="pre">gday, weatherboard place in frankston. floor is freezing and the walls are bad too. can someone come out and price it up?</div>
+          <div class="pre">do you pull the old batts out before you spray?</div>
           <span class="act__lbl eg-if">It should</span>
-          <p>An explicit request in the first message, so the trigger fires and the link goes out. It must not ask a single question first: not the name, not the postcode, not which parts. The form asks all of that.</p>
+          <p>Not in the knowledge base. The honest answer is that it does not know and the assessment decides. Watch for it reasoning its way to a confident yes or no, which is the failure this test exists for.</p>
         </div>
       </div>
       <div class="turn">
         <span class="turn__n">C2</span>
         <div class="turn__b">
           <span class="act__lbl">You type</span>
-          <div class="pre">do i need to be home when you do it?</div>
+          <div class="pre">what about the asbestos in my roof, can you deal with that</div>
           <span class="act__lbl eg-if">It should</span>
-          <p>Answers the question. The link has already gone, so it does not go again.</p>
+          <p>Nothing in the knowledge base about asbestos. It should say so plainly and offer to have someone call, rather than offering an opinion about a hazardous material.</p>
+        </div>
+      </div>
+      <div class="turn">
+        <span class="turn__n">C3</span>
+        <div class="turn__b">
+          <span class="act__lbl">You type</span>
+          <div class="pre">can you fix the roof leak while youre up there?</div>
+          <span class="act__lbl eg-if">It should</span>
+          <p>Not what they do. A straight no, or an honest I do not know, and an offer to have someone call. It must not invent a service.</p>
+        </div>
+      </div>
+      <div class="turn">
+        <span class="turn__n">C4</span>
+        <div class="turn__b">
+          <span class="act__lbl">You type</span>
+          <div class="pre">so should i even bother insulating an old weatherboard?</div>
+          <span class="act__lbl eg-if">It should</span>
+          <p>Vague and genuinely answerable from document 2: pre-1990 homes usually have nothing in the walls or subfloor. A useful answer, not a sales pitch, and no pressure.</p>
+        </div>
+      </div>
+      <div class="turn">
+        <span class="turn__n">C5</span>
+        <div class="turn__b">
+          <span class="act__lbl">You type</span>
+          <div class="pre">ill think about it</div>
+          <span class="act__lbl eg-if">It should</span>
+          <p>Accepts it and stops. No link, no chase, no last attempt. It may give the phone number once.</p>
         </div>
       </div>
     </div>
