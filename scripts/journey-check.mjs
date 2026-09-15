@@ -121,6 +121,29 @@ else {
   const unsent = Object.keys(J.messages).filter((id) => !sent.has(id) && !J.messages[id].manual)
   if (unsent.length) bad(`no workflow sends: ${unsent.join(', ')}`)
   ok(`${J.workflows.length} workflows, every automated message is sent by one`)
+
+  /* every workflow is filed, and every folder has something in it */
+  if (!Array.isArray(J.folders) || !J.folders.length) bad('folders missing')
+  else {
+    const filed = new Map()
+    for (const f of J.folders) {
+      if (!/^\d{2}$/.test(f.n)) bad(`folder ${f.n} is not two digits`)
+      if (!f.ids.length) bad(`folder ${f.n} ${f.name} is empty`)
+      if (!f.why) bad(`folder ${f.n} has no note saying what belongs in it`)
+      for (const id of f.ids) {
+        if (filed.has(id)) bad(`${id} is in folder ${filed.get(id)} and ${f.n}`)
+        filed.set(id, f.n)
+        if (!J.workflows.some((w) => w.id === id)) bad(`folder ${f.n} lists unknown ${id}`)
+      }
+    }
+    for (const w of J.workflows) {
+      if (!w.folder) bad(`${w.id} has no folder`)
+      else if (filed.get(w.id) !== w.folder) bad(`${w.id} says folder ${w.folder}, filed under ${filed.get(w.id)}`)
+    }
+    const nums = J.folders.map((f) => f.n)
+    if (nums.join(',') !== [...nums].sort().join(',')) bad('folders are not in number order')
+    ok(`${J.folders.length} folders, all ${J.workflows.length} workflows filed exactly once`)
+  }
 }
 
 /* every task and notification carries a title and a description, because both

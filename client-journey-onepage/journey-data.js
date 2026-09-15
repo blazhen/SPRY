@@ -1706,9 +1706,33 @@ window.JOURNEY = {
      `send` references a message id, `alert` an alert number, `task` a task
      from the stage it belongs to. The agency page and CRM-WORKFLOWS.md render
      this list. */
+  /**
+   * Folders for the thirty workflows.
+   *
+   * Grouped by journey phase, because that is how somebody looks one up: they
+   * know roughly when it happens, not what number it is. Numbered because CRM
+   * folder lists sort alphabetically, so 01 to 09 keeps the journey order.
+   *
+   * Build order is deliberately not this. That is a priority list, and a
+   * priority makes a poor filing system: the missed call text-back is built
+   * first and lives in Intake with everything else from that moment.
+   */
+  folders: [
+    { n: '01', name: "Intake", why: "The first few minutes, before anybody has read the lead.", ids: ["WF-01","WF-02","WF-22","WF-23"] },
+    { n: '02', name: "Contact and qualify", why: "Getting hold of them, and working out whether it is a job.", ids: ["WF-03","WF-04","WF-05","WF-06"] },
+    { n: '03', name: "Site visits", why: "Booking the assessment or inspection, and what happens when one does not go ahead.", ids: ["WF-07","WF-30"] },
+    { n: '04', name: "Quote and proposal", why: "From sending a number to getting an answer out of them.", ids: ["WF-08","WF-09","WF-10","WF-11"] },
+    { n: '05', name: "Won and lost", why: "The decision, whichever way it goes.", ids: ["WF-12","WF-13","WF-14"] },
+    { n: '06', name: "Delivery", why: "Deposit taken to job finished.", ids: ["WF-15","WF-16","WF-17","WF-18"] },
+    { n: '07', name: "Invoice and close", why: "Getting paid, and asking for the review while the job is fresh.", ids: ["WF-19","WF-20","WF-21"] },
+    { n: '08', name: "Always on", why: "Watching every conversation, whatever stage the card is at.", ids: ["WF-24","WF-25","WF-26","WF-29"] },
+    { n: '09', name: "Reporting", why: "Nothing a customer ever sees. Scheduled, not triggered.", ids: ["WF-27","WF-28"] },
+  ],
+
   workflows: [
     {
-      id: 'WF-01', name: 'Website lead intake', board: 'both',
+      id: 'WF-01',
+      folder: '01', name: 'Website lead intake', board: 'both',
       trigger: 'Inbound webhook from the website quote form',
       why: 'Everything downstream depends on this one being right: the contact, the consent record, the attribution, and which board the card lands on.',
       steps: [
@@ -1734,7 +1758,8 @@ window.JOURNEY = {
       error: 'Any failed step: alert 11 to OWNER with the payload, and the submission logged for replay. The website already tells the visitor if the post fails, so this covers everything after the post succeeded.',
     },
     {
-      id: 'WF-02', name: 'Unattended lead ladder', board: 'both',
+      id: 'WF-02',
+      folder: '01', name: 'Unattended lead ladder', board: 'both',
       trigger: 'Opportunity created in New Enquiry',
       why: 'Time to first contact is the one number that moves everything else. This is what makes an untouched lead impossible to ignore.',
       steps: [
@@ -1749,7 +1774,8 @@ window.JOURNEY = {
       stops: 'The moment the stage changes. The clock pauses outside business hours, so an 11pm enquiry starts at 7am.',
     },
     {
-      id: 'WF-03', name: 'The chase', board: 'both',
+      id: 'WF-03',
+      folder: '02', name: 'The chase', board: 'both',
       trigger: 'Stage changed to Contacting',
       why: 'Five attempts over seven days, then an honest close. Capped, so a card never rots here.',
       steps: [
@@ -1770,7 +1796,8 @@ window.JOURNEY = {
       stops: 'Customer replies on any channel, an appointment is booked, or the stage changes. Each call attempt increments contact_attempts and stamps last_attempt_at.',
     },
     {
-      id: 'WF-04', name: 'Phone consult booked', board: 'both',
+      id: 'WF-04',
+      folder: '02', name: 'Phone consult booked', board: 'both',
       trigger: 'Appointment booked in the phone consult calendar',
       why: 'Confirm, remind twice, and make sure the person who calls has read the enquiry.',
       steps: [
@@ -1786,7 +1813,8 @@ window.JOURNEY = {
       stops: 'Appointment cancelled or rescheduled, which hands over to WF-05.',
     },
     {
-      id: 'WF-05', name: 'Consult changed, cancelled or missed', board: 'both',
+      id: 'WF-05',
+      folder: '02', name: 'Consult changed, cancelled or missed', board: 'both',
       trigger: 'Appointment status changed: rescheduled, cancelled, or no-show',
       why: 'A hole in the diary is recoverable if it is caught early.',
       steps: [
@@ -1797,7 +1825,8 @@ window.JOURNEY = {
       stops: 'Sends once per change.',
     },
     {
-      id: 'WF-06', name: 'Qualified', board: 'residential',
+      id: 'WF-06',
+      folder: '02', name: 'Qualified', board: 'residential',
       trigger: 'Stage changed to Qualified',
       why: 'The deal becomes real here. A forecast value is set and the customer is pointed at the assessment calendar.',
       steps: [
@@ -1810,7 +1839,8 @@ window.JOURNEY = {
       stops: 'Assessment booked.',
     },
     {
-      id: 'WF-07', name: 'Assessment or inspection booked', board: 'both',
+      id: 'WF-07',
+      folder: '03', name: 'Assessment or inspection booked', board: 'both',
       trigger: 'Appointment booked in the assessment calendar, or stage changed to Assessment Booked / Inspection Booked',
       why: 'One confirmation with the address, one text on the morning, and a task for whoever is going.',
       steps: [
@@ -1830,7 +1860,8 @@ window.JOURNEY = {
       stops: 'Cancelled or moved, which sends X-APPT-06 and re-queues the morning text against the new date.',
     },
     {
-      id: 'WF-08', name: 'Quote clock', board: 'both',
+      id: 'WF-08',
+      folder: '04', name: 'Quote clock', board: 'both',
       trigger: 'Stage changed to Quoting (residential) or Specifying (commercial)',
       why: 'A quote that takes a week loses jobs that were won on the day. The customer is told the deadline and the estimator carries it.',
       steps: [
@@ -1849,7 +1880,8 @@ window.JOURNEY = {
       stops: 'Stage changes. C-SPEC-01 needs proposal_due_date set on the card first; make the field required on entry.',
     },
     {
-      id: 'WF-09', name: 'Quote sent and the follow-up', board: 'residential',
+      id: 'WF-09',
+      folder: '04', name: 'Quote sent and the follow-up', board: 'residential',
       trigger: 'Stage changed to Quote Sent',
       why: 'The follow-up that converts quotes: day 2, 5, 10, 21, then a decision. Never left sitting.',
       steps: [
@@ -1872,7 +1904,8 @@ window.JOURNEY = {
       stops: 'Customer replies, status set to Won or Lost, or the card leaves the Quote Sent and Follow-up stages.',
     },
     {
-      id: 'WF-10', name: 'Proposal submitted and the review', board: 'commercial',
+      id: 'WF-10',
+      folder: '04', name: 'Proposal submitted and the review', board: 'commercial',
       trigger: 'Stage changed to Proposal Submitted',
       why: 'The commercial follow-up: slower, plainer, and it asks for a decision date.',
       steps: [
@@ -1889,7 +1922,8 @@ window.JOURNEY = {
       stops: 'Customer replies, or the card moves to Awaiting PO, Future Project, or Lost.',
     },
     {
-      id: 'WF-11', name: 'Awaiting PO', board: 'commercial',
+      id: 'WF-11',
+      folder: '04', name: 'Awaiting PO', board: 'commercial',
       trigger: 'Stage changed to Awaiting PO',
       why: 'A verbal award is visible and chased without being counted as committed work.',
       steps: [
@@ -1899,7 +1933,8 @@ window.JOURNEY = {
       stops: 'PO received, which is when a human sets Won. Status stays Open until then.',
     },
     {
-      id: 'WF-12', name: 'Lost', board: 'both',
+      id: 'WF-12',
+      folder: '05', name: 'Lost', board: 'both',
       trigger: 'Status changed to Lost',
       why: 'A Lost with no reason teaches nothing. A graceful goodbye brings a surprising number of jobs back.',
       steps: [
@@ -1912,7 +1947,8 @@ window.JOURNEY = {
       stops: 'Sends once.',
     },
     {
-      id: 'WF-13', name: 'Nurture drip', board: 'both',
+      id: 'WF-13',
+      folder: '05', name: 'Nurture drip', board: 'both',
       trigger: 'Stage changed to Nurture or Future Project, or the tag nurture added',
       why: 'Right job, wrong time. Marketing, so consent-gated, with a permission reset at ninety days.',
       steps: [
@@ -1934,7 +1970,8 @@ window.JOURNEY = {
       stops: 'Any reply, booking or new form fill, which moves the card back to Qualified. Unsubscribe sets do-not-market and the card stays put.',
     },
     {
-      id: 'WF-14', name: 'Won', board: 'both',
+      id: 'WF-14',
+      folder: '05', name: 'Won', board: 'both',
       trigger: 'Status changed to Won',
       why: 'Kills every sales sequence, thanks the customer, and hands the office its two tasks.',
       steps: [
@@ -1960,7 +1997,8 @@ window.JOURNEY = {
       stops: 'Sends once.',
     },
     {
-      id: 'WF-15', name: 'Deposit received', board: 'residential',
+      id: 'WF-15',
+      folder: '06', name: 'Deposit received', board: 'residential',
       trigger: 'deposit_received_at set on the card',
       why: 'Silence after a payment is the thing customers hate most.',
       steps: [
@@ -1971,7 +2009,8 @@ window.JOURNEY = {
       stops: 'Sends once.',
     },
     {
-      id: 'WF-16', name: 'Scheduled', board: 'residential',
+      id: 'WF-16',
+      folder: '06', name: 'Scheduled', board: 'residential',
       trigger: 'Stage changed to Scheduled',
       why: 'The booking, the preparation list, and the afternoon-before reminder.',
       steps: [
@@ -1985,7 +2024,8 @@ window.JOURNEY = {
       stops: 'If job_start_date changes, cancel the pending JOB-03 and re-queue it against the new date.',
     },
     {
-      id: 'WF-17', name: 'Mobilising', board: 'commercial',
+      id: 'WF-17',
+      folder: '06', name: 'Mobilising', board: 'commercial',
       trigger: 'Stage changed to Mobilising',
       why: 'The email already went with Won. This stage is two tasks that must be closed before the crew turns up.',
       steps: [
@@ -1996,7 +2036,8 @@ window.JOURNEY = {
       stops: 'Stage changes to In Progress.',
     },
     {
-      id: 'WF-18', name: 'In Progress', board: 'both',
+      id: 'WF-18',
+      folder: '06', name: 'In Progress', board: 'both',
       trigger: 'Stage changed to In Progress',
       why: 'The on-the-way text, and the two things that have to happen before the card can move on: photos and variations.',
       steps: [
@@ -2017,7 +2058,8 @@ window.JOURNEY = {
       stops: 'Stage changes.',
     },
     {
-      id: 'WF-19', name: 'Invoiced and the payment chase', board: 'residential',
+      id: 'WF-19',
+      folder: '07', name: 'Invoiced and the payment chase', board: 'residential',
       trigger: 'Stage changed to Invoiced',
       why: 'Completion note and invoice go separately so the paperwork never dilutes the thank-you. Reminders stop dead on payment.',
       steps: [
@@ -2034,7 +2076,8 @@ window.JOURNEY = {
       stops: 'Invoice marked paid, or the card moves to Paid & Closed. A reminder sent after someone has paid does more damage than the reminder was worth.',
     },
     {
-      id: 'WF-20', name: 'Invoicing, claims and close-out', board: 'commercial',
+      id: 'WF-20',
+      folder: '07', name: 'Invoicing, claims and close-out', board: 'commercial',
       trigger: 'Stage changed to Invoicing, and each time a claim is issued',
       why: 'Large jobs bill in progress claims, so the stage holds until the last one is paid.',
       steps: [
@@ -2048,7 +2091,8 @@ window.JOURNEY = {
       stops: 'The card moves to Paid & Closed when the final claim is paid. Payment terms still to confirm with Glenn.',
     },
     {
-      id: 'WF-21', name: 'Paid & Closed', board: 'both',
+      id: 'WF-21',
+      folder: '07', name: 'Paid & Closed', board: 'both',
       trigger: 'Stage changed to Paid & Closed',
       why: 'The most valuable stage on the board: review, referral, and a check-in a year out.',
       steps: [
@@ -2069,7 +2113,8 @@ window.JOURNEY = {
       stops: 'Runs to the end. The 12 month step is scheduled on entry so it survives everything else changing.',
     },
     {
-      id: 'WF-22', name: 'Missed call text-back', board: 'both',
+      id: 'WF-22',
+      folder: '01', name: 'Missed call text-back', board: 'both',
       trigger: 'Inbound call to the business number not answered',
       why: 'For a trade business where the phone rings while someone is up a ladder, the single highest-value automation on the list.',
       steps: [
@@ -2082,7 +2127,8 @@ window.JOURNEY = {
       stops: 'Once per caller per day.',
     },
     {
-      id: 'WF-23', name: 'Out of hours reply', board: 'both',
+      id: 'WF-23',
+      folder: '01', name: 'Out of hours reply', board: 'both',
       trigger: 'Inbound SMS outside office hours',
       why: 'Sets an expectation instead of leaving a text unanswered until morning.',
       steps: [
@@ -2092,7 +2138,8 @@ window.JOURNEY = {
       stops: 'Once per contact per day, not once per message.',
     },
     {
-      id: 'WF-24', name: 'Customer replied', board: 'both',
+      id: 'WF-24',
+      folder: '08', name: 'Customer replied', board: 'both',
       trigger: 'Inbound SMS or email from a contact with an open opportunity',
       why: 'A reply is a live conversation. Nothing automatic should talk over it.',
       steps: [
@@ -2104,7 +2151,8 @@ window.JOURNEY = {
       stops: 'Fires on every inbound message.',
     },
     {
-      id: 'WF-25', name: 'STOP and unsubscribe', board: 'both',
+      id: 'WF-25',
+      folder: '08', name: 'STOP and unsubscribe', board: 'both',
       trigger: 'Inbound SMS reads STOP, or an email unsubscribe link is used',
       why: 'The platform handles most of this natively. This confirms what it does and adds the bit it does not.',
       steps: [
@@ -2115,7 +2163,8 @@ window.JOURNEY = {
       stops: 'Immediate.',
     },
     {
-      id: 'WF-26', name: 'Stalled card monitor', board: 'both',
+      id: 'WF-26',
+      folder: '08', name: 'Stalled card monitor', board: 'both',
       trigger: 'Scheduled, daily at 6:45am',
       why: 'Escalation toward visibility, not more alarms. A card stuck for forty days is a conversation to have on Monday, not an emergency.',
       steps: [
@@ -2127,7 +2176,8 @@ window.JOURNEY = {
       stops: 'Runs daily.',
     },
     {
-      id: 'WF-27', name: 'Daily digest', board: 'both',
+      id: 'WF-27',
+      folder: '09', name: 'Daily digest', board: 'both',
       trigger: 'Scheduled, 7:00am Monday to Saturday',
       why: 'Where everything that is not an emergency goes. NEEDS YOU last, because it is the section people act on.',
       steps: [
@@ -2136,7 +2186,8 @@ window.JOURNEY = {
       stops: 'Runs daily.',
     },
     {
-      id: 'WF-28', name: 'Weekly and monthly reports', board: 'both',
+      id: 'WF-28',
+      folder: '09', name: 'Weekly and monthly reports', board: 'both',
       trigger: 'Scheduled, Monday 7:00am and the 1st of the month',
       why: 'The forecast and the committed work are shown as two lines, never one, because the boards merge sales and delivery.',
       steps: [
@@ -2147,7 +2198,8 @@ window.JOURNEY = {
       stops: 'Runs on schedule.',
     },
     {
-      id: 'WF-29', name: 'Negative review or complaint', board: 'both',
+      id: 'WF-29',
+      folder: '08', name: 'Negative review or complaint', board: 'both',
       trigger: 'Review received under 4 stars, or the tag complaint added to a contact',
       why: 'Reputation decays fast. A same-day call fixes most of them.',
       steps: [
@@ -2158,7 +2210,8 @@ window.JOURNEY = {
       stops: 'Sends once per review or tag.',
     },
     {
-      id: 'WF-30', name: 'Site visit cancelled or missed', board: 'both',
+      id: 'WF-30',
+      folder: '03', name: 'Site visit cancelled or missed', board: 'both',
       trigger: 'Appointment in the assessment calendar cancelled or rescheduled, or marked no-show',
       why: 'A site visit that does not happen is the most expensive failure in the journey. Without this the card sits in Assessment Booked with nothing in the diary, and nobody is told.',
       steps: [

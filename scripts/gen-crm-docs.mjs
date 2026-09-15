@@ -592,14 +592,28 @@ const stepMd = (st, depth) => {
   return out
 }
 const boardName = { both: 'Both boards', residential: 'Residential', commercial: 'Commercial & Industrial' }
-const workflowsMd = J.workflows.map((w) => `## ${w.id} · ${w.name}
+const wfMd = (w) => `### ${w.id} · ${w.name}
 
 **Board:** ${boardName[w.board]}
 **Trigger:** ${w.trigger}
 
 ${w.why ? w.why + '\n\n' : ''}${w.steps.map((s) => stepMd(s, 0)).join('')}
 **Stops:** ${w.stops}${w.error ? `  \n**On error:** ${w.error}` : ''}
-`).join('\n---\n\n')
+`
+
+/* Filed by journey phase, which is how somebody looks a workflow up. Build
+   order is a separate list and stays one: it is a priority, and a priority
+   makes a poor filing system. */
+const workflowsMd = (J.folders || []).map((f) => {
+  const mine = J.workflows.filter((w) => w.folder === f.n)
+  return `## ${f.n} ${f.name}
+
+${f.why}
+
+${mine.length} workflow${mine.length === 1 ? '' : 's'}: ${mine.map((w) => w.id).join(', ')}
+
+${mine.map(wfMd).join('\n')}`
+}).join('\n---\n\n')
 
 const sentBy = new Set()
 const walkAll = (steps) => { for (const s of steps) { if (s.t === 'send') sentBy.add(s.id); if (s.then) walkAll(s.then); if (s.else) walkAll(s.else) } }
@@ -622,7 +636,7 @@ Companion to [CRM-PIPELINES.md](CRM-PIPELINES.md), [CRM-MESSAGING.md](CRM-MESSAG
 and [CRM-TASKS-NOTIFICATIONS.md](CRM-TASKS-NOTIFICATIONS.md). Message ids,
 alert numbers and task names below refer to those documents.
 
-${J.workflows.length} workflows. ${sentBy.size} of the ${count} messages are sent by them; the other
+${J.workflows.length} workflows in ${(J.folders || []).length} folders. ${sentBy.size} of the ${count} messages are sent by them; the other
 ${manualIds.length} (${manualIds.join(', ')}) are saved templates sent by hand.
 
 ## Step types

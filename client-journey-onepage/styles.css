@@ -489,6 +489,29 @@ td .chip { font-size: .58rem; }
 .wf__in { padding: 1rem 1.2rem 1.2rem; }
 .wf__head { display: flex; align-items: center; gap: .7rem; flex-wrap: wrap; margin-bottom: .8rem; }
 .wf__head h3 { font-size: 1.12rem; font-weight: 700; margin-right: .3rem; }
+
+/* ------------------------------------------------------- workflow folders */
+.wfold { margin-bottom: 2.2rem; }
+.wfold__h {
+  display: grid; grid-template-columns: auto 1fr auto; gap: .2rem .75rem; align-items: center;
+  padding-bottom: .7rem; margin-bottom: .9rem; border-bottom: 2px solid var(--line);
+}
+.wfold__n {
+  font-family: var(--mono); font-size: .95rem; font-weight: 600; color: #fff; background: var(--navy);
+  border-radius: 8px; padding: .25em .6em;
+}
+.wfold__h h3 { font-size: 1.25rem; font-weight: 800; }
+.wfold__c {
+  font-family: var(--mono); font-size: .8rem; color: var(--ink-3);
+  border: 1px solid var(--line); border-radius: 100px; padding: .2em .7em;
+}
+.wfold__h p { grid-column: 2 / -1; font-size: .95rem; color: var(--ink-2); margin: 0; }
+.chip--fold { background: var(--navy-wash); color: var(--navy); }
+:root[data-theme="dark"] .wfold__n { color: #0b0f1a; }
+@media (max-width: 640px) {
+  .wfold__h { grid-template-columns: auto 1fr; }
+  .wfold__c { grid-row: 1; grid-column: 2; justify-self: end; }
+}
 .wf__trigger { font-size: .97rem; color: var(--ink); background: var(--navy-wash); border-radius: 10px; padding: .55rem .8rem; margin-bottom: .8rem; }
 .wf__trigger b { font-size: .64rem; letter-spacing: .12em; text-transform: uppercase; color: var(--navy); margin-right: .5rem; }
 .wf__why { font-size: .98rem; color: var(--ink-2); margin-bottom: 1rem; max-width: 72ch; }

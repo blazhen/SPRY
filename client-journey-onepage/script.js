@@ -670,11 +670,14 @@
       var deepCount = function (steps) {
         return steps.reduce(function (n, s) { return n + 1 + (s.then ? deepCount(s.then) : 0) + (s.else ? deepCount(s.else) : 0); }, 0);
       };
-      host.innerHTML = J.workflows.filter(function (w) { return filter === 'all' || w.board === filter || w.board === 'both'; }).map(function (w) {
+      var shown = J.workflows.filter(function (w) { return filter === 'all' || w.board === filter || w.board === 'both'; });
+      var card = function (w) {
         var boardChip = w.board === 'both' ? '<span class="chip chip--trans">Both boards</span>' : '<span class="chip chip--email">' + (w.board === 'residential' ? 'Residential' : 'Commercial') + '</span>';
         var n = deepCount(w.steps);
+        var fold = (J.folders || []).filter(function (f) { return f.n === w.folder; })[0];
         return '<details class="wf" id="' + esc(w.id.toLowerCase()) + '">'
-          + '<summary><div class="wf__sum"><span class="msgid">' + esc(w.id) + '</span><h3>' + esc(w.name) + '</h3>' + boardChip
+          + '<summary><div class="wf__sum"><span class="msgid">' + esc(w.id) + '</span><h3>' + esc(w.name) + '</h3>'
+          + (fold ? '<span class="chip chip--fold">' + esc(fold.n + ' ' + fold.name) + '</span>' : '') + boardChip
           + '<span class="wf__when">' + esc(w.trigger) + '</span>'
           + '<span class="wf__steps-n">' + n + ' steps</span>' + ICON.chev.replace('class=', 'data-x=').replace('<svg ', '<svg class="wf__chev" ') + '</div></summary>'
           + '<div class="wf__in">'
@@ -683,7 +686,24 @@
           + '<ol class="wf__steps">' + w.steps.map(stepHtml).join('') + '</ol>'
           + '<div class="wf__foot"><b>Stops</b> ' + esc(w.stops || '') + (w.error ? '<br><b>On error</b> ' + esc(w.error) : '') + '</div>'
           + '</div></details>';
+      };
+      /* Filed by journey phase, so someone looking for a workflow finds it by
+         remembering roughly when it happens. A folder with nothing left in it
+         after a board filter is not drawn at all. */
+      var out = (J.folders || []).map(function (f) {
+        var mine = shown.filter(function (w) { return w.folder === f.n; });
+        if (!mine.length) return '';
+        return '<div class="wfold">'
+          + '<div class="wfold__h"><span class="wfold__n">' + esc(f.n) + '</span>'
+          + '<h3>' + esc(f.name) + '</h3><span class="wfold__c">' + mine.length + '</span>'
+          + '<p>' + esc(f.why) + '</p></div>'
+          + mine.map(card).join('') + '</div>';
       }).join('');
+      var filed = {};
+      (J.folders || []).forEach(function (f) { (f.ids || []).forEach(function (i) { filed[i] = 1; }); });
+      var loose = shown.filter(function (w) { return !filed[w.id]; });
+      if (loose.length) out += '<div class="wfold"><div class="wfold__h"><span class="wfold__n">--</span><h3>Not filed</h3><span class="wfold__c">' + loose.length + '</span><p>These have no folder. That is a gap in the data, not a category.</p></div>' + loose.map(card).join('') + '</div>';
+      host.innerHTML = out;
       text('cntWorkflows', host.querySelectorAll('.wf').length);
     };
     var seg = $('#boardSeg');
