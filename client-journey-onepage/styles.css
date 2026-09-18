@@ -695,5 +695,16 @@ footer { border-top: 1px solid var(--line); padding: 1.8rem 0 3rem; }
   .tbubble { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   .close { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   a { text-decoration: none; }
-  body { font-size: 12.5px; }
+  /* The screen base is 17px and everything is sized in rem, so setting the
+     body alone changed nothing and an A4 page carried screen-sized type. Set
+     the root, and every rem follows. */
+  html { font-size: 11px; }
+  body { font-size: 1rem; }
+  /* screen instructions and buttons mean nothing on paper */
+  .hero__cta, .howto, .railhint { display: none !important; }
+  .facts, .fact { break-inside: avoid; }
+  /* the closing note is one thought: never split it across two pages, and
+     start it on a fresh page with the footer under it */
+  .close { break-inside: avoid; break-before: page; }
+  footer { break-before: avoid; break-inside: avoid; }
 }
