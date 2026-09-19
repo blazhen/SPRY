@@ -428,3 +428,42 @@
 .house-heat {
   animation: house-heat ease-out infinite;
 }
+
+/* ----------------------------------------------------------------------------
+   Gallery job cards
+
+   A card decides its layout from the width of the slot it lands in, not from
+   the viewport. In a third of the grid it stacks, photo over details. In a
+   wide slot, which is the featured job at the top and any card left alone on
+   the last row, it turns sideways, photo beside details, so one card across
+   the full width reads as a feature rather than a stranded thumbnail.
+   -------------------------------------------------------------------------- */
+.job-slot {
+  container-type: inline-size;
+}
+
+@container (min-width: 54rem) {
+  .job-card {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+  }
+  .job-card__photos {
+    grid-column: span 7 / span 7;
+  }
+  .job-card__frame {
+    aspect-ratio: 3 / 2;
+  }
+  .job-card__body {
+    grid-column: span 5 / span 5;
+    justify-content: center;
+    padding: 2.5rem;
+  }
+  .job-card__title {
+    font-size: var(--fs-h3);
+    line-height: 1.08;
+    letter-spacing: -0.02em;
+  }
+  .job-card__facts {
+    margin-top: 1.75rem;
+  }
+}
