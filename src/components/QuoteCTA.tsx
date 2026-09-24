@@ -91,7 +91,7 @@ export default function QuoteCTA() {
               {quoteCta.eyebrow}
             </span>
 
-            <h2 id="quote-cta-heading" className="mt-6 text-display font-semibold">
+            <h2 id="quote-cta-heading" className="mt-6 text-h2 font-semibold">
               {quoteCta.headingLines.map((line) => {
                 const word = quoteCta.accentWord
                 const parts = word && line.includes(word) ? line.split(word) : null

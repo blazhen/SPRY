@@ -319,7 +319,7 @@ export default function HeroHouse() {
           {/* h2 scale, not h1. In a four-column well the h1 size wraps these
               lines, and a wrapped line breaks out of its clip mask and makes
               the copy column the tallest thing on the page. */}
-          <h1 className="mt-5 text-h2 font-semibold text-bone">
+          <h1 className="mt-5 text-h1 font-semibold text-bone">
             {heroHouse.headlineLines.map((line, i) => (
               <span className="line-mask" key={line}>
                 <span

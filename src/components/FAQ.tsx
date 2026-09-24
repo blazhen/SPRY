@@ -67,7 +67,7 @@ function FaqItem({ faq, index, open, onToggle }: ItemProps) {
           {/* Question size, not heading size. A list of questions has to be
               scannable, and at display size the answers fell off the screen. */}
           <span
-            className={`flex-1 font-display text-[clamp(1.125rem,1.5vw,1.375rem)] font-semibold leading-snug transition-colors duration-300 ${
+            className={`flex-1 font-display text-[clamp(1rem,1.4vw,1.25rem)] font-semibold leading-[1.35] transition-colors duration-300 ${
               open ? 'text-accent' : 'text-bone group-hover:text-accent'
             }`}
           >

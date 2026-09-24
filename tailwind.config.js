@@ -74,12 +74,14 @@ export default {
         // that, Clash Display's narrow space glyph closed up and headings read
         // as one word ("WhatisR-Value?"). Word spacing is opened in the base
         // layer for the same reason.
+        // Line heights follow the same agency scale as the sizes in tokens.css:
+        // 1.1 on the H1, 1.15 on the H2, 1.25 on the H3.
         mega: ['var(--fs-mega)', { lineHeight: '0.82', letterSpacing: '-0.02em' }],
-        display: ['var(--fs-display)', { lineHeight: '0.88', letterSpacing: '-0.02em' }],
-        h1: ['var(--fs-h1)', { lineHeight: '0.92', letterSpacing: '-0.02em' }],
-        h2: ['var(--fs-h2)', { lineHeight: '0.95', letterSpacing: '-0.02em' }],
-        h3: ['var(--fs-h3)', { lineHeight: '1.08', letterSpacing: '-0.02em' }],
-        h4: ['var(--fs-h4)', { lineHeight: '1.2', letterSpacing: '-0.015em' }],
+        display: ['var(--fs-display)', { lineHeight: '1.1', letterSpacing: '-0.02em' }],
+        h1: ['var(--fs-h1)', { lineHeight: '1.1', letterSpacing: '-0.02em' }],
+        h2: ['var(--fs-h2)', { lineHeight: '1.15', letterSpacing: '-0.02em' }],
+        h3: ['var(--fs-h3)', { lineHeight: '1.25', letterSpacing: '-0.02em' }],
+        h4: ['var(--fs-h4)', { lineHeight: '1.25', letterSpacing: '-0.015em' }],
         lead: ['var(--fs-lead)', { lineHeight: '1.55' }],
         body: ['var(--fs-body)', { lineHeight: '1.65' }],
         small: ['var(--fs-small)', { lineHeight: '1.55' }],

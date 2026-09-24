@@ -79,15 +79,15 @@ export default function StatBand() {
 
         <ul
           data-stat-grid
-          className="mt-16 grid gap-px overflow-hidden rounded-xl border border-ink/12 bg-ink/12 sm:grid-cols-2 lg:grid-cols-4"
+          className="mt-16 grid grid-cols-2 gap-px overflow-hidden rounded-xl border border-ink/12 bg-ink/12 lg:grid-cols-4"
         >
           {stats.map((stat) => (
             <li
               key={stat.id}
               data-stat-item
-              className="group flex flex-col gap-3 bg-bone p-8 transition-colors duration-500 hover:bg-bone-200 lg:p-9"
+              className="group flex flex-col gap-3 bg-bone p-5 transition-colors duration-500 hover:bg-bone-200 sm:p-8 lg:p-9"
             >
-              <p className="font-display text-[clamp(2.75rem,5.5vw,4.25rem)] font-semibold leading-none tracking-tight text-ink">
+              <p className="font-display text-[clamp(2rem,4vw,3.5rem)] font-semibold leading-none tracking-tight text-ink">
                 {stat.prefix}
                 <span
                   data-countup
