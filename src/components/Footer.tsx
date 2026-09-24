@@ -26,7 +26,12 @@ export default function Footer() {
   const year = new Date().getFullYear()
 
   return (
-    <footer className="relative border-t border-line/10 bg-surface pt-section text-bone" aria-labelledby="footer-heading">
+    /* The bottom padding on phones keeps the base line clear of the fixed
+       call/quote bar. */
+    <footer
+      className="relative border-t border-line/10 bg-surface pb-[5.5rem] pt-section text-bone md:pb-0"
+      aria-labelledby="footer-heading"
+    >
       <h2 id="footer-heading" className="sr-only">
         Site footer
       </h2>
@@ -48,16 +53,28 @@ export default function Footer() {
             <ul className="mt-9 space-y-4 text-body">
               <li className="flex items-start gap-3">
                 <MapPin className="mt-1 size-4 shrink-0 text-accent" aria-hidden="true" />
-                {/* Labelled, so the address reads as where the rigs live
-                    rather than as the limit of where they travel. */}
-                <span className="mb-1 block text-eyebrow font-bold uppercase tracking-[0.16em] text-bone-400/70">
-                  Workshop
-                </span>
-                <address className="not-italic text-bone-400">
-                  {site.address.line1}
-                  <br />
-                  {site.address.suburb} {site.address.state} {site.address.postcode}
-                </address>
+                <div>
+                  {/* Labelled, so the address reads as where the rigs live
+                      rather than as the limit of where they travel. */}
+                  <span className="mb-1 block text-eyebrow font-bold uppercase tracking-[0.16em] text-bone-400">
+                    Workshop
+                  </span>
+                  {/* The address opens the Google listing, which is the
+                      same name, address and phone a search engine sees. */}
+                  <address className="not-italic text-bone-400">
+                    <a
+                      href={site.listingUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="link-wipe inline-block"
+                    >
+                      {site.address.line1}
+                      <br />
+                      {site.address.suburb} {site.address.state} {site.address.postcode}
+                      <span className="sr-only"> (opens Google Maps in a new tab)</span>
+                    </a>
+                  </address>
+                </div>
               </li>
               <li className="flex items-center gap-3">
                 <Phone className="size-4 shrink-0 text-accent" aria-hidden="true" />

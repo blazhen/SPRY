@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { useLocation } from 'react-router-dom'
 import SectionHeading from '@/components/ui/SectionHeading'
 import { houseSurfaces, surfacesIntro } from '@/data/features'
 import type { HouseSurface } from '@/data/features'
@@ -21,9 +22,21 @@ type SurfaceId = HouseSurface['id']
  * to suppress under reduced motion: the only movement is a colour change on
  * selection, which is the interaction itself.
  */
+/** `/residential#walls` opens the diagram on the walls. */
+const surfaceFromHash = (hash: string): SurfaceId | undefined =>
+  houseSurfaces.find((s) => `#${s.id}` === hash)?.id
+
 export default function HouseSurfaces() {
-  const [active, setActive] = useState<SurfaceId>('roof')
+  const { hash } = useLocation()
+  const [active, setActive] = useState<SurfaceId>(() => surfaceFromHash(hash) ?? 'roof')
   const surface = houseSurfaces.find((s) => s.id === active) ?? houseSurfaces[0]
+
+  // A sub-service link from the menu or the footer lands here with the
+  // surface in the hash, and the diagram follows it.
+  useEffect(() => {
+    const next = surfaceFromHash(hash)
+    if (next) setActive(next)
+  }, [hash])
 
   /**
    * Selected surfaces take the accent. Unselected ones stay clearly visible
@@ -152,6 +165,7 @@ export default function HouseSurfaces() {
                 return (
                   <button
                     key={item.id}
+                    id={item.id}
                     type="button"
                     onClick={() => setActive(item.id)}
                     aria-pressed={on}

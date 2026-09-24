@@ -18,7 +18,7 @@ export default function About() {
   return (
     <>
       <Seo title={aboutPage.seoTitle} description={aboutPage.seoDescription} path="/about" />
-      <PageHero page={aboutPage} />
+      <PageHero page={aboutPage} crumb="About" />
 
       <Prose page={aboutPage} id="story" />
       <CapabilityGrid />

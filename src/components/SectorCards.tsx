@@ -53,6 +53,7 @@ export default function SectorCards() {
           {commercialSectors.map((sector, i) => (
             <li
               key={sector.id}
+              id={sector.id}
               data-sector-card
               className={`group relative overflow-hidden rounded-xl border border-line/10 bg-ink-800 ${
                 i === 0 ? 'lg:col-span-2' : ''

@@ -55,6 +55,44 @@ function RouteScrollReset() {
 }
 
 /**
+ * Scrolls to `#section` links.
+ *
+ * A browser only honours a hash on a full page load. With client-side routing
+ * the address changes without one, so a link to /residential#roof would land
+ * at the top of the page and stay there. The target may also mount a beat
+ * after the route does, so this looks for it a few times before giving up.
+ */
+function HashScroll() {
+  const { pathname, hash } = useLocation()
+  const lenis = useLenis()
+
+  useEffect(() => {
+    if (!hash) return
+    const id = decodeURIComponent(hash.slice(1))
+    let attempts = 0
+    let timer = 0
+
+    const go = () => {
+      const target = document.getElementById(id)
+      if (!target) {
+        if (attempts++ < 12) timer = window.setTimeout(go, 120)
+        return
+      }
+      const header = document.querySelector('[data-site-header]')?.getBoundingClientRect().height ?? 96
+      const top = target.getBoundingClientRect().top + window.scrollY - header - 16
+      if (lenis) lenis.scrollTo(top, { immediate: true })
+      window.scrollTo(0, top)
+      ScrollTrigger.refresh()
+    }
+
+    timer = window.setTimeout(go, 80)
+    return () => window.clearTimeout(timer)
+  }, [pathname, hash, lenis])
+
+  return null
+}
+
+/**
  * Measurement and attribution.
  *
  * Attribution is captured on every route change, not just first load, because
@@ -126,6 +164,7 @@ export default function App() {
         >
           <LenisScrollTriggerSync />
           <RouteScrollReset />
+          <HashScroll />
           <RouteAnalytics />
           <Routes>
             <Route element={<Layout />}>

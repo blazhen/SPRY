@@ -3,11 +3,27 @@
  * Everything here is real SprayIT content. Treat as source of truth.
  */
 
+export interface NavChild {
+  label: string
+  href: string
+}
+
+/** One service in the Services menu, with the pages grouped under it. */
+export interface NavGroup {
+  label: string
+  href: string
+  /** One line under the name in the desktop menu. */
+  blurb: string
+  children?: NavChild[]
+}
+
 export interface NavItem {
   /** Zero-padded index used by the mobile drawer (01, 02, …). */
   index: string
   label: string
   href: string
+  /** Present on the Services entry: it opens a menu rather than a page. */
+  groups?: NavGroup[]
 }
 
 export interface SocialLink {
@@ -71,6 +87,22 @@ export const site = {
     'https://www.google.com/maps/place/SprayIT+Solutions+(VIC)+Pty+Ltd/data=!4m4!3m3!1s0x6ad66d34e29e3fbb:0x2e675ad000ebab03!9m1!1b1',
 
   /**
+   * The Google Business Profile listing itself, behind the address in the
+   * footer and on the contact page. The cid is the listing's own id: the
+   * decimal form of the hex id that reviewsUrl carries, so the two links can
+   * never point at different places.
+   */
+  listingUrl: 'https://maps.google.com/?cid=3343741097761024771',
+
+  /**
+   * The map on the contact page. An address embed, which needs no API key.
+   * The Business Profile's own embed (Share > Embed a map) pins the listing
+   * rather than the street; paste its src here when it is to hand.
+   */
+  mapEmbedUrl:
+    'https://www.google.com/maps?q=SprayIT%20Solutions%20(VIC)%20Pty%20Ltd%2C%20Factory%204%2C%20114%20Colemans%20Road%2C%20Carrum%20Downs%20VIC%203201&output=embed',
+
+  /**
    * Trading hours.
    *
    * REVIEW WITH GLENN before launch. These are plausible trade hours, not
@@ -91,7 +123,9 @@ export const site = {
   },
 
   cta: {
-    primary: { label: 'Request a Free Quote', href: '/contact' },
+    /* One label, everywhere: header, hero, footer, the phone bar and the
+       closing band all say the same thing. */
+    primary: { label: 'Get a Free Quote', href: '/contact' },
     secondary: { label: 'Call 0428 26 36 26', href: 'tel:+61428263626' },
   },
 
@@ -102,18 +136,53 @@ export const site = {
 } as const
 
 /**
+ * The Services menu: each service page with the work grouped under it.
+ *
+ * The sub-service links land on the section of the page that covers that
+ * work, and on Residential they also preselect the matching surface on the
+ * interactive house. They are the same links the footer uses, so the two
+ * never disagree about where a service lives.
+ */
+export const servicesMenu: NavGroup[] = [
+  {
+    label: 'Spray Foam',
+    href: '/spray-foam',
+    blurb: 'How it works, open cell against closed cell, and why it beats batts.',
+  },
+  {
+    label: 'Residential',
+    href: '/residential',
+    blurb: 'Homes, sheds and new builds: roof, walls and underfloor.',
+    children: [
+      { label: 'Underfloor', href: '/residential#underfloor' },
+      { label: 'Roof & Ceiling', href: '/residential#roof' },
+      { label: 'Wall', href: '/residential#walls' },
+    ],
+  },
+  {
+    label: 'Commercial',
+    href: '/commercial',
+    blurb: 'Factories, cold storage, farms, processing plants and mine sites.',
+    children: [
+      { label: 'Factory & Warehouse', href: '/commercial#industrial' },
+      { label: 'Farming', href: '/commercial#agri' },
+      { label: 'Mining', href: '/commercial#sectors' },
+    ],
+  },
+]
+
+/**
  * Home is deliberately absent. The logo is a link to it, labelled for screen
- * readers, and every site puts home behind the mark anyway. Dropping the entry
- * keeps the bar short enough for Gallery to earn its place in it.
+ * readers, and every site puts home behind the mark anyway. The three service
+ * pages sit behind one Services entry, which is what gives the header room
+ * for Gallery and Blog without crowding.
  */
 export const navItems: NavItem[] = [
   { index: '01', label: 'About', href: '/about' },
-  { index: '02', label: 'Spray Foam', href: '/spray-foam' },
-  { index: '03', label: 'Residential', href: '/residential' },
-  { index: '04', label: 'Commercial', href: '/commercial' },
-  { index: '05', label: 'Gallery', href: '/gallery' },
-  { index: '06', label: 'Blog', href: '/blog' },
-  { index: '07', label: 'Contact', href: '/contact' },
+  { index: '02', label: 'Services', href: '/spray-foam', groups: servicesMenu },
+  { index: '03', label: 'Gallery', href: '/gallery' },
+  { index: '04', label: 'Blog', href: '/blog' },
+  { index: '05', label: 'Contact', href: '/contact' },
 ]
 
 /**

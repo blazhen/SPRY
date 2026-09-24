@@ -4,6 +4,7 @@ import Seo from '@/components/ui/Seo'
 import SectionHeading from '@/components/ui/SectionHeading'
 import SectionBackdrop from '@/components/ui/SectionBackdrop'
 import ProtectedImage from '@/components/ui/ProtectedImage'
+import Breadcrumbs from '@/components/Breadcrumbs'
 import { PageCta } from '@/components/PageParts'
 import { blogIntro, blogPosts, formatPostDate } from '@/data/blog'
 
@@ -32,6 +33,7 @@ export default function Blog() {
         <SectionBackdrop variant="orbs" tone="both" />
 
         <div className="relative shell">
+          <Breadcrumbs items={[{ label: 'Blog' }]} className="mb-8" />
           <div className="max-w-3xl">
             <SectionHeading
               intro={blogIntro}

@@ -19,6 +19,7 @@ import SectorTransition from '@/components/SectorTransition'
 import RValueExplainer from '@/components/RValueExplainer'
 import ClientLogos from '@/components/ClientLogos'
 import FAQ from '@/components/FAQ'
+import MidCta from '@/components/MidCta'
 import QuoteCTA from '@/components/QuoteCTA'
 
 // Embla ships as its own chunk, requested only when the page gets this far.
@@ -38,14 +39,21 @@ export default function Home() {
       {ACTIVE_HERO === 'seal' && <HeroSeal />}
       {ACTIVE_HERO === 'thermal' && <Hero />}
 
-      {/* Directly under the hero: the brief is that the site must not read as
-          residential-only, and this is the first thing after the fold. */}
+      {/* The numbers come first: the trust signals a first-time visitor wants
+          before anything else, straight under the hero. */}
+      <StatBand />
+
+      {/* The brief is that the site must not read as residential-only, so
+          this is the first full section after the numbers. */}
       <SectorTransition />
 
-      {/* Velocity-reactive strip that catches the hero's scroll hand-off. */}
+      {/* Velocity-reactive strip that catches the hero's scroll hand-off.
+          Sized as a strapline, not a headline: at display size the moving
+          text competed with the content around it. */}
       <Marquee
-        className="border-y border-line/10 bg-ink py-6 sm:py-8"
-        itemClassName="font-display text-[clamp(1.75rem,4.2vw,3.25rem)] font-semibold uppercase leading-none tracking-tight text-bone"
+        duration={40}
+        className="border-y border-line/10 bg-ink py-5 sm:py-6"
+        itemClassName="font-display text-[clamp(1.25rem,1.8vw,1.5rem)] font-semibold uppercase leading-none tracking-normal text-bone"
       />
 
       <WhatIsSprayFoam />
@@ -53,11 +61,13 @@ export default function Home() {
       <Benefits />
       <InsulationScene />
       <Services />
-      <StatBand />
 
-      {/* Dark, so it breaks up the run of light sections from StatBand through
-          Testimonials to the logo band. */}
+      {/* Dark, so it breaks up the run of light sections through to the logo
+          band. */}
       <WorkVideos />
+
+      {/* After the proof, before the testimonials: one line and two buttons. */}
+      <MidCta />
 
       <Suspense
         fallback={<div className="min-h-[60vh] bg-bone" aria-hidden="true" />}

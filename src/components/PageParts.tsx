@@ -5,6 +5,7 @@ import { gsap, useGSAP } from '@/lib/gsap'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
 import SectionHeading from '@/components/ui/SectionHeading'
 import SectionBackdrop from '@/components/ui/SectionBackdrop'
+import Breadcrumbs from '@/components/Breadcrumbs'
 import { site } from '@/data/site'
 import type { PageSection, SitePage } from '@/data/pages'
 
@@ -22,17 +23,24 @@ import type { PageSection, SitePage } from '@/data/pages'
 
 export function PageHero({
   page,
+  crumb,
   aside,
   children,
 }: {
   page: SitePage
+  /** The page's own name in the breadcrumb trail, after Home. */
+  crumb: string
   /** Optional visual beside the headline, e.g. the 3D building. */
   aside?: ReactNode
   children?: ReactNode
 }) {
   return (
-    <section className="relative overflow-hidden bg-ink pb-14 pt-[calc(var(--header-h)+clamp(3rem,8vh,6rem))] lg:pb-20">
+    <section className="relative overflow-hidden bg-ink pb-14 pt-[calc(var(--header-h)+clamp(2.5rem,6vh,4.5rem))] lg:pb-20">
       <SectionBackdrop variant="orbs" tone="both" />
+
+      <div className="relative shell">
+        <Breadcrumbs items={[{ label: crumb }]} className="mb-8" />
+      </div>
 
       {aside ? (
         /* Two columns once there is something to put beside the words. The

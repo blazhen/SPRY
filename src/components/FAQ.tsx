@@ -1,8 +1,9 @@
 import { useRef, useState } from 'react'
+import { Helmet } from 'react-helmet-async'
+import { ArrowUpRight, Phone } from 'lucide-react'
 import { gsap, ScrollTrigger, useGSAP } from '@/lib/gsap'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
-import { faqs, type Faq } from '@/data/faqs'
-import { faqIntro } from '@/data/content'
+import { faqSets, type Faq, type FaqSet } from '@/data/faqs'
 import SectionHeading from '@/components/ui/SectionHeading'
 import MagneticButton from '@/components/ui/MagneticButton'
 import { site } from '@/data/site'
@@ -54,7 +55,7 @@ function FaqItem({ faq, index, open, onToggle }: ItemProps) {
           aria-expanded={open}
           aria-controls={panelId}
           onClick={onToggle}
-          className="group flex w-full items-start gap-5 py-7 text-left transition-colors duration-300 sm:gap-8"
+          className="group flex w-full items-start gap-5 py-6 text-left transition-colors duration-300 sm:gap-8"
         >
           <span
             className="mt-1 font-body text-eyebrow font-bold tabular-nums tracking-[0.18em] text-accent"
@@ -63,8 +64,10 @@ function FaqItem({ faq, index, open, onToggle }: ItemProps) {
             {String(index + 1).padStart(2, '0')}
           </span>
 
+          {/* Question size, not heading size. A list of questions has to be
+              scannable, and at display size the answers fell off the screen. */}
           <span
-            className={`flex-1 font-display text-h3 font-semibold transition-colors duration-300 ${
+            className={`flex-1 font-display text-[clamp(1.125rem,1.5vw,1.375rem)] font-semibold leading-snug transition-colors duration-300 ${
               open ? 'text-accent' : 'text-bone group-hover:text-accent'
             }`}
           >
@@ -77,7 +80,7 @@ function FaqItem({ faq, index, open, onToggle }: ItemProps) {
               cross, not a minus. */}
           <span
             aria-hidden="true"
-            className={`relative mt-1 grid size-9 shrink-0 place-items-center rounded-pill border transition-colors duration-500 ease-expo ${
+            className={`relative mt-0.5 grid size-9 shrink-0 place-items-center rounded-pill border transition-colors duration-500 ease-expo ${
               open
                 ? 'border-accent bg-accent text-ink'
                 : 'border-line/20 text-bone group-hover:border-accent group-hover:text-accent'
@@ -93,6 +96,8 @@ function FaqItem({ faq, index, open, onToggle }: ItemProps) {
         </button>
       </h3>
 
+      {/* The answer is in the document whether open or closed. Hidden with
+          CSS, never fetched on click, so a crawler reads all of it. */}
       <div
         ref={panelRef}
         id={panelId}
@@ -101,12 +106,17 @@ function FaqItem({ faq, index, open, onToggle }: ItemProps) {
         className="overflow-hidden"
         style={{ height: 0, visibility: 'hidden', opacity: 0 }}
       >
-        <p className="max-w-measure pb-8 pl-[3.1rem] text-body text-bone-400 sm:pl-[4rem]">
+        <p className="max-w-measure pb-7 pl-[3.1rem] text-body text-bone-400 sm:pl-[4rem]">
           {faq.answer}
         </p>
       </div>
     </li>
   )
+}
+
+interface FAQProps {
+  /** Which set of questions. Each page has its own; the homepage takes the general one. */
+  set?: FaqSet
 }
 
 /**
@@ -115,43 +125,69 @@ function FaqItem({ faq, index, open, onToggle }: ItemProps) {
  * One panel open at a time. Each panel is a labelled region controlled by its
  * button, and every open/close refreshes ScrollTrigger because the document
  * height changes underneath every trigger further down the page.
+ *
+ * The questions are also published as FAQPage structured data, built from the
+ * same array the page renders, so the markup can never say something the
+ * visitor cannot see.
  */
-export default function FAQ() {
-  const [openId, setOpenId] = useState<string | null>(faqs[0]?.id ?? null)
+export default function FAQ({ set = faqSets.general }: FAQProps) {
+  const [openId, setOpenId] = useState<string | null>(set.items[0]?.id ?? null)
+
+  const schema = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: set.items.map((faq) => ({
+      '@type': 'Question',
+      name: faq.question,
+      acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+    })),
+  }
 
   return (
     <section
+      id="faq"
       className="relative overflow-hidden border-t border-line/6 bg-surface py-section"
       aria-labelledby="faq-heading"
     >
-      {/* Strata, not cells: the FAQ follows the R-value section, and repeating
-          its wash would make the two read as one long band. */}
-      <SectionBackdrop variant="strata" tone="cool" />
+      <Helmet>
+        <script type="application/ld+json">{JSON.stringify(schema)}</script>
+      </Helmet>
+
+      {/* Cells rather than strata: the diagonal planes ran behind the
+          questions and competed with them. */}
+      <SectionBackdrop variant="cells" tone="cool" />
 
       <div className="relative shell grid gap-14 lg:grid-cols-12 lg:gap-16">
         <div className="lg:col-span-4">
-          <SectionHeading intro={faqIntro} headingId="faq-heading" />
+          <SectionHeading intro={set.intro} headingId="faq-heading" />
 
           <div className="mt-10 rounded-lg border border-line/10 bg-ink-800 p-7">
             <p className="text-body text-bone-400">
               Still not sure whether spray foam suits your building? Ask us. We will tell you
               honestly if it is not the right answer.
             </p>
-            <MagneticButton
-              href={site.phone.tel}
-              variant="ghost"
-              strength={0.2}
-              className="mt-6 w-full"
-              ariaLabel={`Call Spray It Solutions on ${site.phone.display}`}
-            >
-              {site.phone.display}
-            </MagneticButton>
+            <div className="mt-6 flex flex-col gap-3">
+              <MagneticButton
+                href={site.phone.tel}
+                variant="ghost"
+                strength={0.2}
+                className="w-full"
+                ariaLabel={`Call Spray It Solutions on ${site.phone.display}`}
+              >
+                <Phone className="size-4" aria-hidden="true" />
+                {site.cta.secondary.label}
+              </MagneticButton>
+              <MagneticButton href={site.cta.primary.href} variant="primary" strength={0.2} className="w-full">
+                {site.cta.primary.label}
+                <ArrowUpRight className="size-4" aria-hidden="true" />
+              </MagneticButton>
+            </div>
           </div>
         </div>
 
         <div className="lg:col-span-8">
           <ul className="border-t border-line/10">
-            {faqs.map((faq, i) => (
+            {set.items.map((faq, i) => (
               <FaqItem
                 key={faq.id}
                 faq={faq}

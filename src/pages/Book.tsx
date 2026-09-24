@@ -1,6 +1,7 @@
 import { Clock, PhoneCall, ShieldCheck } from 'lucide-react'
 import Seo from '@/components/ui/Seo'
 import SectionHeading from '@/components/ui/SectionHeading'
+import Breadcrumbs from '@/components/Breadcrumbs'
 import { integrations, isConfigured } from '@/config/integrations'
 import { booking } from '@/data/booking'
 import { site } from '@/data/site'
@@ -25,7 +26,11 @@ export default function Book() {
     <>
       <Seo title={booking.seoTitle} description={booking.seoDescription} path="/book" />
 
-      <section className="bg-ink pb-section pt-[calc(var(--header-h)+clamp(3rem,8vh,6rem))]">
+      <section className="bg-ink pb-section pt-[calc(var(--header-h)+clamp(2.5rem,6vh,4.5rem))]">
+        <div className="shell">
+          <Breadcrumbs items={[{ label: 'Book a call' }]} className="mb-8" />
+        </div>
+
         <div className="shell grid gap-14 lg:grid-cols-12 lg:gap-x-16">
           <div className="lg:col-span-5">
             <SectionHeading intro={booking.intro} as="h1" headingClassName="text-h1" />

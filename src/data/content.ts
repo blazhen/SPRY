@@ -527,20 +527,22 @@ export const footer = {
         { label: 'Commercial', href: '/commercial' },
       ],
     },
+    /* The same targets as the Services menu, so a sub-service lives in one
+       place whichever way someone reaches it. */
     {
       title: 'Residential',
       links: [
-        { label: 'Underfloor', href: '/residential' },
-        { label: 'Roof & Ceiling', href: '/residential' },
-        { label: 'Wall', href: '/residential' },
+        { label: 'Underfloor', href: '/residential#underfloor' },
+        { label: 'Roof & Ceiling', href: '/residential#roof' },
+        { label: 'Wall', href: '/residential#walls' },
       ],
     },
     {
       title: 'Commercial',
       links: [
-        { label: 'Factory & Warehouse', href: '/commercial' },
-        { label: 'Farming', href: '/commercial' },
-        { label: 'Mining', href: '/commercial' },
+        { label: 'Factory & Warehouse', href: '/commercial#industrial' },
+        { label: 'Farming', href: '/commercial#agri' },
+        { label: 'Mining', href: '/commercial#sectors' },
       ],
     },
     {

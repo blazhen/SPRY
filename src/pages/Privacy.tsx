@@ -1,4 +1,5 @@
 import Seo from '@/components/ui/Seo'
+import Breadcrumbs from '@/components/Breadcrumbs'
 import { policySections, privacyMeta } from '@/data/legal'
 import { site } from '@/data/site'
 
@@ -14,8 +15,9 @@ export default function Privacy() {
     <>
       <Seo title={privacyMeta.title} description={privacyMeta.description} path="/privacy" />
 
-      <section className="bg-ink pb-section pt-[calc(var(--header-h)+clamp(3rem,8vh,6rem))]">
+      <section className="bg-ink pb-section pt-[calc(var(--header-h)+clamp(2.5rem,6vh,4.5rem))]">
         <div className="shell max-w-4xl">
+          <Breadcrumbs items={[{ label: 'Privacy policy' }]} className="mb-8" />
           <p className="text-eyebrow font-bold uppercase tracking-[0.2em] text-accent">Legal</p>
           <h1 className="mt-5 font-display text-h1 font-semibold text-bone">Privacy policy</h1>
           <p className="mt-5 text-small text-bone-400">
