@@ -52,6 +52,12 @@ export default function Seo({
       postalCode: site.address.postcode,
       addressCountry: 'AU',
     },
+    geo: {
+      '@type': 'GeoCoordinates',
+      latitude: site.geo.latitude,
+      longitude: site.geo.longitude,
+    },
+    hasMap: site.listingUrl,
     areaServed: site.serviceArea,
     openingHours: site.hours.schema,
     slogan: site.tagline,

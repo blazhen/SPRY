@@ -43,14 +43,22 @@ export const site = {
 
   founded: 'Family-owned, with decades of experience.',
 
+  /**
+   * Written the way the Google Business Profile writes it, abbreviations and
+   * all, because a search engine matches the two as strings. Change one and
+   * change the other.
+   */
   address: {
-    line1: 'Factory 4, 114 Colemans Road',
+    line1: 'Factory 4/114 Colemans Rd',
     suburb: 'Carrum Downs',
     state: 'VIC',
     postcode: '3201',
     country: 'Australia',
-    full: 'Factory 4, 114 Colemans Road, Carrum Downs, VIC 3201',
+    full: 'Factory 4/114 Colemans Rd, Carrum Downs VIC 3201',
   },
+
+  /** The pin on the Business Profile, for the structured data. */
+  geo: { latitude: -38.087204, longitude: 145.169275 },
 
   phone: {
     /** The one company number. Shown as-is everywhere. */
@@ -100,7 +108,7 @@ export const site = {
    * rather than the street; paste its src here when it is to hand.
    */
   mapEmbedUrl:
-    'https://www.google.com/maps?q=SprayIT%20Solutions%20(VIC)%20Pty%20Ltd%2C%20Factory%204%2C%20114%20Colemans%20Road%2C%20Carrum%20Downs%20VIC%203201&output=embed',
+    'https://www.google.com/maps?q=SprayIT%20Solutions%20(VIC)%20Pty%20Ltd%2C%20Factory%204%2F114%20Colemans%20Rd%2C%20Carrum%20Downs%20VIC%203201&output=embed',
 
   /**
    * Trading hours.
