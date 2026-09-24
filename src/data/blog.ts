@@ -27,10 +27,35 @@ export interface BlogPost {
   title: string
   /** ISO date, used for display and for ordering. */
   date: string
+  /** ISO date of the last substantive edit. Shown beside the published date when set. */
+  updated?: string
   image: string
   alt: string
   excerpt: string
   body: BlogBlock[]
+}
+
+export interface BlogAuthor {
+  name: string
+  role: string
+  bio: string
+  /** Where the name links: the page that introduces the people behind the work. */
+  href: string
+  /** Portrait, once the client supplies one. Initials render until then. */
+  photo?: string
+}
+
+/**
+ * Every article is published under the owner's name. The posts came across
+ * from the old site with no byline at all, and an article with nobody behind
+ * it reads as filler. REVIEW WITH GLENN: the role and bio are drawn from the
+ * About page, and a portrait is still to come.
+ */
+export const blogAuthor: BlogAuthor = {
+  name: 'Glenn Angus',
+  role: 'Owner, Spray It Solutions',
+  bio: 'Glenn owns and runs Spray It Solutions, the family-owned spray foam contractor behind every job on this site. Decades on the tools, quoting and applying open and closed cell foam, polyurea and aliphatic coatings, on everything from a single subfloor to a 30,863 square metre plant.',
+  href: '/about',
 }
 
 export const blogPosts: BlogPost[] = [
@@ -43,22 +68,19 @@ export const blogPosts: BlogPost[] = [
     excerpt:
       'Spray foam acoustic insulation is designed to improve how sound behaves within a space, reducing noise transfer while enhancing overall indoor comfort.',
     body: [
-      { tag: 'li', text: 'June 2, 2026' },
-      { tag: 'li', text: '1:07 pm' },
-      { tag: 'li', text: 'Insulation Benefits & Performance' },
       { tag: 'h', text: 'Spray Foam Acoustic Insulation: How Icynene Reduces Noise in Homes Across Victoria' },
       { tag: 'h', text: 'High-Performance spray foam insulation delivering improved sound control, reduced noise transmission, and enhanced acoustic control' },
       { tag: 'p', text: 'Spray foam acoustic insulation is designed to improve how sound behaves within a space, reducing noise transfer while enhancing overall indoor comfort.' },
       { tag: 'p', text: 'At SprayIT Solutions, we install Icynene LDC‑50 open‑cell spray foam insulation (also known as Icynene Classic or H2Foam Lite LD‑C‑50), which delivers not only outstanding thermal performance but also real acoustic benefits that improve everyday living and working environments. Learn more about open‑cell spray foam insulation, including key performance facts and detailed specifications, in our dedicated guide.' },
       { tag: 'p', text: 'While Icynene is not marketed as a dedicated soundproofing product, its structure and performance characteristics make it highly effective for reducing everyday noise, improving internal comfort, and softening sound transmission through walls and ceilings.' },
-      { tag: 'h', text: '1 Reduces Airborne Noise Transmission' },
+      { tag: 'h', text: '1. Reduces Airborne Noise Transmission' },
       { tag: 'p', text: 'Icynene LDC‑50 creates a continuous airtight seal within wall and ceiling cavities. This is critical for sound control, because sound travels easily through small gaps, cracks, and air pathways in buildings.' },
       { tag: 'p', text: 'By sealing these air gaps, open‑cell spray foam:' },
       { tag: 'li', text: 'Reduces the movement of sound through building cavities' },
       { tag: 'li', text: 'Limits noise transfer between rooms' },
       { tag: 'li', text: 'Helps block everyday airborne sounds such as voices, TVs, music and household activity' },
       { tag: 'p', text: 'This airtightness is one of the biggest contributors to improved acoustic comfort – fewer air pathways means fewer sound pathways.' },
-      { tag: 'h', text: '2Mid‑Frequency Noise Absorption (Human Speech Range)' },
+      { tag: 'h', text: '2. Mid‑Frequency Noise Absorption (Human Speech Range)' },
       { tag: 'p', text: 'Icynene’s open‑cell, flexible structure allows it to absorb sound energy rather than reflect it.' },
       { tag: 'p', text: 'This is particularly effective in the mid‑frequency range, which includes:' },
       { tag: 'li', text: 'Human speech' },
@@ -71,12 +93,12 @@ export const blogPosts: BlogPost[] = [
       { tag: 'li', text: 'Improve acoustic comfort and clarity' },
       { tag: 'li', text: 'Create calmer internal spaces' },
       { tag: 'p', text: 'Compared to rigid insulation materials, open‑cell foam performs better at sound absorption, not just sound blocking.' },
-      { tag: 'h', text: '3Measured Acoustic Performance' },
+      { tag: 'h', text: '3. Measured Acoustic Performance' },
       { tag: 'p', text: 'Icynene LDC‑50 has proven acoustic performance data in standard building assemblies:' },
       { tag: 'li', text: 'Sound Transmission Class (STC): ~37 This represents solid sound‑blocking performance for a standard framed wall with insulation.' },
       { tag: 'li', text: 'Noise Reduction Coefficient (NRC): ~0.70 This means the foam absorbs a significant amount of sound energy instead of reflecting it.' },
       { tag: 'li', text: 'Frequency testing shows sound absorption performance improves significantly above ~250 Hz, which covers most everyday household noise and speech frequencies.' },
-      { tag: 'h', text: '4Flexible Structure = Vibration Damping' },
+      { tag: 'h', text: '4. Flexible Structure = Vibration Damping' },
       { tag: 'p', text: 'Unlike rigid insulation products, Icynene open‑cell foam is soft and flexible.' },
       { tag: 'p', text: 'This flexibility allows the foam to:' },
       { tag: 'li', text: 'Deform slightly under vibration' },
@@ -128,9 +150,6 @@ export const blogPosts: BlogPost[] = [
     excerpt:
       'How SprayIT Solutions helps landlords stay compliant, cut energy costs and future-proof rental properties',
     body: [
-      { tag: 'li', text: 'February 17, 2026' },
-      { tag: 'li', text: '9:45 am' },
-      { tag: 'li', text: 'Insulation Guides' },
       { tag: 'p', text: 'How SprayIT Solutions helps landlords stay compliant, cut energy costs and future-proof rental properties' },
       { tag: 'h', text: 'New Energy Efficiency Rules for Victorian Rental Properties — What Landlords Need to Know' },
       { tag: 'p', text: 'From 1 March 2027, the Victorian Government will begin phasing in new minimum energy efficiency standards for rental homes. These reforms are designed to improve thermal comfort, reduce household energy bills, and lower carbon emissions across Victoria’s rental housing sector.' },
@@ -160,13 +179,13 @@ export const blogPosts: BlogPost[] = [
       { tag: 'p', text: 'Traditional insulation products like fibreglass batts and polyester batts degrade over time, sag, absorb moisture, and leave gaps — reducing their effectiveness and risking future non-compliance.' },
       { tag: 'h', text: 'Why Spray Foam Insulation Outperforms Traditional Batts' },
       { tag: 'p', text: 'At SprayIT Solutions, we specialise in high-performance spray foam insulation systems that outperform traditional insulation materials in every category.' },
-      { tag: 'h', text: '1Superior Thermal Performance' },
+      { tag: 'h', text: '1. Superior Thermal Performance' },
       { tag: 'p', text: 'Spray foam forms a continuous thermal barrier that delivers long-term R-value performance without sagging or settling.' },
-      { tag: 'h', text: '2Advanced Air Sealing' },
+      { tag: 'h', text: '2. Advanced Air Sealing' },
       { tag: 'p', text: 'Unlike batts, spray foam seals gaps, cracks and air leaks, dramatically improving airtightness and indoor comfort.' },
-      { tag: 'h', text: '3Structural Strength & Durability' },
+      { tag: 'h', text: '3. Structural Strength & Durability' },
       { tag: 'p', text: 'Spray foam bonds directly to building materials, increasing structural rigidity and maintaining performance for decades.' },
-      { tag: 'h', text: '4Long-Term Compliance Protection' },
+      { tag: 'h', text: '4. Long-Term Compliance Protection' },
       { tag: 'p', text: 'Spray foam insulation doesn’t degrade like batts — meaning landlords stay compliant long-term, not just at installation.' },
       { tag: 'h', text: 'How SprayIT Solutions Helps Landlords Meet 2027 Compliance' },
       { tag: 'p', text: 'We provide a full-service insulation solution for Victorian landlords and property investors:' },
@@ -203,8 +222,6 @@ export const blogPosts: BlogPost[] = [
     excerpt:
       'Unlike traditional batts which absorb moisture, spray foam helps prevent:',
     body: [
-      { tag: 'li', text: 'February 17, 2026' },
-      { tag: 'li', text: '8:44 am' },
       { tag: 'li', text: 'Spray Foam Insulation' },
       { tag: 'h', text: 'Top 10 Reasons to Choose Spray Foam Insulation Over Traditional Batts in Australian Homes' },
       { tag: 'h', text: 'The High-Performance Upgrade for the Smart Homeowner' },
@@ -212,27 +229,27 @@ export const blogPosts: BlogPost[] = [
       { tag: 'p', text: 'As Australian homes face rising energy costs, stricter building standards, and a growing focus on sustainability, insulation choices matter more than ever. Whether you’re building a new home or upgrading an existing one, the type of insulation you choose will directly affect comfort, power bills, air quality, and long-term performance.' },
       { tag: 'p', text: 'At SprayIT Solutions, we work with homeowners, builders, and commercial clients across Australia to deliver high-performance spray foam insulation systems. In 2026, spray foam is no longer a premium option — it’s becoming the smart standard.' },
       { tag: 'p', text: 'Here are the top 10 reasons spray foam insulation outperforms traditional batts.' },
-      { tag: 'h', text: '1Superior Energy Efficiency' },
+      { tag: 'h', text: '1. Superior Energy Efficiency' },
       { tag: 'p', text: 'Spray foam creates a continuous thermal barrier with no gaps, compression points, or sagging. Traditional batts rely on perfect installation — which rarely happens in real-world builds.' },
-      { tag: 'h', text: '2Airtight Sealing (Not Just Insulation)' },
+      { tag: 'h', text: '2. Airtight Sealing (Not Just Insulation)' },
       { tag: 'p', text: 'Batts insulate but don’t seal air leaks. Spray foam expands to fill cracks, gaps, wall cavities, roof penetrations, and service openings.' },
       { tag: 'p', text: 'This dramatically reduces:' },
       { tag: 'li', text: 'Heat loss in winter' },
       { tag: 'li', text: 'Heat gain in summer' },
       { tag: 'li', text: 'Drafts' },
       { tag: 'li', text: 'Dust infiltration' },
-      { tag: 'h', text: '3Better Comfort in All Seasons' },
+      { tag: 'h', text: '3. Better Comfort in All Seasons' },
       { tag: 'p', text: 'Australian climates are extreme — from hot summers to cold winters. Spray foam stabilises internal temperatures by:' },
       { tag: 'li', text: 'Reducing radiant heat' },
       { tag: 'li', text: 'Preventing thermal bridging' },
       { tag: 'li', text: 'Maintaining consistent indoor conditions' },
-      { tag: 'h', text: '4Moisture & Condensation Control' },
+      { tag: 'h', text: '4. Moisture & Condensation Control' },
       { tag: 'p', text: 'Unlike traditional batts which absorb moisture, spray foam helps prevent:' },
       { tag: 'li', text: 'Condensation' },
       { tag: 'li', text: 'Mould growth' },
       { tag: 'li', text: 'Timber rot' },
       { tag: 'li', text: 'Structural degradation' },
-      { tag: 'h', text: '5Improved Indoor Air Quality / Environmentally Friendly' },
+      { tag: 'h', text: '5. Improved Indoor Air Quality / Environmentally Friendly' },
       { tag: 'p', text: 'Spray foam seals out:' },
       { tag: 'li', text: 'Dust' },
       { tag: 'li', text: 'Allergens' },
@@ -240,7 +257,7 @@ export const blogPosts: BlogPost[] = [
       { tag: 'li', text: 'Vehicle fumes' },
       { tag: 'li', text: 'Outdoor contaminants' },
       { tag: 'p', text: 'By reducing air infiltration, it creates a healthier internal environment, especially important for families, children, and people with respiratory sensitivities.' },
-      { tag: 'h', text: '6Long-Term Performance (No Sagging or Settling)' },
+      { tag: 'h', text: '6. Long-Term Performance (No Sagging or Settling)' },
       { tag: 'p', text: 'Batts' },
       { tag: 'li', text: 'Sag' },
       { tag: 'li', text: 'Compress' },
@@ -251,13 +268,13 @@ export const blogPosts: BlogPost[] = [
       { tag: 'li', text: 'Maintains shape' },
       { tag: 'li', text: 'Retains R-value for life' },
       { tag: 'li', text: 'Doesn’t degrade' },
-      { tag: 'h', text: '7Structural Strengthening' },
+      { tag: 'h', text: '7. Structural Strengthening' },
       { tag: 'p', text: 'Closed-cell spray foam adds structural rigidity to walls and roofs, increasing building strength and resilience — especially valuable in:' },
       { tag: 'li', text: 'High-wind areas' },
       { tag: 'li', text: 'Cyclone zones' },
       { tag: 'li', text: 'Coastal regions' },
       { tag: 'li', text: 'Bushfire-prone areas' },
-      { tag: 'h', text: '8Noise Reduction' },
+      { tag: 'h', text: '8. Noise Reduction' },
       { tag: 'p', text: 'Spray foam significantly improves acoustic performance by:' },
       { tag: 'li', text: 'Sealing air gaps' },
       { tag: 'li', text: 'Absorbing sound vibrations' },
@@ -266,7 +283,7 @@ export const blogPosts: BlogPost[] = [
       { tag: 'li', text: 'Roads' },
       { tag: 'li', text: 'Airports' },
       { tag: 'li', text: 'High-density developments' },
-      { tag: 'h', text: '9Better Performance in Retrofits & Renovations' },
+      { tag: 'h', text: '9. Better Performance in Retrofits & Renovations' },
       { tag: 'p', text: 'Existing homes are full of:' },
       { tag: 'li', text: 'Irregular cavities' },
       { tag: 'li', text: 'Hidden gaps' },
@@ -309,25 +326,22 @@ export const blogPosts: BlogPost[] = [
     excerpt:
       'High-density closed-cell spray foam + acrylic membrane coating on a fully operational Colorbond steel roof',
     body: [
-      { tag: 'li', text: 'February 17, 2026' },
-      { tag: 'li', text: '9:02 am' },
-      { tag: 'li', text: 'Case Studies' },
       { tag: 'h', text: 'How SprayIT Solutions Transformed the Roof of SunRice Australia’s Food Packing Facility' },
       { tag: 'p', text: 'High-density closed-cell spray foam + acrylic membrane coating on a fully operational Colorbond steel roof' },
       { tag: 'p', text: 'At SprayIT Solutions, we specialise in advanced insulation and protective roofing systems that deliver real performance for commercial and industrial buildings. One of our standout projects in 2025 was the application of high-density closed-cell spray foam to the external surfaces of a Colorbond steel roof on a major food packing facility for SunRice Australia — all while the facility remained fully operational.' },
       { tag: 'p', text: 'This wasn’t just a simple roof upgrade. It was a tailored solution to address energy efficiency, staff comfort, ongoing operations, and long-term building protection. We also finished the system with a flexible, UV-stable acrylic membrane to enhance performance and durability.' },
       { tag: 'h', text: 'Why Spray Foam + Acrylic Coating Was the Right Choice' },
-      { tag: 'h', text: '1Exceptional Thermal Performance and Energy Savings' },
+      { tag: 'h', text: '1. Exceptional Thermal Performance and Energy Savings' },
       { tag: 'p', text: 'Closed-cell spray foam is one of the most effective insulation solutions available — delivering high R-value per inch and creating a seamless thermal envelope over the entire roof surface. This continuous layer dramatically slows heat transfer into and out of the building, reducing the need for heating and cooling energy.' },
-      { tag: 'h', text: '2Airtight, Seamless Protection' },
+      { tag: 'h', text: '2. Airtight, Seamless Protection' },
       { tag: 'p', text: 'Unlike traditional insulation or roofing membranes that rely on overlapping sheets or joins, spray foam cures into a monolithic, seamless layer that conforms to every contour of the roof surface. This eliminates gaps, seams, and weak points where air, heat or water can penetrate.' },
-      { tag: 'h', text: '3Superior Moisture and Weather Defence' },
+      { tag: 'h', text: '3. Superior Moisture and Weather Defence' },
       { tag: 'p', text: 'The high-density closed-cell structure acts as a moisture barrier, preventing water ingress and significantly reducing the risk of condensation forming under the roof — a common issue in metal buildings.' },
       { tag: 'p', text: 'Adding the flexible acrylic membrane on top provides an extra waterproof layer with UV resistance that:' },
       { tag: 'li', text: 'Protects the foam from sun damage' },
       { tag: 'li', text: 'Extends the life of the roof system' },
       { tag: 'li', text: 'Improves resistance to wind, rain, and hail' },
-      { tag: 'h', text: '4Increased Structural Stability' },
+      { tag: 'h', text: '4. Increased Structural Stability' },
       { tag: 'p', text: 'Closed-cell spray foam doesn’t just insulate — it strengthens the roof assembly. The rigid foam adheres tightly to the substrate and can enhance the structure’s ability to resist uplift forces and dynamic loads such as wind or thermal expansion stresses.' },
       { tag: 'p', text: 'Asset Protection' },
       { tag: 'li', text: 'Improved resistance to uplift forces' },
@@ -337,18 +351,18 @@ export const blogPosts: BlogPost[] = [
       { tag: 'li', text: 'Designed for foot traffic' },
       { tag: 'li', text: 'Allows ongoing roof access' },
       { tag: 'li', text: 'Low risk of failure in extreme weather' },
-      { tag: 'h', text: '5Improved Staff Comfort and Workplace Environment' },
+      { tag: 'h', text: '5. Improved Staff Comfort and Workplace Environment' },
       { tag: 'p', text: 'By stabilising internal temperatures and reducing hot spots under the metal roof, spray foam insulation significantly enhances indoor comfort for facility staff. This is especially important in regions with hot summers or fluctuating conditions inside packing operations.' },
       { tag: 'li', text: 'Improved productivity' },
       { tag: 'li', text: 'Employee satisfaction' },
       { tag: 'li', text: 'More stable internal environment for sensitive food-handling operations' },
-      { tag: 'h', text: '6Minimal Disruption — Business Continues' },
+      { tag: 'h', text: '6. Minimal Disruption — Business Continues' },
       { tag: 'p', text: 'One of the standout benefits of this project was that SunRice operations continued uninterrupted throughout installation. The spray foam is applied on the outside of the roof span, meaning:' },
       { tag: 'p', text: 'Facility Closures' },
       { tag: 'p', text: 'Packing Disruptions' },
-      { tag: 'h', text: '7Long-Term Durability and Low Maintenance' },
+      { tag: 'h', text: '7. Long-Term Durability and Low Maintenance' },
       { tag: 'p', text: 'Spray foam roofing systems that use a highly flexible specialised acrylic membrane over the spray foam are known for their longevity — designed to last more than 20+ years.' },
-      { tag: 'h', text: '8Energy Efficiency Is Sustainability' },
+      { tag: 'h', text: '8. Energy Efficiency Is Sustainability' },
       { tag: 'p', text: 'Reducing heating and cooling loads not only cuts costs; it also lowers the facility’s carbon footprint. Spray foam’s airtight thermal barrier supports broader sustainability goals by decreasing greenhouse gas emissions linked to HVAC energy use.' },
       { tag: 'h', text: 'The Bottom Line' },
       { tag: 'p', text: 'The SprayIT Solutions roof upgrade at SunRice Australia demonstrates how high-density closed-cell spray foam combined with a flexible acrylic membrane can:' },

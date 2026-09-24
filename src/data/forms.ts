@@ -18,7 +18,8 @@ export const contactIntro: SectionIntro = {
 }
 
 export const contactCopy = {
-  submit: 'Request my free quote',
+  submit: 'Get my free quote',
+  requiredNote: 'Everything is required unless it says optional.',
   submitting: 'Sending…',
   required: 'Required',
   optional: 'Optional',
@@ -72,6 +73,20 @@ export const stageOptions: FieldOption[] = [
   { value: 'existing', label: 'Existing building (retrofit)' },
   { value: 'construction', label: 'Under construction' },
   { value: 'planning', label: 'Still planning' },
+]
+
+/**
+ * Where the enquiry came from, in the customer's own words. The site already
+ * records the click (campaign, ad id, referrer) automatically; this is the
+ * one thing that data cannot tell us, which is what the person believes sent
+ * them. Required, so every record has it.
+ */
+export const sourceOptions: FieldOption[] = [
+  { value: 'google-search', label: 'Google search' },
+  { value: 'google-ads', label: 'Google ad' },
+  { value: 'referral', label: 'Referral from a friend, builder or tradie' },
+  { value: 'social', label: 'Facebook, Instagram or LinkedIn' },
+  { value: 'other', label: 'Somewhere else' },
 ]
 
 export const timeframeOptions: FieldOption[] = [

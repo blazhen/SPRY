@@ -29,6 +29,10 @@ import type { SectionIntro } from '@/data/content'
  * Client names are exactly what he wrote against "can we name the client?",
  * and the film set carries the title he gave the job.
  *
+ * Each job also carries the surface it was about, so the gallery can be
+ * filtered the way a visitor thinks: "show me an underfloor". Specialty covers
+ * the jobs that are none of roof, walls or floor: the film sets and the tank.
+ *
  * Three photographs are unlisted at his request, because he asked for one or
  * two each of the film set and the zoo: img-2353, img-2875 and img-2877 are
  * still in public/gallery in case he wants one back.
@@ -39,13 +43,19 @@ export interface GalleryPhoto {
   alt: string
   /** What this frame shows, where the job title alone does not say. */
   caption?: string
+  /** Pixel size of the file, so the browser reserves the space before it loads. */
+  size?: [number, number]
 }
+
+export type GalleryArea = 'roof' | 'walls' | 'underfloor' | 'specialty'
 
 export interface GalleryProject {
   id: string
   /** The job, as Glenn described it. */
   title: string
   sector: 'residential' | 'commercial'
+  /** The surface the job was mostly about. */
+  area: GalleryArea
   location?: string
   building?: string
   foam?: string
@@ -56,6 +66,13 @@ export interface GalleryProject {
   photos: GalleryPhoto[]
 }
 
+export const galleryAreas: { id: GalleryArea; label: string }[] = [
+  { id: 'roof', label: 'Roof & ceiling' },
+  { id: 'walls', label: 'Walls' },
+  { id: 'underfloor', label: 'Underfloor' },
+  { id: 'specialty', label: 'Specialty work' },
+]
+
 const g = (file: string) => `/gallery/${file}`
 
 export const galleryProjects: GalleryProject[] = [
@@ -64,6 +81,7 @@ export const galleryProjects: GalleryProject[] = [
     id: 'sunrice',
     title: 'SunRice roof insulation',
     sector: 'commercial',
+    area: 'roof',
     location: 'Leeton, NSW',
     building: 'Production facility',
     foam: 'Roofing foam with an acrylic coating',
@@ -73,6 +91,7 @@ export const galleryProjects: GalleryProject[] = [
       {
         file: g('sunrice-roof-hero.webp'),
         alt: 'Completed white sprayed roof on the SunRice processing plant, with plant and silos beyond',
+        size: [1100, 303],
       },
     ],
   },
@@ -80,6 +99,7 @@ export const galleryProjects: GalleryProject[] = [
     id: 'riddells-creek',
     title: 'Basketball hall roof',
     sector: 'commercial',
+    area: 'roof',
     location: 'Riddells Creek',
     building: 'Sports facility',
     foam: 'Closed cell foam',
@@ -101,6 +121,7 @@ export const galleryProjects: GalleryProject[] = [
     id: 'woodend',
     title: 'Basketball hall',
     sector: 'commercial',
+    area: 'roof',
     location: 'Woodend',
     building: 'Sports facility',
     foam: 'Dyed closed cell foam',
@@ -122,6 +143,7 @@ export const galleryProjects: GalleryProject[] = [
     id: 'melbourne-zoo',
     title: 'Melbourne Zoo enclosure roof',
     sector: 'commercial',
+    area: 'roof',
     location: 'Melbourne Zoo',
     building: 'Animal enclosure',
     foam: 'Icynene LDC-50 open cell foam',
@@ -143,6 +165,7 @@ export const galleryProjects: GalleryProject[] = [
     id: 'glen-iris',
     title: 'Basement car park ceiling',
     sector: 'commercial',
+    area: 'roof',
     location: 'Glen Iris',
     building: 'Apartment block',
     foam: 'Closed cell foam',
@@ -159,6 +182,7 @@ export const galleryProjects: GalleryProject[] = [
     id: 'moon-and-sun',
     title: 'Moon and Sun film set',
     sector: 'commercial',
+    area: 'specialty',
     location: 'Docklands, Melbourne',
     building: 'Film studio',
     photos: [
@@ -178,6 +202,7 @@ export const galleryProjects: GalleryProject[] = [
     id: 'fake-freezer',
     title: 'Fake freezer for a film set',
     sector: 'commercial',
+    area: 'specialty',
     building: 'Movie set',
     foam: 'Closed cell foam',
     thickness: '50mm',
@@ -193,6 +218,7 @@ export const galleryProjects: GalleryProject[] = [
     id: 'water-tank',
     title: 'Water tank pipework',
     sector: 'commercial',
+    area: 'specialty',
     building: 'Water tank',
     foam: 'Closed cell foam',
     thickness: '75mm',
@@ -208,6 +234,7 @@ export const galleryProjects: GalleryProject[] = [
     id: 'chicken-shed',
     title: 'Chicken shed insulation',
     sector: 'commercial',
+    area: 'walls',
     building: 'Chicken shed',
     foam: 'Closed cell foam',
     thickness: '50mm',
@@ -224,6 +251,7 @@ export const galleryProjects: GalleryProject[] = [
     id: 'benalla',
     title: 'House roof insulation',
     sector: 'residential',
+    area: 'roof',
     location: 'Benalla',
     building: 'House',
     foam: 'Icynene LDC-50 open cell foam',
@@ -240,6 +268,7 @@ export const galleryProjects: GalleryProject[] = [
     id: 'roof-and-walls',
     title: 'Roof and wall insulation',
     sector: 'residential',
+    area: 'walls',
     building: 'House',
     foam: 'Closed cell foam on the walls, open cell foam under the roof',
     photos: [
@@ -253,6 +282,7 @@ export const galleryProjects: GalleryProject[] = [
     id: 'ceiling',
     title: 'Ceiling insulation',
     sector: 'residential',
+    area: 'roof',
     building: 'House',
     foam: 'Closed cell foam',
     thickness: '100mm',
@@ -260,6 +290,7 @@ export const galleryProjects: GalleryProject[] = [
       {
         file: g('img-2277.webp'),
         alt: 'Foam sprayed across a ceiling between exposed timber beams',
+        size: [1100, 619],
       },
     ],
   },
@@ -267,10 +298,17 @@ export const galleryProjects: GalleryProject[] = [
     id: 'subfloor',
     title: 'Subfloor insulation',
     sector: 'residential',
+    area: 'underfloor',
     photos: [
       {
         file: g('img-2792.webp'),
-        alt: 'Subfloor space with brick piers and the underside of the floor sprayed above',
+        alt: 'Subfloor space with brick piers and stumps, the bare underside of the floor above, before spraying',
+        caption: 'Before: bare boards and joists over open air',
+      },
+      {
+        file: g('img-2796.webp'),
+        alt: 'The same subfloor after spraying, foam covering the underside of the floor between the joists',
+        caption: 'After: sprayed between the joists',
       },
     ],
   },
@@ -278,6 +316,7 @@ export const galleryProjects: GalleryProject[] = [
     id: 'cremorne',
     title: 'Curved roof insulation',
     sector: 'residential',
+    area: 'roof',
     location: 'Cremorne',
     building: 'House',
     foam: 'Open cell foam',

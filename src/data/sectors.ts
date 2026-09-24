@@ -90,5 +90,6 @@ export const sectorSlides: SectorSlide[] = [
   },
 ]
 
-/** Milliseconds each slide holds before the crossfade. */
-export const SECTOR_INTERVAL = 4200
+/** Milliseconds each slide holds before the crossfade. Six seconds: long
+ *  enough to read the caption and the stats beside it, which 4.2 was not. */
+export const SECTOR_INTERVAL = 6000

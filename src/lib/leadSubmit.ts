@@ -32,6 +32,8 @@ export interface LeadPayload {
   stage: string
   timeframe: string
   message: string
+  /** How the person says they found us. Sent as `heard_from`. */
+  heardFrom: string
   /** Marketing opt-in. Separate from the enquiry itself. */
   marketingOptIn: boolean
   /** Exact wording the visitor agreed to, stored as consent evidence. */
@@ -65,10 +67,11 @@ export async function submitLead(lead: LeadPayload): Promise<SubmitResult> {
   // Destructured rather than spread: the camelCase originals would otherwise
   // ride along beside their snake_case equivalents and give Systemations two fields
   // meaning the same thing to map.
-  const { marketingOptIn, consentText, ...rest } = lead
+  const { marketingOptIn, consentText, heardFrom, ...rest } = lead
 
   const body = {
     ...rest,
+    heard_from: heardFrom,
     // Systemations keys contacts on first and last name separately, and every
     // message in the kit greets people by first name. Sending the joined name
     // as well means an import that expects one field still finds one.

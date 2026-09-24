@@ -9,6 +9,7 @@ import {
   areaOptions,
   contactCopy,
   propertyTypes,
+  sourceOptions,
   stageOptions,
   timeframeOptions,
 } from '@/data/forms'
@@ -84,6 +85,7 @@ export default function QuoteForm() {
     if (!/^\d{4}$/.test(get('postcode'))) next.postcode = 'Please enter a four digit postcode.'
     if (!get('propertyType')) next.propertyType = 'Please choose a property type.'
     if (areas.length === 0) next.areas = 'Please choose at least one area.'
+    if (!get('heardFrom')) next.heardFrom = 'Please tell us how you found us.'
 
     setErrors(next)
     if (Object.keys(next).length > 0) {
@@ -109,6 +111,7 @@ export default function QuoteForm() {
       stage: get('stage'),
       timeframe: get('timeframe'),
       message: get('message'),
+      heardFrom: get('heardFrom'),
       marketingOptIn: optIn,
       consentText: `${CONSENT_VERSION}: ${MARKETING_CONSENT_TEXT}`,
     })
@@ -138,6 +141,8 @@ export default function QuoteForm() {
 
   return (
     <form onSubmit={onSubmit} noValidate className="space-y-7">
+      <p className="text-small text-bone-400">{contactCopy.requiredNote}</p>
+
       {/* Honeypot. Positioned off screen rather than display:none, which some
           bots know to skip. */}
       <div
@@ -367,6 +372,29 @@ export default function QuoteForm() {
           className={`${FIELD} mt-2 resize-y`}
           placeholder="Rough size, access, when you need it done"
         />
+      </div>
+
+      <div>
+        <label htmlFor="heardFrom" className={LABEL}>
+          How did you hear about us?
+        </label>
+        <select
+          id="heardFrom"
+          name="heardFrom"
+          defaultValue=""
+          className={`${FIELD} mt-2`}
+          {...aria('heardFrom')}
+        >
+          <option value="" disabled>
+            Choose one
+          </option>
+          {sourceOptions.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </select>
+        {err('heardFrom')}
       </div>
 
       {/* Consent. Unticked by default, and kept separate from the enquiry. */}

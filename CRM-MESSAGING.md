@@ -113,6 +113,7 @@ works for a different client.
 | `building_stage` | Building stage | Dropdown | Existing building (retrofit), Under construction, Still planning |
 | `areas` | Areas to insulate | Text | Roof or ceiling, Walls, Underfloor, Whole property, Not sure yet |
 | `timeframe` | Timeframe | Dropdown | As soon as possible, Next 1 to 3 months, 3 months or more, Just researching |
+| `heard_from` | How did you hear about us | Dropdown | Google search, Google ad, Referral from a friend, builder or tradie, Facebook, Instagram or LinkedIn, Somewhere else |
 | `postcode` | Postcode | Text |  |
 | `street`, `suburb` | Street, suburb | Text | Optional on the form |
 | `enquiry_message` | Enquiry message | Multi-line |  |

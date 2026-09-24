@@ -20,17 +20,30 @@ import Seo from '@/components/ui/Seo'
 import SectionHeading from '@/components/ui/SectionHeading'
 import SectionBackdrop from '@/components/ui/SectionBackdrop'
 import ProtectedImage from '@/components/ui/ProtectedImage'
+import Breadcrumbs from '@/components/Breadcrumbs'
+import MidCta from '@/components/MidCta'
 import { PageCta } from '@/components/PageParts'
 import {
   factSheets,
   factSheetsIntro,
+  galleryAreas,
   galleryIntro,
   galleryProjects,
+  type GalleryArea,
   type GalleryProject,
 } from '@/data/gallery'
 
 type Sector = GalleryProject['sector']
 type Filter = 'all' | Sector
+type AreaFilter = 'any' | GalleryArea
+
+/** Filter chip. The same control for both rows, so they read as one set. */
+const chip = (active: boolean) =>
+  `inline-flex min-h-11 items-center gap-2 rounded-pill border px-5 py-2.5 text-small font-bold transition-colors duration-300 ${
+    active
+      ? 'border-accent bg-accent text-ink'
+      : 'border-line/20 text-bone-400 hover:border-accent hover:text-accent'
+  }`
 
 const SECTOR_LABEL: Record<Sector, string> = {
   residential: 'Residential',
@@ -158,6 +171,8 @@ function Photos({
                 <ProtectedImage
                   src={photo.file}
                   alt={photo.alt}
+                  width={photo.size?.[0] ?? 1100}
+                  height={photo.size?.[1] ?? 825}
                   frameClassName="size-full transition-transform duration-[1400ms] ease-expo group-hover:scale-[1.035]"
                   watermark
                   loading={priority && i === 0 ? 'eager' : 'lazy'}
@@ -305,12 +320,19 @@ export default function Gallery() {
   const scope = useRef<HTMLDivElement>(null)
   const reduced = useReducedMotion()
   const [filter, setFilter] = useState<Filter>('all')
+  const [area, setArea] = useState<AreaFilter>('any')
 
-  const projects = galleryProjects.filter((p) => filter === 'all' || p.sector === filter)
+  /* Two filters, one list. Each row's counts are worked out against the
+     other row's choice, so a chip never promises jobs it cannot show. */
+  const bySector = (p: GalleryProject, f: Filter) => f === 'all' || p.sector === f
+  const byArea = (p: GalleryProject, a: AreaFilter) => a === 'any' || p.area === a
+  const projects = galleryProjects.filter((p) => bySector(p, filter) && byArea(p, area))
   const [lead, ...rest] = projects
   const photoCount = projects.reduce((n, p) => n + p.photos.length, 0)
   const countFor = (id: Filter) =>
-    id === 'all' ? galleryProjects.length : galleryProjects.filter((p) => p.sector === id).length
+    galleryProjects.filter((p) => bySector(p, id) && byArea(p, area)).length
+  const countForArea = (id: AreaFilter) =>
+    galleryProjects.filter((p) => bySector(p, filter) && byArea(p, id)).length
 
   useGSAP(
     () => {
@@ -324,7 +346,7 @@ export default function Gallery() {
         scrollTrigger: { trigger: '[data-grid]', start: 'top 82%' },
       })
     },
-    { scope, dependencies: [reduced, filter] },
+    { scope, dependencies: [reduced, filter, area] },
   )
 
   return (
@@ -343,37 +365,69 @@ export default function Gallery() {
         <SectionBackdrop variant="orbs" tone="both" />
 
         <div className="relative shell">
+          <Breadcrumbs items={[{ label: 'Gallery' }]} className="mb-8" />
           <div className="max-w-3xl">
             <SectionHeading intro={galleryIntro} as="h1" headingId="gallery-heading" headingClassName="text-h1" />
           </div>
 
-          <div className="mt-12 flex flex-wrap items-center justify-between gap-x-8 gap-y-4 border-t border-line/10 pt-8">
-            <div className="flex flex-wrap gap-2" role="group" aria-label="Filter jobs">
-              {FILTERS.map((f) => {
-                const active = f.id === filter
-                return (
-                  <button
-                    key={f.id}
-                    type="button"
-                    onClick={() => setFilter(f.id)}
-                    aria-pressed={active}
-                    className={`inline-flex items-center gap-2 rounded-pill border px-5 py-2.5 text-small font-bold transition-colors duration-300 ${
-                      active
-                        ? 'border-accent bg-accent text-ink'
-                        : 'border-line/20 text-bone-400 hover:border-accent hover:text-accent'
-                    }`}
-                  >
-                    {f.label}
-                    <span
-                      className={`rounded-pill px-1.5 py-0.5 text-[0.7rem] leading-none tabular-nums ${
-                        active ? 'bg-ink/20 text-ink' : 'bg-line/8 text-bone-400'
-                      }`}
+          <div className="mt-12 flex flex-wrap items-start justify-between gap-x-8 gap-y-5 border-t border-line/10 pt-8">
+            <div className="flex flex-col gap-3">
+              <div className="flex flex-wrap gap-2" role="group" aria-label="Filter jobs by sector">
+                {FILTERS.map((f) => {
+                  const active = f.id === filter
+                  return (
+                    <button
+                      key={f.id}
+                      type="button"
+                      onClick={() => setFilter(f.id)}
+                      aria-pressed={active}
+                      className={chip(active)}
                     >
-                      {countFor(f.id)}
-                    </span>
-                  </button>
-                )
-              })}
+                      {f.label}
+                      <span
+                        className={`rounded-pill px-1.5 py-0.5 text-[0.7rem] leading-none tabular-nums ${
+                          active ? 'bg-ink/20 text-ink' : 'bg-line/8 text-bone-400'
+                        }`}
+                      >
+                        {countFor(f.id)}
+                      </span>
+                    </button>
+                  )
+                })}
+              </div>
+
+              {/* The surface: how a visitor with a cold floor actually looks
+                  for an example of their own job. */}
+              <div className="flex flex-wrap items-center gap-2" role="group" aria-label="Filter jobs by surface">
+                <span className="mr-1 text-eyebrow font-bold uppercase tracking-[0.16em] text-bone-400">
+                  Surface
+                </span>
+                {([{ id: 'any' as const, label: 'Any' }, ...galleryAreas] as { id: AreaFilter; label: string }[]).map(
+                  (a) => {
+                    const active = a.id === area
+                    const count = countForArea(a.id)
+                    return (
+                      <button
+                        key={a.id}
+                        type="button"
+                        onClick={() => setArea(a.id)}
+                        aria-pressed={active}
+                        disabled={count === 0 && !active}
+                        className={`${chip(active)} disabled:cursor-not-allowed disabled:opacity-40`}
+                      >
+                        {a.label}
+                        <span
+                          className={`rounded-pill px-1.5 py-0.5 text-[0.7rem] leading-none tabular-nums ${
+                            active ? 'bg-ink/20 text-ink' : 'bg-line/8 text-bone-400'
+                          }`}
+                        >
+                          {count}
+                        </span>
+                      </button>
+                    )
+                  },
+                )}
+              </div>
             </div>
 
             <p className="text-small text-bone-400">
@@ -407,6 +461,11 @@ export default function Gallery() {
           </div>
         </div>
       </section>
+
+      <MidCta
+        heading="Seen a job like yours?"
+        text="Tell us which one and where you are, and we will come back with what it would take."
+      />
 
       {/* -------------------------------------------------- Fact sheets */}
       <section

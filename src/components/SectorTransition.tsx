@@ -54,8 +54,14 @@ export default function SectorTransition() {
   const slide = sectorSlides[index]
   const isCommercial = slide.sector === 'commercial'
 
+  /**
+   * A deliberate move stops the autoplay. Someone who has picked a slide, by
+   * dot or by swipe, is reading it, and having it taken away six seconds later
+   * is the single most irritating thing a carousel does.
+   */
   const go = useCallback((next: number) => {
     setIndex(((next % sectorSlides.length) + sectorSlides.length) % sectorSlides.length)
+    setUserPaused(true)
   }, [])
 
   /**
@@ -230,21 +236,27 @@ export default function SectorTransition() {
               <span className="sr-only">{running ? 'Pause the showcase' : 'Play the showcase'}</span>
             </button>
 
-            <ul className="flex flex-wrap gap-2">
+            {/* Each dot sits inside a 44px button: the bar is the visual, the
+                padding is the tap target. */}
+            <ul className="flex flex-wrap">
               {sectorSlides.map((item, i) => (
                 <li key={item.id}>
                   <button
                     type="button"
                     onClick={() => go(i)}
                     aria-current={i === index}
-                    className={`h-1.5 rounded-pill transition-all duration-500 ease-expo ${
-                      i === index
-                        ? item.sector === 'commercial'
-                          ? 'w-10 bg-accent2'
-                          : 'w-10 bg-accent'
-                        : 'w-5 bg-line/20 hover:bg-line/40'
-                    }`}
+                    className="group/dot grid min-h-11 place-items-center px-1.5"
                   >
+                    <span
+                      aria-hidden="true"
+                      className={`block h-1.5 rounded-pill transition-all duration-500 ease-expo ${
+                        i === index
+                          ? item.sector === 'commercial'
+                            ? 'w-10 bg-accent2'
+                            : 'w-10 bg-accent'
+                          : 'w-5 bg-line/20 group-hover/dot:bg-line/40'
+                      }`}
+                    />
                     <span className="sr-only">
                       Show {item.title}, {item.sector}
                     </span>

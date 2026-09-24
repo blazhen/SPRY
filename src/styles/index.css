@@ -44,6 +44,10 @@
     font-weight: 600;
     margin: 0;
     text-wrap: balance;
+    /* Clash Display's space is narrow, and with negative tracking on top the
+       words in a heading ran together. A little extra word spacing keeps the
+       words apart without loosening the letters. */
+    word-spacing: 0.08em;
   }
 
   p {
@@ -152,6 +156,9 @@
     justify-content: center;
     gap: 0.6rem;
     padding: 1rem 1.6rem;
+    /* A thumb needs 44px. The padding gets there on its own at the default
+       size; this holds it when a variant trims the padding. */
+    min-block-size: 2.75rem;
     border-radius: var(--r-pill);
     font-weight: 700;
     font-size: 0.95rem;
@@ -166,6 +173,9 @@
       border-color var(--dur-fast) var(--ease-out-expo),
       box-shadow var(--dur-fast) var(--ease-out-expo);
     will-change: transform;
+  }
+  .btn:active {
+    transform: translateY(1px);
   }
 
   .btn-primary {

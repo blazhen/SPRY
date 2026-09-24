@@ -70,10 +70,14 @@ export default {
         85: '0.85',
       },
       fontSize: {
-        mega: ['var(--fs-mega)', { lineHeight: '0.82', letterSpacing: '-0.045em' }],
-        display: ['var(--fs-display)', { lineHeight: '0.88', letterSpacing: '-0.038em' }],
-        h1: ['var(--fs-h1)', { lineHeight: '0.92', letterSpacing: '-0.035em' }],
-        h2: ['var(--fs-h2)', { lineHeight: '0.95', letterSpacing: '-0.03em' }],
+        // Tracking is capped at -0.02em on every display size. Tighter than
+        // that, Clash Display's narrow space glyph closed up and headings read
+        // as one word ("WhatisR-Value?"). Word spacing is opened in the base
+        // layer for the same reason.
+        mega: ['var(--fs-mega)', { lineHeight: '0.82', letterSpacing: '-0.02em' }],
+        display: ['var(--fs-display)', { lineHeight: '0.88', letterSpacing: '-0.02em' }],
+        h1: ['var(--fs-h1)', { lineHeight: '0.92', letterSpacing: '-0.02em' }],
+        h2: ['var(--fs-h2)', { lineHeight: '0.95', letterSpacing: '-0.02em' }],
         h3: ['var(--fs-h3)', { lineHeight: '1.08', letterSpacing: '-0.02em' }],
         h4: ['var(--fs-h4)', { lineHeight: '1.2', letterSpacing: '-0.015em' }],
         lead: ['var(--fs-lead)', { lineHeight: '1.55' }],

@@ -67,6 +67,16 @@ export default function Marquee({
 
       gsap.ticker.add(tick)
 
+      // Moving text has to be stoppable (WCAG 2.2.2). Hovering or tabbing
+      // into the strip holds it; leaving lets it go again.
+      const hold = () => loop.pause()
+      const release = () => loop.play()
+      const node = scope.current
+      node?.addEventListener('pointerenter', hold)
+      node?.addEventListener('pointerleave', release)
+      node?.addEventListener('focusin', hold)
+      node?.addEventListener('focusout', release)
+
       const trigger = ScrollTrigger.create({
         trigger: scope.current,
         start: 'top bottom',
@@ -79,6 +89,10 @@ export default function Marquee({
 
       return () => {
         gsap.ticker.remove(tick)
+        node?.removeEventListener('pointerenter', hold)
+        node?.removeEventListener('pointerleave', release)
+        node?.removeEventListener('focusin', hold)
+        node?.removeEventListener('focusout', release)
         trigger.kill()
         loop.kill()
       }
