@@ -241,4 +241,16 @@ export const commercialSectors: SectorCard[] = [
     text: 'Inflated domes, containers and curved structures where a cut product simply cannot make contact with the surface.',
     image: yt('Ht_W3K2Rhi0'),
   },
+  {
+    id: 'mining',
+    label: 'Mining & gas',
+    title: 'Valve boxes, test holes and blast holes',
+    // The work itself is from the commercial page of the site this replaces,
+    // which listed gas and mining applications in exactly these terms.
+    text: 'Remote sites with no power and no shelter. Re-insulating valve boxes, filling test holes and securing blast holes, with polyurea and aliphatic coatings over the foam where it has to be protected.',
+    // Stock, from the old site's own media library, until Glenn sends a
+    // photograph from a mine site. The one sector card without a real job
+    // behind the picture.
+    image: '/work/mining-tunnel.webp',
+  },
 ]

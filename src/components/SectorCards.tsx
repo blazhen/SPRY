@@ -11,10 +11,11 @@ import SectionBackdrop from '@/components/ui/SectionBackdrop'
  *
  * The Commercial page has to carry credibility that prose alone cannot: a
  * facility manager wants to see a building like theirs. Each card is a real
- * job, and the imagery is protected the same way the rest of the gallery is.
+ * job (the mining one excepted, see features.ts), and the imagery is
+ * protected the same way the rest of the gallery is.
  *
- * The first card is wide on large screens so the grid does not read as four
- * identical tiles.
+ * Six cards, two even rows of three. The first used to be wide, which with
+ * six cards left the last one stranded on a row of its own.
  */
 export default function SectorCards() {
   const scope = useRef<HTMLElement>(null)
@@ -50,16 +51,14 @@ export default function SectorCards() {
         </div>
 
         <ul className="mt-14 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {commercialSectors.map((sector, i) => (
+          {commercialSectors.map((sector) => (
             <li
               key={sector.id}
               id={sector.id}
               data-sector-card
-              className={`group relative overflow-hidden rounded-xl border border-line/10 bg-ink-800 ${
-                i === 0 ? 'lg:col-span-2' : ''
-              }`}
+              className="group relative overflow-hidden rounded-xl border border-line/10 bg-ink-800"
             >
-              <div className={i === 0 ? 'aspect-[16/9]' : 'aspect-[4/3]'}>
+              <div className="aspect-[4/3]">
                 <ProtectedImage
                   src={sector.image}
                   alt={`${sector.title}. ${sector.text}`}

@@ -542,7 +542,7 @@ export const footer = {
       links: [
         { label: 'Factory & Warehouse', href: '/commercial#industrial' },
         { label: 'Farming', href: '/commercial#agri' },
-        { label: 'Mining', href: '/commercial#sectors' },
+        { label: 'Mining', href: '/commercial#mining' },
       ],
     },
     {

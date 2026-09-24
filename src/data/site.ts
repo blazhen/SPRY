@@ -166,7 +166,7 @@ export const servicesMenu: NavGroup[] = [
     children: [
       { label: 'Factory & Warehouse', href: '/commercial#industrial' },
       { label: 'Farming', href: '/commercial#agri' },
-      { label: 'Mining', href: '/commercial#sectors' },
+      { label: 'Mining', href: '/commercial#mining' },
     ],
   },
 ]

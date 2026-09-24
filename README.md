@@ -461,9 +461,11 @@ place. What is still outstanding, as of September 2026:
 
 1. **Trading hours.** `site.hours` in `src/data/site.ts` is a plausible trades week,
    not a confirmed one. The phone assistant and the structured data both read it.
-2. **Five stock photographs** still stand in for situations there is no job photo
-   of. They are marked `clientSwap: true` in `src/data/content.ts`, and the last page
-   of the gallery photo notes document lists them for Glenn.
+2. **Six stock photographs** still stand in for situations there is no job photo
+   of. Five are marked `clientSwap: true` in `src/data/content.ts`, and the last page
+   of the gallery photo notes document lists them for Glenn. The sixth is the mine
+   tunnel on the Commercial page's mining card (`public/work/mining-tunnel.webp`), a
+   stock photo Glenn had uploaded to his old site, standing in for a mine-site job.
 3. **Gallery details** for the jobs Glenn has not yet described: the Tasmania shed,
    the towns for four residential jobs, and the film set's foam and thickness.
 4. **Two of Glenn's own fact-sheet PDFs** (LD-C-50 and the MD-R-200 MSDS) return 404 on
