@@ -32,8 +32,8 @@ window.JOURNEY = {
   brand: {
     name: 'Spray It Solutions',
     shortName: 'Spray It',
-    phone: '0428 26 36 26',
-    phoneE164: '+61428263626',
+    phone: '1300 177 729',
+    phoneE164: '+611300177729',
     email: 'info@sprayitsolutions.com.au',
     website: 'sprayitsolutions.com.au',
     owner: 'Glenn',
@@ -54,8 +54,8 @@ window.JOURNEY = {
   customValues: [
     { key: 'business_name', value: 'Spray It Solutions', note: 'Used in email' },
     { key: 'business_short_name', value: 'Spray It', note: 'Used in SMS, where characters cost money' },
-    { key: 'business_phone', value: '0428 26 36 26', note: 'Human readable' },
-    { key: 'business_phone_e164', value: '+61428263626', note: 'For tel: links' },
+    { key: 'business_phone', value: '1300 177 729', note: 'Human readable' },
+    { key: 'business_phone_e164', value: '+611300177729', note: 'For tel: links' },
     { key: 'business_email', value: 'info@sprayitsolutions.com.au', note: 'From address and reply-to. The sending domain needs SPF and DKIM before go-live.' },
     { key: 'from_name_owner', value: 'Glenn at Spray It Solutions', note: 'From name on the personal emails' },
     { key: 'from_name_brand', value: 'Spray It Solutions', note: 'From name on confirmations and invoices' },
@@ -80,8 +80,8 @@ window.JOURNEY = {
     common: {
       'custom_values.business_name': 'Spray It Solutions',
       'custom_values.business_short_name': 'Spray It',
-      'custom_values.business_phone': '0428 26 36 26',
-      'custom_values.business_phone_e164': '+61428263626',
+      'custom_values.business_phone': '1300 177 729',
+      'custom_values.business_phone_e164': '+611300177729',
       'custom_values.business_email': 'info@sprayitsolutions.com.au',
       'custom_values.from_name_owner': 'Glenn at Spray It Solutions',
       'custom_values.from_name_brand': 'Spray It Solutions',

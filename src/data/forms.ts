@@ -25,9 +25,9 @@ export const contactCopy = {
   optional: 'Optional',
   /** Shown when the webhook is not configured, so a lead is never lost quietly. */
   unconfigured:
-    'Our online form is not accepting submissions right now. Please call us on 0428 26 36 26 and we will sort it out straight away.',
+    'Our online form is not accepting submissions right now. Please call us on 1300 177 729 and we will sort it out straight away.',
   networkError:
-    'That did not send. Please check your connection and try again, or call us on 0428 26 36 26.',
+    'That did not send. Please check your connection and try again, or call us on 1300 177 729.',
   responseTime: 'We reply to every enquiry, usually the same working day.',
   preferCall: 'Would rather talk it through?',
   bookLink: 'Book a 15 minute phone call',
@@ -100,7 +100,7 @@ export const thanks = {
   quote: {
     eyebrow: 'Enquiry received',
     title: 'Thanks, we have got it.',
-    lede: 'One of the family will be in touch, usually the same working day. If it is urgent, call us on 0428 26 36 26.',
+    lede: 'One of the family will be in touch, usually the same working day. If it is urgent, call us on 1300 177 729.',
   },
   booked: {
     eyebrow: 'Call booked',

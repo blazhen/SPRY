@@ -62,10 +62,10 @@ export const site = {
 
   phone: {
     /** The one company number. Shown as-is everywhere. */
-    display: '0428 26 36 26',
-    tel: 'tel:+61428263626',
+    display: '1300 177 729',
+    tel: 'tel:+611300177729',
     /** E.164, for structured data only. Never rendered. */
-    e164: '+61428263626',
+    e164: '+611300177729',
   },
 
   email: 'info@sprayitsolutions.com.au',
@@ -134,7 +134,7 @@ export const site = {
     /* One label, everywhere: header, hero, footer, the phone bar and the
        closing band all say the same thing. */
     primary: { label: 'Get a Free Quote', href: '/contact' },
-    secondary: { label: 'Call 0428 26 36 26', href: 'tel:+61428263626' },
+    secondary: { label: 'Call 1300 177 729', href: 'tel:+611300177729' },
   },
 
   credit: {

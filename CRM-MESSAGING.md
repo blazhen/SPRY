@@ -74,8 +74,8 @@ works for a different client.
 | --- | --- | --- |
 | `business_name` | Spray It Solutions | Used in email |
 | `business_short_name` | Spray It | Used in SMS, where characters cost money |
-| `business_phone` | 0428 26 36 26 | Human readable |
-| `business_phone_e164` | +61428263626 | For tel: links |
+| `business_phone` | 1300 177 729 | Human readable |
+| `business_phone_e164` | +611300177729 | For tel: links |
 | `business_email` | info@sprayitsolutions.com.au | From address and reply-to. The sending domain needs SPF and DKIM before go-live. |
 | `from_name_owner` | Glenn at Spray It Solutions | From name on the personal emails |
 | `from_name_brand` | Spray It Solutions | From name on confirmations and invoices |
