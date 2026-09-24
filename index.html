@@ -6,28 +6,17 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="theme-color" content="#FFFFFF" />
 
-    <!-- Fonts: Clash Display (headings) + Satoshi (body) via Fontshare.
-         Preconnect + a single non-blocking stylesheet keeps this off the
-         critical path while still avoiding a FOUT on the hero. -->
-    <link rel="preconnect" href="https://api.fontshare.com" />
-    <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin />
+    <!-- Fonts: Clash Display (headings) + Satoshi (body), self-hosted from
+         /fonts and declared in src/styles/tokens.css. The two weights the
+         first paint needs are preloaded so the hero does not reflow. -->
     <link
       rel="preload"
-      as="style"
-      href="https://api.fontshare.com/v2/css?f[]=clash-display@600,700,500&f[]=satoshi@400,500,700,900&display=swap"
+      as="font"
+      type="font/woff2"
+      href="/fonts/clash-display-600.woff2"
+      crossorigin
     />
-    <link
-      rel="stylesheet"
-      href="https://api.fontshare.com/v2/css?f[]=clash-display@600,700,500&f[]=satoshi@400,500,700,900&display=swap"
-      media="print"
-      onload="this.media='all'"
-    />
-    <noscript>
-      <link
-        rel="stylesheet"
-        href="https://api.fontshare.com/v2/css?f[]=clash-display@600,700,500&f[]=satoshi@400,500,700,900&display=swap"
-      />
-    </noscript>
+    <link rel="preload" as="font" type="font/woff2" href="/fonts/satoshi-400.woff2" crossorigin />
 
     <!-- Warm the image CDN before the hero background is requested. -->
     <link rel="preconnect" href="https://images.unsplash.com" crossorigin />
@@ -38,28 +27,14 @@
     <title>Spray Foam Insulation Melbourne &amp; Australia | Spray It Solutions</title>
 
     <!--
-      ====================================================================
-      SITE CONFIGURATION  ·  edit this block after deploying. No rebuild.
-      ====================================================================
-
-      These values are read at runtime, so they can be changed directly in
-      this file on the server. Replace each __PLACEHOLDER__ with the real
-      value. Anything still showing a placeholder is treated as not set:
-      the quote form will show a visible error with the phone number rather
-      than silently posting leads into a dead URL, and the booking page will
-      show a call-us fallback instead of an empty iframe.
-
-      leadWebhook        Systemations > Automation > Workflows > Add Trigger >
-                         Inbound Webhook. Copy the URL it gives you.
-      bookingCalendarUrl Systemations > Calendars > (phone consult) > Share > Embed.
-                         Copy the src URL out of the embed code.
-      router             "history" for clean URLs like /contact. Requires the
-                         host to serve index.html for unknown paths (an SPA
-                         rewrite). If /contact 404s after deploying, switch
-                         this to "hash" and links become /#/contact, which
-                         works on any static host with no configuration.
+      SITE CONFIGURATION lives in /config.js, one file for the whole site.
+      Edit it on the server after deploying; no rebuild. It is a separate
+      file rather than an inline block because every page is pre-rendered to
+      its own HTML file, and a block inline here would have to be edited in
+      each of them.
     -->
-    
+    <script src="/config.js"></script>
+
     <!--
       Boot screen.
 

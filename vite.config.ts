@@ -92,8 +92,10 @@ function staticHostFallbacks(isLive: boolean) {
             : [`${from}  ${to}  301`, `${from}/  ${to}  301`],
         ),
         '',
-        '# Single page app fallback. Must remain last.',
-        '/*  /index.html  200',
+        '# Single page app fallback. Must remain last. Points at the untouched',
+        '# shell rather than index.html, which the pre-render step turns into',
+        '# the home page: an unknown address must not open with home content.',
+        '/*  /404.html  200',
         '',
       ]
       fs.writeFileSync(path.join(out, '_redirects'), lines.join('\n'))

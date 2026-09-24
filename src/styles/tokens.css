@@ -21,6 +21,44 @@
    sections follow without a line of markup changing.
    ========================================================================== */
 
+/* ============================================================================
+   WEBFONTS  ·  self-hosted
+   ----------------------------------------------------------------------------
+   Clash Display and Satoshi, from Fontshare, served from /public/fonts rather
+   than from Fontshare's CDN. Same files, one origin fewer to connect to, and
+   the headings no longer wait on a third party. Only the weights the site
+   actually sets are shipped: one display weight and three body weights. Both
+   families are licensed for self-hosting under the ITF Free Font License.
+   ========================================================================== */
+@font-face {
+  font-family: 'Clash Display';
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+  src: url('/fonts/clash-display-600.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Satoshi';
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  src: url('/fonts/satoshi-400.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Satoshi';
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+  src: url('/fonts/satoshi-500.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Satoshi';
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+  src: url('/fonts/satoshi-700.woff2') format('woff2');
+}
+
 :root {
   /* ---- Core palette: BRAND (default) ---------------------------------- */
   /* Sampled from the live site rather than guessed: green #8DC63F, navy

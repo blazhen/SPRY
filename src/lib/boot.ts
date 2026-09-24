@@ -10,8 +10,8 @@ declare global {
 /**
  * Longest the boot screen will wait on webfonts.
  *
- * Fonts are requested from a third-party CDN, so `document.fonts.ready` is not
- * guaranteed to settle promptly. Headings are set in a display face with quite
+ * Fonts are self-hosted now, but `document.fonts.ready` can still lag on a
+ * slow connection. Headings are set in a display face with quite
  * different metrics from the fallback, so revealing before the swap means a
  * visible reflow, and reflowing after ScrollTrigger has measured its pins means
  * the pins are measured against the wrong heights. Worth a short wait, not an

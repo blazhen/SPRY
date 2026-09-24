@@ -401,6 +401,20 @@ Images are served from the Unsplash CDN with `auto=format` (AVIF/WebP where supp
 and responsive `srcSet`/`sizes`. `<Figure>` renders a branded placeholder if a request
 fails, so a dead URL degrades gracefully rather than showing a broken image.
 
+**Every page is pre-rendered.** `scripts/prerender.mjs` runs as the last step of
+`npm run build`: it serves `dist/`, opens each route in headless Chromium under
+`prefers-reduced-motion` (so every animated section renders its finished state), and
+writes the result out as `dist/<route>/index.html`. The title, description, canonical,
+structured data, headings and copy are all in the raw HTML, which is what crawlers that
+do not run JavaScript, link previews and AI search bots read. The client app then
+renders over it. `dist/404.html` stays the untouched shell for unknown addresses, and
+the sitemap is generated from the same route list.
+
+**Fonts are self-hosted** from `public/fonts`: one Clash Display weight and three
+Satoshi weights, the only ones the site sets, declared in `tokens.css` with
+`font-display: swap` and the first-paint pair preloaded. No third-party origin is
+contacted for type.
+
 ---
 
 ## Accessibility
@@ -450,15 +464,26 @@ place. What is still outstanding, as of September 2026:
 2. **Five stock photographs** still stand in for situations there is no job photo
    of. They are marked `clientSwap: true` in `src/data/content.ts`, and the last page
    of the gallery photo notes document lists them for Glenn.
-3. **Gallery captions.** Every caption describes only what is visible in the frame.
-   Glenn is filling in what each job actually was, in the shared document.
+3. **Gallery details** for the jobs Glenn has not yet described: the Tasmania shed,
+   the towns for four residential jobs, and the film set's foam and thickness.
 4. **Two of Glenn's own fact-sheet PDFs** (LD-C-50 and the MD-R-200 MSDS) return 404 on
    his current site, so they are not in `public/docs/` yet.
 5. **The Systemations values** the CRM messages read from: the lead webhook and the
-   booking calendar URL go in the `SITE CONFIGURATION` block in `index.html` at deploy
-   time. See DEPLOY.md and CRM-MESSAGING.md §2.
+   booking calendar URL go in `config.js` at deploy time. See DEPLOY.md and
+   CRM-MESSAGING.md §2. The quote form now also sends `heard_from`, which needs a
+   matching dropdown field in the CRM.
 6. **`noindex, nofollow`** is on while the site sits on the staging domain. It comes off
-   at go-live by setting `staging: false` in the same config block.
+   at go-live with `npm run build:live` and `staging: false` in `config.js`.
+7. **Google Business Profile.** The footer address links to the listing and the contact
+   page embeds a map by address. The listing's own embed URL (Maps → Share → Embed a
+   map) goes in `site.mapEmbedUrl`, and the address text should be checked against the
+   profile word for word.
+8. **About page team and timeline.** Photo, name, role and a line for each person, and
+   the milestones (founded, first rig, biggest jobs). Nothing is built until the facts
+   arrive, so nothing invented stands in for them.
+9. **Blog author.** Every article is bylined Glenn Angus, with a bio drawn from the
+   About page and initials in place of a portrait (`blogAuthor` in `src/data/blog.ts`).
+   Confirm the byline and send a photo.
 
 All business content (address, phone number, capability line, testimonials quoted
 from the client's own site, FAQ answers, the customer-stated energy figures) is real
