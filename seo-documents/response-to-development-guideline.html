@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Response to the Pre-Development Guide, Sprayitsolutions.com.au</title>
+<meta name="robots" content="noindex">
+<style>
+  :root { --navy: #002396; --green: #5E9224; --ink: #1c2230; --muted: #575b60; --line: #d8dee9; --band: #eaf0fa; --ok: #1f7a3a; --part: #b26a00; --no: #9b2c2c; }
+  * { box-sizing: border-box; }
+  html { font-size: 16px; }
+  body { margin: 0; font-family: Segoe UI, Helvetica, Arial, sans-serif; color: var(--ink); line-height: 1.55; background: #fff; }
+  .page { max-width: 62rem; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; }
+  header { border-bottom: 3px solid var(--navy); padding-bottom: 1.25rem; margin-bottom: 2rem; }
+  .kicker { font-size: .78rem; letter-spacing: .16em; text-transform: uppercase; color: var(--navy); font-weight: 700; }
+  h1 { font-size: 1.9rem; margin: .4rem 0 .5rem; color: var(--navy); line-height: 1.15; }
+  h2 { font-size: 1.35rem; color: var(--navy); margin: 2.6rem 0 .8rem; padding-top: .4rem; border-top: 1px solid var(--line); }
+  h3 { font-size: 1.05rem; margin: 1.8rem 0 .4rem; }
+  p { margin: .5rem 0; }
+  .meta { color: var(--muted); font-size: .92rem; }
+  table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: .93rem; }
+  th, td { text-align: left; vertical-align: top; padding: .55rem .6rem; border-bottom: 1px solid var(--line); }
+  th { background: var(--band); color: var(--navy); font-size: .8rem; letter-spacing: .08em; text-transform: uppercase; }
+  td.n { color: var(--muted); white-space: nowrap; }
+  .tag { display: inline-block; font-size: .72rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; padding: .15rem .5rem; border-radius: 999px; white-space: nowrap; }
+  .ok { background: #e3f4e8; color: var(--ok); }
+  .part { background: #fff1dc; color: var(--part); }
+  .no { background: #fbe4e4; color: var(--no); }
+  ul.items { list-style: none; padding: 0; margin: .4rem 0 0; }
+  ul.items li { padding: .5rem 0 .5rem 0; border-bottom: 1px dashed var(--line); display: grid; grid-template-columns: 7rem 1fr; gap: .8rem; align-items: start; }
+  ul.items li:last-child { border-bottom: 0; }
+  ul.items .tag { margin-top: .15rem; justify-self: start; }
+  .ask { background: var(--band); border-left: 4px solid var(--navy); padding: .9rem 1.1rem; margin: 1rem 0; }
+  .ask h3 { margin-top: 0; }
+  ol { padding-left: 1.3rem; }
+  ol li { margin: .35rem 0; }
+  .note { font-size: .9rem; color: var(--muted); }
+  footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid var(--line); font-size: .85rem; color: var(--muted); }
+  @media print { .page { padding: 0; } h2 { break-after: avoid; } ul.items li { break-inside: avoid; } }
+  @media (max-width: 600px) { ul.items li { grid-template-columns: 1fr; gap: .25rem; } }
+</style>
+</head>
+<body>
+<div class="page">
+
+<header>
+  <div class="kicker">Spray It Solutions website</div>
+  <h1>Response to the Pre-Development Guide</h1>
+  <p class="meta">Replying to: Clickmatix, "Pre-Development Guide, Sprayitsolutions.com.au, September 2026" (16 requirements).<br>
+  Prepared by Systemations, 25 September 2026. Everything below is on the staging site now.</p>
+</header>
+
+<h2>At a glance</h2>
+<table>
+  <thead><tr><th>#</th><th>Requirement</th><th>Status</th><th>In one line</th></tr></thead>
+  <tbody>
+    <tr><td class="n">01</td><td>JavaScript-dependent content</td><td><span class="tag ok">Done</span></td><td>Every page is now served with its full content in the HTML.</td></tr>
+    <tr><td class="n">02</td><td>Clickable business address</td><td><span class="tag ok">Done</span></td><td>Address links to the Google listing; wording and phone now match the listing.</td></tr>
+    <tr><td class="n">03</td><td>USP section</td><td><span class="tag ok">Done</span></td><td>The numbers band sits under the home hero and is repeated on Residential.</td></tr>
+    <tr><td class="n">04</td><td>Navigation, services and sub-services</td><td><span class="tag ok">Done</span></td><td>Services menu with sub-services, keyboard and mobile accordion.</td></tr>
+    <tr><td class="n">05</td><td>Before and after gallery</td><td><span class="tag part">Partly</span></td><td>Filters by surface added; only one before/after pair exists so far.</td></tr>
+    <tr><td class="n">06</td><td>FAQs on dedicated pages</td><td><span class="tag ok">Done</span></td><td>Six page-specific questions on each service page, with schema.</td></tr>
+    <tr><td class="n">07</td><td>Blog author bio</td><td><span class="tag ok">Done</span></td><td>Byline, author box and Article schema. Photo to come from the client.</td></tr>
+    <tr><td class="n">08</td><td>About Us: team and company journey</td><td><span class="tag no">Not done</span></td><td>Needs the people and the dates from the client first.</td></tr>
+    <tr><td class="n">09</td><td>Contact Us: Google Map</td><td><span class="tag ok">Done</span></td><td>Map embedded, plus the required "How did you hear about us?" field.</td></tr>
+    <tr><td class="n">10</td><td>Typography</td><td><span class="tag ok">Done</span></td><td>Sizes set to the recommended scale; spacing fixed.</td></tr>
+    <tr><td class="n">11</td><td>FAQ accordion design</td><td><span class="tag ok">Done</span></td><td>Question size, tap targets, tel button and quote link, stripes removed.</td></tr>
+    <tr><td class="n">12</td><td>Scrolling ticker and carousel</td><td><span class="tag ok">Done</span></td><td>Smaller, slower, pausable; carousel holds 6 seconds and stops on interaction.</td></tr>
+    <tr><td class="n">13</td><td>Colour contrast and readability</td><td><span class="tag ok">Done</span></td><td>Every text element measured on four pages; failures fixed.</td></tr>
+    <tr><td class="n">14</td><td>Mobile experience and calls to action</td><td><span class="tag ok">Done</span></td><td>Sticky call/quote bar, one CTA label, breadcrumbs, tested at three widths.</td></tr>
+    <tr><td class="n">15</td><td>Buttons and forms</td><td><span class="tag ok">Done</span></td><td>44px buttons, states, required-field note.</td></tr>
+    <tr><td class="n">16</td><td>Page speed, Core Web Vitals</td><td><span class="tag ok">Done</span></td><td>Fonts self-hosted, images sized; the live targets are measured after launch.</td></tr>
+  </tbody>
+</table>
+
+<h2>Item by item</h2>
+<p class="note">Each bullet from the guide, with what was done and how, or why not.</p>
+
+<h3>01 JavaScript-dependent content</h3>
+<ul class="items">
+  <li><span class="tag ok">Done</span><div>Serve all main content in the initial HTML. The build now opens each of the 16 pages in a headless browser and saves the rendered page as its own HTML file. Tested with JavaScript switched off: the pages read in full.</div></li>
+  <li><span class="tag ok">Done</span><div>Title, meta description, canonical, H1, body copy, images and internal links in the raw HTML. All present on every page; checked by script on all 16.</div></li>
+  <li><span class="tag ok">Done</span><div>Internal links as standard anchors. They already were; confirmed.</div></li>
+  <li><span class="tag ok">Done</span><div>JavaScript enhances but is not required. The sliders and animations still run; the content does not depend on them.</div></li>
+</ul>
+<p class="note">Note: the staging site still carries a noindex tag and blocks crawlers, on purpose, so the staging copy never competes with the live domain. The live build removes both.</p>
+
+<h3>02 Clickable business address</h3>
+<ul class="items">
+  <li><span class="tag ok">Done</span><div>Footer address links to the Google Business Profile listing in a new tab. Also on the contact page. Verified in a browser that the link opens "SprayIT Solutions (VIC) Pty Ltd".</div></li>
+  <li><span class="tag ok">Done</span><div>Address text matches the listing exactly: "Factory 4/114 Colemans Rd, Carrum Downs VIC 3201".</div></li>
+  <li><span class="tag ok">Done</span><div>Phone as a tel: link, email as a mailto: link. Already in place. The phone number on the site has been changed to the one on the Google listing, 1300 177 729, so the name, address and phone now agree across the site, the listing and the CRM messages.</div></li>
+</ul>
+
+<h3>03 USP section</h3>
+<ul class="items">
+  <li><span class="tag ok">Done</span><div>Moved directly below the home page hero.</div></li>
+  <li><span class="tag ok">Done</span><div>HTML text with icons, alt text on logos. It was already built as text; client logos already carried alt text.</div></li>
+  <li><span class="tag ok">Done</span><div>On mobile, wraps two across; never hidden.</div></li>
+  <li><span class="tag ok">Done</span><div>Reused on Residential. Not repeated on Commercial, whose opening section already shows the same figures; the same numbers twice on one page reads as padding.</div></li>
+</ul>
+
+<h3>04 Navigation, services and sub-services</h3>
+<ul class="items">
+  <li><span class="tag ok">Done</span><div>Services menu in the main navigation, listing Spray Foam, Residential (Underfloor, Roof &amp; Ceiling, Wall) and Commercial (Factory &amp; Warehouse, Farming, Mining). Main service names are links.</div></li>
+  <li><span class="tag ok">Done</span><div>All menu links are in the raw HTML; the menu is hidden with CSS when closed, never injected.</div></li>
+  <li><span class="tag ok">Done</span><div>Desktop opens on hover and click, works with Tab, Enter and Escape. Mobile is an accordion inside the menu drawer.</div></li>
+  <li><span class="tag part">Note</span><div>The sub-service links land on the matching section of the Residential or Commercial page (and on Residential they preselect that surface on the interactive diagram). There are no separate sub-service pages; see 06.</div></li>
+</ul>
+
+<h3>05 Before and after gallery</h3>
+<ul class="items">
+  <li><span class="tag ok">Done</span><div>Category filters by service. A "Surface" filter row (Roof &amp; ceiling, Walls, Underfloor, Specialty work) alongside Residential / Commercial. Counts update as filters combine.</div></li>
+  <li><span class="tag part">Partly</span><div>Each project as a before/after pair. One pair exists (the subfloor job) and it is in as a slider. The other 13 jobs have no "before" photograph. Needs photographs from the client.</div></li>
+  <li><span class="tag ok">Done</span><div>WebP, width and height set, lazy loading below the fold.</div></li>
+  <li><span class="tag ok">Done</span><div>Descriptive alt text on every image.</div></li>
+  <li><span class="tag no">Not done</span><div>Optional: matching category on each service page linking to the gallery. Left for when there are more photographs to show.</div></li>
+</ul>
+
+<h3>06 FAQs on dedicated pages</h3>
+<ul class="items">
+  <li><span class="tag ok">Done</span><div>Six questions near the bottom of Residential, Commercial and Spray Foam. Each set is written for that page from facts already on it; nothing is shared between pages.</div></li>
+  <li><span class="tag ok">Done</span><div>Accordion with every answer in the HTML, hidden with CSS, never fetched on click.</div></li>
+  <li><span class="tag ok">Done</span><div>"FAQs about [service]" as the H2, each question an H3 containing a button. FAQPage structured data built from the same text the visitor sees.</div></li>
+  <li><span class="tag no">Not done</span><div>On sub-service pages. There are no sub-service pages: underfloor, roof and walls are sections of the Residential page, and the commercial sectors are cards on the Commercial page. Six new pages need real writing and photographs each. We would like to agree the scope with the client before building them rather than fill them with thin copy.</div></li>
+</ul>
+
+<h3>07 Blog author bio</h3>
+<ul class="items">
+  <li><span class="tag part">Partly</span><div>Author box at the end of every post with name, role and bio. Photo and credentials are waiting on the client; initials show until the photo arrives.</div></li>
+  <li><span class="tag ok">Done</span><div>Byline at the top with the published date. A last-updated date appears once an article is edited.</div></li>
+  <li><span class="tag ok">Done</span><div>One author profile used everywhere.</div></li>
+  <li><span class="tag ok">Done</span><div>Author name links to the About page. Article structured data with the author as a Person.</div></li>
+  <li><span class="tag ok">Done</span><div>Also: dates and times left over from the old site's editor were showing as bullet points inside every article. Removed, and the numbered subheadings that had lost their punctuation in the move were restored.</div></li>
+</ul>
+
+<h3>08 About Us: team and company journey</h3>
+<ul class="items">
+  <li><span class="tag no">Not done</span><div>Team section. Needs a photo, name, role and one line for each person. Requested from the client.</div></li>
+  <li><span class="tag no">Not done</span><div>Company journey timeline. Needs the milestones (founded, first rig, biggest jobs, certifications). Requested from the client.</div></li>
+  <li><span class="tag no">Not done</span><div>Neither will be built with placeholder people or invented dates. The layout is quick once the facts arrive.</div></li>
+</ul>
+
+<h3>09 Contact Us: Google Map</h3>
+<ul class="items">
+  <li><span class="tag ok">Done</span><div>Map embedded beside the address, phone, email and form. Lazy-loaded, titled, responsive.</div></li>
+  <li><span class="tag ok">Done</span><div>Pinned to the listing. The embed looks the business up by name and address and shows the listing's pin. If you would rather it used the Business Profile's own embed link (Share, then Embed a map), send the link and it goes straight in.</div></li>
+  <li><span class="tag ok">Done</span><div>"How did you hear about us?" as a required dropdown. Five options rather than three: Google search, Google ad, Referral from a friend, builder or tradie, Facebook / Instagram / LinkedIn, Somewhere else. Customers do not recognise "Google Organic", and a required field with only three options forces wrong answers. The answer is sent to the CRM with every enquiry, alongside the automatic campaign and referrer capture the site already does.</div></li>
+</ul>
+
+<h3>10 Typography</h3>
+<ul class="items">
+  <li><span class="tag ok">Done</span><div>Heading sizes reduced to the recommended scale. Measured on the site: desktop H1 56px, H2 40px, H3 24px, FAQ questions 20px, labels 13px; phone H1 32px, H2 26px, FAQ questions 16px. Line heights 1.1, 1.15 and 1.25.</div></li>
+  <li><span class="tag ok">Done</span><div>Collapsed word spacing fixed. Tracking capped at -0.02em on every heading size and word spacing opened, so "What is R-Value?" reads as three words.</div></li>
+  <li><span class="tag ok">Done</span><div>Scale defined as CSS variables, with fluid clamp() sizing.</div></li>
+  <li><span class="tag ok">Done</span><div>One H1 per page, heading levels in order. Checked by script on all 16 pages.</div></li>
+  <li><span class="tag no">Not done</span><div>H1 and H2 at Bold weight. The display face is set at semibold across the site. Bold would change the brand look for a difference few readers would notice, and would add another font file. Easy to change if it matters to you.</div></li>
+</ul>
+
+<h3>11 FAQ accordion design</h3>
+<ul class="items">
+  <li><span class="tag ok">Done</span><div>Question size 18 to 20px desktop, 16 to 17px mobile.</div></li>
+  <li><span class="tag ok">Done</span><div>Whole row clickable; 44px target on the icon.</div></li>
+  <li><span class="tag ok">Done</span><div>Each question is a button with aria-expanded, controlling a labelled panel.</div></li>
+  <li><span class="tag ok">Done</span><div>First question open by default; others open without the page jumping.</div></li>
+  <li><span class="tag ok">Done</span><div>Side card: "Call 1300 177 729" as a tel: button, plus a "Get a Free Quote" link.</div></li>
+  <li><span class="tag ok">Done</span><div>Diagonal background stripes replaced with a plain backdrop.</div></li>
+</ul>
+
+<h3>12 Scrolling ticker and auto-play carousel</h3>
+<ul class="items">
+  <li><span class="tag ok">Done</span><div>Ticker reduced from 28 to 52px down to 20 to 24px, and slowed.</div></li>
+  <li><span class="tag ok">Done</span><div>Ticker pauses on hover and keyboard focus; no motion at all under prefers-reduced-motion.</div></li>
+  <li><span class="tag ok">Done</span><div>Carousel pause button kept; slide dots are 44px tap targets with a visible active state.</div></li>
+  <li><span class="tag ok">Done</span><div>Carousel holds each slide for 6 seconds and stops auto-playing once a visitor picks a slide or swipes.</div></li>
+  <li><span class="tag ok">Done</span><div>Stats labels at 14px, colour checked for contrast.</div></li>
+</ul>
+
+<h3>13 Colour contrast and readability</h3>
+<ul class="items">
+  <li><span class="tag ok">Done</span><div>Body text at 4.5:1 or better. Every visible text element on the home, Residential, Contact and Gallery pages was measured against its background. Two labels at 70% grey failed and were fixed; everything else passed.</div></li>
+  <li><span class="tag ok">Done</span><div>Large headings and icons at 3:1 or better, including the green words: 3.7:1 on white, 3.2:1 on the tinted band.</div></li>
+  <li><span class="tag ok">Done</span><div>Body text line length capped at 62 characters.</div></li>
+  <li><span class="tag ok">Done</span><div>No text over busy images without an overlay; every photo caption sits on a dark gradient.</div></li>
+</ul>
+
+<h3>14 Mobile experience and calls to action</h3>
+<ul class="items">
+  <li><span class="tag ok">Done</span><div>Sticky bottom bar on phones with Call and Get a Free Quote. Hidden on the contact and booking pages, where it would point at the page you are on.</div></li>
+  <li><span class="tag ok">Done</span><div>One primary label everywhere: "Get a Free Quote" (replaced a mix of "Request a Free Quote" and "Get a Free Quote").</div></li>
+  <li><span class="tag ok">Done</span><div>CTA in the hero, a short one mid-page after the proof, and the closing band at the end of each service page.</div></li>
+  <li><span class="tag ok">Done</span><div>Tested at 375, 390 and 414px on eight pages: no horizontal scroll, nothing cut off.</div></li>
+  <li><span class="tag ok">Done</span><div>Breadcrumbs on every page, with BreadcrumbList structured data.</div></li>
+</ul>
+
+<h3>15 Buttons and forms</h3>
+<ul class="items">
+  <li><span class="tag ok">Done</span><div>One primary and one secondary style, minimum height 44px everywhere.</div></li>
+  <li><span class="tag ok">Done</span><div>Hover, keyboard focus and active states on every link and button.</div></li>
+  <li><span class="tag ok">Done</span><div>Visible labels, required fields marked ("Everything is required unless it says optional"), minimal fields, correct mobile keyboards for phone, email and postcode.</div></li>
+  <li><span class="tag ok">Done</span><div>Inline error messages and a thank-you page after submitting. Already in place.</div></li>
+  <li><span class="tag ok">Done</span><div>Consistent spacing system. Already in place.</div></li>
+</ul>
+
+<h3>16 Page speed, Core Web Vitals</h3>
+<ul class="items">
+  <li><span class="tag ok">Done</span><div>Images as WebP, correctly sized, width and height set, lazy-loaded below the fold.</div></li>
+  <li><span class="tag part">N/A</span><div>Preload the hero image. The home hero is a drawing, not a photograph, so there is nothing to preload.</div></li>
+  <li><span class="tag ok">Done</span><div>Fonts self-hosted: two families, four weights (down from seven loaded from a third-party CDN), font-display: swap, the first-paint pair preloaded.</div></li>
+  <li><span class="tag ok">Done</span><div>Non-critical scripts deferred. Analytics loads asynchronously and only when an ID is configured. There is no chat widget on the site yet; when it is added it will load the same way.</div></li>
+  <li><span class="tag part">To measure</span><div>LCP under 2.5s, CLS under 0.1, INP under 200ms. These need the live host and real visitors; a local preview gives meaningless numbers. We will check them in Search Console after launch.</div></li>
+</ul>
+
+<h2>Still open</h2>
+
+<div class="ask">
+  <h3>Needed from Spray It Solutions</h3>
+  <ol>
+    <li><strong>About page:</strong> a photo, name, role and one line for each team member, and the milestones for the timeline.</li>
+    <li><strong>Blog author:</strong> a photograph of Glenn, and confirmation that he is happy to be named as the author of the articles.</li>
+    <li><strong>Trading hours:</strong> the Google listing says opens 8am; the site says 7am to 5pm. Which is right?</li>
+    <li><strong>Photographs:</strong> before-and-after pairs of any other jobs, and a photograph from a mine or gas site for the Commercial page's mining card, which currently uses a stock image.</li>
+    <li><strong>Service area wording:</strong> the site says Australia-wide. Confirm whether Melbourne and Victoria should lead in page titles, with Australia-wide as the secondary message.</li>
+  </ol>
+</div>
+
+<div class="ask">
+  <h3>Needed from Clickmatix</h3>
+  <ol>
+    <li><strong>Keywords per page.</strong> From your earlier email: the primary and secondary keywords and target locations for the home, Residential, Commercial and Spray Foam pages, so the keyword line above each headline and the page titles can be written to your strategy.</li>
+    <li><strong>Sub-service pages.</strong> Whether you want separate pages for Underfloor, Roof &amp; Ceiling, Wall, Factory &amp; Warehouse, Farming and Mining. If yes, we will scope the content with the client.</li>
+    <li><strong>Map embed.</strong> Only if you prefer the Business Profile's own embed link over the current address lookup; send the link.</li>
+    <li><strong>Heading weight.</strong> Confirm whether semibold headings are acceptable, or you want Bold on H1 and H2.</li>
+  </ol>
+</div>
+
+<h2>How it was checked</h2>
+<p>Every page's raw HTML was checked by script for one H1, ordered headings, a description, a canonical, the menu links and the structured data. In a browser, the Services menu was driven by mouse and keyboard, the FAQ accordions opened and closed, the carousel timed, every visible text element measured for contrast, the contact form submitted with the source field empty, the gallery filters exercised, and eight pages loaded at 375, 390 and 414px. The Residential page was also loaded with JavaScript disabled to confirm it reads in full.</p>
+
+<footer>Prepared by Systemations for Spray It Solutions and Clickmatix. The staging site remains noindex until go-live.</footer>
+
+</div>
+</body>
+</html>
