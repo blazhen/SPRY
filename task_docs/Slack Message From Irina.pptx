@@ -1,0 +1,34 @@
+I'am Zen, and Dan my director is sending this to me. 
+
+
+@Zen Irina came back today with three more requests (email forwarded to you). I went through staging against her notes, her pre-development guide and the live site. Can you check this list and tell me what's right, what's wrong and what's already done somewhere I can't see?
+
+Irina's three requests (29 Sep)
+Swap the five-star review section for the Google review widget. It's the same colour as the CTAs.
+H1 and H2 tags updated to their keywords, and more room in the modules for SEO copy. Her draft for the residential page: https://docs.google.com/document/d/1Kgm7j4JRd9HRkccUPxcvLCvbTXlh6hDsDQecQEcuoJQ/edit
+A real photo of a technician spraying as the hero, or an image rotation.
+
+
+What I found on staging (spry.vibepreview.com), in priority order
+Server still sends an empty shell for every URL. No H1, no links, no meta description, no canonical, and the same title on every page. We told Irina on 21 Sep this would be fixed before go-live, and her guide rates it Critical.
+Her titles are already live and ours differ. Live residential title is "Home Insulation Melbourne | Residential Spray Foam Experts". Staging is "Residential Spray Foam Insulation Australia". Cutover would overwrite her on-page work.
+Sub-service pages are gone. Live has separate underfloor, roof and ceiling, and wall pages under /services/. Staging has them as anchors on /residential. I think this is what's really behind "not enough room".
+No retrofit page. /retrofit shows "That page does not exist". Retrofit is a short section on residential. It's in the Service Agreement and it's one of her three keywords.
+URL format mismatch. Live is non-www with trailing slashes. Staging canonicals are www without.
+Phone number differs. Staging shows 1300 177 729. Live and Irina's copy use 0428 26 36 26. Which one is on the Google listing?
+Unknown URLs return 200, and the sitemap has no blog URLs.
+Slow first load. Residential sat on the blue loading screen for 5+ seconds for me. One informal check only, not a measured test.
+H1s are still the creative lines ("Warmer in winter, cooler in summer.") with a one-word label above. The keyword line isn't there yet.
+
+
+What's already good
+Staging residential has about 1,045 words and a 6-question FAQ, against about 248 words and no H1 on the live page. Breadcrumbs, FAQ accordions, the "How did you hear about us?" field, the Contact map and the privacy link are all in.
+
+What I need from you
+Is the static HTML build done on another branch, or still to do? How long?
+Can we carry her live titles and descriptions across as they are?
+How much work is it to build the three sub-service pages and the retrofit page before launch?
+Your view on the hero: keep the interactive house on home and use real photos on the service pages?
+
+
+I'm holding the reply to Irina until I hear from you. We can cover it after the 9am call with Glenn and Rachael tomorrow.

@@ -1,0 +1,68 @@
+The full message from Slack: 
+
+@Zen summary of Friday's Client Journey Mapping call with Glenn and Rachael (2 Oct). Tasks are in ClickUp under SPRY > Implementation, each one assigned to you or Dan.
+
+Decisions
+Pipeline: "Contacting" becomes Dial 1 and Dial 2. Flow is New Lead > Dial 1 > Dial 2 > Inspection Required (only ~5-10% of jobs, after the quote) > Quote Sent > Follow-Up > Nurture > Quote Accepted > Booking Required > Job Booked > Deposit Requested > Job Completed > Retention Claim (manual). Keep the Residential / Commercial split plus one combined overview. No inspection no-show stage.
+Outreach: two calls back to back, then a "tried to call" text (after Dial 1, per Rachael). Dial 2 starts the email sequence: day 2, day 4 (offer a booking time), day 7 (close-off).
+Alerts: 15 minute timer on uncontacted leads. Email to Rachael. Anything assigned to Glenn gets a text and an email. Keep wording generic, not named people.
+Quotes: click-to-accept on the quote email. One job can hold several quotes. Add-on quotes must not re-fire the welcome sequence. Glenn wants optional upgrades on a quote (e.g. R2.5 to R4) that update the total live.
+Booking: Glenn books jobs inside the platform. Reminders at 7 days and 48 hours with a yes/no confirm button. A "no" alerts the team for manual rescheduling. Apple / Outlook calendars sync in.
+Deposits: not sent at booking. Open-cell due 1 business day before the job, special-order foam 7 days before. Unpaid deposit alerts the team. No card storage or auto-charge.
+Completion: job complete triggers the final invoice. Job report and compliance certificates go out only after the final invoice is paid. Retention claims tracked manually.
+Google reviews: ask 4-6 weeks after install, controlled by a yes/no contact field so problem jobs and repeat commercial clients are skipped.
+Branding: the business name is SprayIT Solutions (capital S, I, T, one word). Rachael's name and mobile on everything. No "family" wording, professional team tone.
+Invoicing: multi-stage payment schedules, accepted quote attached to each invoice. Sync to Xero agreed.
+
+
+New tasks
+Restructure pipeline stages to the dial process (Zen + Dan, high)
+Dial 1 and Dial 2 automated sequences (Zen, high)
+Rebrand templates (Zen + Dan, high)
+Click-to-accept quotes and suppress duplicate messages (Zen, high)
+Job reminders at 7 days and 48 hours (Zen, high)
+Quote upgrade options (order bump) (Zen)
+Deposit invoice timing and unpaid-deposit alert (Zen)
+Job completion: final invoice, report after payment, retention (Zen)
+Google review request with yes/no field (Zen)
+Payment schedules, attached quote, contract templates (Zen)
+Finish client journey and send for sign-off (Dan, high)
+Email Arena about the process changes (Dan)
+Also added notes to the existing Uncontacted-lead nudge, Xero test and Calendars tasks.
+
+
+Zen, please check
+Xero reconciliation: Glenn's worry is that the platform marking an invoice paid before the bank transfer clears breaks his bookkeeper's reconciliation. You told him you'd get a definite answer. Fallback agreed: payment receipt sync can be switched off. Also remember only GST-free invoices have reached Xero so far and Spray It's carry GST, so test before we promise.
+Order bump: you committed to build it on the call. Dan to confirm it is inside Phase 1 scope first.
+Deposit timing: the AI notes say both "2 weeks before" and "1-7 days by foam type". Glenn's own rule is the foam-type one, so build that.
+
+
+Waiting on the client: Glenn skims and approves the journey once Dan sends it. Rachael is to phone Arena about the process changes. Dan accidentally deleted some stages during the call, so check nothing live was lost when you restructure.
+
+The tasks below as iframe shared with you, if you cant open them let me know. 
+
+
+
+
+
+<iframe class="clickup-embed" src="https://sharing.clickup.com/9016063664/t/h/14ym9bv8qcy/VW352IAGSE63KHH" onwheel="" width="100%" height="700px" style="background: transparent; border: 1px solid #ccc;"></iframe>
+
+<iframe class="clickup-embed" src="https://sharing.clickup.com/9016063664/t/h/14ym9bvb19a/9FBMC612EMWK7F3" onwheel="" width="100%" height="700px" style="background: transparent; border: 1px solid #ccc;"></iframe>
+
+<iframe class="clickup-embed" src="https://sharing.clickup.com/9016063664/t/h/14ym9bvb19b/JM2O0P6BTO576JV" onwheel="" width="100%" height="700px" style="background: transparent; border: 1px solid #ccc;"></iframe>
+
+<iframe class="clickup-embed" src="https://sharing.clickup.com/9016063664/t/h/14ym9bvb19d/JKKUUIHBP07H23M" onwheel="" width="100%" height="700px" style="background: transparent; border: 1px solid #ccc;"></iframe>
+
+<iframe class="clickup-embed" src="https://sharing.clickup.com/9016063664/t/h/14ym9bvb19f/7BKMFB79V10Q521" onwheel="" width="100%" height="700px" style="background: transparent; border: 1px solid #ccc;"></iframe>
+
+<iframe class="clickup-embed" src="https://sharing.clickup.com/9016063664/t/h/14ym9bvb19e/F536XR99DVXQS0H" onwheel="" width="100%" height="700px" style="background: transparent; border: 1px solid #ccc;"></iframe>
+
+<iframe class="clickup-embed" src="https://sharing.clickup.com/9016063664/t/h/14ym9bvb19g/XSNUCYMNLCSYBT6" onwheel="" width="100%" height="700px" style="background: transparent; border: 1px solid #ccc;"></iframe>
+
+<iframe class="clickup-embed" src="https://sharing.clickup.com/9016063664/t/h/14ym9bvb19j/RWG6SDIMIX9LY2J" onwheel="" width="100%" height="700px" style="background: transparent; border: 1px solid #ccc;"></iframe>
+
+<iframe class="clickup-embed" src="https://sharing.clickup.com/9016063664/t/h/14ym9bvb19k/IPY96E1JANXFFBO" onwheel="" width="100%" height="700px" style="background: transparent; border: 1px solid #ccc;"></iframe>
+
+<iframe class="clickup-embed" src="https://sharing.clickup.com/9016063664/t/h/14ym9bvb19m/RRC6YF1SXB5HAYF" onwheel="" width="100%" height="700px" style="background: transparent; border: 1px solid #ccc;"></iframe>
+
+<iframe class="clickup-embed" src="https://sharing.clickup.com/9016063664/t/h/14ym9bvb19n/3QG64J1018CEHOE" onwheel="" width="100%" height="700px" style="background: transparent; border: 1px solid #ccc;"></iframe>

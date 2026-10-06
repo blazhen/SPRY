@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>SPRY Task List</title>
+<style>
+  :root {
+    --bg: #ffffff;
+    --panel: #f4f7fc;
+    --fg: #0d1b3e;
+    --muted: #5a6273;
+    --line: #dbe2ee;
+    --navy: #002396;
+    --done: #2f7d32;
+    --done-bg: #e6f3e7;
+    --input: #9a5b00;
+    --input-bg: #fdf0dc;
+    --platform: #1d4fb8;
+    --platform-bg: #e3ebfb;
+    --other: #6b5aa6;
+    --other-bg: #eeeaf8;
+    --partial: #00707a;
+    --partial-bg: #dff3f4;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0e1424; --panel: #151d33; --fg: #e8ecf5; --muted: #a2abc0; --line: #27324f; --navy: #8fb0ff;
+      --done: #8fd694; --done-bg: #1c3320; --input: #f3c27a; --input-bg: #3a2a12; --platform: #9dbcff; --platform-bg: #1b2a4d;
+      --other: #c6b8f5; --other-bg: #2a2445; --partial: #7fd8de; --partial-bg: #133538;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0e1424; --panel: #151d33; --fg: #e8ecf5; --muted: #a2abc0; --line: #27324f; --navy: #8fb0ff;
+    --done: #8fd694; --done-bg: #1c3320; --input: #f3c27a; --input-bg: #3a2a12; --platform: #9dbcff; --platform-bg: #1b2a4d;
+    --other: #c6b8f5; --other-bg: #2a2445; --partial: #7fd8de; --partial-bg: #133538;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--fg); font: 15px/1.55 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  .wrap { max-width: 1100px; margin: 0 auto; padding: 40px 16px 80px; }
+  h1 { font-size: 28px; margin: 0 0 6px; color: var(--navy); }
+  h2 { font-size: 20px; margin: 44px 0 6px; color: var(--navy); }
+  .lede { color: var(--muted); margin: 0 0 18px; max-width: 70ch; }
+  .key { display: flex; flex-wrap: wrap; gap: 8px; margin: 18px 0 8px; }
+  .chip { display: inline-block; white-space: nowrap; border-radius: 999px; padding: 2px 10px; font-size: 12px; font-weight: 700; letter-spacing: .02em; }
+  .done { color: var(--done); background: var(--done-bg); }
+  .input { color: var(--input); background: var(--input-bg); }
+  .platform { color: var(--platform); background: var(--platform-bg); }
+  .other { color: var(--other); background: var(--other-bg); }
+  .partial { color: var(--partial); background: var(--partial-bg); }
+  table { width: 100%; border-collapse: collapse; margin-top: 12px; }
+  th, td { text-align: left; vertical-align: top; padding: 10px 12px; border-bottom: 1px solid var(--line); }
+  th { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); background: var(--panel); }
+  td:first-child { font-weight: 600; width: 30%; }
+  td:nth-child(2) { width: 120px; }
+  td .src { display: block; font-weight: 400; font-size: 12px; color: var(--muted); margin-top: 2px; }
+  code { font-size: 13px; background: var(--panel); padding: 1px 5px; border-radius: 4px; }
+  ol.q { padding-left: 22px; }
+  ol.q li { margin: 0 0 12px; }
+  ol.q b { color: var(--navy); }
+  .note { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; margin-top: 14px; }
+  @media (max-width: 720px) {
+    table, thead, tbody, tr, th, td { display: block; width: 100% !important; }
+    thead { display: none; }
+    tr { border-bottom: 1px solid var(--line); padding: 8px 0; }
+    td { border: 0; padding: 4px 0; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>SPRY task list</h1>
+  <p class="lede">Every task from the 2 October call with Glenn and Rachael, Dan's staging review, Irina's three requests and the ClickUp Implementation list, with where each one stands. Updated 6 October 2026.</p>
+
+  <div class="key">
+    <span class="chip done">Done</span>
+    <span class="chip partial">Done, one step left</span>
+    <span class="chip platform">Build in the platform</span>
+    <span class="chip input">Needs an answer</span>
+    <span class="chip other">Dan or the client</span>
+  </div>
+
+  <!-- ================================================================ -->
+  <h2>Website</h2>
+  <p class="lede">All changes are committed locally on <code>main</code> (<code>dd6a4ae</code>, <code>63fd664</code>). Nothing is pushed yet, so staging still shows the old version.</p>
+  <table>
+    <thead><tr><th>Task</th><th>Status</th><th>What was done, or what is needed</th></tr></thead>
+    <tbody>
+      <tr><td>Pages at the live addresses<span class="src">Dan: URL format mismatch</span></td><td><span class="chip done">Done</span></td>
+        <td>Every page uses the address the live site already ranks for: no www, trailing slash, blog posts at the root (<code>/about-us/</code>, <code>/contact-us/</code>, <code>/photo-gallery/</code> and so on). Canonicals, sitemap and links all match. Old or merged addresses (<code>/retrofit</code>, <code>/faq</code>, <code>/services/mining</code> and others) redirect, both in <code>_redirects</code> and in the browser.</td></tr>
+      <tr><td>Live titles and descriptions<span class="src">Dan: titles differ</span></td><td><span class="chip done">Done</span></td>
+        <td>Irina's live title and description on every page, word for word, read from the live site today. Two blog posts carry their live titles too. Blog descriptions stay ours: the live ones are auto-generated (one is just an emoji).</td></tr>
+      <tr><td>Underfloor, roof and ceiling, and wall pages<span class="src">Dan: sub-service pages gone</span></td><td><span class="chip done">Done</span></td>
+        <td>Back at <code>/services/under-floor-insulation/</code>, <code>/services/insulation-for-roof-and-ceiling/</code> and <code>/services/wall-insulation/</code>. Each has a spraying photo hero, 775 to 940 words including its own six FAQs, job photos from the gallery and links to the other two.</td></tr>
+      <tr><td>Retrofit page<span class="src">Dan; Service Agreement "new product section"</span></td><td><span class="chip done">Done</span></td>
+        <td>The walls page is the retrofit page: its live title is already "Retrofit Wall Insulation Melbourne", and it introduces InjectaCore. <code>/retrofit</code> and <code>/retrofit-insulation</code> redirect to it.</td></tr>
+      <tr><td>H1 and H2 keywords, more room for SEO copy<span class="src">Irina, request 2</span></td><td><span class="chip done">Done</span></td>
+        <td>Every H1 carries its search phrase (home: "Spray Foam Insulation Melbourne"). Residential is Irina's outline: her copy, her H2s in her order, and her ten FAQs, about 2,300 words against 248 on the live page.</td></tr>
+      <tr><td>Real technician photo as the hero<span class="src">Irina, request 3</span></td><td><span class="chip done">Done</span></td>
+        <td>Spraying photos from Glenn's own media library on Residential, the three service pages, Commercial and What Is Spray Foam. Home keeps the interactive house, now with the keyword H1. That is the split Dan suggested; Irina has not confirmed it.</td></tr>
+      <tr><td>Google review widget<span class="src">Irina, request 1</span></td><td><span class="chip partial">One step left</span></td>
+        <td>The reviews section is off the CTA navy, which was her complaint. The widget slot is built: paste the widget's address into <code>reviewsWidgetUrl</code> in <code>public/config.js</code> and the live Google reviews replace the cards on every page. Needs the widget from Systemations (Reputation, Widgets), or the one Irina means.</td></tr>
+      <tr><td>Static HTML for crawlers<span class="src">Dan: empty shell, Irina's guide: Critical</span></td><td><span class="chip input">Needs an answer</span></td>
+        <td>Built: every page is pre-rendered to its own HTML file (20 files). Staging cannot show it, because AI Studio builds the source itself, skips the pre-render step, ignores <code>_redirects</code> and returns 200 for every address. Needs a hosting decision; see question 1.</td></tr>
+      <tr><td>Unknown addresses return 200<span class="src">Dan</span></td><td><span class="chip partial">One step left</span></td>
+        <td>The build now renders the not-found page into <code>404.html</code>, which static hosts serve with a real 404. Staging will keep returning 200 until the hosting changes.</td></tr>
+      <tr><td>Blog posts missing from the sitemap<span class="src">Dan</span></td><td><span class="chip done">Done</span></td>
+        <td>All four posts are in, at their live addresses. The sitemap is generated from the same page list, so it cannot drift. <code>public/sitemap.xml</code> is updated too, since the platform serves that file.</td></tr>
+      <tr><td>Slow first load<span class="src">Dan</span></td><td><span class="chip partial">One step left</span></td>
+        <td>The inner pages no longer load the 3D library, and the hero photo loads first at high priority. The blue loading screen is the app starting up; static hosting removes it, because the page content is in the HTML. Not measured yet.</td></tr>
+      <tr><td>Phone number<span class="src">Dan</span></td><td><span class="chip done">Done</span></td>
+        <td>The site uses 1300 177 729, the number on the Google listing, so the name, address and phone match everywhere. Irina's draft says "Call 0428 263 626", which is Rachael's mobile; that one is for the message templates.</td></tr>
+      <tr><td>SprayIT Solutions, no family wording<span class="src">Call: branding</span></td><td><span class="chip done">Done</span></td>
+        <td>Name corrected everywhere on the site, the privacy policy and the website assistant's prompt. Family wording removed. Policy date moved to 6 October 2026.</td></tr>
+      <tr><td>Video in the About section<span class="src">Website gaps; Service Agreement</span></td><td><span class="chip done">Done</span></td>
+        <td>About now has the job videos under the story. If Glenn has a company introduction video, it replaces them in one line.</td></tr>
+      <tr><td>Every enquiry form lands in the CRM<span class="src">Website gaps</span></td><td><span class="chip platform">Check in the platform</span></td>
+        <td>The site has one form, the quote form, which is confirmed. The other two ways in are the booking calendar and the chat, both Systemations' own. Book a test call and send a test chat on staging, and confirm both create a contact.</td></tr>
+      <tr><td>Privacy link in the footer<span class="src">Website gaps</span></td><td><span class="chip done">Done</span></td>
+        <td>In the footer and beside the consent box on the quote form, pointing at <code>/privacy-policy/</code>.</td></tr>
+      <tr><td>Written homepage approval<span class="src">Website gaps; Milestone 2</span></td><td><span class="chip other">Dan or the client</span></td>
+        <td>One line from Glenn in Slack or email.</td></tr>
+      <tr><td>Domain cutover<span class="src">ClickUp: domain cutover</span></td><td><span class="chip other">Dan or the client</span></td>
+        <td>Redirect map, static pages and Melbourne titles are done in the build. Still needed: DNS access from Alex Roberts at Admosis, the hosting decision, and re-uploading the assistant's updated prompt to the platform.</td></tr>
+      <tr><td>Reply to Irina<span class="src">ClickUp: Clickmatix handover</span></td><td><span class="chip other">Dan or the client</span></td>
+        <td>Dan is holding it until he hears from us. The draft reply to Dan covers what to tell her.</td></tr>
+      <tr><td>Update staging<span class="src">Us</span></td><td><span class="chip input">Needs an answer</span></td>
+        <td>Staging builds from GitHub, so a push updates it. Not pushed until you say so.</td></tr>
+    </tbody>
+  </table>
+
+  <!-- ================================================================ -->
+  <h2>Client journey</h2>
+  <p class="lede">Rebuilt from the call and the eleven ClickUp tasks, and committed (<code>59d404a</code>). The documents are done and checked: 13 stages on both boards, 62 messages, 13 alerts, 46 tasks and 35 workflows, plus the journey page and an 83-page PDF. The next step is building it in Systemations. Nothing in the platform has changed yet.</p>
+  <table>
+    <thead><tr><th>Task</th><th>Status</th><th>What was done, or what is needed</th></tr></thead>
+    <tbody>
+      <tr><td>Restructure the pipeline stages<span class="src">ClickUp, Zen and Dan, high</span></td><td><span class="chip platform">Build in the platform</span></td>
+        <td>New Lead, Dial 1, Dial 2, Inspection Required, Quote Sent, Follow-Up, Nurture, Quote Accepted, Booking Required, Job Booked, Deposit Requested, Job Completed, Retention Claim. The same on Residential and Commercial, plus a whole-pipeline view. No inspection no-show stage. While building, check the board against the document for anything Dan deleted by accident on the call.</td></tr>
+      <tr><td>Dial 1 and Dial 2 sequences<span class="src">ClickUp, Zen, high</span></td><td><span class="chip platform">Build in the platform</span></td>
+        <td>Two calls back to back, then a "we just tried to call" text about ten seconds after the card enters Dial 1. Dial 2 starts the emails: day 2, day 4 (offers a booking time) and day 7 (close-off).</td></tr>
+      <tr><td>Alerts, and the uncontacted-lead nudge<span class="src">Call; ClickUp, Milestone 2 condition</span></td><td><span class="chip platform">Build in the platform</span></td>
+        <td>A lead not called after 15 business minutes emails the office. Everything that goes to the owner goes by text and email. New alerts: "Customer cannot make the booked date" and "Deposit unpaid at its due date". Missed appointment is gone. No alert names a person.</td></tr>
+      <tr><td>Rebrand the templates<span class="src">ClickUp, Zen and Dan, high</span></td><td><span class="chip platform">Build in the platform</span></td>
+        <td>All 62 messages rewritten: SprayIT Solutions, signed by Rachael with her mobile, team tone, no family wording. Every text fits in one SMS. Her mobile goes in as a custom value, so it changes in one place (question 3).</td></tr>
+      <tr><td>Click-to-accept quotes<span class="src">ClickUp, Zen, high</span></td><td><span class="chip platform">Build in the platform</span></td>
+        <td>The accept button moves the card and records which option they chose. One job can hold several quotes, and an add-on quote on a live job does not start the welcome messages again.</td></tr>
+      <tr><td>Job reminders at 7 days and 48 hours<span class="src">ClickUp, Zen, high</span></td><td><span class="chip platform">Build in the platform</span></td>
+        <td>Email and text at both points, each with a Yes/No confirm. A No sends "we will ring you shortly to find a new date" and alerts the team to reschedule by hand. Apple and Outlook sync sits with the calendars task below.</td></tr>
+      <tr><td>Quote upgrade options (order bump)<span class="src">ClickUp, Zen</span></td><td><span class="chip input">Needs an answer</span></td>
+        <td>Glenn wants optional upgrades on a quote (R2.5 to R4) that change the total live. Written up as "pending scope confirmation" only, with nothing built, until Dan confirms it is inside Phase 1.</td></tr>
+      <tr><td>Deposit timing and the unpaid-deposit alert<span class="src">ClickUp, Zen</span></td><td><span class="chip input">Needs an answer</span></td>
+        <td>Built on Glenn's foam-type rule: not sent at booking; invoiced 14 days before the job (at once if it is sooner); due 1 business day before for stock open cell, 7 days before for special-order foam. A reminder goes 2 days before it is due, and an alert fires if it is still unpaid on the day. No card storage or auto-charge. The 14-day send is our reading of the "2 weeks" note (question 8).</td></tr>
+      <tr><td>Job completion<span class="src">ClickUp, Zen</span></td><td><span class="chip platform">Build in the platform</span></td>
+        <td>Marking the job complete creates the final invoice, with its payment schedule and the accepted quote attached. The job report and compliance certificates go only after it is paid. Retentions are tracked by hand, with release dates on the job.</td></tr>
+      <tr><td>Google review request<span class="src">ClickUp, Zen</span></td><td><span class="chip platform">Build in the platform</span></td>
+        <td>New contact field, "Ask for Google review", Yes by default. Set it to No for problem jobs and repeat commercial clients (Bondor, Australian Housing). One text, four weeks after the job, never chased.</td></tr>
+      <tr><td>Payment schedules, attached quote, contracts<span class="src">ClickUp, Zen</span></td><td><span class="chip platform">Build in the platform</span></td>
+        <td>Invoices by percentage or fixed stages with due dates, the accepted quote (and purchase order) attached, and contract and variation templates for digital signature.</td></tr>
+      <tr><td>Xero reconciliation and GST<span class="src">Dan: "Zen, please check"</span></td><td><span class="chip input">Needs a test</span></td>
+        <td>Only GST-free invoices have reached Xero so far, and SprayIT's carry GST. Test one GST invoice end to end before we promise the sync. Agreed fallback for Glenn's bookkeeper: switch payment-receipt sync off.</td></tr>
+      <tr><td>Calendars<span class="src">ClickUp</span></td><td><span class="chip other">Dan or the client</span></td>
+        <td>Blocked on Glenn's trading hours and crew roster. Apple and Outlook sync follows once the calendars exist.</td></tr>
+      <tr><td>Finish the journey and send it for sign-off<span class="src">ClickUp, Dan, high</span></td><td><span class="chip other">Dan or the client</span></td>
+        <td>The journey page and the PDF are ready to send. Glenn skims and approves.</td></tr>
+      <tr><td>Email Arena about the process changes<span class="src">ClickUp, Dan</span></td><td><span class="chip other">Dan or the client</span></td>
+        <td>Dan emails; Rachael phones.</td></tr>
+    </tbody>
+  </table>
+
+  <!-- ================================================================ -->
+  <h2>Questions</h2>
+  <ol class="q">
+    <li><b>Where the website is hosted.</b> The static pages are built, but staging builds the site itself and skips them, so crawlers still get an empty page and unknown addresses still return 200. Recommended: host the built site on Cloudflare Pages, which is free. A GitHub Action builds it from the same repo on every push (the pre-render needs a headless browser, which GitHub's runners have) and publishes it. Roughly half a day including the DNS. The forms, booking calendar and chat are Systemations pieces and work on any host. The alternative is asking Systemations whether AI Studio can run our build command or serve an uploaded build.</li>
+    <li><b>Push to GitHub?</b> That updates staging with everything above. Visitors would see the new pages; crawlers still would not, until question 1 is settled.</li>
+    <li><b>Rachael's mobile.</b> 0428 26 36 26 is in every message. Glenn said the number in the templates is hers, and Irina's draft has the same digits. Confirm before anything goes out.</li>
+    <li><b>The facts in Irina's copy, now on the Residential page.</b> Glenn should confirm each one, since they are public claims: since 1995 and 30+ years; licensed installers of Icynene LD-C-50; InjectaCore offered for existing walls; CodeMark documentation available; working across regional Victoria.</li>
+    <li><b>Which review widget.</b> The Systemations reviews widget, or one Irina already uses? Either way the slot needs the embed code's address.</li>
+    <li><b>The home hero.</b> We kept the interactive house with the keyword H1 and put real photos on the inner pages. Irina also offered "an image rotation" for home. Does she accept the split?</li>
+    <li><b>Commercial sub-pages.</b> The live site has factory, farming and mining pages under <code>/services/</code>. They redirect to sections of Commercial. If they rank, they can come back as their own pages the way the residential three did.</li>
+    <li><b>Deposit timing.</b> Is "invoice 14 days before, due 1 business day before for open cell and 7 days before for special order" what Glenn means?</li>
+    <li><b>Where Inspection Required sits.</b> The call notes put it fourth, before Quote Sent, but also say "after the quote". It is built to work either way. Which does Glenn want as the normal path?</li>
+    <li><b>Order bump scope.</b> Dan to confirm it is inside Phase 1 before it is built.</li>
+    <li><b>Out-of-hours text reply.</b> It gives Rachael's mobile for urgent matters. Is she happy with that?</li>
+    <li><b>Referral email for problem jobs.</b> A referral email goes 7 days after the final invoice to customers who agreed to marketing. Should the "Ask for Google review = No" setting stop it too? Recommended: yes.</li>
+    <li><b>Trading hours and crew roster.</b> Still needed from Glenn for the calendars.</li>
+  </ol>
+</div>
+</body>
+</html>
