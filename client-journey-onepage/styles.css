@@ -560,7 +560,7 @@ td .chip { font-size: .58rem; }
 @media print { .wf__in { display: block !important; } .wf__chev { display: none; } }
 
 /* ------------------------------------------------------------------ guide */
-/* Lives in the sticky bar, so a thirteen-screen page always has its map. */
+/* Lives in the sticky bar, so a long page always has its map. */
 .gnav { display: flex; gap: .2rem; padding: .3rem 0 .6rem; overflow-x: auto; scrollbar-width: none; }
 .gnav::-webkit-scrollbar { display: none; }
 .gnav a {
@@ -586,7 +586,7 @@ td .chip { font-size: .58rem; }
 .g-none { font-size: .9rem; color: var(--ink-3); font-style: italic; }
 .g-when-s { color: var(--ink-3); font-size: .82rem; white-space: nowrap; }
 /* Stages are an accordion, not a 9000px scroll. Closed, the reader sees all
-   thirteen names at once and can open the one they need. */
+   fourteen names at once and can open the one they need. */
 .g-stages { display: grid; gap: .5rem; }
 .g-stage { background: var(--ground); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
 .g-stage--won { border-color: var(--green); background: var(--green-wash); }

@@ -189,9 +189,9 @@ ${valuesRows}
         </table>
       </div>
       <div class="ask">
-        <b>Needs Glenn:</b> trading hours, and confirmation that ${esc(cv('contact_mobile'))} is Rachael's mobile and
-        the number customers should ring. There is deliberately no ABN value: quotes and invoices are documents
-        the business issues itself and they carry it.
+        <b>Needs Glenn:</b> trading hours. Rachael's mobile, ${esc(cv('contact_mobile'))}, was confirmed by Glenn on
+        the 2 October call. There is deliberately no ABN value: quotes and invoices are documents the business
+        issues itself and they carry it.
       </div>
     </div>
   </section>

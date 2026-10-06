@@ -244,14 +244,14 @@
     <p class="kicker">SprayIT Solutions &middot; Systemations &middot; Doc 2 of 3</p>
     <h1>Every message the pipelines send</h1>
     <p class="standfirst">
-      62 SMS and emails with their sender, subject and preheader, the custom fields they
+      63 SMS and emails with their sender, subject and preheader, the custom fields they
       read from, and the values every message draws its names, numbers and links from.
       Change a value once and every message that uses it follows.
     </p>
     <div class="meta">
       <div><b>Prepared for</b><span>Glenn and Rachael, SprayIT Solutions</span></div>
       <div><b>System</b><span>Systemations</span></div>
-      <div><b>Messages</b><span>62</span></div>
+      <div><b>Messages</b><span>63</span></div>
       <div><b>Source of truth</b><span class="mono">journey-data.js</span></div>
     </div>
   </div>
@@ -270,7 +270,7 @@
         <li>Messages tagged <span class="tag tag-trade">Trade</span> are written around spray foam itself: the R-value explanation, the preparation list, the completion notes. They are the ones to revisit if the product range or the process changes.</li>
       </ol>
       <p>
-        Of the 62, 8 are written around the product: R-FU-02, NUR-01, NUR-02, JOB-02, JOB-05, RPT-01, C-MOB-01, C-DONE-01.
+        Of the 63, 8 are written around the product: R-FU-02, NUR-01, NUR-02, JOB-02, JOB-05, RPT-01, C-MOB-01, C-DONE-01.
       </p>
       <h3>Sender identity</h3>
       <p>
@@ -316,8 +316,8 @@
             <tr><td><code>business_phone_e164</code></td><td>+611300177729</td><td>For tel: links</td></tr>
             <tr><td><code>contact_name</code></td><td>Rachael Angus</td><td>Signs the customer messages. Handles about 99% of customer contact.</td></tr>
             <tr><td><code>contact_first_name</code></td><td>Rachael</td><td>The short form, where a full name reads stiffly</td></tr>
-            <tr><td><code>contact_mobile</code></td><td>0428 26 36 26</td><td>Rachael's mobile, to confirm. The number customers are asked to ring in messages.</td></tr>
-            <tr><td><code>contact_mobile_e164</code></td><td>+61428263626</td><td>Rachael's mobile, to confirm. For tel: links.</td></tr>
+            <tr><td><code>contact_mobile</code></td><td>0428 26 36 26</td><td>Rachael's mobile, confirmed by Glenn on the 2 Oct call. The number customers are asked to ring in messages.</td></tr>
+            <tr><td><code>contact_mobile_e164</code></td><td>+61428263626</td><td>Rachael's mobile, confirmed by Glenn on the 2 Oct call. For tel: links.</td></tr>
             <tr><td><code>business_email</code></td><td>info@sprayitsolutions.com.au</td><td>From address and reply-to. The sending domain needs SPF and DKIM before go-live.</td></tr>
             <tr><td><code>from_name_contact</code></td><td>Rachael at SprayIT Solutions</td><td>From name on the personal emails</td></tr>
             <tr><td><code>from_name_brand</code></td><td>SprayIT Solutions</td><td>From name on confirmations, reminders and invoices</td></tr>
@@ -329,18 +329,18 @@
             <tr><td><code>service_area</code></td><td>Australia-wide</td><td></td></tr>
             <tr><td><code>trade_noun</code></td><td>spray foam insulation</td><td>How the work is named in a message: "your spray foam insulation enquiry"</td></tr>
             <tr><td><code>trade_verb</code></td><td>insulation</td><td>The short form: "your insulation job"</td></tr>
-            <tr><td><code>inspection_noun</code></td><td>site inspection</td><td>What the measure-up visit is called. About one job in ten or twenty needs one.</td></tr>
+            <tr><td><code>inspection_noun</code></td><td>site inspection</td><td>What the measure-up visit is called. About one job in ten or twenty needs one, after the quote is accepted.</td></tr>
             <tr><td><code>consult_length</code></td><td>15 minute</td><td>The phone call offered in the day 4 email and on the site</td></tr>
             <tr><td><code>office_hours</code></td><td>Mon to Fri, 7am to 5pm</td><td>To confirm with Glenn</td></tr>
-            <tr><td><code>quote_turnaround</code></td><td>2 business days</td><td>How soon after the call the written quote goes out</td></tr>
+            <tr><td><code>quote_turnaround</code></td><td>2 business days</td><td>How soon after the call the written quote usually goes out</td></tr>
             <tr><td><code>sms_signoff</code></td><td>Rachael, SprayIT Solutions</td><td>Sender identification on every SMS</td></tr>
           </tbody>
         </table>
       </div>
       <div class="ask">
-        <b>Needs Glenn:</b> trading hours, and confirmation that 0428 26 36 26 is Rachael's mobile and
-        the number customers should ring. There is deliberately no ABN value: quotes and invoices are documents
-        the business issues itself and they carry it.
+        <b>Needs Glenn:</b> trading hours. Rachael's mobile, 0428 26 36 26, was confirmed by Glenn on
+        the 2 October call. There is deliberately no ABN value: quotes and invoices are documents the business
+        issues itself and they carry it.
       </div>
     </div>
   </section>
@@ -405,21 +405,20 @@
           <tr><td><code>last_attempt_at</code></td><td>Last attempt</td><td>Date</td><td>Each call logged</td></tr>
           <tr><td><code>preferred_contact</code></td><td>Preferred contact</td><td>Dropdown: call, sms, email</td><td>Asked on the first call</td></tr>
           <tr><td><code>do_not_sms</code></td><td>Do not SMS</td><td>Checkbox</td><td>Manual, on request, and by STOP</td></tr>
-          <tr><td><code>ask_for_google_review</code></td><td>Ask for Google review</td><td>Dropdown: Yes, No. Default Yes.</td><td>WF-01 sets Yes if empty. Set to No by hand for a job with problems, and for repeat commercial clients such as Bondor and Australian Housing.</td></tr>
+          <tr><td><code>ask_for_google_review</code></td><td>Ask for Google review</td><td>Dropdown: Yes, No. Default Yes.</td><td>WF-01 sets Yes if empty. The owner sets No from the task at Job Completed for a job with problems, and for repeat commercial clients such as Bondor and Australian Housing. No also skips the referral email.</td></tr>
         </tbody>
       </table>
     </div>
-<p class="fine" style="margin-top:.7rem">Not from the website. Set by workflows or by hand. ask_for_google_review replaces a review stage: it is Yes unless someone sets it to No.</p>
+<p class="fine" style="margin-top:.7rem">Not from the website. Set by workflows or by hand. ask_for_google_review replaces a review stage: it is Yes unless the owner sets it to No from the task at Job Completed.</p>
     <h3>Opportunity fields</h3>
     <div class="t-scroll">
       <table>
         <thead><tr><th>Key</th><th>Label</th><th>Type</th><th>Stage it is set</th></tr></thead>
         <tbody>
           <tr><td><code>site_address</code></td><td>Site address</td><td>Text</td><td>New Lead, on the first call</td></tr>
-          <tr><td><code>access_notes</code></td><td>Access notes</td><td>Multi-line</td><td>Inspection Required, or the first call</td></tr>
-          <tr><td><code>sqm_estimate</code></td><td>Area, sqm</td><td>Number</td><td>Inspection Required, or the first call</td></tr>
-          <tr><td><code>product_type</code></td><td>Product</td><td>Dropdown: open cell, closed cell, both</td><td>Quote Sent</td></tr>
-          <tr><td><code>inspection_date</code></td><td>Inspection date</td><td>Date</td><td>Inspection Required, from the inspection calendar</td></tr>
+          <tr><td><code>access_notes</code></td><td>Access notes</td><td>Multi-line</td><td>Quoting, or Inspection Required</td></tr>
+          <tr><td><code>sqm_estimate</code></td><td>Area, sqm</td><td>Number</td><td>Quoting, or Inspection Required</td></tr>
+          <tr><td><code>product_type</code></td><td>Product</td><td>Dropdown: open cell, closed cell, both</td><td>Quoting</td></tr>
           <tr><td><code>callback_at</code></td><td>Callback time</td><td>Date and time</td><td>Follow-Up. Required on entry.</td></tr>
           <tr><td><code>quote_number</code></td><td>Quote number</td><td>Text</td><td>Quote Sent</td></tr>
           <tr><td><code>quote_link</code></td><td>Online quote</td><td>URL</td><td>Quote Sent, from the quote tool</td></tr>
@@ -428,16 +427,19 @@
           <tr><td><code>po_number</code></td><td>Purchase order</td><td>Text</td><td>Quote Accepted, where the client issues one. On commercial, entering it sets Won.</td></tr>
           <tr><td><code>foam_order_type</code></td><td>Foam order</td><td>Dropdown: Stock open cell, Special order</td><td>Quote Accepted. Decides the deposit due date.</td></tr>
           <tr><td><code>deposit_amount</code></td><td>Deposit amount</td><td>Monetary</td><td>Quote Accepted, where a deposit applies</td></tr>
-          <tr><td><code>job_date</code></td><td>Install date</td><td>Date</td><td>Job Booked, from the install calendar booking</td></tr>
-          <tr><td><code>job_end_date</code></td><td>Finish date</td><td>Date</td><td>Job Booked, multi-day and commercial works</td></tr>
+          <tr><td><code>inspection_date</code></td><td>Inspection date</td><td>Date</td><td>Inspection Required, from the inspection calendar</td></tr>
+          <tr><td><code>job_date</code></td><td>Install date</td><td>Date</td><td>Job Booked: the first day booked across the install calendars</td></tr>
+          <tr><td><code>job_end_date</code></td><td>Finish date</td><td>Date</td><td>Job Booked: the last day booked, for multi-day works</td></tr>
+          <tr><td><code>vehicles_booked</code></td><td>Vehicles</td><td>Multi-select: InjectaCore rig, Van, Fuso truck, Mercedes rig</td><td>Job Booked, from the install calendars. A job can use two.</td></tr>
+          <tr><td><code>job_booked_at</code></td><td>Install booked on</td><td>Date</td><td>Job Booked, stamped on the first booking. Decides whether the month-out check goes.</td></tr>
           <tr><td><code>crew_assigned</code></td><td>Crew</td><td>Text</td><td>Job Booked, from the install calendar</td></tr>
           <tr><td><code>job_confirmed</code></td><td>Date confirmed</td><td>Dropdown: Yes, No</td><td>Job Booked, by the Yes and No buttons on the reminders</td></tr>
           <tr><td><code>deposit_due_date</code></td><td>Deposit due</td><td>Date</td><td>Job Booked: 1 business day before job_date for stock open cell, 7 days before for special order</td></tr>
-          <tr><td><code>deposit_invoice_sent_at</code></td><td>Deposit invoice sent</td><td>Date</td><td>Deposit Requested</td></tr>
+          <tr><td><code>deposit_invoice_sent_at</code></td><td>Deposit invoice sent</td><td>Date</td><td>Deposit Requested, when the owner sends the draft</td></tr>
           <tr><td><code>deposit_received_at</code></td><td>Deposit received</td><td>Date</td><td>Deposit Requested, when paid</td></tr>
           <tr><td><code>variation_amount</code></td><td>Variations</td><td>Monetary</td><td>Job Booked or Job Completed, as each variation is signed</td></tr>
           <tr><td><code>photos_captured</code></td><td>Photos captured</td><td>Checkbox</td><td>Job Completed. Required before the job can be marked complete.</td></tr>
-          <tr><td><code>invoice_number</code>, <code>invoice_sent_at</code></td><td>Final invoice</td><td>Text, Date</td><td>Job Completed</td></tr>
+          <tr><td><code>invoice_number</code>, <code>invoice_sent_at</code></td><td>Final invoice</td><td>Text, Date</td><td>Job Completed, when the owner sends the draft</td></tr>
           <tr><td><code>final_invoice_paid_at</code></td><td>Final invoice paid</td><td>Date</td><td>Job Completed, when fully paid</td></tr>
           <tr><td><code>job_report_sent_at</code></td><td>Job report sent</td><td>Date</td><td>Job Completed, when the report goes</td></tr>
           <tr><td><code>retention_amount</code></td><td>Retention held</td><td>Monetary</td><td>Job Completed, before it is marked paid</td></tr>
@@ -465,7 +467,7 @@
         <div class="rule rule-no">
           <h4><span class="tag tag-mktg">Marketing</span></h4>
           <ul>
-            <li>Promotional. 7 of the 62: NUR-01, NUR-02, NUR-03, NUR-04, REV-02, REV-03, C-FUT-01. None is an SMS.</li>
+            <li>Promotional. 7 of the 63: NUR-01, NUR-02, NUR-03, NUR-04, REV-02, REV-03, C-FUT-01. None is an SMS.</li>
             <li>Sends <b>only</b> when <code>consent_marketing</code> is <code>yes</code></li>
             <li>Must carry a functional unsubscribe</li>
             <li>This is the entire reason the consent fields exist</li>
@@ -483,7 +485,7 @@
   </section>
 
   <section id="inventory">
-    <div class="sec-head"><span class="sec-n">05</span><h2>All 62 messages</h2></div>
+    <div class="sec-head"><span class="sec-n">05</span><h2>All 63 messages</h2></div>
     <div class="stack">
       <p>Every SMS fits in one segment with the sample values and a realistic shortened link, checked rather than assumed.</p>
       <div class="t-scroll">
@@ -523,17 +525,18 @@
           <tr><td><code>REM-03</code></td><td>Email</td><td>Job upcoming<br><span class="fine">48 hours before the job</span></td><td><span class="tag tag-trans">Trans</span></td><td><span class="tag tag-core">Core</span></td><td>Residential · Job Booked, Commercial · Job Booked</td></tr>
           <tr><td><code>REM-04</code></td><td>SMS</td><td>Job upcoming<br><span class="fine">48 hours before the job</span></td><td><span class="tag tag-trans">Trans</span></td><td><span class="tag tag-core">Core</span></td><td>Residential · Job Booked, Commercial · Job Booked</td></tr>
           <tr><td><code>REM-05</code></td><td>SMS</td><td>They tap No on a reminder<br><span class="fine">Straight away</span></td><td><span class="tag tag-trans">Trans</span></td><td><span class="tag tag-core">Core</span></td><td>Residential · Job Booked, Commercial · Job Booked</td></tr>
+          <tr><td><code>REM-06</code></td><td>Email</td><td>Job booked more than 6 weeks ahead<br><span class="fine">30 days before the job</span></td><td><span class="tag tag-trans">Trans</span></td><td><span class="tag tag-core">Core</span></td><td>Residential · Job Booked, Commercial · Job Booked</td></tr>
           <tr><td><code>JOB-04</code></td><td>SMS</td><td>Job day<br><span class="fine">6:30am on the job date</span></td><td><span class="tag tag-trans">Trans</span></td><td><span class="tag tag-core">Core</span></td><td>Residential · Job Booked</td></tr>
           <tr><td><code>JOB-06</code></td><td>SMS</td><td>Crew running late<br><span class="fine">Sent by the crew, from a saved template</span></td><td><span class="tag tag-trans">Trans</span></td><td><span class="tag tag-core">Core</span></td><td>Residential · Job Booked, Commercial · Job Booked</td></tr>
-          <tr><td><code>DEP-02</code></td><td>Email</td><td>Deposit invoice sent, enters Deposit Requested<br><span class="fine">14 days before the job, or at once if the job is closer</span></td><td><span class="tag tag-trans">Trans</span></td><td><span class="tag tag-core">Core</span></td><td>Residential · Deposit Requested, Commercial · Deposit Requested</td></tr>
-          <tr><td><code>DEP-03</code></td><td>SMS</td><td>Deposit unpaid<br><span class="fine">2 days before it is due</span></td><td><span class="tag tag-trans">Trans</span></td><td><span class="tag tag-core">Core</span></td><td>Residential · Deposit Requested, Commercial · Deposit Requested</td></tr>
+          <tr><td><code>DEP-02</code></td><td>Email</td><td>The owner sends the deposit invoice, enters Deposit Requested<br><span class="fine">When it is sent, from a draft prepared 14 days before the job</span></td><td><span class="tag tag-trans">Trans</span></td><td><span class="tag tag-core">Core</span></td><td>Residential · Deposit Requested, Commercial · Deposit Requested</td></tr>
+          <tr><td><code>DEP-03</code></td><td>SMS</td><td>Deposit unpaid at its due date<br><span class="fine">4:00pm on the due date</span></td><td><span class="tag tag-trans">Trans</span></td><td><span class="tag tag-core">Core</span></td><td>Residential · Deposit Requested, Commercial · Deposit Requested</td></tr>
           <tr><td><code>DEP-01</code></td><td>SMS</td><td>Deposit invoice marked paid<br><span class="fine">Immediately</span></td><td><span class="tag tag-trans">Trans</span></td><td><span class="tag tag-core">Core</span></td><td>Residential · Deposit Requested, Commercial · Deposit Requested</td></tr>
           <tr><td><code>JOB-05</code></td><td>Email</td><td>Job marked complete, enters Job Completed<br><span class="fine">Immediately</span></td><td><span class="tag tag-trans">Trans</span></td><td><span class="tag tag-trade">Trade</span></td><td>Residential · Job Completed</td></tr>
-          <tr><td><code>PAY-01</code></td><td>Email</td><td>Job marked complete, final invoice sent<br><span class="fine">Immediately, with the invoice attached</span></td><td><span class="tag tag-trans">Trans</span></td><td><span class="tag tag-core">Core</span></td><td>Residential · Job Completed, Commercial · Job Completed</td></tr>
-          <tr><td><code>PAY-02</code></td><td>SMS</td><td>Invoice unpaid<br><span class="fine">Day 7</span></td><td><span class="tag tag-trans">Trans</span></td><td><span class="tag tag-core">Core</span></td><td>Residential · Job Completed</td></tr>
-          <tr><td><code>PAY-03</code></td><td>Email</td><td>Invoice unpaid<br><span class="fine">Day 14</span></td><td><span class="tag tag-trans">Trans</span></td><td><span class="tag tag-core">Core</span></td><td>Residential · Job Completed</td></tr>
+          <tr><td><code>PAY-01</code></td><td>Email</td><td>The owner sends the final invoice<br><span class="fine">When it is sent, with the invoice attached</span></td><td><span class="tag tag-trans">Trans</span></td><td><span class="tag tag-core">Core</span></td><td>Residential · Job Completed, Commercial · Job Completed</td></tr>
+          <tr><td><code>PAY-02</code></td><td>SMS</td><td>Final invoice unpaid<br><span class="fine">Day 7 after it is sent</span></td><td><span class="tag tag-trans">Trans</span></td><td><span class="tag tag-core">Core</span></td><td>Residential · Job Completed</td></tr>
+          <tr><td><code>PAY-03</code></td><td>Email</td><td>Final invoice unpaid<br><span class="fine">Day 14 after it is sent</span></td><td><span class="tag tag-trans">Trans</span></td><td><span class="tag tag-core">Core</span></td><td>Residential · Job Completed</td></tr>
           <tr><td><code>RPT-01</code></td><td>Email</td><td>Final invoice paid<br><span class="fine">Same day, sent by hand with the report attached</span></td><td><span class="tag tag-trans">Trans</span></td><td><span class="tag tag-trade">Trade</span></td><td>Residential · Job Completed, Commercial · Job Completed</td></tr>
-          <tr><td><code>REV-01</code></td><td>SMS</td><td>Job completed, Ask for Google review is Yes<br><span class="fine">4 weeks after the job date</span></td><td><span class="tag tag-trans">Trans</span></td><td><span class="tag tag-core">Core</span></td><td>Residential · Job Completed, Commercial · Job Completed</td></tr>
+          <tr><td><code>REV-01</code></td><td>SMS</td><td>Job completed, and Ask for Google review left on Yes<br><span class="fine">4 weeks after the job date</span></td><td><span class="tag tag-trans">Trans</span></td><td><span class="tag tag-core">Core</span></td><td>Residential · Job Completed, Commercial · Job Completed</td></tr>
           <tr><td><code>REV-02</code></td><td>Email</td><td>Final invoice paid<br><span class="fine">+7 days</span></td><td><span class="tag tag-mktg">Mktg</span></td><td><span class="tag tag-core">Core</span></td><td>Residential · Job Completed</td></tr>
           <tr><td><code>REV-03</code></td><td>Email</td><td>Job completed<br><span class="fine">12 months after the job</span></td><td><span class="tag tag-mktg">Mktg</span></td><td><span class="tag tag-core">Core</span></td><td>Residential · Job Completed</td></tr>
           <tr><td><code>RET-01</code></td><td>Email</td><td>Retention release date reached<br><span class="fine">On the release date, sent by hand with the claim attached</span></td><td><span class="tag tag-trans">Trans</span></td><td><span class="tag tag-core">Core</span></td><td>Residential · Retention Claim, Commercial · Retention Claim</td></tr>
@@ -599,14 +602,14 @@ What happens next:
 
   1. We ring you for a short chat about the building and what you want from it.
   2. We send you a written quote, usually within {{custom_values.quote_turnaround}} of the call. There is no obligation.
-  3. If the job needs a look in person, we visit the site first and quote after that.
+  3. Once you are happy with the quote, we book the install date.
 
-Most jobs can be quoted from the call. Some need a site visit first, and we will tell you on the call if yours is one of them.
+We quote from the call. If a job needs a look in person, we quote it first so you know the price, and visit once you are happy with it, before the install is booked.
 
 {{custom_values.contact_name}}
 {{custom_values.business_name}}
 {{custom_values.contact_mobile}}</pre>
-      <p class="msg-note"><b>Stops:</b> Sends once. <b>Window:</b> sends immediately. Echoing their answers back cuts "did that go through?" replies and catches a wrong postcode before it costs anyone a trip. It no longer promises a site visit before every quote, because only about one job in ten or twenty needs one.</p>
+      <p class="msg-note"><b>Stops:</b> Sends once. <b>Window:</b> sends immediately. Echoing their answers back cuts "did that go through?" replies and catches a wrong postcode before it costs anyone a trip. It does not promise a site visit, because only about one job in ten or twenty needs one, and that visit comes after the quote is accepted.</p>
     </article>
 
     <article class="msg">
@@ -657,7 +660,7 @@ We still have not managed to catch you, so here is a simpler way. Pick a time th
 
 {{custom_values.booking_url}}
 
-It is a {{custom_values.consult_length}} call about the building and what you want from it. If we can quote from the call, we will. If the job needs a look in person, we will say so and book that instead.
+It is a {{custom_values.consult_length}} call about the building and what you want from it, and it is all we need to write your quote.
 
 {{custom_values.contact_name}}
 {{custom_values.business_name}}
@@ -1051,13 +1054,13 @@ If it is off the table for good, unsubscribe below and we will stop writing.
       <div class="msg-subject"><b>From</b>{{custom_values.from_name_contact}} &lt;{{custom_values.business_email}}&gt;</div>
       <div class="msg-subject"><b>Reply-to</b>{{custom_values.business_email}}</div>
       <div class="msg-subject"><b>Subject</b>Thanks for going ahead, {{contact.first_name}}</div>
-      <div class="msg-subject"><b>Preheader</b>What happens from here: the install date, two reminders, and the deposit closer to the day.</div>
+      <div class="msg-subject"><b>Preheader</b>What happens from here: the install date, the reminders, and the deposit closer to the day.</div>
       <pre class="msg-body">Hi {{contact.first_name}},
 
 Thanks for accepting quote {{opportunity.quote_number}}. Here is how it runs from here.
 
   1. We book your install date and confirm it with you by text and email.
-  2. We remind you 7 days and 48 hours before the job, and ask you to confirm the date still works.
+  2. We remind you before the job, a week out and two days out, and a month out if it is booked well ahead, and ask you to confirm the date still works.
   3. Where a deposit applies, the invoice comes about two weeks before the job, not now.
   4. The crew arrives on the day and does the work. The final invoice follows when the job is complete.
 
@@ -1109,7 +1112,7 @@ You are in the diary.
   Where   {{opportunity.site_address}}
   Crew    {{opportunity.crew_assigned}}
 
-We will check in 7 days and 48 hours before, and ask you to confirm the date still works.
+We will check in before the job, and ask you to confirm the date still works.
 
 To help us get in and out cleanly, before we arrive:
 
@@ -1212,6 +1215,32 @@ A quick check of the preparation list before we arrive: clear access to {{contac
 
     <article class="msg">
       <div class="msg-head">
+        <span class="msg-id">REM-06</span>
+        <span class="tag tag-eml">Email</span><span class="tag tag-trans">Trans</span><span class="tag tag-core">Core</span>
+        <span class="msg-when">Job booked more than 6 weeks ahead, 30 days before the job</span>
+      </div>
+      <div class="msg-subject"><b>From</b>{{custom_values.from_name_brand}} &lt;{{custom_values.business_email}}&gt;</div>
+      <div class="msg-subject"><b>Reply-to</b>{{custom_values.business_email}}</div>
+      <div class="msg-subject"><b>Subject</b>A month to go: still on track for {{opportunity.job_date}}?</div>
+      <div class="msg-subject"><b>Preheader</b>A quick check that the date still works. One tap either way.</div>
+      <pre class="msg-body">Hi {{contact.first_name}},
+
+We are booked to do the work at {{opportunity.site_address}} on {{opportunity.job_date}}, about a month from now.
+
+Is that still on schedule at your end?
+
+  Yes, still on track: {{trigger_link.confirm_yes}}
+  No, things have moved: {{trigger_link.confirm_no}}
+
+If it has moved, a month of notice lets us find you a better date and put the crew on other work. If you tap No, we will ring you to rearrange.
+
+{{custom_values.business_name}}
+{{custom_values.business_phone}}</pre>
+      <p class="msg-note"><b>Stops:</b> Only when the booking was made more than 6 weeks before the job. Cancelled if the booking is cancelled. Re-queued if the date moves. <b>Window:</b> waits for the send window. Glenn raised this on the call, for jobs booked months out, where a builder's programme often slips. Easy to drop if it is not wanted.</p>
+    </article>
+
+    <article class="msg">
+      <div class="msg-head">
         <span class="msg-id">JOB-04</span>
         <span class="tag tag-sms">SMS</span><span class="tag tag-trans">Trans</span><span class="tag tag-core">Core</span>
         <span class="msg-when">Job day, 6:30am on the job date</span>
@@ -1238,7 +1267,7 @@ A quick check of the preparation list before we arrive: clear access to {{contac
       <div class="msg-head">
         <span class="msg-id">DEP-02</span>
         <span class="tag tag-eml">Email</span><span class="tag tag-trans">Trans</span><span class="tag tag-core">Core</span>
-        <span class="msg-when">Deposit invoice sent, enters Deposit Requested, 14 days before the job, or at once if the job is closer</span>
+        <span class="msg-when">The owner sends the deposit invoice, enters Deposit Requested, when it is sent, from a draft prepared 14 days before the job</span>
       </div>
       <div class="msg-subject"><b>From</b>{{custom_values.from_name_brand}} &lt;{{custom_values.business_email}}&gt;</div>
       <div class="msg-subject"><b>Reply-to</b>{{custom_values.business_email}}</div>
@@ -1259,17 +1288,17 @@ Payment details are on the invoice. When it lands we send a one-line confirmatio
 
 {{custom_values.business_name}}
 {{custom_values.business_phone}}</pre>
-      <p class="msg-note"><b>Stops:</b> Sends once per job. <b>Window:</b> waits for the send window. Sent two weeks before the install date, never at booking, so a job booked months ahead does not sit on an unpaid invoice. The 14 day send point is to confirm with Glenn.</p>
+      <p class="msg-note"><b>Stops:</b> Sends once per job. <b>Window:</b> waits for the send window. Never at booking. A draft is prepared two weeks before the install date, which is when Glenn said on the call he generally sends deposit invoices, and the owner checks it and sends it. A job booked months ahead never sits on an unpaid invoice.</p>
     </article>
 
     <article class="msg">
       <div class="msg-head">
         <span class="msg-id">DEP-03</span>
         <span class="tag tag-sms">SMS</span><span class="tag tag-trans">Trans</span><span class="tag tag-core">Core</span>
-        <span class="msg-when">Deposit unpaid, 2 days before it is due</span>
+        <span class="msg-when">Deposit unpaid at its due date, 4:00pm on the due date</span>
       </div>
-      <pre class="msg-body">Hi {{contact.first_name}}, a reminder your deposit of {{opportunity.deposit_amount}} is due {{opportunity.deposit_due_date}}, ahead of your job. Details are on the invoice. {{custom_values.sms_signoff}}</pre>
-      <p class="msg-note"><b>Stops:</b> Stops dead the moment the deposit is marked paid. <b>Window:</b> waits for the send window.</p>
+      <pre class="msg-body">Hi {{contact.first_name}}, we have not received your deposit of {{opportunity.deposit_amount}} yet. If you have paid, please reply with the remittance. {{custom_values.sms_signoff}}</pre>
+      <p class="msg-note"><b>Stops:</b> Sends once. Not sent if the deposit is marked paid before 4pm. <b>Window:</b> waits for the send window. No reminder before the due date: Xero already sends its own. This goes only when the deposit is actually late, at the same moment the team is told, so nobody has to type it.</p>
     </article>
 
     <article class="msg">
@@ -1322,7 +1351,7 @@ The final invoice is on its way separately. Once it is paid, we send your job re
       <div class="msg-head">
         <span class="msg-id">PAY-01</span>
         <span class="tag tag-eml">Email</span><span class="tag tag-trans">Trans</span><span class="tag tag-core">Core</span>
-        <span class="msg-when">Job marked complete, final invoice sent, immediately, with the invoice attached</span>
+        <span class="msg-when">The owner sends the final invoice, when it is sent, with the invoice attached</span>
       </div>
       <div class="msg-subject"><b>From</b>{{custom_values.from_name_brand}} &lt;{{custom_values.business_email}}&gt;</div>
       <div class="msg-subject"><b>Reply-to</b>{{custom_values.business_email}}</div>
@@ -1350,7 +1379,7 @@ Any questions about it, ring {{custom_values.contact_mobile}}.
       <div class="msg-head">
         <span class="msg-id">PAY-02</span>
         <span class="tag tag-sms">SMS</span><span class="tag tag-trans">Trans</span><span class="tag tag-core">Core</span>
-        <span class="msg-when">Invoice unpaid, day 7</span>
+        <span class="msg-when">Final invoice unpaid, day 7 after it is sent</span>
       </div>
       <pre class="msg-body">Hi {{contact.first_name}}, a reminder that invoice {{opportunity.invoice_number}} is due. Any questions, ring {{custom_values.contact_mobile}}. {{custom_values.sms_signoff}}</pre>
       <p class="msg-note"><b>Stops:</b> Stops dead the moment payment is marked. <b>Window:</b> waits for the send window.</p>
@@ -1360,7 +1389,7 @@ Any questions about it, ring {{custom_values.contact_mobile}}.
       <div class="msg-head">
         <span class="msg-id">PAY-03</span>
         <span class="tag tag-eml">Email</span><span class="tag tag-trans">Trans</span><span class="tag tag-core">Core</span>
-        <span class="msg-when">Invoice unpaid, day 14</span>
+        <span class="msg-when">Final invoice unpaid, day 14 after it is sent</span>
       </div>
       <div class="msg-subject"><b>From</b>{{custom_values.from_name_brand}} &lt;{{custom_values.business_email}}&gt;</div>
       <div class="msg-subject"><b>Reply-to</b>{{custom_values.business_email}}</div>
@@ -1409,10 +1438,10 @@ Keep it with your building records. If the surveyor needs anything else from us,
       <div class="msg-head">
         <span class="msg-id">REV-01</span>
         <span class="tag tag-sms">SMS</span><span class="tag tag-trans">Trans</span><span class="tag tag-core">Core</span>
-        <span class="msg-when">Job completed, Ask for Google review is Yes, 4 weeks after the job date</span>
+        <span class="msg-when">Job completed, and Ask for Google review left on Yes, 4 weeks after the job date</span>
       </div>
-      <pre class="msg-body">Hi {{contact.first_name}}, if you are happy with the job, a short Google review really helps: {{custom_values.review_url}} {{custom_values.sms_signoff}}</pre>
-      <p class="msg-note"><b>Stops:</b> Ask once. Do not chase reviews. Not sent if Ask for Google review is No. <b>Window:</b> waits for the send window. Asked once, by text, four weeks after the job, inside the four to six weeks agreed. Only contacts with Ask for Google review set to Yes get it. It is Yes unless someone sets it to No for a job with problems or a repeat commercial client.</p>
+      <pre class="msg-body">Hi {{contact.first_name}}, how is it going since the job? If you are happy with it, a Google review really helps: {{custom_values.review_url}} {{custom_values.sms_signoff}}</pre>
+      <p class="msg-note"><b>Stops:</b> Ask once. Do not chase reviews. Not sent if Ask for Google review is No. <b>Window:</b> waits for the send window. Asks how it is going first, then for the review. Once, by text, four weeks after the job, inside the four to six weeks agreed. When the job is marked complete the owner gets a task to leave Ask for Google review on Yes or set it to No, for a job with problems or a repeat commercial client.</p>
     </article>
 
     <article class="msg">
@@ -1436,7 +1465,7 @@ Most of our work comes from people passing our name on. If someone you know is f
 {{custom_values.contact_mobile}}
 
 You are getting this because you agreed to hear from us. {{unsubscribe_link}}</pre>
-      <p class="msg-note"><b>Stops:</b> Only if consent_marketing is yes. <b>Window:</b> waits for the send window.</p>
+      <p class="msg-note"><b>Stops:</b> Only if consent_marketing is yes, and Ask for Google review is Yes. A job the owner set to No gets no referral ask either. <b>Window:</b> waits for the send window.</p>
     </article>
 
     <article class="msg">
@@ -1864,17 +1893,19 @@ And for next time: we hold the specification and site notes, so a second stage o
   <section id="order">
     <div class="sec-head"><span class="sec-n">15</span><h2>Build order</h2></div>
     <div class="stack">
-      <p>Do not build all 62 at once. In order of what earns most:</p>
+      <p>Do not build all 63 at once. In order of what earns most:</p>
       <ol class="plain">
         <li><b>SYS-01</b>, missed call text-back. Highest return of anything here.</li>
-        <li><b>X-ACK-01, X-ACK-02, alert 7</b>, the two minute acknowledgement and the 15 minute call timer.</li>
+        <li><b>X-ACK-01, X-ACK-02, alerts 1 and 7</b>, the two minute acknowledgement, the new lead email, and the 15 minute call timer.</li>
         <li><b>DIAL-01 to 04</b>, the tried-to-call text and the three Dial 2 emails, with the honest close.</li>
+        <li><b>Quoting, alert 14</b>, the hand-over to the owner, by text and email, so no quote waits unseen.</li>
         <li><b>R-QUOTE, R-FU-01 to 04, LOST-01</b>, the quote with its accept button, the follow-up that converts quotes, and the goodbye.</li>
-        <li><b>X-ACC-01, X-ACC-02, JOB-01, JOB-02, REM-01 to 05</b>, acceptance, the booking, and the two confirm reminders.</li>
-        <li><b>DEP-01 to 03</b>, deposit timing by foam type, and the unpaid alert.</li>
-        <li><b>JOB-04, JOB-05, PAY-01 to 03, RPT-01</b>, the job day, the final invoice, and the job report once it is paid.</li>
+        <li><b>X-ACC-01, X-ACC-02, JOB-01, JOB-02, REM-01 to 05</b>, acceptance, the booking, and the confirm reminders.</li>
+        <li><b>DEP-01 to 03, PAY-01 to 03</b>, the draft deposit and final invoices for the owner to send, the deposit timing by foam type, and the late-deposit text.</li>
+        <li><b>JOB-04, JOB-05, RPT-01</b>, the job day, the completion note, and the job report once the invoice is paid.</li>
         <li><b>X-APPT, X-INSP</b>, the phone call booking and the site inspection, used by a minority of jobs.</li>
         <li><b>REV-01</b>, the review ask, gated on Ask for Google review.</li>
+        <li><b>REM-06</b>, the month-out check for jobs booked far ahead. Easy to drop.</li>
         <li><b>NUR-01 to 04, REV-02, REV-03</b>, once there is a consented list worth mailing.</li>
         <li><b>RET-01 and the commercial set</b>, last. That board moves slowly enough that a person writing the email is still viable meanwhile.</li>
       </ol>

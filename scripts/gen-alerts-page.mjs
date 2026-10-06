@@ -25,15 +25,15 @@ vm.runInNewContext(fs.readFileSync(ROOT + 'client-journey-onepage/journey-data.j
 const J = sandbox.window.JOURNEY
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
 
-const chips = (channel) => channel.split(/ and |, /).map((c) => {
-  const k = /sms/i.test(c) ? 'sms' : /email/i.test(c) ? 'eml' : 'app'
-  const label = k === 'sms' ? 'SMS' : k === 'eml' ? 'Email' : 'App'
-  return `<span class="ch ch-${k}">${label}</span>`
-}).join(' ')
+/* One chip per channel used, whoever it goes to. A channel that differs by
+   role is spelled out in full under the alert. */
+const chips = (channel) => [...new Set(channel.split(/ and |, (?:or )?| or /).map((c) => (/sms/i.test(c) ? 'sms' : /email/i.test(c) ? 'eml' : 'app')))]
+  .map((k) => `<span class="ch ch-${k}">${k === 'sms' ? 'SMS' : k === 'eml' ? 'Email' : 'App'}</span>`).join(' ')
 
 const alertRows = J.alerts.map((a) => `          <tr><td class="num">${a.n}</td><td>${esc(a.name)}</td><td>${esc(a.trigger)}</td><td>${esc(a.to)}</td><td>${chips(a.channel)}</td><td>${esc(a.why)}</td></tr>`).join('\n')
 const alertBodies = J.alerts.map((a) => `    <h3>Alert ${a.n}: ${esc(a.name)}</h3>
     <p>${esc(a.desc)}</p>
+    <p class="fine"><b>To</b> ${esc(a.to)} &middot; <b>by</b> ${esc(a.channel)} &middot; <b>fires when</b> ${esc(a.trigger)}</p>
     <p class="screen-label">${/sms/i.test(a.channel) ? 'SMS' : /email/i.test(a.channel) ? 'Email' : 'In-app'} payload${/sms/i.test(a.channel) && /email/i.test(a.channel) ? ', the same text by email' : ''}</p>
     <pre class="screen">${esc(a.body)}</pre>${a.note ? `\n    <p class="fine" style="margin-top:.7rem">${esc(a.note)}</p>` : ''}`).join('\n\n')
 
@@ -106,9 +106,11 @@ const body = `
       <p>
         There are ${J.alerts.length} real-time alerts. After the October call the list was reworked: the
         hour-long unattended lead alert became a fifteen minute email to the office, the missed site
-        visit alert went because our own people attend every visit, and two were added that each
-        protect a crew day: a customer saying the booked date no longer works, and a deposit unpaid at
-        its due date. Anything that goes to the owner arrives by text and by email, and every alert
+        visit alert went because our own people attend every visit, and three were added: a customer
+        saying the booked date no longer works, a deposit unpaid at its due date, and anything
+        assigned to someone. The channel follows the role, as agreed on the call: anything to the
+        office arrives by email and in-app, never by text, so it sits there unread until it is dealt
+        with; anything to the owner arrives by text and by email, so it is seen on site. Every alert
         names a role or the team, never a person.
       </p>
     </div>
@@ -132,7 +134,8 @@ ${J.roles.map((r) => `            <tr><td><code>${esc(r.key)}</code></td><td>${e
       <div class="why">
         <h4>Assignment</h4>
         <p>
-          New Lead is assigned to the office on both boards. OWNER and ESTIMATOR are the same
+          New Lead is assigned to the office on both boards. Moving a card to Quoting assigns it
+          to the owner, who is told by text and email (alert 14). OWNER and ESTIMATOR are the same
           person, so the escalation ladder runs from the office to the owner, a genuine second
           person. If more people take first calls later, switch the New Lead assignment to round
           robin. Unassigned leads are the single most common way a lead dies: everybody assumes
@@ -165,7 +168,7 @@ ${alertBodies}
     <div class="rule rule-no">
       <h4>Listed so nobody adds them back later without a reason</h4>
       <ul>
-        <li>Stage changes in general. Only a quote accepted, a deposit landing, a No on a reminder and an unpaid deposit do.</li>
+        <li>Stage changes in general. Only a hand-over to someone, a quote accepted, a deposit landing, a No on a reminder and an unpaid deposit do.</li>
         <li>A customer not turning up. Our own people attend site visits, so there is no no-show.</li>
         <li>Emails opened or links clicked. Interesting, not actionable.</li>
         <li>Form views, page views, chat opens.</li>
@@ -304,10 +307,12 @@ TODAY
 
 NEEDS YOU
   Leads not called       {{list}}
+  Quotes to write        {{list, waiting in Quoting}}
   Callbacks due          {{list}}
   Installs to book       {{list, over 2 days in Booking Required}}
   Dates not confirmed    {{list, no Yes or No on either reminder}}
   Deposits unpaid        {{list with amount and due date}}
+  Invoices to send       {{list, drafts not yet sent}}
   Invoices overdue       {{list with amount and days}}
   Job reports to send    {{list, paid but report not sent}}
   Retentions due         {{list with release date}}</pre>
@@ -320,6 +325,7 @@ NEEDS YOU
     <pre class="screen">LAST WEEK, BOTH BOARDS
   Enquiries              {{count}}, by source
   Median time to first call
+  Days in Quoting        {{average}}
   Closed as Unreachable  {{count}}
   Quotes sent            {{count}}, {{value}}
   Quotes accepted        {{count}}, {{value}}

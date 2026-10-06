@@ -32,16 +32,28 @@ stages.push({ p: 'always-on', s: J.alwaysOn })
 /* the boards: every stage is numbered in order, carries a phase, and both
    boards share the same keys and names in the same order. The whole-pipeline
    view and the stage tags both depend on that. There are no status-only
-   marker stages: the stage where the job is won is a real, numbered stage. */
+   marker stages: the stage where the job is won is a real, numbered stage.
+   The order itself is the one agreed with the client on the 2 October call;
+   changing it is a client decision, so it is pinned here. */
+const AGREED_STAGES = [
+  'new-lead', 'dial-1', 'dial-2', 'quoting', 'quote-sent', 'follow-up', 'nurture',
+  'quote-accepted', 'inspection-required', 'booking-required', 'job-booked',
+  'deposit-requested', 'job-completed', 'retention-claim',
+]
 {
-  const PHASES = ['sale', 'either', 'won', 'job']
+  const PHASES = ['sale', 'won', 'job']
   for (const p of J.pipelines) {
+    const keys = p.stages.map((s) => s.key).join(' > ')
+    if (keys !== AGREED_STAGES.join(' > ')) bad(`${p.id} stages are not the agreed ${AGREED_STAGES.length}: ${keys}`)
+    const wonIdx = p.stages.findIndex((s) => s.key === p.wonAt)
+    if (wonIdx < 0) bad(`${p.id} wonAt "${p.wonAt}" is not one of its stages`)
     p.stages.forEach((s, i) => {
       if (s.n !== i + 1) bad(`${p.id}/${s.key} is numbered ${s.n}, expected ${i + 1}`)
       if (!PHASES.includes(s.phase)) bad(`${p.id}/${s.key} has no phase (one of ${PHASES.join(', ')})`)
       if (s.won) bad(`${p.id}/${s.key} is a Won marker; the won stage is a numbered stage named by pipeline.wonAt`)
+      const want = i < wonIdx ? 'sale' : i === wonIdx ? 'won' : 'job'
+      if (wonIdx > -1 && s.phase !== want) bad(`${p.id}/${s.key} is phase ${s.phase}; stages before ${p.wonAt} are sale, after it job`)
     })
-    if (!p.stages.some((s) => s.key === p.wonAt)) bad(`${p.id} wonAt "${p.wonAt}" is not one of its stages`)
   }
   const shape = (p) => p.stages.map((s) => s.key + '=' + s.name).join(' > ')
   const first = J.pipelines[0]
@@ -252,9 +264,27 @@ else {
   ok('every stage has a "you do" list; the guide is free of agency wording and merge fields')
 }
 
-/* alerts referenced exist */
+/* alerts referenced exist, are numbered in order, and follow the channel rule
+   agreed on the call: nothing to OFFICE goes by SMS, and anything to OWNER
+   goes by SMS and email. A channel that covers more than one role names each
+   role, so it can be read the same way. */
 for (const { p, s } of stages) for (const n of s.alerts || []) if (!J.alerts[n - 1]) bad(`${p}/${s.key} references alert ${n}`)
-ok(`${J.alerts.length} alerts`)
+J.alerts.forEach((a, i) => { if (a.n !== i + 1) bad(`alert ${a.n} is in position ${i + 1}`) })
+for (const a of J.alerts) {
+  const ch = a.channel || ''
+  const parts = /OWNER|OFFICE/.test(ch) ? ch.split(/,\s*(?:or\s+)?/) : [ch]
+  const forRole = (role) => (parts.length > 1 ? parts.filter((x) => x.includes(role)).join(' ') : ch)
+  if (/\bOWNER\b/.test(a.to)) {
+    const c = forRole('OWNER')
+    if (!/SMS/.test(c) || !/email/i.test(c)) bad(`alert ${a.n} goes to OWNER but not by SMS and email (${ch})`)
+  }
+  if (/\bOFFICE\b/.test(a.to) || a.to === 'Assigned user' || /^Assigned user\b/.test(a.to)) {
+    const c = forRole('OFFICE')
+    if (/SMS/.test(c)) bad(`alert ${a.n} reaches OFFICE by SMS (${ch}); the office gets email and in-app only`)
+    if (!/email/i.test(c)) bad(`alert ${a.n} reaches OFFICE without email (${ch})`)
+  }
+}
+ok(`${J.alerts.length} alerts, numbered in order; the office never by SMS, the owner always by SMS and email`)
 
 /* house style across the folder */
 for (const f of fs.readdirSync(DIR)) {

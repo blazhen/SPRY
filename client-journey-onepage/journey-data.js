@@ -16,14 +16,16 @@
      a plain list.
    - Nothing client-specific is hardcoded in a message body. Swapping the
      custom values below is what makes this a template.
-   - Both boards carry the same thirteen stages, with the same keys, in the
-     same order. The whole-pipeline view depends on that, and the checker
-     fails if the two boards drift apart.
+   - Both boards carry the same fourteen stages, with the same keys, in the
+     same order agreed on the 2 October call. The whole-pipeline view depends
+     on that, and the checker fails if either board drifts from it.
    - `from` on an email is 'contact' (the person who handles customer
      contact, signed with their name and mobile) or 'brand' (confirmations,
      reminders and invoices, from the business).
-   - `phase` on a stage is 'sale' (still winning the job), 'either' (before or
-     after the yes), 'won' (the stage where the job is won) or 'job'.
+   - `phase` on a stage is 'sale' (still winning the job), 'won' (the stage
+     where the job is won) or 'job' (everything after the yes).
+   - Alert channels follow the role: anything to OFFICE goes by email and
+     in-app, never SMS; anything to OWNER goes by SMS and email.
 
    Adding a message: add it to `messages`, then reference its id from a stage
    group and send it from a workflow. Adding a stage: add it to both boards.
@@ -57,9 +59,9 @@ window.JOURNEY = {
 
   /* ---------------------------------------------------------------- roles */
   roles: [
-    { key: 'OWNER', who: 'Glenn Angus', owns: 'Commercial work, pricing, booking install dates, anything escalated' },
-    { key: 'OFFICE', who: 'Rachael Angus', owns: 'First response, calls, chasing, invoicing. About 99% of customer contact.' },
-    { key: 'ESTIMATOR', who: 'Glenn Angus', owns: 'Quotes and site inspections' },
+    { key: 'OWNER', who: 'Glenn Angus', owns: 'Writing and sending quotes, commercial work, booking install dates, checking and sending invoices, job reports, anything escalated' },
+    { key: 'OFFICE', who: 'Rachael Angus', owns: 'First response, calls, follow-ups, chasing payments. About 99% of customer contact.' },
+    { key: 'ESTIMATOR', who: 'Glenn Angus', owns: 'Site inspections, and the scoping call on commercial jobs' },
     { key: 'CREW_LEAD', who: 'Per job', owns: 'The job day: running late text, photos, variations, marking the job complete' },
   ],
 
@@ -71,8 +73,8 @@ window.JOURNEY = {
     { key: 'business_phone_e164', value: '+611300177729', note: 'For tel: links' },
     { key: 'contact_name', value: 'Rachael Angus', note: 'Signs the customer messages. Handles about 99% of customer contact.' },
     { key: 'contact_first_name', value: 'Rachael', note: 'The short form, where a full name reads stiffly' },
-    { key: 'contact_mobile', value: '0428 26 36 26', note: "Rachael's mobile, to confirm. The number customers are asked to ring in messages." },
-    { key: 'contact_mobile_e164', value: '+61428263626', note: "Rachael's mobile, to confirm. For tel: links." },
+    { key: 'contact_mobile', value: '0428 26 36 26', note: "Rachael's mobile, confirmed by Glenn on the 2 Oct call. The number customers are asked to ring in messages." },
+    { key: 'contact_mobile_e164', value: '+61428263626', note: "Rachael's mobile, confirmed by Glenn on the 2 Oct call. For tel: links." },
     { key: 'business_email', value: 'info@sprayitsolutions.com.au', note: 'From address and reply-to. The sending domain needs SPF and DKIM before go-live.' },
     { key: 'from_name_contact', value: 'Rachael at SprayIT Solutions', note: 'From name on the personal emails' },
     { key: 'from_name_brand', value: 'SprayIT Solutions', note: 'From name on confirmations, reminders and invoices' },
@@ -84,10 +86,10 @@ window.JOURNEY = {
     { key: 'service_area', value: 'Australia-wide', note: '' },
     { key: 'trade_noun', value: 'spray foam insulation', note: 'How the work is named in a message: "your spray foam insulation enquiry"' },
     { key: 'trade_verb', value: 'insulation', note: 'The short form: "your insulation job"' },
-    { key: 'inspection_noun', value: 'site inspection', note: 'What the measure-up visit is called. About one job in ten or twenty needs one.' },
+    { key: 'inspection_noun', value: 'site inspection', note: 'What the measure-up visit is called. About one job in ten or twenty needs one, after the quote is accepted.' },
     { key: 'consult_length', value: '15 minute', note: 'The phone call offered in the day 4 email and on the site' },
     { key: 'office_hours', value: 'Mon to Fri, 7am to 5pm', note: 'To confirm with Glenn' },
-    { key: 'quote_turnaround', value: '2 business days', note: 'How soon after the call the written quote goes out' },
+    { key: 'quote_turnaround', value: '2 business days', note: 'How soon after the call the written quote usually goes out' },
     { key: 'sms_signoff', value: 'Rachael, SprayIT Solutions', note: 'Sender identification on every SMS' },
   ],
 
@@ -165,6 +167,7 @@ window.JOURNEY = {
       'opportunity.retention_amount': '$640',
       'opportunity.retention_release_date': 'Wednesday 13 October 2027',
       'opportunity.lost_reason': 'Timing, project deferred',
+      'task.title': 'QUOTE Emma: write and send the quote',
     },
     commercial: {
       'contact.first_name': 'Daniel',
@@ -201,49 +204,53 @@ window.JOURNEY = {
       'opportunity.retention_amount': '$9,300',
       'opportunity.retention_release_date': 'Friday 21 May 2027',
       'opportunity.lost_reason': 'Budget withdrawn',
+      'task.title': 'QUOTE Daniel: scope and send the proposal',
     },
   },
 
   /* ---------------------------------------------------------- the alerts */
-  /* These interrupt. Everything else waits for the daily summary. Anything
-     that goes to OWNER goes by text and email. The wording names a role or
-     "the team", never a person, so it still works as the business hires. */
+  /* These interrupt. Everything else waits for the daily summary. The channel
+     follows the role, as agreed on the call: anything to OFFICE arrives by
+     email and in-app, never SMS, so it sits there unread until it is dealt
+     with; anything to OWNER arrives by SMS and email, so it is seen on site.
+     The wording names a role or "the team", never a person, so it still
+     works as the business hires. */
   alerts: [
     {
       n: 1, name: 'New enquiry', plain: 'A new enquiry has just come in',
       desc:
-        'A website enquiry has been created and assigned. The message carries their name, number, property type, what needs doing, timeframe, postcode and where they came from, so it can be acted on without opening the CRM.', trigger: 'Opportunity created', to: 'Assigned user', channel: 'SMS and in-app', prio: 'now',
+        'A website enquiry has been created and assigned to the office. The message carries their name, number, property type, what needs doing, timeframe, postcode and where they came from, so it can be acted on without opening the CRM.', trigger: 'Opportunity created', to: 'OFFICE', channel: 'Email and in-app', prio: 'now',
       why: 'Speed to lead is the whole game.',
       body: 'NEW LEAD: {{contact.first_name}} {{contact.last_name}}\n{{contact.phone}}\n{{contact.property_type}} / {{contact.areas}}\n{{contact.timeframe}} / {{contact.postcode}}\nSource: {{contact.utm_source}}',
-      note: 'Enough to act without opening the CRM. Someone standing on a roof can read that and decide whether to climb down.',
+      note: 'Enough to act without opening the CRM. By email, so it sits there unread until somebody has dealt with it.',
     },
     {
       n: 2, name: 'Missed call', plain: 'Someone rang and nobody picked up',
       desc:
-        'An inbound call to the business number went unanswered. The caller has already had an automatic text back, so this is the reminder that someone still owes them a call.', trigger: 'Inbound call not answered', to: 'OFFICE', channel: 'SMS', prio: 'now',
+        'An inbound call to the business number went unanswered. The caller has already had an automatic text back, so this is the reminder that someone still owes them a call.', trigger: 'Inbound call not answered', to: 'OFFICE', channel: 'Email and in-app', prio: 'now',
       why: 'The auto-reply already went. A person still has to ring back.',
       body: 'MISSED CALL: {{contact.phone}} ({{contact.first_name}}). Text-back sent. Ring them.',
     },
     {
       n: 3, name: 'Inbound reply', plain: 'A customer has replied to a message',
       desc:
-        'A customer has replied by text. Every outbound sequence on that contact pauses the moment it arrives, so nothing automatic talks over a live conversation.', trigger: 'Contact replies by SMS', to: 'Assigned user', channel: 'In-app and SMS', prio: 'now',
-      why: 'A reply is a live conversation. Every sequence on the card pauses.',
+        'A customer has replied by text. Every sales sequence on that contact pauses the moment it arrives, so nothing automatic talks over a live conversation.', trigger: 'Contact replies by SMS', to: 'Assigned user', channel: 'Email and in-app to OFFICE, or SMS and email to OWNER', prio: 'now',
+      why: 'A reply is a live conversation. Every sales sequence on the card pauses.',
       body: 'REPLY from {{contact.first_name}}: "{{message.body}}"',
     },
     {
       n: 4, name: 'Phone call booked', plain: 'A customer has booked a phone call',
       desc:
-        'Somebody has booked a phone call from the day 4 email or the website. It is in the diary and the confirmation has gone, so the point of the alert is to read their enquiry before ringing.', trigger: 'Appointment booked in the phone call calendar', to: 'Assigned user', channel: 'In-app', prio: 'fyi',
+        'Somebody has booked a phone call from the day 4 email or the website. It is in the diary and the confirmation has gone, so the point of the alert is to read their enquiry before ringing.', trigger: 'Appointment booked in the phone call calendar', to: 'Assigned user', channel: 'Email and in-app to OFFICE, or SMS and email to OWNER', prio: 'fyi',
       why: 'The diary changed.',
       body: 'BOOKED: {{contact.first_name}}, {{appointment.start_time}}. Read the enquiry before the call.',
     },
     {
-      n: 5, name: 'Phone call cancelled', plain: 'A customer has cancelled their call',
+      n: 5, name: 'Phone call or inspection cancelled', plain: 'A customer has cancelled a phone call or a site inspection',
       desc:
-        'A booked phone call has been cancelled, leaving a hole in the day. Caught early, a short call usually rebooks it.', trigger: 'Appointment cancelled in the phone call calendar', to: 'Assigned user', channel: 'SMS', prio: 'heads',
-      why: 'A hole in the day, recoverable if caught early.',
-      body: 'CANCELLED: {{contact.first_name}}, {{appointment.start_time}}. Slot is open. A short call often rebooks it.',
+        'A booked phone call or site inspection has been cancelled. A phone call goes to whoever owns the job; an inspection goes to the owner, who rebooks it. Nothing is rebooked automatically.', trigger: 'Appointment cancelled in the phone call or inspection calendar', to: 'Assigned user, or OWNER for an inspection', channel: 'Email and in-app to OFFICE, or SMS and email to OWNER', prio: 'heads',
+      why: 'A hole in the day, recoverable if caught early. Inspections are rebooked by a person, because a free slot is not always a workable one.',
+      body: 'CANCELLED: {{contact.first_name}}, {{appointment.title}}, {{appointment.start_time}}.\nRing them to rebook.',
     },
     {
       n: 6, name: 'Commercial enquiry', plain: 'A commercial enquiry has come in',
@@ -255,23 +262,23 @@ window.JOURNEY = {
     {
       n: 7, name: 'New lead not called after 15 minutes', plain: 'A new lead has waited 15 minutes without a call',
       desc:
-        'A new lead has been on the board for fifteen business minutes and no call has been logged against it. It names the lead and the time it arrived, so whoever picks it up can ring straight away.', trigger: 'No call logged 15 business minutes after the lead arrives', to: 'OFFICE', channel: 'Email', prio: 'now',
+        'A new lead has been on the board for fifteen business minutes and no call has been logged against it. It names the lead and the time it arrived, so whoever picks it up can ring straight away.', trigger: 'No call logged 15 business minutes after the lead arrives', to: 'OFFICE', channel: 'Email and in-app', prio: 'now',
       why: 'Time to first contact is the one number that moves everything else. Business hours only, so it pauses overnight.',
       body: 'NOT CALLED YET: {{contact.first_name}} {{contact.last_name}}, {{contact.phone}}\nArrived {{time}}. Fifteen minutes and no call logged. Ring them now.',
     },
     {
       n: 8, name: 'Quote accepted', plain: 'A customer has accepted a quote',
       desc:
-        'A card has reached Quote Accepted, from the accept button or moved by hand. It names the job, the value and the option chosen, and it is the signal to book the install date. Add-on quotes on a job already under way do not fire it.', trigger: 'Card enters Quote Accepted', to: 'OWNER and OFFICE', channel: 'SMS and email', prio: 'win',
+        'A card has reached Quote Accepted, from the accept button or moved by hand. It names the job, the value and the option chosen, and it is the signal to decide on an inspection and book the install date. Add-on quotes on a job already under way do not fire it.', trigger: 'Card enters Quote Accepted', to: 'OWNER and OFFICE', channel: 'SMS and email to OWNER, email and in-app to OFFICE', prio: 'win',
       why: 'Triggers the next step: an inspection, or the install date.',
-      body: 'QUOTE ACCEPTED: {{opportunity.name}}, {{opportunity.value}}\nOption: {{opportunity.accepted_quote_option}}\nNext: book the install date.',
+      body: 'QUOTE ACCEPTED: {{opportunity.name}}, {{opportunity.value}}\nOption: {{opportunity.accepted_quote_option}}\nNext: inspection or install date.',
     },
     {
       n: 9, name: 'Deposit received', plain: 'A deposit has arrived',
       desc:
-        'A deposit invoice has been marked paid. The customer has had a one-line confirmation, so this is for the record and for whoever is watching the crew diary.', trigger: 'Deposit invoice marked paid', to: 'OFFICE', channel: 'In-app', prio: 'win',
-      why: 'The date is secure.',
-      body: 'DEPOSIT IN: {{contact.first_name}}, {{opportunity.deposit_amount}}. Job on {{opportunity.job_date}} is secure.',
+        'A deposit invoice has been marked paid. The customer has had a one-line confirmation. On special-order foam this is the signal to order the material, which is only ordered once the deposit lands.', trigger: 'Deposit invoice marked paid', to: 'OWNER and OFFICE', channel: 'SMS and email to OWNER, email and in-app to OFFICE', prio: 'win',
+      why: 'Special-order foam is only ordered once the deposit lands, and the date is now secure.',
+      body: 'DEPOSIT IN: {{contact.first_name}}, {{opportunity.deposit_amount}}. Job on {{opportunity.job_date}} is secure. Special order? Order the foam now.',
     },
     {
       n: 10, name: 'Negative review or complaint', plain: 'A review under four stars, or a complaint, has come in',
@@ -290,16 +297,24 @@ window.JOURNEY = {
     {
       n: 12, name: 'Customer cannot make the booked date', plain: 'A customer has said the booked date no longer works',
       desc:
-        'A customer tapped No on the 7 day or the 48 hour reminder. It names the job, the date and the address. Nothing is rescheduled automatically: the team rings the customer, agrees a new date, and moves the crew and the rig by hand.', trigger: 'A No on the 7 day or 48 hour reminder', to: 'OWNER and OFFICE', channel: 'SMS and email', prio: 'now',
+        'A customer tapped No on one of the reminders before the job. It names the job, the date and the address. Nothing is rescheduled automatically: the team rings the customer, agrees a new date, and moves the crew and the rig by hand.', trigger: 'A No on the one month, 7 day or 48 hour reminder', to: 'OWNER and OFFICE', channel: 'SMS and email to OWNER, email and in-app to OFFICE', prio: 'now',
       why: 'A crew and a rig are booked around this job. The sooner a person knows, the sooner both can go to other work.',
       body: 'CANNOT MAKE IT: {{contact.first_name}} {{contact.last_name}}, {{contact.phone}}\nBooked {{opportunity.job_date}}, {{opportunity.site_address}}\nRing them today. Crew and rig need moving by hand.',
     },
     {
       n: 13, name: 'Deposit unpaid at its due date', plain: 'A deposit is due today and has not arrived',
       desc:
-        'A deposit has reached its due date without being paid. It names the job, the amount and the install date, so the team can ring the customer and decide in time whether the crew holds the date or is reassigned.', trigger: 'deposit_due_date reached and the deposit invoice is unpaid', to: 'OWNER and OFFICE', channel: 'SMS and email', prio: 'heads',
+        'A deposit has reached 4pm on its due date without being paid. The customer has just had a text asking for the remittance. It names the job, the amount and the install date, so the owner can decide in time whether the crew holds the date or goes to another job.', trigger: '4pm on deposit_due_date and the deposit invoice is unpaid', to: 'OWNER and OFFICE', channel: 'SMS and email to OWNER, email and in-app to OFFICE', prio: 'heads',
       why: 'Special-order foam and a crew day are committed against this job. The due date is set early enough to reassign both.',
-      body: 'DEPOSIT UNPAID: {{opportunity.name}}, {{opportunity.deposit_amount}}\nDue {{opportunity.deposit_due_date}}. Job booked {{opportunity.job_date}}.\nRing them today and decide whether the crew holds.',
+      body: 'DEPOSIT UNPAID: {{opportunity.name}}, {{opportunity.deposit_amount}}\nDue {{opportunity.deposit_due_date}}. Job booked {{opportunity.job_date}}.\nThe customer has been texted. Decide whether the crew holds.',
+    },
+    {
+      n: 14, name: 'Assigned to you', plain: 'A job or a task has been handed to you',
+      desc:
+        'A card has been assigned to someone, or a task has been created for the owner. The commonest case is the office handing a lead to the owner in Quoting. It names the job and what is waiting, so it can be dealt with that day. Where another alert already carries the same news, this one does not fire again.', trigger: 'A card is assigned or reassigned to someone, or a task is created for OWNER', to: 'Whoever it is assigned to', channel: 'SMS and email to OWNER, email to OFFICE', prio: 'now',
+      why: 'Agreed on the call: anything handed to the owner arrives by text so it is seen on site, and by email so it is still there that night.',
+      body: 'ASSIGNED TO YOU: {{opportunity.name}}, {{contact.phone}}\n{{task.title}}',
+      note: 'The automatic assignment of a new lead to the office does not fire this. Alert 1 already covers it.',
     },
   ],
 
@@ -320,9 +335,9 @@ window.JOURNEY = {
       stops: 'Sends once.',
       subject: 'We have your enquiry, {{contact.first_name}}',
       preheader: 'We will ring you to talk it through, then send a written quote. Here is what you told us.',
-      body: 'Hi {{contact.first_name}},\n\nThanks for getting in touch with {{custom_values.business_name}}. We have your enquiry and we will ring you shortly. During business hours that is usually within the hour.\n\nHere is what you told us:\n\n  Property        {{contact.property_type}}\n  Needs doing     {{contact.areas}}\n  Building stage  {{contact.building_stage}}\n  Timeframe       {{contact.timeframe}}\n  Postcode        {{contact.postcode}}\n\nIf any of that is wrong, reply to this email and we will fix it.\n\nWhat happens next:\n\n  1. We ring you for a short chat about the building and what you want from it.\n  2. We send you a written quote, usually within {{custom_values.quote_turnaround}} of the call. There is no obligation.\n  3. If the job needs a look in person, we visit the site first and quote after that.\n\nMost jobs can be quoted from the call. Some need a site visit first, and we will tell you on the call if yours is one of them.',
+      body: 'Hi {{contact.first_name}},\n\nThanks for getting in touch with {{custom_values.business_name}}. We have your enquiry and we will ring you shortly. During business hours that is usually within the hour.\n\nHere is what you told us:\n\n  Property        {{contact.property_type}}\n  Needs doing     {{contact.areas}}\n  Building stage  {{contact.building_stage}}\n  Timeframe       {{contact.timeframe}}\n  Postcode        {{contact.postcode}}\n\nIf any of that is wrong, reply to this email and we will fix it.\n\nWhat happens next:\n\n  1. We ring you for a short chat about the building and what you want from it.\n  2. We send you a written quote, usually within {{custom_values.quote_turnaround}} of the call. There is no obligation.\n  3. Once you are happy with the quote, we book the install date.\n\nWe quote from the call. If a job needs a look in person, we quote it first so you know the price, and visit once you are happy with it, before the install is booked.',
       sig: ['{{custom_values.contact_name}}', '{{custom_values.business_name}}', '{{custom_values.contact_mobile}}'],
-      note: 'Echoing their answers back cuts "did that go through?" replies and catches a wrong postcode before it costs anyone a trip. It no longer promises a site visit before every quote, because only about one job in ten or twenty needs one.',
+      note: 'Echoing their answers back cuts "did that go through?" replies and catches a wrong postcode before it costs anyone a trip. It does not promise a site visit, because only about one job in ten or twenty needs one, and that visit comes after the quote is accepted.',
       agencyNote: 'Store the human label in each dropdown field (Home, not home) or this email echoes the raw form value.',
     },
 
@@ -349,7 +364,7 @@ window.JOURNEY = {
       stops: 'Stops on reply, booking, or stage change.',
       subject: 'Pick a time to talk about your {{custom_values.trade_verb}} job',
       preheader: 'Choose a time that suits you and we will ring then. It takes two clicks.',
-      body: 'Hi {{contact.first_name}},\n\nWe still have not managed to catch you, so here is a simpler way. Pick a time that suits and we will ring you then:\n\n{{custom_values.booking_url}}\n\nIt is a {{custom_values.consult_length}} call about the building and what you want from it. If we can quote from the call, we will. If the job needs a look in person, we will say so and book that instead.',
+      body: 'Hi {{contact.first_name}},\n\nWe still have not managed to catch you, so here is a simpler way. Pick a time that suits and we will ring you then:\n\n{{custom_values.booking_url}}\n\nIt is a {{custom_values.consult_length}} call about the building and what you want from it, and it is all we need to write your quote.',
       sig: ['{{custom_values.contact_name}}', '{{custom_values.business_name}}', '{{custom_values.contact_mobile}}'],
       note: 'The only message that offers the booking link outright. A time they chose is a call they answer.',
     },
@@ -529,8 +544,8 @@ window.JOURNEY = {
       trigger: 'Enters Quote Accepted', delay: 'Immediately', window: 'immediate',
       stops: 'Sends once per job. Not sent for an add-on quote on a job already under way. Every sales sequence on the card is stopped at the same moment.',
       subject: 'Thanks for going ahead, {{contact.first_name}}',
-      preheader: 'What happens from here: the install date, two reminders, and the deposit closer to the day.',
-      body: 'Hi {{contact.first_name}},\n\nThanks for accepting quote {{opportunity.quote_number}}. Here is how it runs from here.\n\n  1. We book your install date and confirm it with you by text and email.\n  2. We remind you 7 days and 48 hours before the job, and ask you to confirm the date still works.\n  3. Where a deposit applies, the invoice comes about two weeks before the job, not now.\n  4. The crew arrives on the day and does the work. The final invoice follows when the job is complete.\n\nIf anything needs checking on site before we book, we will ring you to arrange that first.\n\nAnything at all in the meantime, ring {{custom_values.contact_mobile}}.',
+      preheader: 'What happens from here: the install date, the reminders, and the deposit closer to the day.',
+      body: 'Hi {{contact.first_name}},\n\nThanks for accepting quote {{opportunity.quote_number}}. Here is how it runs from here.\n\n  1. We book your install date and confirm it with you by text and email.\n  2. We remind you before the job, a week out and two days out, and a month out if it is booked well ahead, and ask you to confirm the date still works.\n  3. Where a deposit applies, the invoice comes about two weeks before the job, not now.\n  4. The crew arrives on the day and does the work. The final invoice follows when the job is complete.\n\nIf anything needs checking on site before we book, we will ring you to arrange that first.\n\nAnything at all in the meantime, ring {{custom_values.contact_mobile}}.',
       sig: ['{{custom_values.contact_name}}', '{{custom_values.business_name}}', '{{custom_values.contact_mobile}}'],
       note: 'Deliberately no deposit request. A job accepted today might be installed in three months, and a deposit invoice that early sits unpaid and confuses everyone.',
     },
@@ -554,7 +569,7 @@ window.JOURNEY = {
       stops: 'Sends once per booking.',
       subject: 'Your job is booked for {{opportunity.job_date}}',
       preheader: 'Booked for {{opportunity.job_date}}. Five things to do before we arrive.',
-      body: 'Hi {{contact.first_name}},\n\nYou are in the diary.\n\n  Date    {{opportunity.job_date}}\n  Where   {{opportunity.site_address}}\n  Crew    {{opportunity.crew_assigned}}\n\nWe will check in 7 days and 48 hours before, and ask you to confirm the date still works.\n\nTo help us get in and out cleanly, before we arrive:\n\n  Clear access to {{contact.areas}}. We need room to work and to get the hose through.\n  Move anything you would rather not have dust near.\n  Make sure we can park close. The rig runs off the truck.\n  Pets somewhere else for the day, please.\n  Somebody over 18 on site to let us in.\n\nWhile we are spraying, the area needs to be empty of people and pets. Afterwards the space needs time before you use it again. That is anywhere from about an hour to a full day depending on which foam the job calls for, and the crew will tell you which applies to yours before they leave.\n\nAnything you are unsure about, ring {{custom_values.contact_mobile}}.',
+      body: 'Hi {{contact.first_name}},\n\nYou are in the diary.\n\n  Date    {{opportunity.job_date}}\n  Where   {{opportunity.site_address}}\n  Crew    {{opportunity.crew_assigned}}\n\nWe will check in before the job, and ask you to confirm the date still works.\n\nTo help us get in and out cleanly, before we arrive:\n\n  Clear access to {{contact.areas}}. We need room to work and to get the hose through.\n  Move anything you would rather not have dust near.\n  Make sure we can park close. The rig runs off the truck.\n  Pets somewhere else for the day, please.\n  Somebody over 18 on site to let us in.\n\nWhile we are spraying, the area needs to be empty of people and pets. Afterwards the space needs time before you use it again. That is anywhere from about an hour to a full day depending on which foam the job calls for, and the crew will tell you which applies to yours before they leave.\n\nAnything you are unsure about, ring {{custom_values.contact_mobile}}.',
       sig: ['{{custom_values.business_name}}', '{{custom_values.business_phone}}'],
       note: 'Worth checking this list with the crew rather than the office, because the crew know what actually goes wrong on arrival. Re-occupancy is product dependent: as little as an hour for some foams, up to 24 hours for others, so the crew give the figure on the day.',
       agencyNote: 'Trade specific. The preparation list is the job, and for another client it is their own list.',
@@ -568,7 +583,7 @@ window.JOURNEY = {
       body: 'Hi {{contact.first_name}},\n\nA reminder that we are booked to do the work at {{opportunity.site_address}} on {{opportunity.job_date}}.\n\nDoes that date still work?\n\n  Yes, see you then: {{trigger_link.confirm_yes}}\n  No, I need to change it: {{trigger_link.confirm_no}}\n\nIf it no longer works, a week of notice means we can move the crew and the rig to another job and find you a new date. If you tap No, we will ring you to rearrange.',
       sig: ['{{custom_values.business_name}}', '{{custom_values.business_phone}}'],
       note: 'Yes is recorded on the card and nothing else happens. No goes to the team straight away. Nothing is rescheduled automatically.',
-      agencyNote: 'Yes and No are trigger links. Each fires WF-20 with its own branch and lands on a short thank-you page. The same two links are used in all four reminders.',
+      agencyNote: 'Yes and No are trigger links. Each fires WF-22 with its own branch and lands on a short thank-you page. The same two links are used in all five reminders, REM-01 to REM-04 and REM-06.',
     },
     'REM-02': {
       channel: 'sms', type: 'TRANS', reuse: 'CORE',
@@ -599,6 +614,16 @@ window.JOURNEY = {
       body: 'Thanks for letting us know, {{contact.first_name}}. We will ring you shortly to find a new date. {{custom_values.sms_signoff}}',
       note: 'Nothing is moved automatically. A person rings, agrees the new date, and moves the crew and the rig.',
     },
+    'REM-06': {
+      channel: 'email', type: 'TRANS', reuse: 'CORE', from: 'brand',
+      trigger: 'Job booked more than 6 weeks ahead', delay: '30 days before the job', window: 'business-hours',
+      stops: 'Only when the booking was made more than 6 weeks before the job. Cancelled if the booking is cancelled. Re-queued if the date moves.',
+      subject: 'A month to go: still on track for {{opportunity.job_date}}?',
+      preheader: 'A quick check that the date still works. One tap either way.',
+      body: 'Hi {{contact.first_name}},\n\nWe are booked to do the work at {{opportunity.site_address}} on {{opportunity.job_date}}, about a month from now.\n\nIs that still on schedule at your end?\n\n  Yes, still on track: {{trigger_link.confirm_yes}}\n  No, things have moved: {{trigger_link.confirm_no}}\n\nIf it has moved, a month of notice lets us find you a better date and put the crew on other work. If you tap No, we will ring you to rearrange.',
+      sig: ['{{custom_values.business_name}}', '{{custom_values.business_phone}}'],
+      note: 'Glenn raised this on the call, for jobs booked months out, where a builder\'s programme often slips. Easy to drop if it is not wanted.',
+    },
     'JOB-04': {
       channel: 'sms', type: 'TRANS', reuse: 'CORE',
       trigger: 'Job day', delay: '6:30am on the job date', window: 'immediate',
@@ -616,20 +641,22 @@ window.JOURNEY = {
     /* ------------------------------------------------------------- deposit */
     'DEP-02': {
       channel: 'email', type: 'TRANS', reuse: 'CORE', from: 'brand',
-      trigger: 'Deposit invoice sent, enters Deposit Requested', delay: '14 days before the job, or at once if the job is closer', window: 'business-hours',
+      trigger: 'The owner sends the deposit invoice, enters Deposit Requested', delay: 'When it is sent, from a draft prepared 14 days before the job', window: 'business-hours',
       stops: 'Sends once per job.',
       subject: 'Deposit for your job on {{opportunity.job_date}}',
       preheader: 'Deposit invoice attached, due {{opportunity.deposit_due_date}}. Your accepted quote is attached too.',
       body: 'Hi {{contact.first_name}},\n\nYour deposit invoice is attached for the work booked at {{opportunity.site_address}} on {{opportunity.job_date}}.\n\n  Deposit   {{opportunity.deposit_amount}}\n  Due       {{opportunity.deposit_due_date}}\n\nYour accepted quote is attached as well. It carries the terms and conditions.\n\nMost deposits are due the business day before the job. If your foam is a special order, the deposit is due a week before, because that material is made and shipped for your job.\n\nPayment details are on the invoice. When it lands we send a one-line confirmation, so there is no need to ring and check.',
       sig: ['{{custom_values.business_name}}', '{{custom_values.business_phone}}'],
-      note: 'Sent two weeks before the install date, never at booking, so a job booked months ahead does not sit on an unpaid invoice. The 14 day send point is to confirm with Glenn.',
-      agencyNote: 'Deposits are a liability in the accounts until the job is done, not sales income. Map the deposit item in Xero to the deposit liability account, not to sales. No card storage and no automatic charging.',
+      note: 'Never at booking. A draft is prepared two weeks before the install date, which is when Glenn said on the call he generally sends deposit invoices, and the owner checks it and sends it. A job booked months ahead never sits on an unpaid invoice.',
+      agencyNote: 'Invoices are not sent automatically: the workflow creates a draft and the owner presses send, as Glenn asked on the call. Once he has settled how he wants them set out, the send can be automated. Deposits are a liability in the accounts until the job is done, not sales income: map the deposit item in Xero to the deposit liability account. No card storage and no automatic charging.',
     },
     'DEP-03': {
       channel: 'sms', type: 'TRANS', reuse: 'CORE',
-      trigger: 'Deposit unpaid', delay: '2 days before it is due', window: 'business-hours',
-      stops: 'Stops dead the moment the deposit is marked paid.',
-      body: 'Hi {{contact.first_name}}, a reminder your deposit of {{opportunity.deposit_amount}} is due {{opportunity.deposit_due_date}}, ahead of your job. Details are on the invoice. {{custom_values.sms_signoff}}',
+      trigger: 'Deposit unpaid at its due date', delay: '4:00pm on the due date', window: 'business-hours',
+      stops: 'Sends once. Not sent if the deposit is marked paid before 4pm.',
+      body: 'Hi {{contact.first_name}}, we have not received your deposit of {{opportunity.deposit_amount}} yet. If you have paid, please reply with the remittance. {{custom_values.sms_signoff}}',
+      note: 'No reminder before the due date: Xero already sends its own. This goes only when the deposit is actually late, at the same moment the team is told, so nobody has to type it.',
+      agencyNote: 'Decide which system sends invoice reminders, the platform or Xero, so a customer never gets both. If Xero keeps its reminders, switch off the platform\'s own invoice reminders for that invoice type.',
     },
     'DEP-01': {
       channel: 'sms', type: 'TRANS', reuse: 'CORE',
@@ -652,23 +679,24 @@ window.JOURNEY = {
     },
     'PAY-01': {
       channel: 'email', type: 'TRANS', reuse: 'CORE', from: 'brand',
-      trigger: 'Job marked complete, final invoice sent', delay: 'Immediately, with the invoice attached', window: 'business-hours',
+      trigger: 'The owner sends the final invoice', delay: 'When it is sent, with the invoice attached', window: 'business-hours',
       stops: 'Sends once per invoice.',
       subject: 'Invoice {{opportunity.invoice_number}}',
       preheader: 'Invoice {{opportunity.invoice_number}} attached, with your accepted quote. Due dates are on it.',
       body: 'Hi {{contact.first_name}},\n\nInvoice {{opportunity.invoice_number}} is attached for the work at {{opportunity.site_address}}.\n\nAlso attached:\n\n  Your accepted quote, which carries the terms and conditions\n  Your purchase order, where there is one\n\nPayment details are on the invoice. If it is paid in stages, each amount is listed with its own due date.\n\nAny questions about it, ring {{custom_values.contact_mobile}}.',
       sig: ['{{custom_values.business_name}}', '{{custom_values.business_phone}}'],
-      agencyNote: 'Invoices sync to Xero. Only GST-free invoices have been seen reaching Xero so far and these carry GST, so test a GST invoice before promising the sync. If marking an invoice paid in the platform before the bank transfer clears upsets the bookkeeper\'s reconciliation, switch off the payment receipt sync and let Xero record the payment.',
+      agencyNote: 'Created as a draft when the job is marked complete, checked and sent by the owner, as Glenn asked on the call; the send can be automated once he has settled the layout. Invoices sync to Xero. Only GST-free invoices have been seen reaching Xero so far and these carry GST, so test a GST invoice before promising the sync. If marking an invoice paid in the platform before the bank transfer clears upsets the bookkeeper\'s reconciliation, switch off the payment receipt sync and let Xero record the payment.',
     },
     'PAY-02': {
       channel: 'sms', type: 'TRANS', reuse: 'CORE',
-      trigger: 'Invoice unpaid', delay: 'Day 7', window: 'business-hours',
+      trigger: 'Final invoice unpaid', delay: 'Day 7 after it is sent', window: 'business-hours',
       stops: 'Stops dead the moment payment is marked.',
+      agencyNote: 'Xero sends its own invoice reminders. Decide which system sends them so a customer never gets both, and switch the other off.',
       body: 'Hi {{contact.first_name}}, a reminder that invoice {{opportunity.invoice_number}} is due. Any questions, ring {{custom_values.contact_mobile}}. {{custom_values.sms_signoff}}',
     },
     'PAY-03': {
       channel: 'email', type: 'TRANS', reuse: 'CORE', from: 'brand',
-      trigger: 'Invoice unpaid', delay: 'Day 14', window: 'business-hours',
+      trigger: 'Final invoice unpaid', delay: 'Day 14 after it is sent', window: 'business-hours',
       stops: 'Stops dead the moment payment is marked. A reminder sent after someone has paid does more damage than the reminder was worth.',
       subject: 'Invoice {{opportunity.invoice_number}} is now overdue',
       preheader: 'A copy is attached. If something is wrong with it, ring us and we will sort it.',
@@ -687,15 +715,15 @@ window.JOURNEY = {
     },
     'REV-01': {
       channel: 'sms', type: 'TRANS', reuse: 'CORE',
-      trigger: 'Job completed, Ask for Google review is Yes', delay: '4 weeks after the job date', window: 'business-hours',
+      trigger: 'Job completed, and Ask for Google review left on Yes', delay: '4 weeks after the job date', window: 'business-hours',
       stops: 'Ask once. Do not chase reviews. Not sent if Ask for Google review is No.',
-      body: 'Hi {{contact.first_name}}, if you are happy with the job, a short Google review really helps: {{custom_values.review_url}} {{custom_values.sms_signoff}}',
-      note: 'Asked once, by text, four weeks after the job, inside the four to six weeks agreed. Only contacts with Ask for Google review set to Yes get it. It is Yes unless someone sets it to No for a job with problems or a repeat commercial client.',
+      body: 'Hi {{contact.first_name}}, how is it going since the job? If you are happy with it, a Google review really helps: {{custom_values.review_url}} {{custom_values.sms_signoff}}',
+      note: 'Asks how it is going first, then for the review. Once, by text, four weeks after the job, inside the four to six weeks agreed. When the job is marked complete the owner gets a task to leave Ask for Google review on Yes or set it to No, for a job with problems or a repeat commercial client.',
     },
     'REV-02': {
       channel: 'email', type: 'MKTG', reuse: 'CORE', from: 'contact',
       trigger: 'Final invoice paid', delay: '+7 days', window: 'business-hours',
-      stops: 'Only if consent_marketing is yes.',
+      stops: 'Only if consent_marketing is yes, and Ask for Google review is Yes. A job the owner set to No gets no referral ask either.',
       subject: 'Know anyone else with the same problem?',
       preheader: 'Most of our work is word of mouth. You would know who.',
       body: 'Hi {{contact.first_name}},\n\nHope the place is holding its temperature.\n\nMost of our work comes from people passing our name on. If someone you know is fighting the same problem, send them our way or pass on {{custom_values.contact_mobile}}.',
@@ -866,13 +894,15 @@ window.JOURNEY = {
   },
 
   /* ------------------------------------------------------ the pipelines */
-  /* Two boards, thirteen stages each, identical keys and order:
-     New Lead > Dial 1 > Dial 2 > Inspection Required > Quote Sent > Follow-Up >
-     Nurture > Quote Accepted > Booking Required > Job Booked > Deposit
-     Requested > Job Completed > Retention Claim.
-     Inspection Required is used by about one job in ten or twenty, before the
-     quote or after acceptance. Follow-Up and Nurture are sidings. Quote
-     Accepted is where the job is won. */
+  /* Two boards, fourteen stages each, identical keys and order, as agreed on
+     the 2 October call:
+     New Lead > Dial 1 > Dial 2 > Quoting > Quote Sent > Follow-Up > Nurture >
+     Quote Accepted > Inspection Required > Booking Required > Job Booked >
+     Deposit Requested > Job Completed > Retention Claim.
+     Quoting is where the office hands a lead to the owner to write the quote.
+     Follow-Up and Nurture are sidings. Quote Accepted is where the job is won.
+     Inspection Required comes only after acceptance, for about one job in ten
+     or twenty, and sits before Booking Required. */
   pipelines: [
     {
       id: 'residential',
@@ -886,20 +916,19 @@ window.JOURNEY = {
           clientDo: [
             'Ring within 15 minutes. No answer? Ring again straight away.',
             'No answer to either call: move the card to Dial 1. The text goes by itself.',
-            'They answer and it is a job: send the quote. Sending it moves the card to Quote Sent.',
-            'It needs a site visit first: move the card to Inspection Required.',
+            'They answer and want a quote: move the card to Quoting. It is handed to the owner to write the quote.',
             'They ask you to ring back later: move it to Follow-Up with the time. Not now: move it to Nurture.',
             'Clearly commercial: move the card to the Commercial board.',
           ],
           means: 'A lead has landed. Nobody has rung them yet.',
           exits: 'They are rung, and either answer or do not', stalls: '15 minutes to the first call',
-          intro: 'The moment someone sends the form, two things go before anyone has read it: a text saying we have the enquiry and will ring shortly, and an email that plays back what they told us and explains what happens next. Then the clock starts. If no call is logged within fifteen business minutes, the office gets an email. Ring twice, back to back. If they answer, the call decides where the card goes: a job we can price goes to Quote Sent when the quote is sent, a job that needs a look first goes to Inspection Required, a request to ring back later goes to Follow-Up, and not now goes to Nurture. If neither call is answered, the card goes to Dial 1.',
+          intro: 'The moment someone sends the form, two things go before anyone has read it: a text saying we have the enquiry and will ring shortly, and an email that plays back what they told us and explains what happens next. Then the clock starts. If no call is logged within fifteen business minutes, the office gets an email. Ring twice, back to back. If they answer, the call decides where the card goes: someone who wants a quote goes to Quoting, where it is handed to the owner to write; a request to ring back later goes to Follow-Up; and not now goes to Nurture. If neither call is answered, the card goes to Dial 1.',
           groups: [{ title: 'The moment they enquire', messages: ['X-ACK-01', 'X-ACK-02'] }],
           alerts: [1, 7],
           tasks: [{
             title: 'CALL {{contact.first_name}}: new lead, {{contact.areas}}',
             desc:
-              'Ring the new lead within 15 minutes. The acknowledgement text and email have already gone. Ring twice, back to back. No answer to either: move the card to Dial 1. If they answer and it is a job, send the quote within two business days, or move the card to Inspection Required if it needs a site visit first.',
+              'Ring the new lead within 15 minutes. The acknowledgement text and email have already gone. Ring twice, back to back. No answer to either: move the card to Dial 1. If they answer and want a quote, move the card to Quoting, which hands it to the owner to write the quote. Ring back later: Follow-Up. Not now: Nurture.',
             role: 'OFFICE',
             due: '15 minutes',
           }],
@@ -955,39 +984,25 @@ window.JOURNEY = {
           automation: ['Days count from when the card enters Dial 2.', 'Any reply, booking or answered call stops the emails.', 'Day 7 passes with no reply: status Lost, reason Unreachable. No message beyond DIAL-04.'],
         },
         {
-          key: 'inspection-required', n: 4, name: 'Inspection Required', phase: 'either', headline: 'A look at the site first',
+          key: 'quoting', n: 4, name: 'Quoting', phase: 'sale', headline: 'Handed to the owner to quote',
           clientDo: [
-            'Book the visit in the inspection calendar from the card. The confirmation and the morning text go by themselves.',
-            'At the site, record the area in square metres, the foam type and the access notes on the card before you leave.',
-            'Came here before the quote: send the quote, which moves the card to Quote Sent.',
-            'Came here after they accepted: move the card to Booking Required.',
+            'Office: after the call, move the card here. It is assigned to the owner by itself, and the owner gets a text and an email.',
+            'Owner: ring them first if you need more detail, plans or an energy report, then write the quote in the quote tool and send it. Sending it moves the card to Quote Sent.',
+            'They ask to be rung later: Follow-Up. Not now: Nurture. Gone elsewhere: Lost, with the reason.',
           ],
-          means: 'The job needs a site visit before it can be quoted or booked.',
-          exits: 'The visit is done, then the quote is sent or the install is ready to book', stalls: '5 days to book the visit',
-          intro: 'Only about one job in ten or twenty needs this. Most are quoted from the phone call. A card comes here either before the quote, when the job cannot be priced without seeing it, or after the customer has accepted, when something needs checking before the install is booked. The visit goes in the inspection calendar, which sends a confirmation with the address and a text on the morning. Our own people go to the site, so there is nothing here about the customer not turning up. Whoever attends records the area, the foam and the access on the card from their phone before they leave.',
-          groups: [
-            { title: 'When the visit is booked', messages: ['X-INSP-01'] },
-            { title: 'On the morning', messages: ['X-INSP-02'] },
-            { title: 'If it moves', messages: ['X-APPT-06'] },
-          ],
-          alerts: [],
-          tasks: [
-            {
-              title: 'BOOK {{contact.first_name}}: site inspection',
-              desc:
-                'Book the site inspection in the inspection calendar from the card, at a time that suits the customer. Confirm the address and access to the areas being sprayed. The confirmation and the morning text go by themselves.',
-              role: 'OFFICE',
-              due: '2 days',
-            },
-            {
-              title: 'ATTEND {{contact.first_name}}: inspection, {{opportunity.site_address}}',
-              desc:
-                'Attend the inspection. Before you leave, record on the card: the area in square metres, the foam type, access notes, and anything that will slow the crew down. Photos of problem areas help the quote.',
-              role: 'ESTIMATOR',
-              due: 'On the date',
-            },
-          ],
-          automation: ['inspection_date set from the inspection calendar.', 'access_notes, sqm_estimate and product_type captured on site from the app, not later from memory.', 'Before the quote: sending the quote moves the card to Quote Sent. After acceptance: the card is moved to Booking Required by hand.', 'A cancelled visit clears inspection_date and puts a task on the office to rebook it.'],
+          means: 'The office has spoken to them and they want a quote. It is waiting on the owner.',
+          exits: 'The quote is sent, or they ask to be rung later, say not now, or go elsewhere', stalls: '2 business days',
+          intro: 'Once the office has spoken to someone and they want a quote, the card moves here and is assigned to the owner, who gets a text and an email straight away. That way everyone can see the job is waiting on the owner to sort out the quote. The owner often rings them first for a little more detail, or waits for plans or an energy report, then writes the quote and sends it from the quote tool, which moves the card to Quote Sent by itself. Nothing automatic goes to the customer here: they were told on the call when to expect the quote.',
+          groups: [],
+          alerts: [14],
+          tasks: [{
+            title: 'QUOTE {{contact.first_name}}: write and send the quote',
+            desc:
+              'The office has spoken to them and they want a quote. Ring them first if you need more detail, plans or an energy report. Write the quote in the quote tool, with each option as its own line if there is more than one, and send it. Sending it moves the card to Quote Sent and starts the follow-up.',
+            role: 'OWNER',
+            due: '2 business days',
+          }],
+          automation: ['Entering Quoting assigns the card to the owner and fires alert 14 by text and email.', 'Any Dial 2 email still queued stops.', 'Sending the quote from the quote tool moves the card to Quote Sent.', 'Over 2 business days here: listed under Quotes to write in the daily summary.'],
         },
         {
           key: 'quote-sent', n: 5, name: 'Quote Sent', phase: 'sale', headline: 'A number they can accept with one click',
@@ -1033,13 +1048,13 @@ window.JOURNEY = {
           ],
           means: 'A conversation is live and the customer has asked for a call at a later time.',
           exits: 'The callback happens and the card moves on', stalls: 'A day past the callback time',
-          intro: 'For the customer who says "ring me next week" or "call back after I have spoken to my partner". Nothing automatic goes to them here: every sequence on the card is paused, because a call at the time they chose is a better next step than another email. The time they asked for goes on the card, and a task lands at that time. After the call, the card moves on like any other: to Quote Sent, Inspection Required, Quote Accepted, Nurture, or Lost.',
+          intro: 'For the customer who says "ring me next week", "call back after I have spoken to my partner", or "I will send you the plans". Nothing automatic goes to them here: every sequence on the card is paused, because a call at the time they chose is a better next step than another email. The time they asked for goes on the card, and a task lands at that time. After the call, the card moves on: to Quoting if they now want a quote, Quote Accepted if they say yes, Nurture if it is not now, or Lost. If a quote is already with them and they want more time, set a new callback time and leave the card here.',
           groups: [],
           alerts: [3],
           tasks: [{
             title: 'CALL {{contact.first_name}}: callback as asked',
             desc:
-              'The customer asked to be rung at this time. Ring them, then move the card on: Quote Sent once a quote goes, Inspection Required if a visit is needed, Quote Accepted if they say yes, Nurture if it is not now, or Lost with a reason.',
+              'The customer asked to be rung at this time. Ring them, then move the card on: Quoting if they now want a quote, Quote Accepted if they say yes to a quote already sent, Nurture if it is not now, or Lost with a reason. Want more time on a quote? Set a new callback time.',
             role: 'OFFICE',
             due: 'At the time they asked',
           }],
@@ -1050,12 +1065,12 @@ window.JOURNEY = {
           clientDo: [
             'Nothing to send. The emails go by themselves, only to people who opted in.',
             'At twelve months, ring them. There is a task.',
-            'They come back: send a fresh quote, which moves the card to Quote Sent.',
+            'They come back: move the card to Quoting, so the quote is refreshed against current prices.',
             'Once a quarter, remove anyone who is not a real job.',
           ],
           means: 'A real job that is not happening now: not now, or not affordable yet.',
-          exits: 'They come back: to Quote Sent for a fresh quote, or New Lead', stalls: 'Review quarterly',
-          intro: 'A siding, not a step. Cards come here from the first call or from a quote that went quiet, when the answer is "not now" or "we cannot afford it yet". Quotes from here regularly come back after a year or two, so the card is kept rather than closed. Three emails go over three months, then a note at twelve months offering to refresh the quote. All four are marketing, so they only go to people who ticked the box on the form, and every one has an unsubscribe. Everyone in Nurture also gets a call at twelve months, whether or not they ticked the box. When they come back, the card moves to Quote Sent with a fresh quote, or back to New Lead if it needs talking through again.',
+          exits: 'They come back: to Quoting for a fresh quote', stalls: 'Review quarterly',
+          intro: 'A siding, not a step. Cards come here from the first call or from a quote that went quiet, when the answer is "not now" or "we cannot afford it yet". Quotes from here regularly come back after a year or two, so the card is kept rather than closed. Three emails go over three months, then a note at twelve months offering to refresh the quote. All four are marketing, so they only go to people who ticked the box on the form, and every one has an unsubscribe. Everyone in Nurture also gets a call at twelve months, whether or not they ticked the box. When they come back, the card moves to Quoting so the owner can refresh the price.',
           groups: [
             { title: 'The drip, marketing consent only', messages: ['NUR-01', 'NUR-02', 'NUR-03'] },
             { title: 'A year on, marketing consent only', messages: ['NUR-04'] },
@@ -1065,14 +1080,14 @@ window.JOURNEY = {
             {
               title: 'CHECK-IN {{contact.first_name}}: a year since the quote',
               desc:
-                'A year since this job went to Nurture. Ring and ask whether it is back on. Quotes often come back after one or two years. If it is, refresh the quote against current prices and send it, which moves the card to Quote Sent.',
+                'A year since this job went to Nurture. Ring and ask whether it is back on. Quotes often come back after one or two years. If it is, move the card to Quoting so the quote is refreshed against current prices.',
               role: 'OFFICE',
               due: '12 months',
             },
             {
               title: 'REVIEW {{contact.first_name}}: still a fit?',
               desc:
-                'Quarterly review of the nurture list. Remove anyone who is not a real job, and move anyone who has come back to Quote Sent or New Lead. A clean list keeps the emails landing in inboxes rather than in spam.',
+                'Quarterly review of the nurture list. Remove anyone who is not a real job, and move anyone who has come back to Quoting. A clean list keeps the emails landing in inboxes rather than in spam.',
               role: 'OWNER',
               due: 'Quarterly',
             },
@@ -1084,56 +1099,92 @@ window.JOURNEY = {
           clientDo: [
             'Accepted online: nothing to do. The thank-you has gone.',
             'Accepted by phone or purchase order: move the card here and note which quote they chose.',
-            'Needs a look first: move the card to Inspection Required. Otherwise: Booking Required.',
+            'Owner: needs a look at the site first? Move the card to Inspection Required. Otherwise: Booking Required.',
             'An add-on quote on a job already under way: send it as normal. Accepting it updates the job, not this stage.',
           ],
           means: 'They have accepted a quote, online, by phone or with a purchase order.',
           exits: 'An inspection is needed, or the install date is ready to book', stalls: '1 day',
-          intro: 'The accept button moves the card here by itself. A yes on the phone, or a purchase order, is moved here by hand. Arriving here marks the job Won, stops every sales message on the card, and thanks the customer with what happens next: the install date first, reminders before the job, and the deposit invoice closer to the date, not now. The owner and the office are both told. If the job needs a look before it is booked, the card goes to Inspection Required, otherwise straight to Booking Required. A second quote on a job that is already under way, say floor protection or window sealing, does not bring a card back here: the system recognises the active job and only tells the office to update the value.',
+          intro: 'The accept button moves the card here by itself. A yes on the phone, or a purchase order, is moved here by hand. Arriving here marks the job Won, stops every sales message on the card, and thanks the customer with what happens next: the install date first, reminders before the job, and the deposit invoice closer to the date, not now. The owner and the office are both told. If the job needs a look at the site before it is booked, the card goes to Inspection Required, otherwise straight to Booking Required. A second quote on a job that is already under way, say floor protection or window sealing, does not bring a card back here: the system recognises the active job and only tells the office to update the value.',
           groups: [{ title: 'On acceptance', messages: ['X-ACC-01', 'X-ACC-02'], caption: 'Not sent for an add-on quote on a job that is already under way.' }],
           alerts: [8],
           tasks: [{
             title: 'NEXT {{contact.first_name}}: inspection or booking',
             desc:
               'The customer has accepted. Check the option they chose is on the card, then decide the next step: move the card to Inspection Required if something needs checking on site first, otherwise to Booking Required so the install date can be booked.',
-            role: 'OFFICE',
+            role: 'OWNER',
             due: 'Same day',
           }],
           automation: ['Status set to Won. Every sales sequence on the card stops: the dial emails, the phone call reminders, the quote follow-up and the nurture drip.', 'accepted_quote_option recorded. The opportunity value is the accepted option.', 'Tag is-active-job added. While it is on, an accepted add-on quote updates the value and tells the office, without sending the thank-you again or moving the card.', 'deposit_amount set from the accepted quote where a deposit applies. Nothing is invoiced yet.', 'foam_order_type set: stock open cell or special order. It decides when the deposit is due.'],
         },
         {
-          key: 'booking-required', n: 9, name: 'Booking Required', phase: 'job', headline: 'Book the install date',
+          key: 'inspection-required', n: 9, name: 'Inspection Required', phase: 'job', headline: 'A look at the site before booking',
           clientDo: [
-            'Book the install date in the install calendar on the card, with the crew. Not in a phone calendar first.',
+            'Owner: book the visit in the inspection calendar from the card. The confirmation and the morning text go by themselves.',
+            'At the site, record the area in square metres, the foam type and the access notes on the card before you leave.',
+            'The job can go ahead: move the card to Booking Required. The visit shows it cannot be done: Lost, with the reason.',
+          ],
+          means: 'They have accepted, and the site needs a look before the install is booked.',
+          exits: 'The visit is done: Booking Required, or Lost if the job cannot be done', stalls: '5 days to book the visit',
+          intro: 'Only about one job in ten or twenty needs this, and it always comes after the quote is accepted. Most jobs are quoted from the phone call. Where the area is uncertain, the quote covers the worst case so the customer knows the most they will pay, and once they are happy with it we come and look. The visit goes in the inspection calendar, which sends a confirmation with the address and a text on the morning. Our own people go to the site, so there is nothing here about the customer not turning up. If the customer cancels, the owner is told and rebooks it by hand. Whoever attends records the area, the foam and the access on the card before leaving. If the job can go ahead, the card moves to Booking Required. If it cannot, it is closed as Lost.',
+          groups: [
+            { title: 'When the visit is booked', messages: ['X-INSP-01'] },
+            { title: 'On the morning', messages: ['X-INSP-02'] },
+            { title: 'If it moves', messages: ['X-APPT-06'] },
+          ],
+          alerts: [5],
+          tasks: [
+            {
+              title: 'BOOK {{contact.first_name}}: site inspection',
+              desc:
+                'Book the site inspection in the inspection calendar from the card, at a time that suits the customer. Confirm the address and access to the areas being sprayed. The confirmation and the morning text go by themselves.',
+              role: 'OWNER',
+              due: '2 days',
+            },
+            {
+              title: 'ATTEND {{contact.first_name}}: inspection, {{opportunity.site_address}}',
+              desc:
+                'Attend the inspection. Before you leave, record on the card: the area in square metres, the foam type, access notes, and anything that will slow the crew down. Then move the card to Booking Required, or close it as Lost if the job cannot be done.',
+              role: 'ESTIMATOR',
+              due: 'On the date',
+            },
+          ],
+          automation: ['Only a card in Quote Accepted moves here. A visit booked before the quote, which is rare, leaves the card where it is.', 'inspection_date set from the inspection calendar.', 'access_notes, sqm_estimate and product_type captured on site from the app, not later from memory.', 'A cancelled visit clears inspection_date, alerts the owner and puts a task on the owner to rebook it. Nothing is rebooked automatically.'],
+        },
+        {
+          key: 'booking-required', n: 10, name: 'Booking Required', phase: 'job', headline: 'Book the install date',
+          clientDo: [
+            'Owner: book the install in the calendar for the vehicle doing the job. A job over several days, or using two rigs, gets a booking for each block.',
+            'Book it in the platform first, not straight into your Apple calendar. The two stay in sync either way once it is booked.',
             'The booking moves the card to Job Booked by itself.',
           ],
-          means: 'Accepted, and ready for an install date in the calendar.',
+          means: 'Accepted, inspected if needed, and ready for an install date in the calendar.',
           exits: 'The install is booked in the calendar', stalls: '2 business days',
-          intro: 'Kept separate from Quote Accepted because an inspection can sit between the two. The owner books the install date in the install calendar in the platform, not a phone calendar, because the booking is what moves the card to Job Booked and starts everything that follows: the confirmation, the preparation notes, the reminders and, on jobs that take one, the deposit. Long lead times are fine. A job booked three months out gets its deposit invoice two weeks before the date, not today.',
+          intro: 'Kept separate from Quote Accepted because an inspection can sit between them, and because accepting a quote does not mean a date has been set. There is one install calendar per vehicle: the InjectaCore rig, the van, the Fuso truck and the Mercedes rig. A job can run over several days and can use two rigs on different days, so each block is booked in the right vehicle\'s calendar. The owner books the install in the platform first, because the booking is what moves the card to Job Booked and starts everything that follows: the confirmation, the preparation notes, the reminders and, on jobs that take one, the deposit invoice. Once it is booked, it shows in the owner\'s Apple calendar too, and moving it in either place moves it in both.',
           groups: [],
           alerts: [],
           tasks: [{
             title: 'BOOK {{contact.first_name}}: install date',
             desc:
-              'Book the install date in the install calendar from the card, and put the crew on it. Book it here first, not in a phone calendar, because the booking is what sends the confirmation and sets up the reminders and the deposit timing.',
+              'Book the install in the calendar for the vehicle doing the job: the InjectaCore rig, the van, the Fuso truck or the Mercedes rig. A job over several days or using two rigs gets a booking for each block. Book it here first, not in the Apple calendar, because the booking is what sends the confirmation and sets up the reminders and the deposit.',
             role: 'OWNER',
             due: '2 business days',
           }],
-          automation: ['The install calendar booking sets job_date and crew_assigned and moves the card to Job Booked.', 'Apple and Outlook calendars sync with the install calendar. That set-up is covered by the separate calendars task.', 'Over 2 business days here: listed in the daily summary.'],
+          automation: ['Four install calendars, one per vehicle: the InjectaCore rig, the van, the Fuso truck and the Mercedes rig.', 'The first install booking for the job sets job_date, job_end_date, vehicles_booked and crew_assigned, stamps job_booked_at and moves the card to Job Booked. Further bookings for the same job extend the dates without resending anything.', 'Two-way sync with the owner\'s Apple (iCloud) calendar, under the separate calendars task.', 'Over 2 business days here: listed in the daily summary.'],
         },
         {
-          key: 'job-booked', n: 10, name: 'Job Booked', phase: 'job', headline: 'In the diary, and confirmed twice',
+          key: 'job-booked', n: 11, name: 'Job Booked', phase: 'job', headline: 'In the diary, and confirmed before the day',
           clientDo: [
             'Nothing to send. The booking, the reminders and the morning text go by themselves.',
             'A customer taps No: ring them that day, agree a new date, and move the booking in the calendar. The reminders follow the new date.',
+            'Owner: two weeks before the job, a draft deposit invoice appears with a task. Check it and send it.',
             'Running late on the day? Send the saved late text from the app, one tap.',
-            'No deposit on this job: the card stays here until the crew marks the job complete.',
           ],
           means: 'An install date is booked in the calendar.',
           exits: 'The deposit invoice is sent, or the crew marks the job complete', stalls: 'The job date',
-          intro: 'The booking sends a text and an email with the date and the preparation list: clear access, move what you would rather not have dust near, parking close for the rig, pets elsewhere, someone over eighteen to let us in. Seven days before and again 48 hours before, a reminder goes by email and text with two buttons: yes, the date still works, or no, it does not. A no tells the team straight away and thanks the customer, and somebody rings to rearrange. The crew and the rig are moved by a person, never automatically. On the morning a text says the crew is on the way, and the crew has a one-tap text if they are running late. On jobs that take a deposit, the deposit invoice goes two weeks before the date and moves the card to Deposit Requested.',
+          intro: 'The booking sends a text and an email with the date and the preparation list: clear access, move what you would rather not have dust near, parking close for the rig, pets elsewhere, someone over eighteen to let us in. If the job was booked more than six weeks ahead, an email a month before asks whether it is still on schedule. Seven days before and again 48 hours before, a reminder goes by email and text. Each of these has two buttons: yes, the date still works, or no, it does not. A no tells the team straight away and thanks the customer, and somebody rings to rearrange. The crew and the rig are moved by a person, never automatically. On the morning a text says the crew is on the way. On jobs that take a deposit, a draft deposit invoice is prepared two weeks before the date for the owner to check and send, and sending it moves the card to Deposit Requested.',
           groups: [
             { title: 'When the date is booked', messages: ['JOB-01', 'JOB-02'] },
+            { title: 'A month before, for jobs booked more than six weeks ahead', messages: ['REM-06'], caption: 'Raised by Glenn on the call. Easy to drop if it is not wanted.' },
             { title: 'Seven days before', messages: ['REM-01', 'REM-02'], caption: 'Yes and No are buttons. Yes is noted on the card. No goes to the team.' },
             { title: '48 hours before', messages: ['REM-03', 'REM-04'] },
             { title: 'If they tap No', messages: ['REM-05'] },
@@ -1152,55 +1203,66 @@ window.JOURNEY = {
             {
               title: 'CALL {{contact.first_name}}: date not confirmed',
               desc:
-                'Neither reminder got a Yes or a No. Ring to confirm the job is still on, that access is clear, and that someone over eighteen will be there to let the crew in.',
+                'Neither the 7 day nor the 48 hour reminder got a Yes or a No. Ring to confirm the job is still on, that access is clear, and that someone over eighteen will be there to let the crew in.',
               role: 'OFFICE',
               due: 'Day before the job, if neither reminder was answered',
             },
           ],
-          automation: ['job_date and crew_assigned set from the install calendar.', 'Reminders scheduled from job_date: 7 days and 48 hours before, email and text, each with Yes and No buttons. If the date moves, they re-queue.', 'Yes sets job_confirmed to Yes. No sets it to No, fires the alert and sends REM-05. No automatic rescheduling.', 'The deposit invoice is scheduled from job_date and foam_order_type, and moves the card to Deposit Requested when it goes.', 'Variations agreed on site go out from the variation document for a digital signature, for example an extra 100 sqm, and are added to the value.'],
+          automation: ['job_date, job_end_date, vehicles_booked and crew_assigned set from the install calendars.', 'Reminders scheduled from job_date: a month before (only when booked more than 6 weeks ahead), 7 days and 48 hours before. Each has Yes and No buttons. If the date moves, they re-queue.', 'Yes sets job_confirmed to Yes. No sets it to No, fires the alert and sends REM-05. No automatic rescheduling.', 'A draft deposit invoice is prepared 14 days before job_date, with a task to the owner. Sending it moves the card to Deposit Requested.', 'Variations agreed on site go out from the variation document for a digital signature, for example an extra 100 sqm, and are added to the value.'],
         },
         {
-          key: 'deposit-requested', n: 11, name: 'Deposit Requested', phase: 'job', headline: 'The deposit, timed to the job',
+          key: 'deposit-requested', n: 12, name: 'Deposit Requested', phase: 'job', headline: 'The deposit, timed to the job',
           clientDo: [
-            'Nothing to send. The invoice, the reminder and the receipt text go by themselves.',
+            'Owner: when the draft appears, check the amount, the due date and the terms, then send it. Sending it moves the card here.',
             'When the money lands, mark the deposit invoice paid. That sends the confirmation.',
-            'Unpaid on the due date: you get an alert. Ring them today and decide whether the crew holds the date.',
+            'Unpaid at 4pm on the due date: the customer gets a text asking for the remittance, and you are told. Decide whether the crew holds the date.',
           ],
           means: 'The deposit invoice is out. The job is booked and waiting for its date.',
           exits: 'The crew marks the job complete', stalls: 'The deposit due date',
-          intro: 'Deposits are not sent at booking, because a job booked months ahead would sit on an unpaid invoice for months. The deposit invoice goes 14 days before the install date, or straight away if the job is less than 14 days out, and sending it moves the card here. It is due one business day before the job for stock open cell foam, and seven days before for special-order foam, because that material is made and shipped for the job. The accepted quote, which carries the terms and conditions, is attached. A reminder text goes two days before it is due. If it is still unpaid on the due date, the team is told so the crew can be reassigned in time. Nothing is charged to a card automatically. When it lands, a one-line text confirms it, and the card waits here for the job day. Jobs that take no deposit skip this stage.',
+          intro: 'Deposits are not sent at booking, because a job booked months ahead would sit on an unpaid invoice for months. Two weeks before the install date, or straight away if the job is less than two weeks out, a draft deposit invoice is prepared from the accepted quote, with the quote attached, and the owner gets a task to check it and send it. Nothing goes to the customer until the owner presses send. It is due one business day before the job for stock open cell foam, and seven days before for special-order foam, because that material is made and shipped for the job and is only ordered once the deposit lands. Xero sends its own reminders, so there is no extra reminder before the due date. If it is still unpaid at 4pm on the due date, a text asks the customer for the remittance and the owner and the office are told, in time to move the crew if it does not arrive. Nothing is charged to a card automatically. Jobs that take no deposit skip this stage.',
           groups: [
-            { title: 'Two weeks before the job', messages: ['DEP-02'] },
-            { title: 'Two days before it is due', messages: ['DEP-03'] },
+            { title: 'When the owner sends it', messages: ['DEP-02'] },
+            { title: 'Unpaid at 4pm on the due date', messages: ['DEP-03'] },
             { title: 'When it lands', messages: ['DEP-01'] },
           ],
           alerts: [9, 13],
-          tasks: [{
-            title: 'CHASE {{contact.first_name}}: deposit unpaid',
-            desc:
-              'The deposit was due today and has not landed. Ring the customer today: most late deposits are a missed email, not a change of mind. If it will not be paid in time, tell the owner so the crew can be reassigned.',
-            role: 'OFFICE',
-            due: 'On the due date, if unpaid',
-          }],
-          automation: ['deposit_due_date worked out from job_date: one business day before for stock open cell, seven days before for special order.', 'The invoice is sent 14 days before job_date, or at once if the job is less than 14 days out, with the accepted quote attached. deposit_invoice_sent_at stamped. The 14 day send point is to confirm with Glenn.', 'Unpaid at deposit_due_date: alert to the owner and the office, and the chase task.', 'No card storage and no automatic charging.', 'deposit_received_at set when paid, which sends DEP-01.'],
+          tasks: [
+            {
+              title: 'INVOICE {{contact.first_name}}: check and send the deposit invoice',
+              desc:
+                'A draft deposit invoice is ready, made from the accepted quote with the quote and any purchase order attached. Check the amount, the due date and the payment terms, then send it. Sending it emails the customer and moves the card to Deposit Requested. Nothing is sent until you do.',
+              role: 'OWNER',
+              due: '2 business days',
+            },
+            {
+              title: 'CHASE {{contact.first_name}}: deposit unpaid',
+              desc:
+                'The deposit was due today and has not landed. The customer has had a text asking for the remittance. Check for a reply; if it will not arrive in time, move the crew to other work and tell the customer.',
+              role: 'OWNER',
+              due: 'On the due date, if unpaid',
+            },
+          ],
+          automation: ['deposit_due_date worked out from job_date: one business day before for stock open cell, seven days before for special order.', 'A draft invoice 14 days before job_date, or at once if the job is closer. Unsent after 2 business days: listed under Invoices to send in the daily summary.', 'Sending it stamps deposit_invoice_sent_at and moves the card here.', 'Unpaid at 4pm on deposit_due_date: DEP-03 to the customer, the alert to the owner and the office, and the chase task.', 'No card storage and no automatic charging.', 'deposit_received_at set when paid, which sends DEP-01 and tells the owner, so special-order foam can be ordered.'],
         },
         {
-          key: 'job-completed', n: 12, name: 'Job Completed', phase: 'job', headline: 'Done, invoiced, then the paperwork',
+          key: 'job-completed', n: 13, name: 'Job Completed', phase: 'job', headline: 'Done, invoiced, then the paperwork',
           clientDo: [
-            'Crew: photos on the card, then mark the job complete. The invoice goes by itself.',
+            'Crew: photos on the card, then mark the job complete.',
+            'Owner: a draft final invoice appears with a task. Adjust it for the area actually sprayed, with a variation or a credit, and send it. Sending it starts the reminders.',
+            'Owner: on the review task, leave Ask for Google review on Yes, or set it to No for a job that had problems.',
             'When the final invoice is paid, mark it paid. Then send the job report from the template the same day. There is a task.',
-            'A job with problems: set Ask for Google review to No on the contact before the four week mark.',
             'A retention is held: put the amount and the release date on the card before marking it paid.',
           ],
-          means: 'The crew has marked the job complete. The final invoice is out.',
+          means: 'The crew has marked the job complete. The final invoice is being checked and sent.',
           exits: 'The final invoice is paid', stalls: '14 days',
-          intro: 'The crew marks the job complete from the app once the photos are on the card, and that sends the final invoice. The invoice carries the payment schedule, whether that is one amount or several stages with their own due dates, and the accepted quote and any purchase order are attached. A thank-you note goes separately so the paperwork never dilutes it. Reminders at day 7 and day 14 stop the moment it is paid. The job report, with photos and the certificate of completion for the building surveyor, goes only once the final invoice is fully paid. Four weeks after the job, a text asks for a Google review, but only if Ask for Google review is set to Yes on the contact. It is Yes by default, and set to No by hand for a job that had problems. Once paid, the card closes as Won, unless a retention is being held.',
+          intro: 'The crew marks the job complete from the app once the photos are on the card. A thank-you note goes to the customer straight away. At the same moment a draft final invoice is prepared from the accepted quote, with the payment schedule, the balance after any deposit, and the accepted quote and any purchase order attached, and the owner gets a task to check it, adjust it for the area measured on the day, and send it. The reminders at day 7 and day 14 start only once it is sent, and stop the moment it is paid. The owner also gets a task to decide whether to ask for a Google review: it is Yes unless set to No. The job report, with photos and the certificate of completion for the building surveyor, goes only once the final invoice is fully paid. Four weeks after the job, a text asks how it is going and for a review, if the answer was Yes. Once paid, the card closes as Won, unless a retention is being held.',
           groups: [
-            { title: 'When the crew marks it complete', messages: ['JOB-05', 'PAY-01'] },
+            { title: 'When the crew marks it complete', messages: ['JOB-05'] },
+            { title: 'When the owner sends the final invoice', messages: ['PAY-01'] },
             { title: 'If unpaid', messages: ['PAY-02', 'PAY-03'] },
             { title: 'Once the final invoice is paid', messages: ['RPT-01'], caption: 'Sent by hand from a saved template, because the report and certificate are attached per job.' },
             { title: 'Four weeks after the job, only if Ask for Google review is Yes', messages: ['REV-01'] },
-            { title: 'Marketing consent only', messages: ['REV-02', 'REV-03'] },
+            { title: 'Marketing consent only', messages: ['REV-02', 'REV-03'], caption: 'The referral email is also skipped when Ask for Google review is No.' },
           ],
           alerts: [10],
           tasks: [
@@ -1219,24 +1281,38 @@ window.JOURNEY = {
               due: 'Before marking it complete',
             },
             {
+              title: 'INVOICE {{contact.first_name}}: check and send the final invoice',
+              desc:
+                'The job is marked complete and a draft final invoice is ready: the balance after any deposit, with the payment schedule and the accepted quote and any purchase order attached. Adjust it for the area actually sprayed, with a variation invoice or a credit, then send it. Sending it starts the payment reminders.',
+              role: 'OWNER',
+              due: '2 business days',
+            },
+            {
+              title: 'REVIEW {{contact.first_name}}: ask for a Google review?',
+              desc:
+                'The job is marked complete. Leave Ask for Google review on Yes, or set it to No on the contact for a job that had problems or a repeat commercial client such as Bondor or Australian Housing. Yes sends one text four weeks after the job. No sends no review request and no referral email.',
+              role: 'OWNER',
+              due: '7 days',
+            },
+            {
               title: 'CHASE {{contact.first_name}}: payment overdue',
               desc:
-                'Fourteen days unpaid. Ring rather than email: most late invoices are a question, not a refusal. Mark it paid the moment the money lands, which stops the reminders dead.',
+                'Fourteen days since the final invoice was sent, and it is unpaid. Ring rather than email: most late invoices are a question, not a refusal. Mark it paid the moment the money lands, which stops the reminders dead.',
               role: 'OFFICE',
-              due: 'Day 14',
+              due: 'Day 14 after it is sent',
             },
             {
               title: 'SEND {{contact.first_name}}: job report and certificates',
               desc:
                 'The final invoice is paid. Send the job report from the saved template today, with the photos and the certificate of completion attached, then stamp Job report sent on the card. It never goes before the invoice is fully paid.',
-              role: 'OFFICE',
+              role: 'OWNER',
               due: 'Same day as payment',
             },
           ],
-          automation: ['photos_captured is required before the job can be marked complete.', 'The final invoice is created from the accepted quote with its payment schedule, and the accepted quote and any purchase order attached. invoice_number and invoice_sent_at stamped.', 'Reminders stop the moment the invoice is marked paid. final_invoice_paid_at stamped.', 'Paid: the job report task is created. job_report_sent_at is stamped when it goes.', 'REV-01 sends 4 weeks after job_date, only when ask_for_google_review is Yes. The range agreed was 4 to 6 weeks.', 'Paid with no retention: the card closes as Won and is-active-job comes off.'],
+          automation: ['photos_captured is required before the job can be marked complete.', 'The final invoice is created as a draft from the accepted quote, with its payment schedule and the accepted quote and any purchase order attached. Nothing is sent until the owner sends it.', 'Sending it stamps invoice_number and invoice_sent_at and starts the reminders. Unsent after 2 business days: listed in the daily summary.', 'Reminders stop the moment the invoice is marked paid. final_invoice_paid_at stamped.', 'Paid: the job report task goes to the owner. job_report_sent_at is stamped when it goes.', 'REV-01 sends 4 weeks after job_date, only when ask_for_google_review is Yes. The range agreed was 4 to 6 weeks.', 'Paid with no retention: the card closes as Won and is-active-job comes off.'],
         },
         {
-          key: 'retention-claim', n: 13, name: 'Retention Claim', phase: 'job', headline: 'The money held back',
+          key: 'retention-claim', n: 14, name: 'Retention Claim', phase: 'job', headline: 'The money held back',
           clientDo: [
             'Put the retention amount and the release date on the card.',
             'On the release date, send the claim from the template. There is a task.',
@@ -1263,25 +1339,25 @@ window.JOURNEY = {
       name: 'Commercial & Industrial',
       short: 'Commercial',
       wonAt: 'quote-accepted',
-      blurb: 'Factories, warehouses, cold storage, agricultural facilities, data centres and mine sites. The same thirteen stages as residential, with company records, purchase orders, SWMS, inductions, site contacts and longer lead times.',
+      blurb: 'Factories, warehouses, cold storage, agricultural facilities, data centres and mine sites. The same fourteen stages as residential, with company records, purchase orders, SWMS, inductions, site contacts and longer lead times.',
       stages: [
         {
           key: 'new-lead', n: 1, name: 'New Lead', phase: 'sale', headline: 'The first fifteen minutes, and the owner told',
           clientDo: [
             'Ring within 15 minutes, twice back to back if needed. The owner already knows it has landed.',
-            'On the call, find out who decides, roughly how big it is, what the space is used for and when it is needed. Put the company, site address and a site contact on the card.',
-            'Then move the card the same way as residential: Quote Sent, Inspection Required, Follow-Up, Nurture, or Dial 1 if nobody answers.',
-            'Turns out to be a house: move the card to the Residential board.',
+            'On the call, find out what they need and put the company, site address and a site contact on the card.',
+            'They want a quote: move the card to Quoting. The owner usually rings them for the detail before pricing.',
+            'Otherwise the same as residential: Follow-Up, Nurture, or Dial 1 if nobody answers. Turns out to be a house: move it to the Residential board.',
           ],
           means: 'A lead has landed on the commercial board. Nobody has rung them yet.',
           exits: 'They are rung, and either answer or do not', stalls: '15 minutes to the first call',
-          intro: 'Routed here on property type, factory or farm, or moved here by hand when the message mentions a tender, a builder, or an area no house has. The text acknowledgement is the same as residential. The email is not: it asks for the five things that make the scoping call useful and mentions insurances and SWMS, because the person reading it will need them. The owner gets a text and an email the moment it lands. The office still makes the first call within fifteen minutes, and the card moves the same way as residential: to Quote Sent, Inspection Required, Follow-Up, Nurture, or Dial 1 if nobody answers.',
+          intro: 'Routed here on property type, factory or farm, or moved here by hand when the message mentions a tender, a builder, or an area no house has. The text acknowledgement is the same as residential. The email is not: it asks for the five things that make the scoping call useful and mentions insurances and SWMS, because the person reading it will need them. The owner gets a text and an email the moment it lands. The office still makes the first call within fifteen minutes. Someone who wants a quote goes to Quoting, where the owner usually rings them for more detail before pricing it.',
           groups: [{ title: 'The moment they enquire', messages: ['X-ACK-01', 'C-ACK-01'] }],
           alerts: [6, 1, 7],
           tasks: [{
             title: 'CALL {{contact.first_name}}: commercial lead, {{contact.company}}',
             desc:
-              'Ring the commercial lead within 15 minutes, twice back to back if needed. Aim to come off the call knowing who decides, roughly how big it is, what the space is used for, whether it is operating during the works, and when they need it done. Put the company, site address and a site contact on the card.',
+              'Ring the commercial lead within 15 minutes, twice back to back if needed. Put the company, site address and a site contact on the card. They want a quote: move the card to Quoting, which hands it to the owner. No answer to either call: Dial 1.',
             role: 'OFFICE',
             due: '15 minutes',
           }],
@@ -1334,39 +1410,26 @@ window.JOURNEY = {
           automation: ['Same close: day 7 passes with no reply, Lost with reason Unreachable.'],
         },
         {
-          key: 'inspection-required', n: 4, name: 'Inspection Required', phase: 'either', headline: 'Boots on site',
+          key: 'quoting', n: 4, name: 'Quoting', phase: 'sale', headline: 'Scope it, then price it',
           clientDo: [
-            'Book the visit in the inspection calendar from the card. The confirmation email and the morning text go by themselves.',
-            'Take insurances and SWMS. Record the area, product and access notes on the card before you leave.',
-            'Before the quote: send the proposal, which moves the card to Quote Sent.',
-            'After acceptance: move the card to Booking Required.',
+            'Office: after the call, move the card here. It is assigned to the owner by itself.',
+            'Owner: ring them for the detail: who decides, the area, what the space is used for, whether it is operating during the works, the programme. Plans or an energy report help.',
+            'Write the proposal and send it from the quote tool. Sending it moves the card to Quote Sent.',
+            'A future budget: Nurture. Gone elsewhere: Lost, with the reason.',
           ],
-          means: 'The works need a site visit before they can be priced or booked.',
-          exits: 'The visit is done, then the proposal is sent or the works are ready to book', stalls: '5 days to book the visit',
-          intro: 'More commercial jobs need a visit than residential ones, but most still start with a call. A card comes here before the proposal, when the works cannot be priced without seeing them, or after acceptance, when something needs checking before the dates are set. A commercial visit needs more than an address: the confirmation asks for induction requirements, PPE beyond standard, access arrangements and a site contact, and offers the insurances and SWMS in advance for their records. Our own people attend, so there is nothing here about anyone not turning up.',
-          groups: [
-            { title: 'On booking', messages: ['C-INSP-01'] },
-            { title: 'On the morning', messages: ['X-INSP-02'] },
-            { title: 'If it moves', messages: ['X-APPT-06'] },
-          ],
-          alerts: [],
-          tasks: [
-            {
-              title: 'BOOK {{contact.first_name}}: site inspection',
-              desc:
-                'Book the site inspection in the inspection calendar from the card, at a time that suits the customer. Confirm the address and access to the areas being sprayed. The confirmation and the morning text go by themselves.',
-              role: 'OFFICE',
-              due: '2 days',
-            },
-            {
-              title: 'ATTEND {{opportunity.site_address}}: inspection',
-              desc:
-                'Attend the visit with insurances and SWMS. Before you leave, record on the card: the area in square metres, the foam type, access notes, induction needs, and anything that will slow the crew down. Photos of problem areas help the proposal.',
-              role: 'ESTIMATOR',
-              due: 'On the date',
-            },
-          ],
-          automation: ['inspection_date set from the inspection calendar.', 'On site: sqm_estimate, product_type and access_notes captured from the app.', 'A cancelled visit clears inspection_date and puts a task on the office to rebook it.'],
+          means: 'They want a proposal. It is waiting on the owner to scope and price it.',
+          exits: 'The proposal is sent, or they defer, ask to be rung later, or go elsewhere', stalls: '5 business days',
+          intro: 'Commercial quotes almost always need more than the first call, so the card is assigned to the owner, who gets a text and an email, rings them for the detail, and builds the proposal: product, thickness, access, plant, staging and WHS. The value stays at zero until a real number exists, because commercial ranges from small to millions. Sending the proposal from the quote tool moves the card to Quote Sent by itself.',
+          groups: [],
+          alerts: [14],
+          tasks: [{
+            title: 'QUOTE {{contact.first_name}}: scope and send the proposal',
+            desc:
+              'Ring them for the detail: who decides, roughly how big, what the space is used for, whether it is operating during the works, and the programme. Work out product, thickness, access, plant, staging and WHS, then send the proposal from the quote tool, which moves the card to Quote Sent.',
+            role: 'OWNER',
+            due: '5 business days',
+          }],
+          automation: ['Entering Quoting assigns the card to the owner and fires alert 14 by text and email.', 'No forecast value. Left at zero until the proposal.', 'Sending the proposal from the quote tool moves the card to Quote Sent.', 'Over 5 business days here: listed under Quotes to write in the daily summary.'],
         },
         {
           key: 'quote-sent', n: 5, name: 'Quote Sent', phase: 'sale', headline: 'Priced, specified, documented',
@@ -1415,7 +1478,7 @@ window.JOURNEY = {
           tasks: [{
             title: 'CALL {{contact.first_name}}: callback as asked',
             desc:
-              'The customer asked to be rung at this time. Ring them, then move the card on: Quote Sent once a quote goes, Inspection Required if a visit is needed, Quote Accepted if they say yes, Nurture if it is not now, or Lost with a reason.',
+              'The customer asked to be rung at this time. Ring them, then move the card on: Quoting if they now want a quote, Quote Accepted if they say yes to a quote already sent, Nurture if it is not now, or Lost with a reason. Want more time on a quote? Set a new callback time.',
             role: 'OFFICE',
             due: 'At the time they asked',
           }],
@@ -1425,10 +1488,10 @@ window.JOURNEY = {
           key: 'nurture', n: 7, name: 'Nurture', phase: 'sale', headline: 'Real project, next budget',
           clientDo: [
             'Nothing to send. A check-in email goes every quarter to people who opted in.',
-            'When it comes back, refresh the proposal and send it, which moves the card to Quote Sent.',
+            'When it comes back, move the card to Quoting so the proposal is refreshed.',
           ],
           means: 'A real project in a future budget cycle.',
-          exits: 'It comes back: to Quote Sent for a refreshed proposal', stalls: 'Review quarterly',
+          exits: 'It comes back: to Quoting for a refreshed proposal', stalls: 'Review quarterly',
           intro: 'The commercial siding. One email every quarter, marketing consent permitting, offers to refresh the proposal against current pricing within a week, or to go quiet until a named quarter. Proposals from here often come back a year or two later, so the card keeps everything it learned the first time.',
           groups: [{ title: 'Quarterly, marketing consent only', messages: ['C-FUT-01'] }],
           alerts: [3],
@@ -1439,7 +1502,7 @@ window.JOURNEY = {
             role: 'OWNER',
             due: 'Quarterly',
           }],
-          automation: ['Sends only when consent_marketing is yes.', 'Any reply stops the drip. A refreshed proposal moves the card to Quote Sent.'],
+          automation: ['Sends only when consent_marketing is yes.', 'Any reply stops the drip. A project that comes back moves to Quoting.'],
         },
         {
           key: 'quote-accepted', n: 8, name: 'Quote Accepted', phase: 'won', headline: 'The go-ahead, and the paperwork',
@@ -1466,34 +1529,68 @@ window.JOURNEY = {
               title: 'NEXT {{contact.first_name}}: inspection or booking',
               desc:
                 'The customer has accepted. Check the option they chose is on the card, then decide the next step: move the card to Inspection Required if something needs checking on site first, otherwise to Booking Required so the install date can be booked.',
-              role: 'OFFICE',
+              role: 'OWNER',
               due: 'Same day',
             },
           ],
           automation: ['Written acceptance or po_number: status set to Won. Verbal only: status stays Open until po_number is entered.', 'Every sales sequence on the card stops.', 'accepted_quote_option recorded. Tag is-active-job added, so add-on and variation quotes do not re-fire this stage.'],
         },
         {
-          key: 'booking-required', n: 9, name: 'Booking Required', phase: 'job', headline: 'Set the programme',
+          key: 'inspection-required', n: 9, name: 'Inspection Required', phase: 'job', headline: 'Boots on site, before the works are booked',
           clientDo: [
-            'Agree the start and finish dates with the client, then book them in the install calendar on the card.',
+            'Owner: book the visit in the inspection calendar from the card. The confirmation email and the morning text go by themselves.',
+            'Take insurances and SWMS. Record the area, product and access notes on the card before you leave.',
+            'The works can go ahead: Booking Required. The visit shows they cannot: Lost, with the reason.',
+          ],
+          means: 'The client has accepted, and the site needs a look before the works are booked.',
+          exits: 'The visit is done: Booking Required, or Lost if the works cannot be done', stalls: '5 days to book the visit',
+          intro: 'Only after acceptance, and only where something needs checking before the dates are set. A commercial visit needs more than an address: the confirmation asks for induction requirements, PPE beyond standard, access arrangements and a site contact, and offers the insurances and SWMS in advance for their records. Our own people attend, so there is nothing here about anyone not turning up. A cancellation tells the owner, who rebooks it.',
+          groups: [
+            { title: 'On booking', messages: ['C-INSP-01'] },
+            { title: 'On the morning', messages: ['X-INSP-02'] },
+            { title: 'If it moves', messages: ['X-APPT-06'] },
+          ],
+          alerts: [5],
+          tasks: [
+            {
+              title: 'BOOK {{contact.first_name}}: site inspection',
+              desc:
+                'Book the site inspection in the inspection calendar from the card, at a time that suits the customer. Confirm the address and access to the areas being sprayed. The confirmation and the morning text go by themselves.',
+              role: 'OWNER',
+              due: '2 days',
+            },
+            {
+              title: 'ATTEND {{opportunity.site_address}}: inspection',
+              desc:
+                'Attend the visit with insurances and SWMS. Before you leave, record on the card: the area in square metres, the foam type, access notes, induction needs, and anything that will slow the crew down. Then move the card to Booking Required, or close it as Lost.',
+              role: 'ESTIMATOR',
+              due: 'On the date',
+            },
+          ],
+          automation: ['Only a card in Quote Accepted moves here.', 'inspection_date set from the inspection calendar.', 'On site: sqm_estimate, product_type and access_notes captured from the app.', 'A cancelled visit clears inspection_date, alerts the owner and puts a task on the owner to rebook it.'],
+        },
+        {
+          key: 'booking-required', n: 10, name: 'Booking Required', phase: 'job', headline: 'Set the programme',
+          clientDo: [
+            'Agree the start and finish dates with the client, then book each block in the calendar for the vehicle doing it.',
             'The booking moves the card to Job Booked by itself.',
           ],
           means: 'Accepted. The works dates need booking in the calendar.',
           exits: 'The works are booked in the calendar', stalls: '2 business days',
-          intro: 'The owner sets the start and finish dates with the client and books them in the install calendar. Long lead times are normal here: works booked three months out still get any deposit invoice only two weeks before the start, not today. The booking moves the card to Job Booked and sends the mobilisation email.',
+          intro: 'The owner sets the start and finish dates with the client and books them in the install calendars, one per vehicle: the InjectaCore rig, the van, the Fuso truck and the Mercedes rig. Larger works often run several days and use two rigs on different days, so each block is booked in the right vehicle\'s calendar. Long lead times are normal here: works booked three months out still get any deposit invoice only two weeks before the start. The first booking moves the card to Job Booked and sends the mobilisation email.',
           groups: [],
           alerts: [],
           tasks: [{
             title: 'BOOK {{contact.first_name}}: works dates',
             desc:
-              'Agree the start and finish dates with the client, then book them in the install calendar from the card with the crew. Book it there first, because the booking sends the mobilisation email and sets up the reminders.',
+              'Agree the start and finish dates with the client, then book each block in the calendar for the vehicle doing it, with the crew. Book it in the platform first, because the booking sends the mobilisation email and sets up the reminders. It then shows in the Apple calendar too.',
             role: 'OWNER',
             due: '2 business days',
           }],
-          automation: ['The install calendar booking sets job_date and job_end_date and moves the card to Job Booked.', 'Apple and Outlook calendars sync with the install calendar, under the separate calendars task.'],
+          automation: ['The first install booking sets job_date, job_end_date and vehicles_booked, stamps job_booked_at and moves the card to Job Booked. Further bookings extend the dates without resending anything.', 'Two-way sync with the owner\'s Apple (iCloud) calendar, under the separate calendars task.'],
         },
         {
-          key: 'job-booked', n: 10, name: 'Job Booked', phase: 'job', headline: 'Inductions, SWMS, access, and confirmed twice',
+          key: 'job-booked', n: 11, name: 'Job Booked', phase: 'job', headline: 'Inductions, SWMS, access, and confirmed before the start',
           clientDo: [
             'Get the crew inducted and the SWMS accepted before the start date. Two tasks cover it.',
             'A No on a reminder: ring the client today and move the booking by hand.',
@@ -1502,9 +1599,10 @@ window.JOURNEY = {
           ],
           means: 'The works dates are booked.',
           exits: 'The deposit invoice is sent, or the works are marked complete', stalls: 'The start date',
-          intro: 'The booking sends the mobilisation email: dates, crew, SWMS, insurances and the crew list for induction, and four things back from the client, the last of which matters more than it sounds: the area has to be clear of other trades during application and cure. Seven days and 48 hours before the start, the site contact gets the same Yes or No reminders as residential. A No tells the team, and the crew is moved by a person. Each site morning the site contact gets a text naming the lead on the day. On staged jobs a weekly progress email goes on Fridays from a template, filled in by hand, and progress claims go per the programme.',
+          intro: 'The booking sends the mobilisation email: dates, crew, SWMS, insurances and the crew list for induction, and four things back from the client, the last of which matters more than it sounds: the area has to be clear of other trades during application and cure. Works booked more than six weeks ahead get an email a month before asking whether the programme still holds, because a builder\'s programme often slips. Seven days and 48 hours before the start, the site contact gets the same Yes or No reminders as residential. A No tells the team, and the crew is moved by a person. Each site morning the site contact gets a text naming the lead on the day. On staged jobs a weekly progress email goes on Fridays from a template, filled in by hand, and progress claims go per the programme.',
           groups: [
             { title: 'When the works are booked', messages: ['C-MOB-01'] },
+            { title: 'A month before, for works booked more than six weeks ahead', messages: ['REM-06'], caption: 'Raised by Glenn on the call. Easy to drop if it is not wanted.' },
             { title: 'Seven days and 48 hours before', messages: ['REM-01', 'REM-02', 'REM-03', 'REM-04'] },
             { title: 'If they tap No', messages: ['REM-05'] },
             { title: 'Each site day', messages: ['C-SITE-01'] },
@@ -1546,50 +1644,61 @@ window.JOURNEY = {
               title: 'CLAIM {{opportunity.site_address}}: progress claim',
               desc:
                 'Issue the progress claim for the completed stage, put its invoice number on the card, and attach the photos, any signed variations, the accepted quote and the purchase order.',
-              role: 'OFFICE',
+              role: 'OWNER',
               due: 'Per milestone',
             },
           ],
-          automation: ['job_date, job_end_date, crew_assigned and a site contact set on the card.', 'Reminders at 7 days and 48 hours before job_date, with Yes and No buttons. No automatic rescheduling.', 'Variations go out from the variation document for a digital signature and are added to the value as they are signed.'],
+          automation: ['job_date, job_end_date, vehicles_booked, crew_assigned and a site contact set on the card.', 'Reminders a month before (only when booked more than 6 weeks ahead), 7 days and 48 hours before job_date, with Yes and No buttons. No automatic rescheduling.', 'Variations go out from the variation document for a digital signature and are added to the value as they are signed.'],
         },
         {
-          key: 'deposit-requested', n: 11, name: 'Deposit Requested', phase: 'job', headline: 'The deposit, where one applies',
+          key: 'deposit-requested', n: 12, name: 'Deposit Requested', phase: 'job', headline: 'The deposit, where one applies',
           clientDo: [
-            'Nothing to send. The invoice, the reminder and the receipt text go by themselves.',
+            'Owner: check the draft deposit invoice and send it. Sending it moves the card here.',
             'When the money lands, mark the deposit invoice paid.',
-            'Unpaid on the due date: ring them today and decide whether the crew holds.',
+            'Unpaid at 4pm on the due date: the client gets a text asking for the remittance, and you are told. Decide whether the crew holds.',
           ],
           means: 'The deposit invoice is out. The works are booked and waiting for their start.',
           exits: 'The works are marked complete', stalls: 'The deposit due date',
-          intro: 'Many commercial jobs on a purchase order take no deposit and skip this stage. Where one applies, usually for special-order foam, the rule is the same as residential: the invoice goes 14 days before the start, with the accepted quote and the purchase order attached. It is due 7 days before for special-order foam and 1 business day before for stock open cell, and an unpaid deposit at its due date tells the team in time to reassign the crew.',
+          intro: 'Many commercial jobs on a purchase order take no deposit and skip this stage. Where one applies, usually for special-order foam, the rule is the same as residential: a draft is prepared two weeks before the start, with the accepted quote and the purchase order attached, and the owner checks it and sends it. It is due 7 days before for special-order foam and 1 business day before for stock open cell. If it is unpaid at 4pm on the due date, a text asks the client for the remittance and the team is told in time to reassign the crew.',
           groups: [
-            { title: 'Two weeks before the start', messages: ['DEP-02'] },
-            { title: 'Two days before it is due', messages: ['DEP-03'] },
+            { title: 'When the owner sends it', messages: ['DEP-02'] },
+            { title: 'Unpaid at 4pm on the due date', messages: ['DEP-03'] },
             { title: 'When it lands', messages: ['DEP-01'] },
           ],
           alerts: [9, 13],
-          tasks: [{
-            title: 'CHASE {{contact.first_name}}: deposit unpaid',
-            desc:
-              'The deposit was due today and has not landed. Ring the customer today: most late deposits are a missed email, not a change of mind. If it will not be paid in time, tell the owner so the crew can be reassigned.',
-            role: 'OFFICE',
-            due: 'On the due date, if unpaid',
-          }],
-          automation: ['Same timing as residential, from job_date and foam_order_type. The 14 day send point is to confirm with Glenn.', 'No deposit on the job: the card goes from Job Booked to Job Completed.'],
+          tasks: [
+            {
+              title: 'INVOICE {{contact.first_name}}: check and send the deposit invoice',
+              desc:
+                'A draft deposit invoice is ready, made from the accepted quote with the quote and any purchase order attached. Check the amount, the due date and the payment terms, then send it. Sending it emails the customer and moves the card to Deposit Requested. Nothing is sent until you do.',
+              role: 'OWNER',
+              due: '2 business days',
+            },
+            {
+              title: 'CHASE {{contact.first_name}}: deposit unpaid',
+              desc:
+                'The deposit was due today and has not landed. The customer has had a text asking for the remittance. Check for a reply; if it will not arrive in time, move the crew to other work and tell the customer.',
+              role: 'OWNER',
+              due: 'On the due date, if unpaid',
+            },
+          ],
+          automation: ['Same timing as residential, from job_date and foam_order_type: a draft 14 days before, sent by the owner.', 'No deposit on the job: the card goes from Job Booked to Job Completed.'],
         },
         {
-          key: 'job-completed', n: 12, name: 'Job Completed', phase: 'job', headline: 'Works complete, claim, then close-out',
+          key: 'job-completed', n: 13, name: 'Job Completed', phase: 'job', headline: 'Works complete, claim, then close-out',
           clientDo: [
-            'Crew: photos and signed variations on the card, then mark the works complete. The final claim goes by itself.',
+            'Crew: photos and signed variations on the card, then mark the works complete.',
+            'Owner: a draft final claim appears with a task. Check it against the area actually sprayed and send it.',
+            'Owner: on the review task, repeat commercial clients such as Bondor and Australian Housing are set to No.',
             'When the final claim is paid, mark it paid and send the close-out pack from the template the same day.',
             'A retention is held: put the amount and the release date on the card before marking it paid.',
-            'Repeat commercial clients, such as Bondor and Australian Housing: Ask for Google review is set to No.',
           ],
-          means: 'The works are complete. The final claim is out.',
+          means: 'The works are complete. The final claim is being checked and sent.',
           exits: 'The final claim is paid', stalls: '30 days',
-          intro: 'The crew marks the works complete once the photos and signed variations are on the card, and that sends the final claim with its payment schedule, the accepted quote and the purchase order attached. A short note from us confirms the works are done and offers a walk-through for their handover. The close-out pack, with photos by area, product data and the certificate of completion, goes only when the final claim is paid. The day after payment, a thank-you asks for a reference: a phone call to a future client of similar scale. A Google review request goes four weeks after the works only if Ask for Google review is Yes, and repeat commercial clients are set to No.',
+          intro: 'The crew marks the works complete once the photos and signed variations are on the card. A short note confirms the works are done and offers a walk-through for their handover. A draft final claim is prepared with its payment schedule, the accepted quote and the purchase order attached, and the owner checks it and sends it. The close-out pack, with photos by area, product data and the certificate of completion, goes only when the final claim is paid. The day after payment, a thank-you asks for a reference: a phone call to a future client of similar scale. The owner decides on the review task whether a Google review is asked for, and repeat commercial clients are set to No.',
           groups: [
-            { title: 'When the works are complete', messages: ['C-DONE-01', 'PAY-01'] },
+            { title: 'When the works are complete', messages: ['C-DONE-01'] },
+            { title: 'When the owner sends the final claim', messages: ['PAY-01'] },
             { title: 'Once the final claim is paid', messages: ['RPT-01', 'C-CLOSE-01'] },
             { title: 'Four weeks after the works, only if Ask for Google review is Yes', messages: ['REV-01'] },
           ],
@@ -1610,6 +1719,20 @@ window.JOURNEY = {
               due: 'As they happen',
             },
             {
+              title: 'INVOICE {{contact.first_name}}: check and send the final invoice',
+              desc:
+                'The job is marked complete and a draft final invoice is ready: the balance after any deposit, with the payment schedule and the accepted quote and any purchase order attached. Adjust it for the area actually sprayed, with a variation invoice or a credit, then send it. Sending it starts the payment reminders.',
+              role: 'OWNER',
+              due: '2 business days',
+            },
+            {
+              title: 'REVIEW {{contact.first_name}}: ask for a Google review?',
+              desc:
+                'The job is marked complete. Leave Ask for Google review on Yes, or set it to No on the contact for a job that had problems or a repeat commercial client such as Bondor or Australian Housing. Yes sends one text four weeks after the job. No sends no review request and no referral email.',
+              role: 'OWNER',
+              due: '7 days',
+            },
+            {
               title: 'CHASE {{contact.first_name}}: claim overdue',
               desc:
                 'Thirty days on an unpaid claim. Commercial payment runs are slow and usually fine, so ask the accounts contact where it sits in the run rather than chasing the site contact.',
@@ -1620,7 +1743,7 @@ window.JOURNEY = {
               title: 'SEND {{contact.first_name}}: job report and certificates',
               desc:
                 'The final invoice is paid. Send the job report from the saved template today, with the photos and the certificate of completion attached, then stamp Job report sent on the card. It never goes before the invoice is fully paid.',
-              role: 'OFFICE',
+              role: 'OWNER',
               due: 'Same day as payment',
             },
             {
@@ -1631,10 +1754,10 @@ window.JOURNEY = {
               due: 'Day 7',
             },
           ],
-          automation: ['photos_captured is required before the works can be marked complete.', 'The final claim is created from the accepted quote with its payment schedule; the accepted quote and the purchase order are attached.', 'Paid: the close-out pack task, C-CLOSE-01 the next day, and the card closes unless a retention is held.', 'Payment terms on commercial claims are still to confirm with Glenn.'],
+          automation: ['photos_captured is required before the works can be marked complete.', 'The final claim is created as a draft from the accepted quote with its payment schedule; the accepted quote and the purchase order are attached. Nothing is sent until the owner sends it.', 'Paid: the close-out pack task to the owner, C-CLOSE-01 the next day, and the card closes unless a retention is held.', 'Payment terms on commercial claims are still to confirm with Glenn.'],
         },
         {
-          key: 'retention-claim', n: 13, name: 'Retention Claim', phase: 'job', headline: 'The money held back',
+          key: 'retention-claim', n: 14, name: 'Retention Claim', phase: 'job', headline: 'The money held back',
           clientDo: [
             'Put the retention amount and the release date on the card.',
             'On the release date, send the claim from the template. There is a task.',
@@ -1663,9 +1786,9 @@ window.JOURNEY = {
      job across the business. It is a saved view, not a workflow. */
   overview: {
     title: 'The whole pipeline in one view',
-    lede: 'Both boards use the same thirteen stages in the same order, so the whole business reads in one view: every open job, residential and commercial, stage by stage. The boards stay separate for the day-to-day work. The overview is for seeing all of it at once, and it is where the owner looks first on a Monday.',
+    lede: 'Both boards use the same fourteen stages in the same order, so the whole business reads in one view: every open job, residential and commercial, stage by stage. The boards stay separate for the day-to-day work. The overview is for seeing all of it at once, and it is where the owner looks first on a Monday.',
     build: [
-      'Keep the stage names and order identical on both boards. The overview depends on it, and the checker fails if the two boards drift apart.',
+      'Keep the stage names and order identical on both boards. The overview depends on it, and the checker fails if either board drifts from the order agreed on the call.',
       'Opportunities, list view: filter on both pipelines and status Open, sort by stage, and save it as "Whole pipeline". Share it with the owner and the office. Confirm at build that the list view takes both pipelines in one filter.',
       'If the list view cannot take both pipelines, build the same thing as a contact smart list filtered on the stage tags: stage-res-<key> or stage-com-<key> for the same key, one saved filter per stage.',
       'Dashboard, "Whole pipeline": a stage funnel widget for each board side by side, both filtered to status Open, plus open value and won value, each filtered on status. Never an unfiltered value.',
@@ -1680,10 +1803,11 @@ window.JOURNEY = {
       'Missed a call? The caller gets a text within a minute. Ring them back within 30 minutes. There is a task.',
       'A customer replies? Everything automatic pauses for them. Answer from the app, not your own phone, so the conversation stays on the card.',
       'Someone texts STOP? They come off marketing automatically. Nothing for you to do.',
+      'Something handed to you? The owner gets a text and an email; the office gets an email.',
     ],
-    intro: 'Two messages and four alerts run regardless of where anyone is on either board. The missed-call text-back is the single highest-value automation in the whole build: for a trade business where the phone rings while someone is up a ladder, it is the difference between a lead and a competitor\'s lead. The out-of-hours reply sets an expectation instead of leaving a text unanswered until morning.',
+    intro: 'Two messages and five alerts run regardless of where anyone is on either board. The missed-call text-back is the single highest-value automation in the whole build: for a trade business where the phone rings while someone is up a ladder, it is the difference between a lead and a competitor\'s lead. The out-of-hours reply sets an expectation instead of leaving a text unanswered until morning. Anything assigned to someone tells them, by text and email for the owner and by email for the office.',
     groups: [{ title: 'The phone', messages: ['SYS-01'] }, { title: 'Out of hours', messages: ['SYS-02'] }],
-    alerts: [2, 3, 10, 11],
+    alerts: [2, 3, 10, 11, 14],
     tasks: [
       {
         title: 'RING BACK {{contact.first_name}}: missed call',
@@ -1718,18 +1842,21 @@ window.JOURNEY = {
     { title: 'Send window', body: 'Outbound customer messages send between 8am and 8pm, Monday to Saturday, local time. Confirmations send immediately because the person is waiting for them. Chases and reminders wait for the window. The Do Not Call standard governs telemarketing calls rather than SMS to someone who enquired, so this is policy rather than law, and it exists because a 6am quote chase costs more goodwill than it earns.' },
     { title: 'Call recording', body: 'If assistant calls are recorded, callers are told at the start of the call. Victoria\'s rules on recording private conversations are strict, so this is a script requirement rather than a nice to have.' },
     { title: 'Prices come from a person, in writing', body: 'Nothing in the journey states a price, a lead time or a performance figure that has not been substantiated. The assistant is barred from quoting: a price comes from the team, in a written quote, after the job has been talked through, so it is never a guess that turns into a commitment.' },
+    { title: 'Invoices are checked before they go', body: 'Deposit and final invoices are prepared automatically as drafts, from the accepted quote, and a person checks and sends each one. Nothing is charged to a card and no card details are stored.' },
   ],
 
   buildOrder: [
     { ids: 'SYS-01', why: 'Missed call text-back. Highest return of anything here.' },
-    { ids: 'X-ACK-01, X-ACK-02, alert 7', why: 'The two minute acknowledgement and the 15 minute call timer.' },
+    { ids: 'X-ACK-01, X-ACK-02, alerts 1 and 7', why: 'The two minute acknowledgement, the new lead email, and the 15 minute call timer.' },
     { ids: 'DIAL-01 to 04', why: 'The tried-to-call text and the three Dial 2 emails, with the honest close.' },
+    { ids: 'Quoting, alert 14', why: 'The hand-over to the owner, by text and email, so no quote waits unseen.' },
     { ids: 'R-QUOTE, R-FU-01 to 04, LOST-01', why: 'The quote with its accept button, the follow-up that converts quotes, and the goodbye.' },
-    { ids: 'X-ACC-01, X-ACC-02, JOB-01, JOB-02, REM-01 to 05', why: 'Acceptance, the booking, and the two confirm reminders.' },
-    { ids: 'DEP-01 to 03', why: 'Deposit timing by foam type, and the unpaid alert.' },
-    { ids: 'JOB-04, JOB-05, PAY-01 to 03, RPT-01', why: 'The job day, the final invoice, and the job report once it is paid.' },
+    { ids: 'X-ACC-01, X-ACC-02, JOB-01, JOB-02, REM-01 to 05', why: 'Acceptance, the booking, and the confirm reminders.' },
+    { ids: 'DEP-01 to 03, PAY-01 to 03', why: 'The draft deposit and final invoices for the owner to send, the deposit timing by foam type, and the late-deposit text.' },
+    { ids: 'JOB-04, JOB-05, RPT-01', why: 'The job day, the completion note, and the job report once the invoice is paid.' },
     { ids: 'X-APPT, X-INSP', why: 'The phone call booking and the site inspection, used by a minority of jobs.' },
     { ids: 'REV-01', why: 'The review ask, gated on Ask for Google review.' },
+    { ids: 'REM-06', why: 'The month-out check for jobs booked far ahead. Easy to drop.' },
     { ids: 'NUR-01 to 04, REV-02, REV-03', why: 'Once there is a consented list worth mailing.' },
     { ids: 'RET-01 and the commercial set', why: 'Last. That board moves slowly enough that a person writing the email is still viable meanwhile.' },
   ],
@@ -1741,11 +1868,11 @@ window.JOURNEY = {
   reuseSteps: [
     'Create the custom values on the new sub-account and fill them in. That table is the whole template mechanism, including the person who signs the messages and their mobile.',
     'Create the custom fields below. The website webhook keys are fixed; map them on the way in.',
-    'Build both boards with the same thirteen stages, keys and order. The whole-pipeline view depends on it.',
+    'Build both boards with the same fourteen stages, keys and order. The whole-pipeline view depends on it.',
     'Import the messages. Anything tagged Core works unchanged for any trade or service business.',
     'Rewrite only the messages tagged Trade specific. They name the product or the physical work, so they cannot be tokenised without turning into mush.',
     'Replace the sample customers in the data file so previews read right for the new trade.',
-    'Run npm run docs:crm. The checker fails on any missing sample value, any email without a preheader, any agency wording in text the client reads, and any drift between the two boards.',
+    'Run npm run docs:crm. The checker fails on any missing sample value, any email without a preheader, any agency wording in text the client reads, any alert channel that breaks the role rule, and any drift between the two boards.',
   ],
 
   customFields: [
@@ -1793,26 +1920,25 @@ window.JOURNEY = {
     },
     {
       group: 'Contact fields, CRM-managed',
-      note: 'Not from the website. Set by workflows or by hand. ask_for_google_review replaces a review stage: it is Yes unless someone sets it to No.',
+      note: 'Not from the website. Set by workflows or by hand. ask_for_google_review replaces a review stage: it is Yes unless the owner sets it to No from the task at Job Completed.',
       columns: ['Key', 'Label', 'Type', 'Set by'],
       rows: [
         ['contact_attempts', 'Contact attempts', 'Number', 'Each call logged in New Lead, Dial 1 and Dial 2'],
         ['last_attempt_at', 'Last attempt', 'Date', 'Each call logged'],
         ['preferred_contact', 'Preferred contact', 'Dropdown: call, sms, email', 'Asked on the first call'],
         ['do_not_sms', 'Do not SMS', 'Checkbox', 'Manual, on request, and by STOP'],
-        ['ask_for_google_review', 'Ask for Google review', 'Dropdown: Yes, No. Default Yes.', 'WF-01 sets Yes if empty. Set to No by hand for a job with problems, and for repeat commercial clients such as Bondor and Australian Housing.'],
+        ['ask_for_google_review', 'Ask for Google review', 'Dropdown: Yes, No. Default Yes.', 'WF-01 sets Yes if empty. The owner sets No from the task at Job Completed for a job with problems, and for repeat commercial clients such as Bondor and Australian Housing. No also skips the referral email.'],
       ],
     },
     {
       group: 'Opportunity fields',
-      note: 'product_type and foam_order_type are the fields here that are genuinely trade-specific. For another client they become whatever their equivalent choices are.',
+      note: 'product_type, foam_order_type and vehicles_booked are the fields here that are genuinely trade-specific. For another client they become whatever their equivalent choices are.',
       columns: ['Key', 'Label', 'Type', 'Stage it is set'],
       rows: [
         ['site_address', 'Site address', 'Text', 'New Lead, on the first call'],
-        ['access_notes', 'Access notes', 'Multi-line', 'Inspection Required, or the first call'],
-        ['sqm_estimate', 'Area, sqm', 'Number', 'Inspection Required, or the first call'],
-        ['product_type', 'Product', 'Dropdown: open cell, closed cell, both', 'Quote Sent'],
-        ['inspection_date', 'Inspection date', 'Date', 'Inspection Required, from the inspection calendar'],
+        ['access_notes', 'Access notes', 'Multi-line', 'Quoting, or Inspection Required'],
+        ['sqm_estimate', 'Area, sqm', 'Number', 'Quoting, or Inspection Required'],
+        ['product_type', 'Product', 'Dropdown: open cell, closed cell, both', 'Quoting'],
         ['callback_at', 'Callback time', 'Date and time', 'Follow-Up. Required on entry.'],
         ['quote_number', 'Quote number', 'Text', 'Quote Sent'],
         ['quote_link', 'Online quote', 'URL', 'Quote Sent, from the quote tool'],
@@ -1821,16 +1947,19 @@ window.JOURNEY = {
         ['po_number', 'Purchase order', 'Text', 'Quote Accepted, where the client issues one. On commercial, entering it sets Won.'],
         ['foam_order_type', 'Foam order', 'Dropdown: Stock open cell, Special order', 'Quote Accepted. Decides the deposit due date.'],
         ['deposit_amount', 'Deposit amount', 'Monetary', 'Quote Accepted, where a deposit applies'],
-        ['job_date', 'Install date', 'Date', 'Job Booked, from the install calendar booking'],
-        ['job_end_date', 'Finish date', 'Date', 'Job Booked, multi-day and commercial works'],
+        ['inspection_date', 'Inspection date', 'Date', 'Inspection Required, from the inspection calendar'],
+        ['job_date', 'Install date', 'Date', 'Job Booked: the first day booked across the install calendars'],
+        ['job_end_date', 'Finish date', 'Date', 'Job Booked: the last day booked, for multi-day works'],
+        ['vehicles_booked', 'Vehicles', 'Multi-select: InjectaCore rig, Van, Fuso truck, Mercedes rig', 'Job Booked, from the install calendars. A job can use two.'],
+        ['job_booked_at', 'Install booked on', 'Date', 'Job Booked, stamped on the first booking. Decides whether the month-out check goes.'],
         ['crew_assigned', 'Crew', 'Text', 'Job Booked, from the install calendar'],
         ['job_confirmed', 'Date confirmed', 'Dropdown: Yes, No', 'Job Booked, by the Yes and No buttons on the reminders'],
         ['deposit_due_date', 'Deposit due', 'Date', 'Job Booked: 1 business day before job_date for stock open cell, 7 days before for special order'],
-        ['deposit_invoice_sent_at', 'Deposit invoice sent', 'Date', 'Deposit Requested'],
+        ['deposit_invoice_sent_at', 'Deposit invoice sent', 'Date', 'Deposit Requested, when the owner sends the draft'],
         ['deposit_received_at', 'Deposit received', 'Date', 'Deposit Requested, when paid'],
         ['variation_amount', 'Variations', 'Monetary', 'Job Booked or Job Completed, as each variation is signed'],
         ['photos_captured', 'Photos captured', 'Checkbox', 'Job Completed. Required before the job can be marked complete.'],
-        ['invoice_number, invoice_sent_at', 'Final invoice', 'Text, Date', 'Job Completed'],
+        ['invoice_number, invoice_sent_at', 'Final invoice', 'Text, Date', 'Job Completed, when the owner sends the draft'],
         ['final_invoice_paid_at', 'Final invoice paid', 'Date', 'Job Completed, when fully paid'],
         ['job_report_sent_at', 'Job report sent', 'Date', 'Job Completed, when the report goes'],
         ['retention_amount', 'Retention held', 'Monetary', 'Job Completed, before it is marked paid'],
@@ -1844,27 +1973,35 @@ window.JOURNEY = {
     'Every workflow has an error branch that alerts, so failures are not silent',
     'New Lead is assigned to the office on both boards, and no path leaves a lead unassigned',
     'The 15 minute timer emails the office, and the 1 hour step reaches the owner by text and email: a second person, not the same one',
+    'Alert channels follow the role: nothing to the office goes by SMS, everything to the owner goes by SMS and email, and one event never sends the owner two texts',
+    'Moving a card to Quoting assigns it to the owner and fires alert 14 by text and email. The automatic new-lead assignment to the office does not fire alert 14',
     'Quiet hours applied to outbound customer messaging, not just internal alerts',
     'Every sequence has a stop condition on reply',
     'Entering Quote Accepted kills every sales sequence on the card, tested mid-follow-up',
     'An add-on quote accepted on a job under way updates the value and creates the office task, and does not resend the thank-you or move the card',
     'The accept and decline buttons tested on a quote with two options: the card moves, and the option chosen is recorded',
-    'The Yes and No links on both reminders tested by email and by text. No fires alert 12 and sends REM-05, and nothing reschedules itself',
+    'Inspection Required is reached only from Quote Accepted. A cancelled inspection alerts the owner and tasks the owner to rebook; nothing rebooks itself',
+    'The Yes and No links on every reminder tested by email and by text, including the month-out email. No fires alert 12 and sends REM-05, and nothing reschedules itself',
+    'The month-out email goes only for a job booked more than 6 weeks ahead',
+    'Deposit and final invoices are created as drafts with a task to the owner, and nothing reaches a customer until the owner sends it. Reminders start only on send',
     'Deposit timing tested three ways: stock open cell, special order, and a job booked less than 14 days out',
+    'A deposit unpaid at 4pm on its due date sends DEP-03 to the customer and alert 13 together. Nothing is sent before the due date',
+    'Decided which system sends invoice reminders, the platform or Xero, and the other switched off, so a customer never gets both',
     'Deposit and final invoices carry the accepted quote, and the purchase order where there is one. Payment schedules tested with a percentage stage and a fixed stage',
     'A GST invoice tested syncing to Xero before the Xero sync is promised. Only GST-free invoices have been seen reaching Xero so far',
     'Payment receipt sync agreed with the bookkeeper. If marking an invoice paid before the transfer clears breaks reconciliation, switch it off',
     'Contract and variation templates fill in the client details and go for digital signature, tested with an extra 100 sqm variation',
-    'The job report task fires only when the final invoice is fully paid',
-    'ask_for_google_review is Yes by default, and a contact set to No gets no review request',
+    'The job report task goes to the owner, and only when the final invoice is fully paid',
+    'The review task reaches the owner at Job Completed. ask_for_google_review is Yes by default, and a contact set to No gets neither the review text nor the referral email',
+    'Four install calendars built, one per vehicle: the InjectaCore rig, the van, the Fuso truck and the Mercedes rig. A test job booked over two days on two rigs shows correct job_date, job_end_date and vehicles_booked',
+    'Two-way sync with the owner\'s Apple (iCloud) calendar done under the separate calendars task. A booking moved in either place moves in the other, and the reminders follow it',
     'The Whole pipeline view built and checked: every open card on both boards, in stage order',
     'Nothing live was lost when stages were deleted during the 2 October call: every workflow trigger, filter and move step points at a stage that exists, and no open card was left without a stage',
     'Old stages removed only after their cards were moved to the new ones',
-    'Rachael\'s mobile confirmed as 0428 26 36 26 before any message goes',
+    'Rachael\'s mobile, 0428 26 36 26, checked in a test text and a test email',
     'Human labels stored in the dropdown fields, so echoed emails do not read "new-build"',
     'SPF and DKIM on the sending domain, and a test email checked in Gmail and Outlook',
     'Every merge field and trigger link confirmed against the platform version, with a test sent to yourself',
-    'Apple and Outlook calendar sync done under the separate calendars task, and a test install booking seen on both',
     'Alert volume measured after week one. More than about fifteen a day to one person means something is wrong',
     'A test lead pushed end to end through both boards, watching what arrives and when',
   ],
@@ -1884,8 +2021,8 @@ window.JOURNEY = {
    * how a CRM ends up with four hundred tags nobody trusts.
    *
    * The stage tags are not listed here. They are derived: stage-res- or
-   * stage-com- plus the stage key, one per stage, so the 26 of them cannot
-   * fall out of step with the 26 stages. Applied on entry, previous one
+   * stage-com- plus the stage key, one per stage, so the 28 of them cannot
+   * fall out of step with the 28 stages. Applied on entry, previous one
    * removed, by whichever workflow moves the card.
    */
   tags: {
@@ -1899,16 +2036,16 @@ window.JOURNEY = {
     list: [
       { t: 'been-enquired', why: 'They got in touch. Set on the very first contact, whichever way it came.' },
       { t: 'been-contacted', why: 'Somebody from the team actually spoke to them. Not the same as having tried.' },
-      { t: 'been-inspected', why: 'Somebody stood in the building. Only about one job in ten or twenty.' },
       { t: 'been-quoted', why: 'A written price went out, on either board.' },
       { t: 'been-accepted', why: 'They said yes to a quote at least once.' },
+      { t: 'been-inspected', why: 'Somebody stood in the building. Only about one job in ten or twenty, after acceptance.' },
       { t: 'been-booked', why: 'An install date went in the calendar.' },
       { t: 'been-lost', why: 'A quote died. Kept forever, because a lost lead two years ago is a warm one today.' },
       { t: 'been-customer', why: 'They paid the final invoice. The one tag worth having a segment for on its own.' },
       { t: 'been-review-asked', why: 'The Google review request went. Stops it going twice on a second job.' },
-      { t: 'been-reviewed', why: 'They left a review.', by: 'Nothing here sets it. WF-33 only fires under four stars, so a good review is noticed by the review integration or by hand.' },
+      { t: 'been-reviewed', why: 'They left a review.', by: 'Nothing here sets it. WF-37 only fires under four stars, so a good review is noticed by the review integration or by hand.' },
       { t: 'is-active-job', why: 'Accepted and not yet closed. While it is on, an accepted add-on or variation quote updates the job instead of re-firing the acceptance.' },
-      { t: 'is-deposit-owing', why: 'The deposit invoice is out and unpaid. The filter for cards in Deposit Requested that still owe.' },
+      { t: 'is-deposit-owing', why: 'The deposit invoice has been sent and is unpaid. The filter for cards in Deposit Requested that still owe.' },
       { t: 'is-retention-held', why: 'Part of the payment is held back. The card stays open until it is paid.' },
       { t: 'is-stalled', why: 'The card has sat too long. Removed the moment anything moves.' },
       { t: 'is-unresponsive', why: 'Rung and emailed and heard nothing back. Removed on any reply.' },
@@ -1932,15 +2069,16 @@ window.JOURNEY = {
   folders: [
     { n: '01', name: 'Intake', why: 'The first few minutes, before anybody has read the lead, and the timer that makes sure somebody rings.', ids: ['WF-01', 'WF-02', 'WF-03', 'WF-04'] },
     { n: '02', name: 'Dial 1 and Dial 2', why: 'Two calls, the text ten seconds later, and the three emails when calls have not worked.', ids: ['WF-05', 'WF-06'] },
-    { n: '03', name: 'Phone calls and site inspections', why: 'The two calendars a customer or the team books into before the quote.', ids: ['WF-07', 'WF-08', 'WF-09'] },
-    { n: '04', name: 'Quote', why: 'From sending the quote to an answer: the follow-up, the accept and decline buttons, and the callback.', ids: ['WF-10', 'WF-11', 'WF-12', 'WF-13'] },
+    { n: '03', name: 'Phone calls', why: 'The phone call a customer books from the day 4 email or the website.', ids: ['WF-07', 'WF-08'] },
+    { n: '04', name: 'Quote', why: 'From the hand-over to the owner to an answer: the quote, the follow-up, the accept and decline buttons, and the callback.', ids: ['WF-09', 'WF-10', 'WF-11', 'WF-12', 'WF-13'] },
     { n: '05', name: 'Accepted, lost and nurture', why: 'The decision, whichever way it goes, and the long drip for not now.', ids: ['WF-14', 'WF-15', 'WF-16'] },
-    { n: '06', name: 'Booking and reminders', why: 'From booking the install date to the morning of the job.', ids: ['WF-17', 'WF-18', 'WF-19', 'WF-20', 'WF-21'] },
-    { n: '07', name: 'Deposit', why: 'Timed to the install date and the foam, never to the booking.', ids: ['WF-22', 'WF-23'] },
-    { n: '08', name: 'Completion and payment', why: 'The final invoice, the job report once it is paid, and what follows the job.', ids: ['WF-24', 'WF-25', 'WF-26', 'WF-27', 'WF-28'] },
-    { n: '09', name: 'Retention', why: 'The money held back for six to twelve months, run by hand with a reminder.', ids: ['WF-29'] },
-    { n: '10', name: 'Always on', why: 'Watching every conversation, whatever stage the card is at.', ids: ['WF-30', 'WF-31', 'WF-32', 'WF-33'] },
-    { n: '11', name: 'Reporting', why: 'Nothing a customer ever sees. Scheduled, not triggered.', ids: ['WF-34', 'WF-35'] },
+    { n: '06', name: 'Site inspection', why: 'The visit after acceptance that about one job in ten or twenty needs.', ids: ['WF-17', 'WF-18'] },
+    { n: '07', name: 'Booking and reminders', why: 'From booking the install in the vehicle calendars to the morning of the job.', ids: ['WF-19', 'WF-20', 'WF-21', 'WF-22', 'WF-23'] },
+    { n: '08', name: 'Deposit', why: 'A draft timed to the install date and the foam, sent by the owner, and the check on the due date.', ids: ['WF-24', 'WF-25', 'WF-26'] },
+    { n: '09', name: 'Completion and payment', why: 'The draft final invoice, the job report once it is paid, the review question, and what follows the job.', ids: ['WF-27', 'WF-28', 'WF-29', 'WF-30', 'WF-31', 'WF-32'] },
+    { n: '10', name: 'Retention', why: 'The money held back for six to twelve months, run by hand with a reminder.', ids: ['WF-33'] },
+    { n: '11', name: 'Always on', why: 'Watching every conversation and every hand-over, whatever stage the card is at.', ids: ['WF-34', 'WF-35', 'WF-36', 'WF-37', 'WF-38'] },
+    { n: '12', name: 'Reporting', why: 'Nothing a customer ever sees. Scheduled, not triggered.', ids: ['WF-39', 'WF-40'] },
   ],
 
   workflows: [
@@ -1968,7 +2106,7 @@ window.JOURNEY = {
           { t: 'send', id: 'X-ACK-01' },
           { t: 'send', id: 'X-ACK-02' },
         ] },
-        { t: 'task', title: 'CALL {{contact.first_name}}: new lead, {{contact.areas}}', desc: 'Ring the new lead within 15 minutes. The acknowledgement text and email have already gone. Ring twice, back to back. No answer to either: move the card to Dial 1. If they answer and it is a job, send the quote within two business days, or move the card to Inspection Required if it needs a site visit first.', role: 'OFFICE', due: '15 minutes' },
+        { t: 'task', title: 'CALL {{contact.first_name}}: new lead, {{contact.areas}}', desc: 'Ring the new lead within 15 minutes. The acknowledgement text and email have already gone. Ring twice, back to back. No answer to either: move the card to Dial 1. If they answer and want a quote, move the card to Quoting, which hands it to the owner to write the quote. Ring back later: Follow-Up. Not now: Nurture.', role: 'OFFICE', due: '15 minutes' },
         { t: 'do', text: 'Start WF-02, the 15 minute timer.' },
       ],
       stops: 'Sends once per submission.',
@@ -2065,39 +2203,37 @@ window.JOURNEY = {
     },
     {
       id: 'WF-08',
-      folder: '03', name: 'Phone call or inspection moved or cancelled', board: 'both',
-      trigger: 'Appointment in the phone call or inspection calendar rescheduled or cancelled',
-      why: 'A hole in the diary is recoverable if it is caught early. Staff attend inspections, so there is no no-show branch.',
+      folder: '03', name: 'Phone call moved or cancelled', board: 'both',
+      trigger: 'Appointment in the phone call calendar rescheduled or cancelled',
+      why: 'A hole in the diary is recoverable if it is caught early.',
       steps: [
-        { t: 'if', cond: 'rescheduled', then: [{ t: 'send', id: 'X-APPT-06' }, { t: 'do', text: 'WF-07 or WF-09 re-queues its reminders against the new time.' }] },
-        { t: 'if', cond: 'phone call cancelled', then: [
+        { t: 'if', cond: 'rescheduled', then: [{ t: 'send', id: 'X-APPT-06' }, { t: 'do', text: 'WF-07 re-queues its reminders against the new time.' }] },
+        { t: 'if', cond: 'cancelled', then: [
           { t: 'alert', n: 5 },
-          { t: 'task', title: 'CALL {{contact.first_name}}: phone call cancelled', desc: 'They cancelled the phone call they booked. Ring them: a cancelled call is usually a diary clash, and a short call often rebooks it. If the card is in Dial 2, the emails resume from where they paused.', role: 'OFFICE', due: 'Same day' },
-        ] },
-        { t: 'if', cond: 'inspection cancelled', then: [
-          { t: 'set', field: 'inspection_date', value: 'cleared, so the board never shows a visit that is not happening' },
-          { t: 'task', title: 'BOOK {{contact.first_name}}: site inspection', desc: 'Book the site inspection in the inspection calendar from the card, at a time that suits the customer. Confirm the address and access to the areas being sprayed. The confirmation and the morning text go by themselves.', role: 'OFFICE', due: '2 days' },
+          { t: 'task', title: 'CALL {{contact.first_name}}: phone call cancelled', desc: 'They cancelled the phone call they booked. Ring them: a cancelled call is usually a diary clash, and a short call often rebooks it. If the card is in Dial 2, the emails resume from where they paused.', role: 'Assigned user', due: 'Same day' },
         ] },
       ],
       stops: 'Sends once per change. The card does not move.',
     },
     {
       id: 'WF-09',
-      tags: { add: ['been-contacted', 'been-inspected'], note: 'been-inspected goes on the day after the visit, unless it was cancelled' },
-      folder: '03', name: 'Site inspection booked', board: 'both',
-      trigger: 'Appointment booked in the inspection calendar',
-      why: 'One confirmation with the address, one text on the morning, and a task for whoever is going. Used by a minority of jobs, before the quote or after acceptance.',
+      tags: { add: ['been-contacted'], remove: ['is-nurturing'] },
+      folder: '04', name: 'Quoting: hand-over to the owner', board: 'both',
+      trigger: 'Stage changed to Quoting',
+      why: 'Agreed on the call: once the office has spoken to them and a quote is needed, the card is assigned to the owner, so everyone can see it is waiting on him to sort out the quote.',
       steps: [
-        { t: 'set', field: 'inspection_date', value: 'from the appointment' },
-        { t: 'do', text: 'If the card is not already in Inspection Required, move it there.' },
-        { t: 'if', cond: 'residential', then: [{ t: 'send', id: 'X-INSP-01' }], else: [{ t: 'send', id: 'C-INSP-01' }] },
-        { t: 'task', title: 'ATTEND {{contact.first_name}}: inspection, {{opportunity.site_address}}', desc: 'Attend the inspection. Before you leave, record on the card: the area in square metres, the foam type, access notes, and anything that will slow the crew down. Photos of problem areas help the quote.', role: 'ESTIMATOR', due: 'On the date' },
-        { t: 'wait', for: 'until 7:00am on the day' },
-        { t: 'send', id: 'X-INSP-02' },
-        { t: 'wait', for: 'until the day after the visit' },
-        { t: 'if', cond: 'the visit was not cancelled', then: [{ t: 'do', text: 'Add been-inspected.' }] },
+        { t: 'do', text: 'Stop WF-06 and WF-16 if either is running.' },
+        { t: 'do', text: 'Assign the card to OWNER. WF-38 sends alert 14 by text and email.' },
+        { t: 'if', cond: 'residential', then: [
+          { t: 'task', title: 'QUOTE {{contact.first_name}}: write and send the quote', desc: 'The office has spoken to them and they want a quote. Ring them first if you need more detail, plans or an energy report. Write the quote in the quote tool, with each option as its own line if there is more than one, and send it. Sending it moves the card to Quote Sent and starts the follow-up.', role: 'OWNER', due: '2 business days' },
+          { t: 'wait', for: '2 business days' },
+        ], else: [
+          { t: 'task', title: 'QUOTE {{contact.first_name}}: scope and send the proposal', desc: 'Ring them for the detail: who decides, roughly how big, what the space is used for, whether it is operating during the works, and the programme. Work out product, thickness, access, plant, staging and WHS, then send the proposal from the quote tool, which moves the card to Quote Sent.', role: 'OWNER', due: '5 business days' },
+          { t: 'wait', for: '5 business days' },
+        ] },
+        { t: 'if', cond: 'still in Quoting', then: [{ t: 'do', text: 'Listed under Quotes to write in the daily summary until it moves.' }] },
       ],
-      stops: 'Cancelled or moved, which hands over to WF-08.',
+      stops: 'The quote is sent, or the card moves to Follow-Up, Nurture or Lost.',
     },
     {
       id: 'WF-10',
@@ -2176,11 +2312,11 @@ window.JOURNEY = {
       steps: [
         { t: 'do', text: 'Require callback_at on the stage change.' },
         { t: 'do', text: 'Pause WF-06, WF-10 and WF-11 on the card.' },
-        { t: 'task', title: 'CALL {{contact.first_name}}: callback as asked', desc: 'The customer asked to be rung at this time. Ring them, then move the card on: Quote Sent once a quote goes, Inspection Required if a visit is needed, Quote Accepted if they say yes, Nurture if it is not now, or Lost with a reason.', role: 'OFFICE', due: 'At the time they asked' },
+        { t: 'task', title: 'CALL {{contact.first_name}}: callback as asked', desc: 'The customer asked to be rung at this time. Ring them, then move the card on: Quoting if they now want a quote, Quote Accepted if they say yes to a quote already sent, Nurture if it is not now, or Lost with a reason. Want more time on a quote? Set a new callback time.', role: 'OFFICE', due: 'At the time they asked' },
         { t: 'wait', for: 'until 1 day after callback_at' },
         { t: 'if', cond: 'still in Follow-Up', then: [{ t: 'do', text: 'Listed under Callbacks overdue in the daily summary.' }] },
       ],
-      stops: 'The stage changes.',
+      stops: 'The stage changes. A new callback_at restarts it.',
     },
     {
       id: 'WF-14',
@@ -2190,7 +2326,7 @@ window.JOURNEY = {
       why: 'Kills every sales sequence, marks the job Won, thanks the customer, and tells the owner and the office.',
       steps: [
         { t: 'if', cond: 'the card has come back to Quote Accepted from a later stage', then: [{ t: 'stop', when: 'here. A job is welcomed once.' }] },
-        { t: 'do', text: 'Stop every sales sequence on the card: WF-06, WF-07 reminders, WF-10, WF-11, WF-13, WF-16. This is the rule that matters most on a board that runs sale and delivery together.' },
+        { t: 'do', text: 'Stop every sales sequence on the card: WF-06, WF-07 reminders, WF-09, WF-10, WF-11, WF-13, WF-16. This is the rule that matters most on a board that runs sale and delivery together.' },
         { t: 'if', cond: 'residential', then: [
           { t: 'set', field: 'status', value: 'Won' },
           { t: 'send', id: 'X-ACC-01' },
@@ -2203,7 +2339,7 @@ window.JOURNEY = {
         ] },
         { t: 'alert', n: 8 },
         { t: 'set', field: 'deposit_amount and foam_order_type', value: 'from the accepted quote, where a deposit applies. Nothing is invoiced yet.' },
-        { t: 'task', title: 'NEXT {{contact.first_name}}: inspection or booking', desc: 'The customer has accepted. Check the option they chose is on the card, then decide the next step: move the card to Inspection Required if something needs checking on site first, otherwise to Booking Required so the install date can be booked.', role: 'OFFICE', due: 'Same day' },
+        { t: 'task', title: 'NEXT {{contact.first_name}}: inspection or booking', desc: 'The customer has accepted. Check the option they chose is on the card, then decide the next step: move the card to Inspection Required if something needs checking on site first, otherwise to Booking Required so the install date can be booked.', role: 'OWNER', due: 'Same day' },
       ],
       stops: 'Sends once per job. Add-on quotes never reach it; WF-12 stops them first.',
     },
@@ -2215,7 +2351,7 @@ window.JOURNEY = {
       why: 'A Lost with no reason teaches nothing. A graceful goodbye brings a surprising number of jobs back.',
       steps: [
         { t: 'do', text: 'Require lost_reason. The status change form does not close without one.' },
-        { t: 'do', text: 'Stop every sequence on the card: WF-06, WF-07, WF-10, WF-11, WF-16, WF-19, WF-22.' },
+        { t: 'do', text: 'Stop every sequence on the card: WF-06, WF-07, WF-09, WF-10, WF-11, WF-16, WF-21, WF-24, WF-25.' },
         { t: 'task', title: 'LOG {{contact.first_name}}: lost reason', desc: 'Record why the job was lost, from the fixed list. It is the only thing that makes the board teach anything, and the split between Price and Chose batts points at two completely different fixes.', role: 'OFFICE', due: 'Same day' },
         { t: 'if', cond: 'residential, and the reason is not Unreachable, Duplicate or Spam', then: [{ t: 'wait', for: 'until the next business morning' }, { t: 'send', id: 'LOST-01' }] },
       ],
@@ -2230,7 +2366,7 @@ window.JOURNEY = {
       steps: [
         { t: 'do', text: 'Stop WF-06, WF-10 and WF-11 on the card.' },
         { t: 'if', cond: 'residential', then: [
-          { t: 'task', title: 'CHECK-IN {{contact.first_name}}: a year since the quote', desc: 'A year since this job went to Nurture. Ring and ask whether it is back on. Quotes often come back after one or two years. If it is, refresh the quote against current prices and send it, which moves the card to Quote Sent.', role: 'OFFICE', due: '12 months' },
+          { t: 'task', title: 'CHECK-IN {{contact.first_name}}: a year since the quote', desc: 'A year since this job went to Nurture. Ring and ask whether it is back on. Quotes often come back after one or two years. If it is, move the card to Quoting so the quote is refreshed against current prices.', role: 'OFFICE', due: '12 months' },
         ], else: [
           { t: 'task', title: 'CHECK-IN {{contact.first_name}}: {{opportunity.site_address}}', desc: 'Quarterly check-in on a future-budget project. Offer to refresh the proposal against current material pricing, and ask which quarter to come back in if it has moved.', role: 'OWNER', due: 'Quarterly, recurring' },
         ] },
@@ -2242,7 +2378,7 @@ window.JOURNEY = {
           { t: 'send', id: 'NUR-02' },
           { t: 'wait', for: '60 days' },
           { t: 'send', id: 'NUR-03' },
-          { t: 'task', title: 'REVIEW {{contact.first_name}}: still a fit?', desc: 'Quarterly review of the nurture list. Remove anyone who is not a real job, and move anyone who has come back to Quote Sent or New Lead. A clean list keeps the emails landing in inboxes rather than in spam.', role: 'OWNER', due: 'Quarterly, recurring' },
+          { t: 'task', title: 'REVIEW {{contact.first_name}}: still a fit?', desc: 'Quarterly review of the nurture list. Remove anyone who is not a real job, and move anyone who has come back to Quoting. A clean list keeps the emails landing in inboxes rather than in spam.', role: 'OWNER', due: 'Quarterly, recurring' },
           { t: 'wait', for: 'until 12 months after entering Nurture' },
           { t: 'send', id: 'NUR-04' },
         ], else: [
@@ -2250,18 +2386,51 @@ window.JOURNEY = {
           { t: 'send', id: 'C-FUT-01' },
         ] },
       ],
-      stops: 'Any reply, booking or new form fill, or the card moving to Quote Sent or New Lead. Unsubscribe sets do-not-market and the card stays put.',
+      stops: 'Any reply, booking or new form fill, or the card moving to Quoting. Unsubscribe sets do-not-market and the card stays put.',
     },
     {
       id: 'WF-17',
-      folder: '06', name: 'Booking Required', board: 'both',
+      tags: { add: ['been-inspected'], note: 'the day after the visit, unless it was cancelled' },
+      folder: '06', name: 'Site inspection booked', board: 'both',
+      trigger: 'Appointment booked in the inspection calendar',
+      why: 'One confirmation with the address, one text on the morning, and a task for whoever is going. The visit comes after acceptance, for about one job in ten or twenty.',
+      steps: [
+        { t: 'set', field: 'inspection_date', value: 'from the appointment' },
+        { t: 'if', cond: 'the card is in Quote Accepted', then: [{ t: 'move', stage: 'Inspection Required' }], else: [{ t: 'do', text: 'Leave the card where it is. A visit booked before the quote is rare, and the card only moves to Inspection Required from Quote Accepted.' }] },
+        { t: 'if', cond: 'residential', then: [{ t: 'send', id: 'X-INSP-01' }], else: [{ t: 'send', id: 'C-INSP-01' }] },
+        { t: 'task', title: 'ATTEND {{contact.first_name}}: inspection, {{opportunity.site_address}}', desc: 'Attend the inspection. Before you leave, record on the card: the area in square metres, the foam type, access notes, and anything that will slow the crew down. Then move the card to Booking Required, or close it as Lost if the job cannot be done.', role: 'ESTIMATOR', due: 'On the date' },
+        { t: 'wait', for: 'until 7:00am on the day' },
+        { t: 'send', id: 'X-INSP-02' },
+        { t: 'wait', for: 'until the day after the visit' },
+        { t: 'if', cond: 'the visit was not cancelled', then: [{ t: 'do', text: 'Add been-inspected.' }] },
+      ],
+      stops: 'Moved or cancelled, which hands over to WF-18.',
+    },
+    {
+      id: 'WF-18',
+      folder: '06', name: 'Site inspection moved or cancelled', board: 'both',
+      trigger: 'Appointment in the inspection calendar rescheduled or cancelled',
+      why: 'Agreed on the call: a cancelled inspection prompts the owner to rebook it. Nothing is rebooked automatically, because a free slot is not always a workable one. Staff attend, so there is no no-show branch.',
+      steps: [
+        { t: 'if', cond: 'rescheduled', then: [{ t: 'send', id: 'X-APPT-06' }, { t: 'do', text: 'WF-17 re-queues the morning text against the new date.' }] },
+        { t: 'if', cond: 'cancelled', then: [
+          { t: 'alert', n: 5, note: 'to OWNER' },
+          { t: 'set', field: 'inspection_date', value: 'cleared, so the board never shows a visit that is not happening' },
+          { t: 'task', title: 'REBOOK {{contact.first_name}}: inspection cancelled', desc: 'The customer cancelled the site inspection. Ring them and book a new time in the inspection calendar. Nothing is rebooked automatically, because a free slot is not always one the crew can make.', role: 'OWNER', due: '1 business day' },
+        ] },
+      ],
+      stops: 'Sends once per change. The card stays in Inspection Required.',
+    },
+    {
+      id: 'WF-19',
+      folder: '07', name: 'Booking Required', board: 'both',
       trigger: 'Stage changed to Booking Required',
-      why: 'The owner books the install date in the platform first, because that booking is what fires everything after it.',
+      why: 'The owner books the install in the platform first, because that booking is what fires everything after it.',
       steps: [
         { t: 'if', cond: 'residential', then: [
-          { t: 'task', title: 'BOOK {{contact.first_name}}: install date', desc: 'Book the install date in the install calendar from the card, and put the crew on it. Book it here first, not in a phone calendar, because the booking is what sends the confirmation and sets up the reminders and the deposit timing.', role: 'OWNER', due: '2 business days' },
+          { t: 'task', title: 'BOOK {{contact.first_name}}: install date', desc: 'Book the install in the calendar for the vehicle doing the job: the InjectaCore rig, the van, the Fuso truck or the Mercedes rig. A job over several days or using two rigs gets a booking for each block. Book it here first, not in the Apple calendar, because the booking is what sends the confirmation and sets up the reminders and the deposit.', role: 'OWNER', due: '2 business days' },
         ], else: [
-          { t: 'task', title: 'BOOK {{contact.first_name}}: works dates', desc: 'Agree the start and finish dates with the client, then book them in the install calendar from the card with the crew. Book it there first, because the booking sends the mobilisation email and sets up the reminders.', role: 'OWNER', due: '2 business days' },
+          { t: 'task', title: 'BOOK {{contact.first_name}}: works dates', desc: 'Agree the start and finish dates with the client, then book each block in the calendar for the vehicle doing it, with the crew. Book it in the platform first, because the booking sends the mobilisation email and sets up the reminders. It then shows in the Apple calendar too.', role: 'OWNER', due: '2 business days' },
         ] },
         { t: 'wait', for: '2 business days' },
         { t: 'if', cond: 'still in Booking Required', then: [{ t: 'do', text: 'Listed under Installs to book in the daily summary until it moves.' }] },
@@ -2269,13 +2438,18 @@ window.JOURNEY = {
       stops: 'The install is booked, which moves the card to Job Booked.',
     },
     {
-      id: 'WF-18',
+      id: 'WF-20',
       tags: { add: ['been-booked'] },
-      folder: '06', name: 'Install booked', board: 'both',
-      trigger: 'Appointment booked in the install calendar',
-      why: 'Booking in the platform, not a phone calendar, is what moves the card and starts the confirmation, the reminders and the deposit timing.',
+      folder: '07', name: 'Install booked', board: 'both',
+      trigger: 'Appointment booked in any of the four install calendars: the InjectaCore rig, the van, the Fuso truck or the Mercedes rig',
+      why: 'Booking in the platform, not straight into the Apple calendar, is what moves the card and starts the confirmation, the reminders and the deposit timing. One job can span several days and two rigs.',
       steps: [
-        { t: 'set', field: 'job_date', value: 'from the appointment, with job_end_date on multi-day works and crew_assigned from the calendar' },
+        { t: 'if', cond: 'the job already has an install booking: another vehicle, or more days', then: [
+          { t: 'set', field: 'job_date and job_end_date', value: 'the first and last day across every booking for the job, and the vehicle added to vehicles_booked' },
+          { t: 'stop', when: 'here. Nothing is resent; the reminders follow the first day.' },
+        ] },
+        { t: 'set', field: 'job_date, job_end_date, vehicles_booked, crew_assigned', value: 'from the booking' },
+        { t: 'set', field: 'job_booked_at', value: 'now' },
         { t: 'move', stage: 'Job Booked' },
         { t: 'if', cond: 'residential', then: [
           { t: 'send', id: 'JOB-01' },
@@ -2285,18 +2459,23 @@ window.JOURNEY = {
           { t: 'task', title: 'INDUCT crew: {{opportunity.site_address}}', desc: 'Get the crew inducted before the start date. Site inductions take longer than anyone plans for, and a crew turned away at the gate costs a full day.', role: 'CREW_LEAD', due: 'Before start' },
           { t: 'task', title: 'SWMS {{opportunity.site_address}}: issue and confirm receipt', desc: 'Issue the SWMS and get written confirmation it has been received and accepted. The crew does not start without it, and on most sites the principal contractor will not let them on without it either.', role: 'OWNER', due: 'Before start' },
         ] },
-        { t: 'do', text: 'Start WF-19 (the reminders) and WF-22 (the deposit timing).' },
+        { t: 'do', text: 'Start WF-21 (the reminders) and WF-24 (the deposit draft).' },
       ],
-      stops: 'Sends once per booking. A moved booking resends JOB-01 with the new date and re-queues WF-19 and WF-22; it does not resend the preparation email.',
+      stops: 'Sends once per job. Moving a booking, in the platform or in the Apple calendar, changes job_date: that resends JOB-01 with the new date and re-queues WF-21 and WF-24. The preparation email is not resent.',
     },
     {
-      id: 'WF-19',
-      folder: '06', name: 'Job reminders, 7 days and 48 hours', board: 'both',
-      trigger: 'job_date set or changed, from WF-18',
-      why: 'Two chances for the customer to say the date no longer works, early enough to move a crew and a rig. Replaces the old afternoon-before text.',
+      id: 'WF-21',
+      folder: '07', name: 'Job reminders: a month, 7 days and 48 hours', board: 'both',
+      trigger: 'job_date set or changed, from WF-20',
+      why: 'Chances for the customer to say the date no longer works, early enough to move a crew and a rig. The month-out check was raised by Glenn for jobs booked months ahead, where a builder\'s programme often slips.',
       steps: [
+        { t: 'if', cond: 'job_booked_at is more than 6 weeks before job_date, and job_date is more than 30 days away', then: [
+          { t: 'wait', for: 'until 30 days before job_date' },
+          { t: 'send', id: 'REM-06' },
+        ] },
         { t: 'if', cond: 'job_date is more than 7 days away', then: [
           { t: 'wait', for: 'until 7 days before job_date' },
+          { t: 'set', field: 'job_confirmed', value: 'cleared, so only an answer from here on counts' },
           { t: 'send', id: 'REM-01' },
           { t: 'send', id: 'REM-02' },
         ] },
@@ -2306,16 +2485,16 @@ window.JOURNEY = {
           { t: 'send', id: 'REM-04' },
         ] },
         { t: 'wait', for: 'until 9:00am the day before job_date' },
-        { t: 'if', cond: 'job_confirmed is empty: neither reminder answered', then: [
-          { t: 'task', title: 'CALL {{contact.first_name}}: date not confirmed', desc: 'Neither reminder got a Yes or a No. Ring to confirm the job is still on, that access is clear, and that someone over eighteen will be there to let the crew in.', role: 'OFFICE', due: 'Day before the job, if neither reminder was answered' },
+        { t: 'if', cond: 'job_confirmed is empty: neither the 7 day nor the 48 hour reminder answered', then: [
+          { t: 'task', title: 'CALL {{contact.first_name}}: date not confirmed', desc: 'Neither the 7 day nor the 48 hour reminder got a Yes or a No. Ring to confirm the job is still on, that access is clear, and that someone over eighteen will be there to let the crew in.', role: 'OFFICE', due: 'Day before the job, if neither reminder was answered' },
         ] },
       ],
       stops: 'The booking is cancelled, or the date moves, which restarts it against the new date.',
     },
     {
-      id: 'WF-20',
-      folder: '06', name: 'Yes or No on a reminder', board: 'both',
-      trigger: 'The Yes or No trigger link in REM-01 to REM-04 is clicked',
+      id: 'WF-22',
+      folder: '07', name: 'Yes or No on a reminder', board: 'both',
+      trigger: 'The Yes or No trigger link in REM-01 to REM-04 or REM-06 is clicked',
       why: 'A No is told to a person straight away. The crew and the rig are only ever moved by a person.',
       steps: [
         { t: 'if', cond: 'Yes', then: [
@@ -2326,14 +2505,14 @@ window.JOURNEY = {
           { t: 'send', id: 'REM-05' },
           { t: 'alert', n: 12 },
           { t: 'task', title: 'RESCHEDULE {{contact.first_name}}: cannot make {{opportunity.job_date}}', desc: 'The customer tapped No on a reminder. Ring them today, agree a new date, then move the booking in the install calendar and move the crew and the rig to match. Nothing is rescheduled automatically. The reminders re-queue against the new date.', role: 'OWNER', due: 'Same day' },
-          { t: 'do', text: 'Nothing is moved automatically. Moving the booking by hand re-queues WF-19 and WF-22.' },
+          { t: 'do', text: 'Nothing is moved automatically. Moving the booking by hand re-queues WF-21 and WF-24.' },
         ] },
       ],
       stops: 'Once per click. A second No on the same booking does not alert twice.',
     },
     {
-      id: 'WF-21',
-      folder: '06', name: 'Job day', board: 'both',
+      id: 'WF-23',
+      folder: '07', name: 'Job day', board: 'both',
       trigger: 'job_date arrives, scheduled from the install booking',
       why: 'The on-the-way text, and the things that must be on the card before the job can be marked complete: photos and variations.',
       steps: [
@@ -2355,78 +2534,102 @@ window.JOURNEY = {
       stops: 'The job is marked complete, or the booking moves.',
     },
     {
-      id: 'WF-22',
-      tags: { add: ['is-deposit-owing'], note: 'when the deposit invoice goes' },
-      folder: '07', name: 'Deposit timing by foam type', board: 'both',
+      id: 'WF-24',
+      folder: '08', name: 'Deposit invoice: the draft for the owner', board: 'both',
       trigger: 'job_date set or changed, and deposit_amount is set',
-      why: 'Never at booking. Sent two weeks before the job, due one business day before for stock open cell and seven days before for special order, so the crew can be reassigned in time if it does not land.',
+      why: 'Never at booking, and never sent automatically: Glenn asked on the call to press the button himself until he has settled how he wants invoices set out. The draft is ready two weeks before the job, which is when he said he generally sends them.',
       steps: [
         { t: 'if', cond: 'deposit_amount is empty: no deposit on this job', then: [{ t: 'stop', when: 'here. Jobs with no deposit skip Deposit Requested.' }] },
         { t: 'if', cond: 'foam_order_type is Special order', then: [{ t: 'set', field: 'deposit_due_date', value: '7 days before job_date' }], else: [{ t: 'set', field: 'deposit_due_date', value: '1 business day before job_date' }] },
         { t: 'if', cond: 'job_date is more than 14 days away', then: [{ t: 'wait', for: 'until 14 days before job_date' }] },
-        { t: 'do', text: 'Create the deposit invoice from the accepted quote: the deposit amount, due on deposit_due_date, with the accepted quote and any purchase order attached. No card storage and no automatic charge.' },
-        { t: 'send', id: 'DEP-02' },
-        { t: 'set', field: 'deposit_invoice_sent_at', value: 'now' },
-        { t: 'move', stage: 'Deposit Requested' },
-        { t: 'wait', for: 'until 2 days before deposit_due_date' },
-        { t: 'if', cond: 'deposit unpaid', then: [{ t: 'send', id: 'DEP-03' }] },
-        { t: 'wait', for: 'until 4:00pm on deposit_due_date' },
-        { t: 'if', cond: 'deposit unpaid', then: [
-          { t: 'alert', n: 13 },
-          { t: 'task', title: 'CHASE {{contact.first_name}}: deposit unpaid', desc: 'The deposit was due today and has not landed. Ring the customer today: most late deposits are a missed email, not a change of mind. If it will not be paid in time, tell the owner so the crew can be reassigned.', role: 'OFFICE', due: 'On the due date, if unpaid' },
-        ] },
+        { t: 'do', text: 'Create the deposit invoice as a DRAFT from the accepted quote: the deposit amount, due on deposit_due_date, with the accepted quote and any purchase order attached. It is not sent. No card storage and no automatic charge.' },
+        { t: 'task', title: 'INVOICE {{contact.first_name}}: check and send the deposit invoice', desc: 'A draft deposit invoice is ready, made from the accepted quote with the quote and any purchase order attached. Check the amount, the due date and the payment terms, then send it. Sending it emails the customer and moves the card to Deposit Requested. Nothing is sent until you do.', role: 'OWNER', due: '2 business days' },
+        { t: 'wait', for: '2 business days' },
+        { t: 'if', cond: 'the draft has not been sent', then: [{ t: 'do', text: 'Listed under Invoices to send in the daily summary until it goes.' }] },
+        { t: 'do', text: 'Agency: once Glenn has settled how he wants deposit invoices set out, this draft and task can become an automatic send.' },
       ],
-      stops: 'The deposit is paid (WF-23), the job is cancelled, or job_date moves, which re-runs it from the top against the new date. The 14 day send point is to confirm with Glenn.',
+      stops: 'The owner sends the invoice (WF-25 takes over), the job is cancelled, or job_date moves before it is sent, which re-runs it against the new date. A draft already made is updated, not duplicated.',
     },
     {
-      id: 'WF-23',
+      id: 'WF-25',
+      tags: { add: ['is-deposit-owing'] },
+      folder: '08', name: 'Deposit invoice sent, and the due-date check', board: 'both',
+      trigger: 'The owner sends the deposit invoice',
+      why: 'Sending is what moves the card. Xero already sends its own reminders, so nothing goes before the due date; if it is late, the customer is asked for the remittance at the same moment the owner is told.',
+      steps: [
+        { t: 'send', id: 'DEP-02', note: 'as the invoice email itself, sent when the owner presses send' },
+        { t: 'set', field: 'deposit_invoice_sent_at', value: 'now' },
+        { t: 'move', stage: 'Deposit Requested' },
+        { t: 'wait', for: 'until 4:00pm on deposit_due_date' },
+        { t: 'if', cond: 'the deposit is unpaid', then: [
+          { t: 'send', id: 'DEP-03' },
+          { t: 'alert', n: 13 },
+          { t: 'task', title: 'CHASE {{contact.first_name}}: deposit unpaid', desc: 'The deposit was due today and has not landed. The customer has had a text asking for the remittance. Check for a reply; if it will not arrive in time, move the crew to other work and tell the customer.', role: 'OWNER', due: 'On the due date, if unpaid' },
+        ] },
+      ],
+      stops: 'The deposit is paid (WF-26), or the job is cancelled. Decide which system sends invoice reminders, the platform or Xero, so a customer never gets both.',
+    },
+    {
+      id: 'WF-26',
       tags: { remove: ['is-deposit-owing'] },
-      folder: '07', name: 'Deposit received', board: 'both',
+      folder: '08', name: 'Deposit received', board: 'both',
       trigger: 'Deposit invoice marked paid',
-      why: 'Silence after a payment is the thing customers hate most.',
+      why: 'Silence after a payment is the thing customers hate most, and special-order foam is only ordered once the deposit lands.',
       steps: [
         { t: 'set', field: 'deposit_received_at', value: 'now' },
         { t: 'send', id: 'DEP-01' },
         { t: 'alert', n: 9 },
-        { t: 'do', text: 'Cancel the pending DEP-03 and the unpaid check in WF-22. The card stays in Deposit Requested until the job is marked complete.' },
+        { t: 'do', text: 'Cancel the pending 4pm check in WF-25. The card stays in Deposit Requested until the job is marked complete.' },
       ],
       stops: 'Sends once.',
     },
     {
-      id: 'WF-24',
-      folder: '08', name: 'Job completed: the final invoice and the chase', board: 'both',
+      id: 'WF-27',
+      folder: '09', name: 'Job completed: the draft final invoice and the review question', board: 'both',
       trigger: 'The crew marks the job complete (stage changed to Job Completed)',
-      why: 'Marking the job complete is what bills it. The invoice carries its own payment schedule and the papers that back it.',
+      why: 'Marking the job complete prepares the bill, but a person sends it: Glenn adjusts for the area actually sprayed and the payment terms on each one. The review question goes to the owner, who knows whether the job went well.',
       steps: [
         { t: 'do', text: 'Guard: photos_captured must be ticked.' },
-        { t: 'do', text: 'Create the final invoice from the accepted quote: the balance after any deposit, with its payment schedule (one amount, or stages by percentage or fixed amount, each with a due date). Attach the accepted quote, and the purchase order where there is one.' },
+        { t: 'if', cond: 'residential', then: [{ t: 'send', id: 'JOB-05' }], else: [{ t: 'send', id: 'C-DONE-01' }] },
+        { t: 'do', text: 'Create the final invoice as a DRAFT from the accepted quote: the balance after any deposit, with its payment schedule (one amount, or stages by percentage or fixed amount, each with a due date), the accepted quote and any purchase order attached. It is not sent.' },
+        { t: 'task', title: 'INVOICE {{contact.first_name}}: check and send the final invoice', desc: 'The job is marked complete and a draft final invoice is ready: the balance after any deposit, with the payment schedule and the accepted quote and any purchase order attached. Adjust it for the area actually sprayed, with a variation invoice or a credit, then send it. Sending it starts the payment reminders.', role: 'OWNER', due: '2 business days' },
+        { t: 'task', title: 'REVIEW {{contact.first_name}}: ask for a Google review?', desc: 'The job is marked complete. Leave Ask for Google review on Yes, or set it to No on the contact for a job that had problems or a repeat commercial client such as Bondor or Australian Housing. Yes sends one text four weeks after the job. No sends no review request and no referral email.', role: 'OWNER', due: '7 days' },
+        { t: 'wait', for: '2 business days' },
+        { t: 'if', cond: 'the draft has not been sent', then: [{ t: 'do', text: 'Listed under Invoices to send in the daily summary until it goes.' }] },
+        { t: 'do', text: 'Agency: once Glenn has settled how he wants final invoices set out, the send can be automated.' },
+      ],
+      stops: 'The owner sends the final invoice, which hands over to WF-28.',
+    },
+    {
+      id: 'WF-28',
+      folder: '09', name: 'Final invoice sent and the chase', board: 'both',
+      trigger: 'The owner sends the final invoice or final claim',
+      why: 'The reminders start when the invoice is actually sent, not when the job is marked complete, and stop dead on payment.',
+      steps: [
+        { t: 'send', id: 'PAY-01', note: 'as the invoice email itself' },
         { t: 'set', field: 'invoice_number, invoice_sent_at', value: 'from the invoice' },
         { t: 'if', cond: 'residential', then: [
-          { t: 'send', id: 'JOB-05' },
-          { t: 'send', id: 'PAY-01', note: 'invoice attached' },
-          { t: 'wait', for: 'until day 7' },
+          { t: 'wait', for: 'until day 7 after it is sent' },
           { t: 'send', id: 'PAY-02' },
-          { t: 'wait', for: 'until day 14' },
+          { t: 'wait', for: 'until day 14 after it is sent' },
           { t: 'send', id: 'PAY-03' },
-          { t: 'task', title: 'CHASE {{contact.first_name}}: payment overdue', desc: 'Fourteen days unpaid. Ring rather than email: most late invoices are a question, not a refusal. Mark it paid the moment the money lands, which stops the reminders dead.', role: 'OFFICE', due: 'Day 14' },
+          { t: 'task', title: 'CHASE {{contact.first_name}}: payment overdue', desc: 'Fourteen days since the final invoice was sent, and it is unpaid. Ring rather than email: most late invoices are a question, not a refusal. Mark it paid the moment the money lands, which stops the reminders dead.', role: 'OFFICE', due: 'Day 14 after it is sent' },
         ], else: [
-          { t: 'send', id: 'C-DONE-01' },
-          { t: 'send', id: 'PAY-01', note: 'final claim attached' },
-          { t: 'wait', for: 'until day 30' },
+          { t: 'wait', for: 'until day 30 after it is sent' },
           { t: 'if', cond: 'unpaid', then: [{ t: 'task', title: 'CHASE {{contact.first_name}}: claim overdue', desc: 'Thirty days on an unpaid claim. Commercial payment runs are slow and usually fine, so ask the accounts contact where it sits in the run rather than chasing the site contact.', role: 'OFFICE', due: 'Day 30' }] },
         ] },
       ],
-      stops: 'The final invoice is marked paid. A reminder sent after someone has paid does more damage than the reminder was worth.',
+      stops: 'The invoice is marked paid. Xero sends its own reminders too: decide which system sends them, and switch the other off, so a customer never gets both.',
     },
     {
-      id: 'WF-25',
-      tags: { add: ['been-customer', 'is-retention-held'], remove: ['is-active-job'], note: 'is-retention-held only when a retention is held; is-active-job comes off only when no retention is held, otherwise WF-29 takes it off' },
-      folder: '08', name: 'Final invoice paid: report and close', board: 'both',
+      id: 'WF-29',
+      tags: { add: ['been-customer', 'is-retention-held'], remove: ['is-active-job'], note: 'is-retention-held only when a retention is held; is-active-job comes off only when no retention is held, otherwise WF-33 takes it off' },
+      folder: '09', name: 'Final invoice paid: report and close', board: 'both',
       trigger: 'Final invoice marked fully paid',
-      why: 'The job report and certificates go only once the invoice is paid. Then the card closes, unless a retention is held.',
+      why: 'The job report and certificates go only once the invoice is paid, and the owner sends them, as Glenn asked: a reminder to him once the invoice is paid. Then the card closes, unless a retention is held.',
       steps: [
         { t: 'set', field: 'final_invoice_paid_at', value: 'now' },
-        { t: 'task', title: 'SEND {{contact.first_name}}: job report and certificates', desc: 'The final invoice is paid. Send the job report from the saved template today, with the photos and the certificate of completion attached, then stamp Job report sent on the card. It never goes before the invoice is fully paid.', role: 'OFFICE', due: 'Same day as payment' },
+        { t: 'task', title: 'SEND {{contact.first_name}}: job report and certificates', desc: 'The final invoice is paid. Send the job report from the saved template today, with the photos and the certificate of completion attached, then stamp Job report sent on the card. It never goes before the invoice is fully paid.', role: 'OWNER', due: 'Same day as payment' },
         { t: 'if', cond: 'commercial', then: [
           { t: 'wait', for: '1 day' },
           { t: 'send', id: 'C-CLOSE-01' },
@@ -2442,11 +2645,11 @@ window.JOURNEY = {
       stops: 'Runs once per job.',
     },
     {
-      id: 'WF-26',
+      id: 'WF-30',
       tags: { add: ['been-review-asked'] },
-      folder: '08', name: 'Google review request', board: 'both',
+      folder: '09', name: 'Google review request', board: 'both',
       trigger: 'job_date passes on a job marked complete',
-      why: 'Controlled by one field on the contact instead of a stage. Asked once, four weeks after the job, and only where the team is happy to ask.',
+      why: 'Controlled by one field on the contact instead of a stage, and decided by the owner on a task at Job Completed. Asked once, four weeks after the job, and only where the team is happy to ask.',
       steps: [
         { t: 'wait', for: '4 weeks after job_date. The range agreed was 4 to 6 weeks.' },
         { t: 'if', cond: 'ask_for_google_review is Yes, the contact has no is-complaint tag, and been-review-asked is not on the contact', then: [
@@ -2458,22 +2661,22 @@ window.JOURNEY = {
       stops: 'Asked once per contact. Never chased.',
     },
     {
-      id: 'WF-27',
-      folder: '08', name: 'After the job: referral and the year check-in', board: 'residential',
+      id: 'WF-31',
+      folder: '09', name: 'After the job: referral and the year check-in', board: 'residential',
       trigger: 'Final invoice marked fully paid',
-      why: 'Most of the work comes from people passing the name on, and a year on is when the rest of the building comes up.',
+      why: 'Most of the work comes from people passing the name on, and a year on is when the rest of the building comes up. A job the owner set to No for a review gets no referral ask either.',
       steps: [
         { t: 'wait', for: '7 days' },
-        { t: 'if', cond: 'consent_marketing is yes', then: [{ t: 'send', id: 'REV-02' }] },
+        { t: 'if', cond: 'consent_marketing is yes and ask_for_google_review is Yes', then: [{ t: 'send', id: 'REV-02' }] },
         { t: 'wait', for: 'until 12 months after job_date' },
         { t: 'if', cond: 'consent_marketing is yes', then: [{ t: 'send', id: 'REV-03' }] },
       ],
       stops: 'Runs to the end. The 12 month step is scheduled on entry so it survives everything else changing.',
     },
     {
-      id: 'WF-28',
-      folder: '08', name: 'Progress claims', board: 'commercial',
-      trigger: 'A progress claim invoice is sent while the works run',
+      id: 'WF-32',
+      folder: '09', name: 'Progress claims', board: 'commercial',
+      trigger: 'The owner sends a progress claim invoice while the works run',
       why: 'Staged works bill per the programme. Each claim carries its photos and the papers that back it.',
       steps: [
         { t: 'send', id: 'C-PAY-01' },
@@ -2483,9 +2686,9 @@ window.JOURNEY = {
       stops: 'The claim is paid. Payment terms still to confirm with Glenn.',
     },
     {
-      id: 'WF-29',
+      id: 'WF-33',
       tags: { remove: ['is-retention-held', 'is-active-job'], note: 'both come off when the retention is marked paid' },
-      folder: '09', name: 'Retention claim reminder', board: 'both',
+      folder: '10', name: 'Retention claim reminder', board: 'both',
       trigger: 'Stage changed to Retention Claim',
       why: 'A retention can sit for six to twelve months. A task on the release date is what stops it being forgotten.',
       steps: [
@@ -2499,13 +2702,13 @@ window.JOURNEY = {
       stops: 'The retention is marked paid by hand.',
     },
     {
-      id: 'WF-30',
+      id: 'WF-34',
       tags: { remove: ['is-unresponsive', 'is-stalled'] },
-      folder: '10', name: 'Customer replied', board: 'both',
+      folder: '11', name: 'Customer replied', board: 'both',
       trigger: 'Inbound SMS or email from a contact with an open opportunity',
       why: 'A reply is a live conversation. Nothing automatic should talk over it.',
       steps: [
-        { t: 'do', text: 'Pause the sales sequences on the contact: WF-06, WF-10, WF-11, WF-16, and the payment reminders in WF-24. Reminders about an agreed date (WF-07, WF-19, WF-22) keep running.' },
+        { t: 'do', text: 'Pause the sales sequences on the contact: WF-06, WF-10, WF-11, WF-16, and the payment reminders in WF-28. Reminders about an agreed date (WF-07, WF-21, WF-25) keep running.' },
         { t: 'alert', n: 3 },
         { t: 'task', title: 'REPLY {{contact.first_name}}: they messaged', desc: 'A customer has replied, so every automatic message to them has paused. Answer from the conversations screen in the app, not your own phone, so the reply sits on their card and the pause holds.', role: 'Assigned user', due: '1 hour' },
         { t: 'do', text: 'The sequences resume only when someone replies from the platform and chooses to resume, never automatically.' },
@@ -2513,22 +2716,22 @@ window.JOURNEY = {
       stops: 'Fires on every inbound message.',
     },
     {
-      id: 'WF-31',
+      id: 'WF-35',
       tags: { add: ['is-no-marketing'], remove: ['is-nurturing'] },
-      folder: '10', name: 'STOP and unsubscribe', board: 'both',
+      folder: '11', name: 'STOP and unsubscribe', board: 'both',
       trigger: 'Inbound SMS reads STOP, or an email unsubscribe link is used',
       why: 'The platform handles most of this natively. This confirms what it does and adds the bit it does not.',
       steps: [
         { t: 'do', text: 'Native: STOP sets do-not-SMS on the contact. Unsubscribe sets do-not-email for marketing.' },
-        { t: 'do', text: 'Add: remove the contact from WF-16 and WF-27, and leave the card where it is so a later enquiry is still recognised.' },
+        { t: 'do', text: 'Add: remove the contact from WF-16 and WF-31, and leave the card where it is so a later enquiry is still recognised.' },
         { t: 'do', text: 'Transactional messages about a live job still send: reminders, deposit and invoice. That is lawful and expected; make sure the do-not-SMS flag is not wired to block them.' },
       ],
       stops: 'Immediate.',
     },
     {
-      id: 'WF-32',
+      id: 'WF-36',
       tags: { add: ['is-stalled'] },
-      folder: '10', name: 'Stalled card monitor', board: 'both',
+      folder: '11', name: 'Stalled card monitor', board: 'both',
       trigger: 'Scheduled, daily at 6:45am',
       why: 'Escalation toward visibility, not more alarms. A card stuck for forty days is a conversation to have on Monday, not an emergency.',
       steps: [
@@ -2540,9 +2743,9 @@ window.JOURNEY = {
       stops: 'Runs daily.',
     },
     {
-      id: 'WF-33',
+      id: 'WF-37',
       tags: { add: ['is-complaint'] },
-      folder: '10', name: 'Negative review or complaint', board: 'both',
+      folder: '11', name: 'Negative review or complaint', board: 'both',
       trigger: 'Review received under 4 stars, or is-complaint added to a contact',
       why: 'Reputation decays fast. A same-day call fixes most of them.',
       steps: [
@@ -2554,22 +2757,34 @@ window.JOURNEY = {
       stops: 'Sends once per review or tag.',
     },
     {
-      id: 'WF-34',
-      folder: '11', name: 'Daily summary', board: 'both',
+      id: 'WF-38',
+      folder: '11', name: 'Assigned to you', board: 'both',
+      trigger: 'A card is assigned or reassigned to someone, or a task is created for OWNER',
+      why: 'Agreed on the call: anything handed to the owner reaches him by text, so it is seen on site, and by email, so it is still there that night. The office gets an email, so it sits there unread until it is dealt with.',
+      steps: [
+        { t: 'if', cond: 'this is the automatic assignment of a new lead to the office', then: [{ t: 'stop', when: 'here. Alert 1 already covers it.' }] },
+        { t: 'if', cond: 'the workflow that made the task or the assignment has just sent the owner another alert about the same card', then: [{ t: 'stop', when: 'here. One event never sends the owner two texts.' }] },
+        { t: 'alert', n: 14 },
+      ],
+      stops: 'Once per assignment or task.',
+    },
+    {
+      id: 'WF-39',
+      folder: '12', name: 'Daily summary', board: 'both',
       trigger: 'Scheduled, 7:00am Monday to Saturday',
       why: 'Where everything that is not an emergency goes. NEEDS YOU last, because it is the section people act on.',
       steps: [
-        { t: 'do', text: 'Email to OWNER and OFFICE: yesterday (enquiries, calls, quotes sent, quotes accepted), today (inspections, installs, phone calls booked, deposits due), needs you (leads not called, callbacks due, installs to book, dates not confirmed, deposits unpaid, invoices overdue, job reports to send, retentions due).' },
+        { t: 'do', text: 'Email to OWNER and OFFICE: yesterday (enquiries, calls, quotes sent, quotes accepted), today (inspections, installs, phone calls booked, deposits due), needs you (leads not called, quotes to write, callbacks due, installs to book, dates not confirmed, invoices to send, deposits unpaid, invoices overdue, job reports to send, retentions due).' },
       ],
       stops: 'Runs daily.',
     },
     {
-      id: 'WF-35',
-      folder: '11', name: 'Weekly and monthly reports', board: 'both',
+      id: 'WF-40',
+      folder: '12', name: 'Weekly and monthly reports', board: 'both',
       trigger: 'Scheduled, Monday 7:00am and the 1st of the month',
       why: 'Read across both boards from the shared stage keys. The forecast and the committed work are shown as two lines, never one.',
       steps: [
-        { t: 'do', text: 'Weekly to OWNER: enquiries by source, median time to first call, leads closed as Unreachable, quotes sent, quotes accepted, lost by reason, open value, accepted but not yet completed, cards stalled 3x, jobs completed, days from acceptance to payment, invoices outstanding, retentions held.' },
+        { t: 'do', text: 'Weekly to OWNER: enquiries by source, median time to first call, leads closed as Unreachable, days in Quoting, quotes sent, quotes accepted, lost by reason, open value, accepted but not yet completed, cards stalled 3x, jobs completed, days from acceptance to payment, invoices outstanding, retentions held.' },
         { t: 'do', text: 'Monthly to OWNER: cost per enquiry and per accepted job by utm_source, gclid and fbclid, against paid revenue.' },
         { t: 'do', text: 'Weekly reconciliation: count of website submissions against opportunities created. A mismatch fires alert 11.' },
       ],
@@ -2581,11 +2796,11 @@ window.JOURNEY = {
   guide: {
     principle: {
       title: 'You move the card. The system does the talking.',
-      body: 'Every automatic message, reminder and alert in this journey is triggered by something real happening to a card: a call logged, a quote sent, a quote accepted, an install booked in the calendar, a job marked complete, an invoice paid. Some of those move the card by themselves, like the accept button on a quote or a booking in the install calendar. The rest are a move you make on the board. Either way, everything that should follow, follows. Do nothing to a card and the system nudges you, then nudges harder.',
+      body: 'Every automatic message, reminder and alert in this journey is triggered by something real happening to a card: a call logged, a lead handed to the owner, a quote sent, a quote accepted, an install booked in the calendar, an invoice sent, a job marked complete, an invoice paid. Some of those move the card by themselves, like the accept button on a quote or a booking in the install calendar. The rest are a move you make on the board. Either way, everything that should follow, follows. Do nothing to a card and the system nudges you, then nudges harder.',
     },
     routine: [
-      { when: '7:00am', what: 'The daily summary lands in your inbox. Read the NEEDS YOU section first: leads nobody has rung, callbacks due, installs to book, dates not confirmed, deposits unpaid, invoices overdue and job reports to send.' },
-      { when: 'Through the day', what: 'A short list of things can buzz your phone or land in your inbox, and they are all below. Every one is a job to do now. Nothing else interrupts you.' },
+      { when: '7:00am', what: 'The daily summary lands in your inbox. Read the NEEDS YOU section first: leads nobody has rung, quotes to write, callbacks due, installs to book, dates not confirmed, invoices to send, deposits unpaid, invoices overdue and job reports to send.' },
+      { when: 'Through the day', what: 'A short list of things can reach you, and they are all below. The office gets them by email, so they sit there unread until dealt with. The owner gets a text and an email, so they are seen on site. Every one is a job to do that day. Nothing else interrupts you.' },
       { when: 'Your task list', what: 'Each stage creates the tasks for that stage, with a due date. Tick them off as you go. Ticking a task does not move the card. Moving the card is the separate, deliberate act.' },
       { when: 'When a customer replies', what: 'Every automatic message to that person pauses. Answer from the app, not from your own phone, so the reply sits on their card and the pause holds until you say otherwise.' },
       { when: 'Monday morning', what: 'Open the Whole pipeline view. Every open job on both boards, stage by stage, in one place.' },
@@ -2595,30 +2810,33 @@ window.JOURNEY = {
       2: 'Ring them back within 30 minutes. They already have a text saying someone will.',
       3: 'Read it and answer from the app. The automatic messages have paused for this person.',
       4: 'Read their enquiry before the call, so it starts with what they told you.',
-      5: 'Ring them. A cancelled call is usually a diary clash, and a short call often rebooks it.',
+      5: 'A phone call: ring them, a short call often rebooks it. An inspection: the owner rings to rebook it. Nothing is rebooked automatically.',
       6: 'The owner knows. The office still makes the first call within 15 minutes, the same as any lead.',
       7: 'Ring them now. Fifteen minutes have passed and no call is logged on the card.',
-      8: 'Check the option they chose is on the card, then move it to Inspection Required or Booking Required. The owner books the install date.',
-      9: 'Nothing to do. The customer has had a one-line confirmation and the date is secure.',
+      8: 'Check the option they chose is on the card. The owner then moves it to Inspection Required if the site needs a look, otherwise to Booking Required.',
+      9: 'Special-order foam: order it now. Otherwise nothing to do; the customer has had a one-line confirmation and the date is secure.',
       10: 'Ring them today. Most of these are fixed by a call, and none of them by silence.',
       11: 'Ring Systemations. Something behind the scenes has stopped and leads may be going missing.',
       12: 'Ring them today, agree a new date, and move the booking in the calendar. Move the crew and the rig by hand. Nothing is rescheduled automatically.',
-      13: 'Ring them today. If the deposit will not land in time, decide whether the crew holds the date or moves to another job.',
+      13: 'The customer has had a text asking for the remittance. Check for a reply, and decide whether the crew holds the date or goes to another job.',
+      14: 'Open it and deal with it that day. Something handed to you is waiting on you, most often a quote to write.',
     },
     howTo: [
-      { title: 'Move a card', body: 'Open the board, drag the card to the next column, or open the card and change its stage. Some moves happen by themselves: the accept button, an install booking, a deposit invoice going out. Everything else is a move you make.' },
+      { title: 'Move a card', body: 'Open the board, drag the card to the next column, or open the card and change its stage. Some moves happen by themselves: the accept button, an install booking, sending an invoice. Everything else is a move you make.' },
       { title: 'Log a call', body: 'From the card in the app, log every call, answered or not. A logged call stops the 15 minute timer. Two calls with no answer: move the card to Dial 1 and the text goes ten seconds later.' },
+      { title: 'Hand a lead to the owner for a quote', body: 'After the call, move the card to Quoting. It is assigned to the owner, who gets a text and an email and a task to write and send the quote. Anyone can see it is waiting on the owner.' },
       { title: 'Send a quote', body: 'Build the quote in the quote tool from the card and send it. Sending it moves the card to Quote Sent and starts the follow-up. If the job has options, open cell or closed cell, or two thicknesses, add each as its own option so the customer accepts one.' },
       { title: 'Record a yes by phone or purchase order', body: 'Move the card to Quote Accepted, note the option they chose, and put the purchase order number on the card if there is one. The thank-you goes by itself. On commercial, the purchase order number is what marks the job Won.' },
       { title: 'Quote an add-on on a job under way', body: 'Send it from the same card as normal: floor protection, window sealing, an extra area. When it is accepted the value updates and the office gets a task. The thank-you does not go again and the card does not move.' },
-      { title: 'Book a site inspection', body: 'From the card, book into the inspection calendar. The confirmation and the morning text go by themselves, and whoever is attending gets a task for the day.' },
-      { title: 'Book the install date', body: 'From the card, book into the install calendar, not a phone calendar. The booking moves the card to Job Booked and sets up the reminders and the deposit. To move a job, move the booking; the reminders and the deposit follow it.' },
+      { title: 'Book a site inspection', body: 'Only after the quote is accepted, and only where the site needs a look. Move the card to Inspection Required and book into the inspection calendar from the card. The confirmation and the morning text go by themselves. If the customer cancels, the owner is told and rebooks it.' },
+      { title: 'Book the install date', body: 'From the card, book into the calendar for the vehicle doing the job: the InjectaCore rig, the van, the Fuso truck or the Mercedes rig. A job over several days, or using two rigs, gets a booking for each block. Book it in the platform first; it then shows in the Apple calendar, and moving it in either place moves it in both. The first booking moves the card to Job Booked and sets up the reminders and the deposit.' },
       { title: 'When a customer taps No', body: 'You get an alert. Ring them, agree a new date, move the booking in the install calendar, and move the crew and the rig. Nothing is rescheduled for you.' },
-      { title: 'Deposits', body: 'The deposit invoice goes by itself two weeks before the job, with the accepted quote attached. When the money lands, mark the invoice paid; that sends the confirmation. Nothing is charged to a card.' },
+      { title: 'Send an invoice', body: 'Deposit and final invoices are prepared as drafts from the accepted quote, with the quote and any purchase order attached, and the owner gets a task. Check it, adjust the payment terms or the area sprayed, and send it. Nothing reaches the customer until you do, and the reminders start only once it is sent.' },
+      { title: 'Deposits', body: 'The draft deposit invoice appears two weeks before the job. Send it, and when the money lands, mark it paid; that sends the confirmation and tells the owner, so special-order foam can be ordered. Nothing is charged to a card.' },
       { title: 'Variations on site', body: 'Send the variation document from its template on the card, for example an extra 100 sqm. It fills in the customer details and goes for a digital signature, and the amount is added to the job.' },
-      { title: 'Mark a job complete', body: 'Crew: photos on the card, Photos captured ticked, any variations recorded, then mark the job complete from the app. That sends the final invoice with the accepted quote and any purchase order attached.' },
-      { title: 'Mark the final invoice paid', body: 'When the money lands, mark it paid. The reminders stop, and a task appears to send the job report and certificates. Send them the same day, never before payment.' },
-      { title: 'Ask for Google review', body: 'On the contact, set Ask for Google review to No for a job that had problems and for repeat commercial clients such as Bondor and Australian Housing. It is Yes unless someone changes it, and only Yes gets the request four weeks after the job.' },
+      { title: 'Mark a job complete', body: 'Crew: photos on the card, Photos captured ticked, any variations recorded, then mark the job complete from the app. That sends the thank-you and prepares the draft final invoice for the owner to check and send.' },
+      { title: 'Mark the final invoice paid', body: 'When the money lands, mark it paid. The reminders stop, and the owner gets a task to send the job report and certificates. Send them the same day, never before payment.' },
+      { title: 'Ask for Google review', body: 'When a job is marked complete, the owner gets a task. Leave Ask for Google review on Yes, or set it to No for a job that had problems and for repeat commercial clients such as Bondor and Australian Housing. Yes sends one text four weeks after the job. No sends no review request and no referral email.' },
       { title: 'Record a retention', body: 'Before marking the final invoice paid, put the retention amount and the release date on the card. The card moves to Retention Claim, and a task reminds you on the release date.' },
       { title: 'Set a job to Lost', body: 'Status to Lost and pick the reason from the list: price, went with another contractor, chose batts, timing, outside the service area, not suitable, unreachable, not the decision maker, budget withdrawn, cancelled after acceptance, duplicate, spam. It takes five seconds and it is the only way the board ever tells you why jobs are lost.' },
       { title: 'Reply to a customer', body: 'Use the conversations screen in the app. Anything sent from there sits on the card and keeps the automatic messages paused. A text from your own phone does neither.' },
@@ -2626,8 +2844,8 @@ window.JOURNEY = {
       { title: 'See the whole pipeline', body: 'Open the Whole pipeline view. It lists every open job on both boards in stage order, so you can see the business at a glance without switching boards.' },
     ],
     never: [
-      'Send a confirmation, a reminder, a quote chase, a deposit or payment reminder, or a review request by hand. They all go by themselves, and a hand-sent one on top reads as nagging.',
-      'Book an install date in a phone calendar first. Book it in the install calendar, or nothing that follows will fire.',
+      'Send a confirmation, a reminder, a quote chase, a payment reminder or a review request by hand. They all go by themselves, and a hand-sent one on top reads as nagging.',
+      'Book an install straight into the Apple calendar. Book it in the platform first, or nothing that follows will fire. It then shows in the Apple calendar by itself.',
       'Move a crew because of a reminder alone. A No means ring the customer; the move is always made by a person.',
       'Send the job report or the certificates before the final invoice is fully paid.',
       'Move a card back to Quote Accepted for an add-on quote. The system handles add-ons on the card as it is.',
@@ -2637,12 +2855,14 @@ window.JOURNEY = {
     ifNothing: [
       { when: 'A new lead is not rung', then: '15 minutes: an email to the office. 1 hour: a text and an email to the owner. Next morning: top of the summary until a call is logged.' },
       { when: 'Nobody answers', then: 'After two calls the card goes to Dial 1 and a text goes. After the second round, Dial 2 sends emails on days 2, 4 and 7, then the card closes as Unreachable.' },
+      { when: 'A quote is not written', then: 'After 2 business days in Quoting (5 on commercial), it is listed in the summary until the quote is sent.' },
       { when: 'A quote goes quiet', then: 'Follow-ups on days 2, 5, 10 and 21, then a task to decide. The card never sits silently.' },
       { when: 'An install is not booked', then: 'After 2 business days in Booking Required, it is listed in the summary until it moves.' },
       { when: 'Nobody answers the reminders', then: 'A call task the day before the job, to make sure it is still on.' },
-      { when: 'A deposit is not paid', then: 'A reminder two days before it is due. On the due date, an alert to the owner and the office, and a task.' },
-      { when: 'An invoice goes unpaid', then: 'Reminders at day 7 and day 14, then a task to ring. They stop the moment it is marked paid.' },
-      { when: 'A job is paid', then: 'A task to send the job report the same day. Four weeks after the job, the review request, if Ask for Google review is Yes. For people who opted in, a referral note a week after payment and a check-in a year on.' },
+      { when: 'A draft invoice is not sent', then: 'After 2 business days it is listed in the summary under Invoices to send until it goes.' },
+      { when: 'A deposit is not paid', then: 'At 4pm on the due date, a text asks the customer for the remittance, and the owner and the office are told, with a task.' },
+      { when: 'An invoice goes unpaid', then: 'Reminders at day 7 and day 14 after it is sent, then a task to ring. They stop the moment it is marked paid.' },
+      { when: 'A job is paid', then: 'A task to the owner to send the job report the same day. Four weeks after the job, the review request, if Ask for Google review is Yes. For people who opted in, a referral note a week after payment and a check-in a year on.' },
       { when: 'A retention is held', then: 'A task on the release date to send the claim, and another a month later if it is still unpaid.' },
     ],
     ask: [
@@ -2651,6 +2871,7 @@ window.JOURNEY = {
       'A customer says they received a message they should not have.',
       'The morning summary stops arriving, or an enquiry from the website never appears on the board.',
       'The mobile number, the business line or any link changes. It is a one-line change and every message follows.',
+      'You have settled how you want invoices set out and would like them to send themselves.',
     ],
   },
 };

@@ -33,10 +33,10 @@
       <h1>Every workflow to build, step by step</h1>
       <p class="lede">The automation behind the journey, written in the platform's own building blocks: a trigger, the steps in order, the branches, and what stops it. Every Send links to the stage that shows the message. Build them in the order of the build sheet, and tick the go-live list there before the first real lead.</p>
       <div class="stats">
-        <span class="stat"><b id="cntWorkflows">35</b><span>workflows</span></span>
-        <span class="stat"><b id="cntSent">58</b><span>messages sent by them</span></span>
-        <span class="stat"><b id="statAlerts">13</b><span>alerts</span></span>
-        <span class="stat"><b id="statTasks">46</b><span>tasks</span></span>
+        <span class="stat"><b id="cntWorkflows">40</b><span>workflows</span></span>
+        <span class="stat"><b id="cntSent">59</b><span>messages sent by them</span></span>
+        <span class="stat"><b id="statAlerts">14</b><span>alerts</span></span>
+        <span class="stat"><b id="statTasks">54</b><span>tasks</span></span>
       </div>
       <p class="sec-lede" id="coverage" style="margin-top:1.2rem"></p>
     </div>
@@ -70,11 +70,13 @@
     <div class="wrap">
       <div class="sec-head"><span class="sec-n">C1</span><h2>Conventions that apply to every workflow</h2></div>
       <div class="cards">
-        <div class="cx"><h3>Stop on reply</h3><p>Every sales sequence checks for an inbound reply before each send and stops if one has arrived. WF-30 handles the pause; each sequence still needs its own exit condition so a resumed contact does not receive a stale message. Reminders about an agreed date keep running.</p></div>
+        <div class="cx"><h3>Stop on reply</h3><p>Every sales sequence checks for an inbound reply before each send and stops if one has arrived. WF-34 handles the pause; each sequence still needs its own exit condition so a resumed contact does not receive a stale message. Reminders about an agreed date keep running.</p></div>
         <div class="cx"><h3>Send window</h3><p>Anything marked "waits for the send window" sits behind a Wait until a time window step: 8am to 8pm, Monday to Saturday. Confirmations are exempt.</p></div>
         <div class="cx"><h3>Acceptance kills sales</h3><p>WF-14 stops every sales sequence before it does anything else. Test this one specifically: accept a quote mid-follow-up and confirm nothing further sends.</p></div>
         <div class="cx"><h3>Add-on quotes</h3><p>WF-12 checks is-active-job before it moves anything. An accepted add-on or variation quote on a live job updates the value and tasks the office; it never resends the thank-you or moves the card.</p></div>
-        <div class="cx"><h3>Book in the platform first</h3><p>Install dates are booked in the install calendar, never a phone calendar first, because WF-18 is what moves the card and starts the reminders and the deposit timing. Calendar sync is a separate task.</p></div>
+        <div class="cx"><h3>Book in the platform first</h3><p>Install dates are booked in the platform, in the calendar for the vehicle doing the job, never straight into the Apple calendar, because WF-20 is what moves the card and starts the reminders and the deposit draft. Two-way iCloud sync is a separate task.</p></div>
+        <div class="cx"><h3>Invoices are drafts</h3><p>WF-24 and WF-27 create deposit and final invoices as drafts with a task to the owner. WF-25 and WF-28 run only when the owner sends them, so reminders never start on an invoice nobody has sent. Automate the send only when Glenn asks.</p></div>
+        <div class="cx"><h3>Alerts follow the role</h3><p>Anything to the office goes by email and in-app, never SMS. Anything to the owner goes by SMS and email. WF-38 sends alert 14 on a hand-over, and skips it when another alert has just told the owner the same thing.</p></div>
         <div class="cx"><h3>Error branches</h3><p>Every workflow gets an error branch that fires alert 11 with the workflow name and the contact. A silent failure is a lead vanishing.</p></div>
         <div class="cx"><h3>Human labels</h3><p>Dropdown fields store the label, not the form value, or the echo emails read "new-build". Fixed once in WF-01, checked in the go-live list.</p></div>
         <div class="cx"><h3>Required fields on entry</h3><p>Stages that need a field to send correctly (callback time, inspection date, install date, deposit amount and foam order type, photos captured, invoice number, retention amount and release date) require it on the stage change rather than reminding afterwards.</p></div>

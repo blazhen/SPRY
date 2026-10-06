@@ -261,14 +261,14 @@
     <p class="kicker">SprayIT Solutions &middot; Systemations &middot; Doc 3 of 3</p>
     <h1>What the team gets told, and when</h1>
     <p class="standfirst">
-      13 real-time alerts with what each one says, 46 tasks across both boards, two
+      14 real-time alerts with what each one says, 54 tasks across both boards, two
       escalation ladders and three digests. The messaging kit covers what the customer receives. This covers what
       you receive. Revised after the client call on Friday 2 October 2026.
     </p>
     <div class="meta">
       <div><b>Prepared for</b><span>Glenn and Rachael, SprayIT Solutions</span></div>
       <div><b>System</b><span>Systemations</span></div>
-      <div><b>Real-time alerts</b><span>13</span></div>
+      <div><b>Real-time alerts</b><span>14</span></div>
       <div><b>Source of truth</b><span class="mono">journey-data.js</span></div>
     </div>
   </div>
@@ -290,11 +290,13 @@
         ignored too.
       </p>
       <p>
-        There are 13 real-time alerts. After the October call the list was reworked: the
+        There are 14 real-time alerts. After the October call the list was reworked: the
         hour-long unattended lead alert became a fifteen minute email to the office, the missed site
-        visit alert went because our own people attend every visit, and two were added that each
-        protect a crew day: a customer saying the booked date no longer works, and a deposit unpaid at
-        its due date. Anything that goes to the owner arrives by text and by email, and every alert
+        visit alert went because our own people attend every visit, and three were added: a customer
+        saying the booked date no longer works, a deposit unpaid at its due date, and anything
+        assigned to someone. The channel follows the role, as agreed on the call: anything to the
+        office arrives by email and in-app, never by text, so it sits there unread until it is dealt
+        with; anything to the owner arrives by text and by email, so it is seen on site. Every alert
         names a role or the team, never a person.
       </p>
     </div>
@@ -311,9 +313,9 @@
         <table>
           <thead><tr><th>Role</th><th>Who at SprayIT</th><th>Owns</th></tr></thead>
           <tbody>
-            <tr><td><code>OWNER</code></td><td>Glenn Angus</td><td>Commercial work, pricing, booking install dates, anything escalated</td></tr>
-            <tr><td><code>OFFICE</code></td><td>Rachael Angus</td><td>First response, calls, chasing, invoicing. About 99% of customer contact.</td></tr>
-            <tr><td><code>ESTIMATOR</code></td><td>Glenn Angus</td><td>Quotes and site inspections</td></tr>
+            <tr><td><code>OWNER</code></td><td>Glenn Angus</td><td>Writing and sending quotes, commercial work, booking install dates, checking and sending invoices, job reports, anything escalated</td></tr>
+            <tr><td><code>OFFICE</code></td><td>Rachael Angus</td><td>First response, calls, follow-ups, chasing payments. About 99% of customer contact.</td></tr>
+            <tr><td><code>ESTIMATOR</code></td><td>Glenn Angus</td><td>Site inspections, and the scoping call on commercial jobs</td></tr>
             <tr><td><code>CREW_LEAD</code></td><td>Per job</td><td>The job day: running late text, photos, variations, marking the job complete</td></tr>
           </tbody>
         </table>
@@ -321,7 +323,8 @@
       <div class="why">
         <h4>Assignment</h4>
         <p>
-          New Lead is assigned to the office on both boards. OWNER and ESTIMATOR are the same
+          New Lead is assigned to the office on both boards. Moving a card to Quoting assigns it
+          to the owner, who is told by text and email (alert 14). OWNER and ESTIMATOR are the same
           person, so the escalation ladder runs from the office to the owner, a genuine second
           person. If more people take first calls later, switch the New Lead assignment to round
           robin. Unassigned leads are the single most common way a lead dies: everybody assumes
@@ -332,7 +335,7 @@
   </section>
 
   <section id="alerts">
-    <div class="sec-head"><span class="sec-n">03</span><h2>The 13 real-time alerts</h2></div>
+    <div class="sec-head"><span class="sec-n">03</span><h2>The 14 real-time alerts</h2></div>
 
     <div class="t-scroll">
       <table>
@@ -340,19 +343,20 @@
           <tr><th>#</th><th>Alert</th><th>Trigger</th><th>To</th><th>Channel</th><th>Why it interrupts</th></tr>
         </thead>
         <tbody>
-          <tr><td class="num">1</td><td>New enquiry</td><td>Opportunity created</td><td>Assigned user</td><td><span class="ch ch-sms">SMS</span> <span class="ch ch-app">App</span></td><td>Speed to lead is the whole game.</td></tr>
-          <tr><td class="num">2</td><td>Missed call</td><td>Inbound call not answered</td><td>OFFICE</td><td><span class="ch ch-sms">SMS</span></td><td>The auto-reply already went. A person still has to ring back.</td></tr>
-          <tr><td class="num">3</td><td>Inbound reply</td><td>Contact replies by SMS</td><td>Assigned user</td><td><span class="ch ch-app">App</span> <span class="ch ch-sms">SMS</span></td><td>A reply is a live conversation. Every sequence on the card pauses.</td></tr>
-          <tr><td class="num">4</td><td>Phone call booked</td><td>Appointment booked in the phone call calendar</td><td>Assigned user</td><td><span class="ch ch-app">App</span></td><td>The diary changed.</td></tr>
-          <tr><td class="num">5</td><td>Phone call cancelled</td><td>Appointment cancelled in the phone call calendar</td><td>Assigned user</td><td><span class="ch ch-sms">SMS</span></td><td>A hole in the day, recoverable if caught early.</td></tr>
+          <tr><td class="num">1</td><td>New enquiry</td><td>Opportunity created</td><td>OFFICE</td><td><span class="ch ch-eml">Email</span> <span class="ch ch-app">App</span></td><td>Speed to lead is the whole game.</td></tr>
+          <tr><td class="num">2</td><td>Missed call</td><td>Inbound call not answered</td><td>OFFICE</td><td><span class="ch ch-eml">Email</span> <span class="ch ch-app">App</span></td><td>The auto-reply already went. A person still has to ring back.</td></tr>
+          <tr><td class="num">3</td><td>Inbound reply</td><td>Contact replies by SMS</td><td>Assigned user</td><td><span class="ch ch-eml">Email</span> <span class="ch ch-app">App</span> <span class="ch ch-sms">SMS</span></td><td>A reply is a live conversation. Every sales sequence on the card pauses.</td></tr>
+          <tr><td class="num">4</td><td>Phone call booked</td><td>Appointment booked in the phone call calendar</td><td>Assigned user</td><td><span class="ch ch-eml">Email</span> <span class="ch ch-app">App</span> <span class="ch ch-sms">SMS</span></td><td>The diary changed.</td></tr>
+          <tr><td class="num">5</td><td>Phone call or inspection cancelled</td><td>Appointment cancelled in the phone call or inspection calendar</td><td>Assigned user, or OWNER for an inspection</td><td><span class="ch ch-eml">Email</span> <span class="ch ch-app">App</span> <span class="ch ch-sms">SMS</span></td><td>A hole in the day, recoverable if caught early. Inspections are rebooked by a person, because a free slot is not always a workable one.</td></tr>
           <tr><td class="num">6</td><td>Commercial enquiry</td><td>Opportunity created on the Commercial board</td><td>OWNER</td><td><span class="ch ch-sms">SMS</span> <span class="ch ch-eml">Email</span></td><td>Different sale, and the owner wants to know immediately.</td></tr>
-          <tr><td class="num">7</td><td>New lead not called after 15 minutes</td><td>No call logged 15 business minutes after the lead arrives</td><td>OFFICE</td><td><span class="ch ch-eml">Email</span></td><td>Time to first contact is the one number that moves everything else. Business hours only, so it pauses overnight.</td></tr>
-          <tr><td class="num">8</td><td>Quote accepted</td><td>Card enters Quote Accepted</td><td>OWNER and OFFICE</td><td><span class="ch ch-sms">SMS</span> <span class="ch ch-eml">Email</span></td><td>Triggers the next step: an inspection, or the install date.</td></tr>
-          <tr><td class="num">9</td><td>Deposit received</td><td>Deposit invoice marked paid</td><td>OFFICE</td><td><span class="ch ch-app">App</span></td><td>The date is secure.</td></tr>
+          <tr><td class="num">7</td><td>New lead not called after 15 minutes</td><td>No call logged 15 business minutes after the lead arrives</td><td>OFFICE</td><td><span class="ch ch-eml">Email</span> <span class="ch ch-app">App</span></td><td>Time to first contact is the one number that moves everything else. Business hours only, so it pauses overnight.</td></tr>
+          <tr><td class="num">8</td><td>Quote accepted</td><td>Card enters Quote Accepted</td><td>OWNER and OFFICE</td><td><span class="ch ch-sms">SMS</span> <span class="ch ch-eml">Email</span> <span class="ch ch-app">App</span></td><td>Triggers the next step: an inspection, or the install date.</td></tr>
+          <tr><td class="num">9</td><td>Deposit received</td><td>Deposit invoice marked paid</td><td>OWNER and OFFICE</td><td><span class="ch ch-sms">SMS</span> <span class="ch ch-eml">Email</span> <span class="ch ch-app">App</span></td><td>Special-order foam is only ordered once the deposit lands, and the date is now secure.</td></tr>
           <tr><td class="num">10</td><td>Negative review or complaint</td><td>Review under 4 stars, or a complaint tag</td><td>OWNER</td><td><span class="ch ch-sms">SMS</span> <span class="ch ch-eml">Email</span></td><td>Reputation decays fast. A same-day call fixes most of them.</td></tr>
           <tr><td class="num">11</td><td>Automation failure</td><td>Workflow error, or the lead webhook returns 4xx or 5xx</td><td>OWNER</td><td><span class="ch ch-sms">SMS</span> <span class="ch ch-eml">Email</span></td><td>A silent failure means leads are vanishing. The platform will not tell you loudly, so this is built deliberately.</td></tr>
-          <tr><td class="num">12</td><td>Customer cannot make the booked date</td><td>A No on the 7 day or 48 hour reminder</td><td>OWNER and OFFICE</td><td><span class="ch ch-sms">SMS</span> <span class="ch ch-eml">Email</span></td><td>A crew and a rig are booked around this job. The sooner a person knows, the sooner both can go to other work.</td></tr>
-          <tr><td class="num">13</td><td>Deposit unpaid at its due date</td><td>deposit_due_date reached and the deposit invoice is unpaid</td><td>OWNER and OFFICE</td><td><span class="ch ch-sms">SMS</span> <span class="ch ch-eml">Email</span></td><td>Special-order foam and a crew day are committed against this job. The due date is set early enough to reassign both.</td></tr>
+          <tr><td class="num">12</td><td>Customer cannot make the booked date</td><td>A No on the one month, 7 day or 48 hour reminder</td><td>OWNER and OFFICE</td><td><span class="ch ch-sms">SMS</span> <span class="ch ch-eml">Email</span> <span class="ch ch-app">App</span></td><td>A crew and a rig are booked around this job. The sooner a person knows, the sooner both can go to other work.</td></tr>
+          <tr><td class="num">13</td><td>Deposit unpaid at its due date</td><td>4pm on deposit_due_date and the deposit invoice is unpaid</td><td>OWNER and OFFICE</td><td><span class="ch ch-sms">SMS</span> <span class="ch ch-eml">Email</span> <span class="ch ch-app">App</span></td><td>Special-order foam and a crew day are committed against this job. The due date is set early enough to reassign both.</td></tr>
+          <tr><td class="num">14</td><td>Assigned to you</td><td>A card is assigned or reassigned to someone, or a task is created for OWNER</td><td>Whoever it is assigned to</td><td><span class="ch ch-sms">SMS</span> <span class="ch ch-eml">Email</span></td><td>Agreed on the call: anything handed to the owner arrives by text so it is seen on site, and by email so it is still there that night.</td></tr>
         </tbody>
       </table>
     </div>
@@ -361,37 +365,44 @@
     <p class="fine">Written so the person can act without opening the CRM. Each one is also shown under its stage on the <a href="../index.html">customer journey page</a>.</p>
 
     <h3>Alert 1: New enquiry</h3>
-    <p>A website enquiry has been created and assigned. The message carries their name, number, property type, what needs doing, timeframe, postcode and where they came from, so it can be acted on without opening the CRM.</p>
-    <p class="screen-label">SMS payload</p>
+    <p>A website enquiry has been created and assigned to the office. The message carries their name, number, property type, what needs doing, timeframe, postcode and where they came from, so it can be acted on without opening the CRM.</p>
+    <p class="fine"><b>To</b> OFFICE &middot; <b>by</b> Email and in-app &middot; <b>fires when</b> Opportunity created</p>
+    <p class="screen-label">Email payload</p>
     <pre class="screen">NEW LEAD: {{contact.first_name}} {{contact.last_name}}
 {{contact.phone}}
 {{contact.property_type}} / {{contact.areas}}
 {{contact.timeframe}} / {{contact.postcode}}
 Source: {{contact.utm_source}}</pre>
-    <p class="fine" style="margin-top:.7rem">Enough to act without opening the CRM. Someone standing on a roof can read that and decide whether to climb down.</p>
+    <p class="fine" style="margin-top:.7rem">Enough to act without opening the CRM. By email, so it sits there unread until somebody has dealt with it.</p>
 
     <h3>Alert 2: Missed call</h3>
     <p>An inbound call to the business number went unanswered. The caller has already had an automatic text back, so this is the reminder that someone still owes them a call.</p>
-    <p class="screen-label">SMS payload</p>
+    <p class="fine"><b>To</b> OFFICE &middot; <b>by</b> Email and in-app &middot; <b>fires when</b> Inbound call not answered</p>
+    <p class="screen-label">Email payload</p>
     <pre class="screen">MISSED CALL: {{contact.phone}} ({{contact.first_name}}). Text-back sent. Ring them.</pre>
 
     <h3>Alert 3: Inbound reply</h3>
-    <p>A customer has replied by text. Every outbound sequence on that contact pauses the moment it arrives, so nothing automatic talks over a live conversation.</p>
-    <p class="screen-label">SMS payload</p>
+    <p>A customer has replied by text. Every sales sequence on that contact pauses the moment it arrives, so nothing automatic talks over a live conversation.</p>
+    <p class="fine"><b>To</b> Assigned user &middot; <b>by</b> Email and in-app to OFFICE, or SMS and email to OWNER &middot; <b>fires when</b> Contact replies by SMS</p>
+    <p class="screen-label">SMS payload, the same text by email</p>
     <pre class="screen">REPLY from {{contact.first_name}}: "{{message.body}}"</pre>
 
     <h3>Alert 4: Phone call booked</h3>
     <p>Somebody has booked a phone call from the day 4 email or the website. It is in the diary and the confirmation has gone, so the point of the alert is to read their enquiry before ringing.</p>
-    <p class="screen-label">In-app payload</p>
+    <p class="fine"><b>To</b> Assigned user &middot; <b>by</b> Email and in-app to OFFICE, or SMS and email to OWNER &middot; <b>fires when</b> Appointment booked in the phone call calendar</p>
+    <p class="screen-label">SMS payload, the same text by email</p>
     <pre class="screen">BOOKED: {{contact.first_name}}, {{appointment.start_time}}. Read the enquiry before the call.</pre>
 
-    <h3>Alert 5: Phone call cancelled</h3>
-    <p>A booked phone call has been cancelled, leaving a hole in the day. Caught early, a short call usually rebooks it.</p>
-    <p class="screen-label">SMS payload</p>
-    <pre class="screen">CANCELLED: {{contact.first_name}}, {{appointment.start_time}}. Slot is open. A short call often rebooks it.</pre>
+    <h3>Alert 5: Phone call or inspection cancelled</h3>
+    <p>A booked phone call or site inspection has been cancelled. A phone call goes to whoever owns the job; an inspection goes to the owner, who rebooks it. Nothing is rebooked automatically.</p>
+    <p class="fine"><b>To</b> Assigned user, or OWNER for an inspection &middot; <b>by</b> Email and in-app to OFFICE, or SMS and email to OWNER &middot; <b>fires when</b> Appointment cancelled in the phone call or inspection calendar</p>
+    <p class="screen-label">SMS payload, the same text by email</p>
+    <pre class="screen">CANCELLED: {{contact.first_name}}, {{appointment.title}}, {{appointment.start_time}}.
+Ring them to rebook.</pre>
 
     <h3>Alert 6: Commercial enquiry</h3>
     <p>An enquiry has landed on the Commercial board. It carries the company as well as the contact. The owner is told straight away; the office still makes the first call.</p>
+    <p class="fine"><b>To</b> OWNER &middot; <b>by</b> SMS and email &middot; <b>fires when</b> Opportunity created on the Commercial board</p>
     <p class="screen-label">SMS payload, the same text by email</p>
     <pre class="screen">COMMERCIAL LEAD: {{contact.first_name}} {{contact.last_name}}, {{contact.company}}
 {{contact.property_type}} / {{contact.postcode}}
@@ -399,51 +410,66 @@ Source: {{contact.utm_source}}</pre>
 
     <h3>Alert 7: New lead not called after 15 minutes</h3>
     <p>A new lead has been on the board for fifteen business minutes and no call has been logged against it. It names the lead and the time it arrived, so whoever picks it up can ring straight away.</p>
+    <p class="fine"><b>To</b> OFFICE &middot; <b>by</b> Email and in-app &middot; <b>fires when</b> No call logged 15 business minutes after the lead arrives</p>
     <p class="screen-label">Email payload</p>
     <pre class="screen">NOT CALLED YET: {{contact.first_name}} {{contact.last_name}}, {{contact.phone}}
 Arrived {{time}}. Fifteen minutes and no call logged. Ring them now.</pre>
 
     <h3>Alert 8: Quote accepted</h3>
-    <p>A card has reached Quote Accepted, from the accept button or moved by hand. It names the job, the value and the option chosen, and it is the signal to book the install date. Add-on quotes on a job already under way do not fire it.</p>
+    <p>A card has reached Quote Accepted, from the accept button or moved by hand. It names the job, the value and the option chosen, and it is the signal to decide on an inspection and book the install date. Add-on quotes on a job already under way do not fire it.</p>
+    <p class="fine"><b>To</b> OWNER and OFFICE &middot; <b>by</b> SMS and email to OWNER, email and in-app to OFFICE &middot; <b>fires when</b> Card enters Quote Accepted</p>
     <p class="screen-label">SMS payload, the same text by email</p>
     <pre class="screen">QUOTE ACCEPTED: {{opportunity.name}}, {{opportunity.value}}
 Option: {{opportunity.accepted_quote_option}}
-Next: book the install date.</pre>
+Next: inspection or install date.</pre>
 
     <h3>Alert 9: Deposit received</h3>
-    <p>A deposit invoice has been marked paid. The customer has had a one-line confirmation, so this is for the record and for whoever is watching the crew diary.</p>
-    <p class="screen-label">In-app payload</p>
-    <pre class="screen">DEPOSIT IN: {{contact.first_name}}, {{opportunity.deposit_amount}}. Job on {{opportunity.job_date}} is secure.</pre>
+    <p>A deposit invoice has been marked paid. The customer has had a one-line confirmation. On special-order foam this is the signal to order the material, which is only ordered once the deposit lands.</p>
+    <p class="fine"><b>To</b> OWNER and OFFICE &middot; <b>by</b> SMS and email to OWNER, email and in-app to OFFICE &middot; <b>fires when</b> Deposit invoice marked paid</p>
+    <p class="screen-label">SMS payload, the same text by email</p>
+    <pre class="screen">DEPOSIT IN: {{contact.first_name}}, {{opportunity.deposit_amount}}. Job on {{opportunity.job_date}} is secure. Special order? Order the foam now.</pre>
 
     <h3>Alert 10: Negative review or complaint</h3>
     <p>A review under four stars, or a contact tagged as a complaint. It carries the rating and the reviewer, so the call can be made the same day.</p>
+    <p class="fine"><b>To</b> OWNER &middot; <b>by</b> SMS and email &middot; <b>fires when</b> Review under 4 stars, or a complaint tag</p>
     <p class="screen-label">SMS payload, the same text by email</p>
     <pre class="screen">REVIEW {{review.rating}} stars from {{review.author}}. Call them today.</pre>
 
     <h3>Alert 11: Automation failure</h3>
     <p>A workflow errored, or the website lead webhook returned a failure. It names the workflow and the contact. This is the only alert that means leads may be vanishing silently.</p>
+    <p class="fine"><b>To</b> OWNER &middot; <b>by</b> SMS and email &middot; <b>fires when</b> Workflow error, or the lead webhook returns 4xx or 5xx</p>
     <p class="screen-label">SMS payload, the same text by email</p>
     <pre class="screen">WORKFLOW FAILED: {{workflow.name}} on {{contact.first_name}} {{contact.last_name}}. {{error.message}}</pre>
 
     <h3>Alert 12: Customer cannot make the booked date</h3>
-    <p>A customer tapped No on the 7 day or the 48 hour reminder. It names the job, the date and the address. Nothing is rescheduled automatically: the team rings the customer, agrees a new date, and moves the crew and the rig by hand.</p>
+    <p>A customer tapped No on one of the reminders before the job. It names the job, the date and the address. Nothing is rescheduled automatically: the team rings the customer, agrees a new date, and moves the crew and the rig by hand.</p>
+    <p class="fine"><b>To</b> OWNER and OFFICE &middot; <b>by</b> SMS and email to OWNER, email and in-app to OFFICE &middot; <b>fires when</b> A No on the one month, 7 day or 48 hour reminder</p>
     <p class="screen-label">SMS payload, the same text by email</p>
     <pre class="screen">CANNOT MAKE IT: {{contact.first_name}} {{contact.last_name}}, {{contact.phone}}
 Booked {{opportunity.job_date}}, {{opportunity.site_address}}
 Ring them today. Crew and rig need moving by hand.</pre>
 
     <h3>Alert 13: Deposit unpaid at its due date</h3>
-    <p>A deposit has reached its due date without being paid. It names the job, the amount and the install date, so the team can ring the customer and decide in time whether the crew holds the date or is reassigned.</p>
+    <p>A deposit has reached 4pm on its due date without being paid. The customer has just had a text asking for the remittance. It names the job, the amount and the install date, so the owner can decide in time whether the crew holds the date or goes to another job.</p>
+    <p class="fine"><b>To</b> OWNER and OFFICE &middot; <b>by</b> SMS and email to OWNER, email and in-app to OFFICE &middot; <b>fires when</b> 4pm on deposit_due_date and the deposit invoice is unpaid</p>
     <p class="screen-label">SMS payload, the same text by email</p>
     <pre class="screen">DEPOSIT UNPAID: {{opportunity.name}}, {{opportunity.deposit_amount}}
 Due {{opportunity.deposit_due_date}}. Job booked {{opportunity.job_date}}.
-Ring them today and decide whether the crew holds.</pre>
+The customer has been texted. Decide whether the crew holds.</pre>
+
+    <h3>Alert 14: Assigned to you</h3>
+    <p>A card has been assigned to someone, or a task has been created for the owner. The commonest case is the office handing a lead to the owner in Quoting. It names the job and what is waiting, so it can be dealt with that day. Where another alert already carries the same news, this one does not fire again.</p>
+    <p class="fine"><b>To</b> Whoever it is assigned to &middot; <b>by</b> SMS and email to OWNER, email to OFFICE &middot; <b>fires when</b> A card is assigned or reassigned to someone, or a task is created for OWNER</p>
+    <p class="screen-label">SMS payload, the same text by email</p>
+    <pre class="screen">ASSIGNED TO YOU: {{opportunity.name}}, {{contact.phone}}
+{{task.title}}</pre>
+    <p class="fine" style="margin-top:.7rem">The automatic assignment of a new lead to the office does not fire this. Alert 1 already covers it.</p>
 
     <h3>What deliberately does not alert</h3>
     <div class="rule rule-no">
       <h4>Listed so nobody adds them back later without a reason</h4>
       <ul>
-        <li>Stage changes in general. Only a quote accepted, a deposit landing, a No on a reminder and an unpaid deposit do.</li>
+        <li>Stage changes in general. Only a hand-over to someone, a quote accepted, a deposit landing, a No on a reminder and an unpaid deposit do.</li>
         <li>A customer not turning up. Our own people attend site visits, so there is no no-show.</li>
         <li>Emails opened or links clicked. Interesting, not actionable.</li>
         <li>Form views, page views, chat opens.</li>
@@ -461,7 +487,7 @@ Ring them today and decide whether the crew holds.</pre>
       <p>
         Alerts say <em>something happened</em>. Tasks say <em>you owe something</em>, and
         they persist until closed. Anything with a deadline is a task, not an alert.
-        46 in total across both boards.
+        54 in total across both boards.
       </p>
 
       <h3>Naming convention</h3>
@@ -483,24 +509,28 @@ CHASE Daniel: purchase order</pre>
           <tr><td>1. New Lead</td><td class="mono">CALL {{contact.first_name}}: new lead, {{contact.areas}}</td><td>OFFICE</td><td class="urgent">15 minutes</td></tr>
           <tr><td>2. Dial 1</td><td class="mono">CALL {{contact.first_name}}: second round of calls</td><td>OFFICE</td><td class="num">Later the same day</td></tr>
           <tr><td>3. Dial 2</td><td class="mono">CALL {{contact.first_name}}: one more try</td><td>OFFICE</td><td class="num">Day 4</td></tr>
-          <tr><td>4. Inspection Required</td><td class="mono">BOOK {{contact.first_name}}: site inspection</td><td>OFFICE</td><td class="num">2 days</td></tr>
-          <tr><td>4. Inspection Required</td><td class="mono">ATTEND {{contact.first_name}}: inspection, {{opportunity.site_address}}</td><td>ESTIMATOR</td><td class="num">On the date</td></tr>
+          <tr><td>4. Quoting</td><td class="mono">QUOTE {{contact.first_name}}: write and send the quote</td><td>OWNER</td><td class="num">2 business days</td></tr>
           <tr><td>5. Quote Sent</td><td class="mono">CALL {{contact.first_name}}: quote follow up</td><td>OFFICE</td><td class="num">Day 2</td></tr>
           <tr><td>5. Quote Sent</td><td class="mono">DECIDE {{contact.first_name}}: accepted, nurture or lost</td><td>OFFICE</td><td class="num">Day 21</td></tr>
           <tr><td>6. Follow-Up</td><td class="mono">CALL {{contact.first_name}}: callback as asked</td><td>OFFICE</td><td class="num">At the time they asked</td></tr>
           <tr><td>7. Nurture</td><td class="mono">CHECK-IN {{contact.first_name}}: a year since the quote</td><td>OFFICE</td><td class="num">12 months</td></tr>
           <tr><td>7. Nurture</td><td class="mono">REVIEW {{contact.first_name}}: still a fit?</td><td>OWNER</td><td class="num">Quarterly</td></tr>
           <tr class="divider"><td colspan="4">Won is set here</td></tr>
-          <tr><td>8. Quote Accepted</td><td class="mono">NEXT {{contact.first_name}}: inspection or booking</td><td>OFFICE</td><td class="urgent">Same day</td></tr>
-          <tr><td>9. Booking Required</td><td class="mono">BOOK {{contact.first_name}}: install date</td><td>OWNER</td><td class="num">2 business days</td></tr>
-          <tr><td>10. Job Booked</td><td class="mono">RESCHEDULE {{contact.first_name}}: cannot make {{opportunity.job_date}}</td><td>OWNER</td><td class="urgent">Same day</td></tr>
-          <tr><td>10. Job Booked</td><td class="mono">CALL {{contact.first_name}}: date not confirmed</td><td>OFFICE</td><td class="num">Day before the job, if neither reminder was answered</td></tr>
-          <tr><td>11. Deposit Requested</td><td class="mono">CHASE {{contact.first_name}}: deposit unpaid</td><td>OFFICE</td><td class="urgent">On the due date, if unpaid</td></tr>
-          <tr><td>12. Job Completed</td><td class="mono">PHOTOS {{opportunity.site_address}}</td><td>CREW_LEAD</td><td class="num">Before marking it complete</td></tr>
-          <tr><td>12. Job Completed</td><td class="mono">VARIATIONS {{contact.first_name}}: record any extras</td><td>CREW_LEAD</td><td class="num">Before marking it complete</td></tr>
-          <tr><td>12. Job Completed</td><td class="mono">CHASE {{contact.first_name}}: payment overdue</td><td>OFFICE</td><td class="num">Day 14</td></tr>
-          <tr><td>12. Job Completed</td><td class="mono">SEND {{contact.first_name}}: job report and certificates</td><td>OFFICE</td><td class="urgent">Same day as payment</td></tr>
-          <tr><td>13. Retention Claim</td><td class="mono">CLAIM {{contact.first_name}}: retention of {{opportunity.retention_amount}}</td><td>OFFICE</td><td class="num">On the release date</td></tr>
+          <tr><td>8. Quote Accepted</td><td class="mono">NEXT {{contact.first_name}}: inspection or booking</td><td>OWNER</td><td class="urgent">Same day</td></tr>
+          <tr><td>9. Inspection Required</td><td class="mono">BOOK {{contact.first_name}}: site inspection</td><td>OWNER</td><td class="num">2 days</td></tr>
+          <tr><td>9. Inspection Required</td><td class="mono">ATTEND {{contact.first_name}}: inspection, {{opportunity.site_address}}</td><td>ESTIMATOR</td><td class="num">On the date</td></tr>
+          <tr><td>10. Booking Required</td><td class="mono">BOOK {{contact.first_name}}: install date</td><td>OWNER</td><td class="num">2 business days</td></tr>
+          <tr><td>11. Job Booked</td><td class="mono">RESCHEDULE {{contact.first_name}}: cannot make {{opportunity.job_date}}</td><td>OWNER</td><td class="urgent">Same day</td></tr>
+          <tr><td>11. Job Booked</td><td class="mono">CALL {{contact.first_name}}: date not confirmed</td><td>OFFICE</td><td class="num">Day before the job, if neither reminder was answered</td></tr>
+          <tr><td>12. Deposit Requested</td><td class="mono">INVOICE {{contact.first_name}}: check and send the deposit invoice</td><td>OWNER</td><td class="num">2 business days</td></tr>
+          <tr><td>12. Deposit Requested</td><td class="mono">CHASE {{contact.first_name}}: deposit unpaid</td><td>OWNER</td><td class="urgent">On the due date, if unpaid</td></tr>
+          <tr><td>13. Job Completed</td><td class="mono">PHOTOS {{opportunity.site_address}}</td><td>CREW_LEAD</td><td class="num">Before marking it complete</td></tr>
+          <tr><td>13. Job Completed</td><td class="mono">VARIATIONS {{contact.first_name}}: record any extras</td><td>CREW_LEAD</td><td class="num">Before marking it complete</td></tr>
+          <tr><td>13. Job Completed</td><td class="mono">INVOICE {{contact.first_name}}: check and send the final invoice</td><td>OWNER</td><td class="num">2 business days</td></tr>
+          <tr><td>13. Job Completed</td><td class="mono">REVIEW {{contact.first_name}}: ask for a Google review?</td><td>OWNER</td><td class="num">7 days</td></tr>
+          <tr><td>13. Job Completed</td><td class="mono">CHASE {{contact.first_name}}: payment overdue</td><td>OFFICE</td><td class="num">Day 14 after it is sent</td></tr>
+          <tr><td>13. Job Completed</td><td class="mono">SEND {{contact.first_name}}: job report and certificates</td><td>OWNER</td><td class="urgent">Same day as payment</td></tr>
+          <tr><td>14. Retention Claim</td><td class="mono">CLAIM {{contact.first_name}}: retention of {{opportunity.retention_amount}}</td><td>OFFICE</td><td class="num">On the release date</td></tr>
         </tbody>
       </table>
     </div>
@@ -513,28 +543,32 @@ CHASE Daniel: purchase order</pre>
           <tr><td>1. New Lead</td><td class="mono">CALL {{contact.first_name}}: commercial lead, {{contact.company}}</td><td>OFFICE</td><td class="urgent">15 minutes</td></tr>
           <tr><td>2. Dial 1</td><td class="mono">CALL {{contact.first_name}}: second round of calls</td><td>OFFICE</td><td class="num">Later the same day</td></tr>
           <tr><td>3. Dial 2</td><td class="mono">CALL {{contact.first_name}}: one more try</td><td>OFFICE</td><td class="num">Day 4</td></tr>
-          <tr><td>4. Inspection Required</td><td class="mono">BOOK {{contact.first_name}}: site inspection</td><td>OFFICE</td><td class="num">2 days</td></tr>
-          <tr><td>4. Inspection Required</td><td class="mono">ATTEND {{opportunity.site_address}}: inspection</td><td>ESTIMATOR</td><td class="num">On the date</td></tr>
+          <tr><td>4. Quoting</td><td class="mono">QUOTE {{contact.first_name}}: scope and send the proposal</td><td>OWNER</td><td class="num">5 business days</td></tr>
           <tr><td>5. Quote Sent</td><td class="mono">CALL {{contact.first_name}}: confirm receipt</td><td>ESTIMATOR</td><td class="num">2 days</td></tr>
           <tr><td>5. Quote Sent</td><td class="mono">CHASE {{contact.first_name}}: decision date</td><td>OWNER</td><td class="num">Day 7, then day 21</td></tr>
           <tr><td>6. Follow-Up</td><td class="mono">CALL {{contact.first_name}}: callback as asked</td><td>OFFICE</td><td class="num">At the time they asked</td></tr>
           <tr><td>7. Nurture</td><td class="mono">CHECK-IN {{contact.first_name}}: {{opportunity.site_address}}</td><td>OWNER</td><td class="num">Quarterly</td></tr>
           <tr class="divider"><td colspan="4">Won is set here</td></tr>
           <tr><td>8. Quote Accepted</td><td class="mono">CHASE {{contact.first_name}}: purchase order</td><td>OFFICE</td><td class="num">Weekly, until it lands</td></tr>
-          <tr><td>8. Quote Accepted</td><td class="mono">NEXT {{contact.first_name}}: inspection or booking</td><td>OFFICE</td><td class="urgent">Same day</td></tr>
-          <tr><td>9. Booking Required</td><td class="mono">BOOK {{contact.first_name}}: works dates</td><td>OWNER</td><td class="num">2 business days</td></tr>
-          <tr><td>10. Job Booked</td><td class="mono">INDUCT crew: {{opportunity.site_address}}</td><td>CREW_LEAD</td><td class="num">Before start</td></tr>
-          <tr><td>10. Job Booked</td><td class="mono">SWMS {{opportunity.site_address}}: issue and confirm receipt</td><td>OWNER</td><td class="num">Before start</td></tr>
-          <tr><td>10. Job Booked</td><td class="mono">RESCHEDULE {{contact.first_name}}: cannot make {{opportunity.job_date}}</td><td>OWNER</td><td class="urgent">Same day</td></tr>
-          <tr><td>10. Job Booked</td><td class="mono">UPDATE {{contact.first_name}}: weekly progress</td><td>OWNER</td><td class="num">Every Friday while live</td></tr>
-          <tr><td>10. Job Booked</td><td class="mono">CLAIM {{opportunity.site_address}}: progress claim</td><td>OFFICE</td><td class="num">Per milestone</td></tr>
-          <tr><td>11. Deposit Requested</td><td class="mono">CHASE {{contact.first_name}}: deposit unpaid</td><td>OFFICE</td><td class="urgent">On the due date, if unpaid</td></tr>
-          <tr><td>12. Job Completed</td><td class="mono">PHOTOS {{opportunity.site_address}}: this stage</td><td>CREW_LEAD</td><td class="num">End of each stage</td></tr>
-          <tr><td>12. Job Completed</td><td class="mono">VARIATIONS {{opportunity.site_address}}: record and get signed</td><td>CREW_LEAD</td><td class="num">As they happen</td></tr>
-          <tr><td>12. Job Completed</td><td class="mono">CHASE {{contact.first_name}}: claim overdue</td><td>OFFICE</td><td class="num">Day 30</td></tr>
-          <tr><td>12. Job Completed</td><td class="mono">SEND {{contact.first_name}}: job report and certificates</td><td>OFFICE</td><td class="urgent">Same day as payment</td></tr>
-          <tr><td>12. Job Completed</td><td class="mono">REFERENCE {{contact.first_name}}: ask, and record the answer</td><td>OWNER</td><td class="num">Day 7</td></tr>
-          <tr><td>13. Retention Claim</td><td class="mono">CLAIM {{contact.first_name}}: retention of {{opportunity.retention_amount}}</td><td>OFFICE</td><td class="num">On the release date</td></tr>
+          <tr><td>8. Quote Accepted</td><td class="mono">NEXT {{contact.first_name}}: inspection or booking</td><td>OWNER</td><td class="urgent">Same day</td></tr>
+          <tr><td>9. Inspection Required</td><td class="mono">BOOK {{contact.first_name}}: site inspection</td><td>OWNER</td><td class="num">2 days</td></tr>
+          <tr><td>9. Inspection Required</td><td class="mono">ATTEND {{opportunity.site_address}}: inspection</td><td>ESTIMATOR</td><td class="num">On the date</td></tr>
+          <tr><td>10. Booking Required</td><td class="mono">BOOK {{contact.first_name}}: works dates</td><td>OWNER</td><td class="num">2 business days</td></tr>
+          <tr><td>11. Job Booked</td><td class="mono">INDUCT crew: {{opportunity.site_address}}</td><td>CREW_LEAD</td><td class="num">Before start</td></tr>
+          <tr><td>11. Job Booked</td><td class="mono">SWMS {{opportunity.site_address}}: issue and confirm receipt</td><td>OWNER</td><td class="num">Before start</td></tr>
+          <tr><td>11. Job Booked</td><td class="mono">RESCHEDULE {{contact.first_name}}: cannot make {{opportunity.job_date}}</td><td>OWNER</td><td class="urgent">Same day</td></tr>
+          <tr><td>11. Job Booked</td><td class="mono">UPDATE {{contact.first_name}}: weekly progress</td><td>OWNER</td><td class="num">Every Friday while live</td></tr>
+          <tr><td>11. Job Booked</td><td class="mono">CLAIM {{opportunity.site_address}}: progress claim</td><td>OWNER</td><td class="num">Per milestone</td></tr>
+          <tr><td>12. Deposit Requested</td><td class="mono">INVOICE {{contact.first_name}}: check and send the deposit invoice</td><td>OWNER</td><td class="num">2 business days</td></tr>
+          <tr><td>12. Deposit Requested</td><td class="mono">CHASE {{contact.first_name}}: deposit unpaid</td><td>OWNER</td><td class="urgent">On the due date, if unpaid</td></tr>
+          <tr><td>13. Job Completed</td><td class="mono">PHOTOS {{opportunity.site_address}}: this stage</td><td>CREW_LEAD</td><td class="num">End of each stage</td></tr>
+          <tr><td>13. Job Completed</td><td class="mono">VARIATIONS {{opportunity.site_address}}: record and get signed</td><td>CREW_LEAD</td><td class="num">As they happen</td></tr>
+          <tr><td>13. Job Completed</td><td class="mono">INVOICE {{contact.first_name}}: check and send the final invoice</td><td>OWNER</td><td class="num">2 business days</td></tr>
+          <tr><td>13. Job Completed</td><td class="mono">REVIEW {{contact.first_name}}: ask for a Google review?</td><td>OWNER</td><td class="num">7 days</td></tr>
+          <tr><td>13. Job Completed</td><td class="mono">CHASE {{contact.first_name}}: claim overdue</td><td>OFFICE</td><td class="num">Day 30</td></tr>
+          <tr><td>13. Job Completed</td><td class="mono">SEND {{contact.first_name}}: job report and certificates</td><td>OWNER</td><td class="urgent">Same day as payment</td></tr>
+          <tr><td>13. Job Completed</td><td class="mono">REFERENCE {{contact.first_name}}: ask, and record the answer</td><td>OWNER</td><td class="num">Day 7</td></tr>
+          <tr><td>14. Retention Claim</td><td class="mono">CLAIM {{contact.first_name}}: retention of {{opportunity.retention_amount}}</td><td>OFFICE</td><td class="num">On the release date</td></tr>
         </tbody>
       </table>
     </div>
@@ -560,7 +594,7 @@ CHASE Daniel: purchase order</pre>
       <div class="why">
         <h4>CALL {{contact.first_name}}: new lead, {{contact.areas}}</h4>
         <p class="fine">New Lead &middot; OFFICE &middot; due 15 minutes</p>
-        <p>Ring the new lead within 15 minutes. The acknowledgement text and email have already gone. Ring twice, back to back. No answer to either: move the card to Dial 1. If they answer and it is a job, send the quote within two business days, or move the card to Inspection Required if it needs a site visit first.</p>
+        <p>Ring the new lead within 15 minutes. The acknowledgement text and email have already gone. Ring twice, back to back. No answer to either: move the card to Dial 1. If they answer and want a quote, move the card to Quoting, which hands it to the owner to write the quote. Ring back later: Follow-Up. Not now: Nurture.</p>
       </div>
       <div class="why">
         <h4>CALL {{contact.first_name}}: second round of calls</h4>
@@ -573,14 +607,9 @@ CHASE Daniel: purchase order</pre>
         <p>One more call on the day the booking email goes. They have had a text and two emails, so keep it short: you are ringing about their enquiry and can talk whenever suits. Log it on the card either way.</p>
       </div>
       <div class="why">
-        <h4>BOOK {{contact.first_name}}: site inspection</h4>
-        <p class="fine">Inspection Required &middot; OFFICE &middot; due 2 days</p>
-        <p>Book the site inspection in the inspection calendar from the card, at a time that suits the customer. Confirm the address and access to the areas being sprayed. The confirmation and the morning text go by themselves.</p>
-      </div>
-      <div class="why">
-        <h4>ATTEND {{contact.first_name}}: inspection, {{opportunity.site_address}}</h4>
-        <p class="fine">Inspection Required &middot; ESTIMATOR &middot; due On the date</p>
-        <p>Attend the inspection. Before you leave, record on the card: the area in square metres, the foam type, access notes, and anything that will slow the crew down. Photos of problem areas help the quote.</p>
+        <h4>QUOTE {{contact.first_name}}: write and send the quote</h4>
+        <p class="fine">Quoting &middot; OWNER &middot; due 2 business days</p>
+        <p>The office has spoken to them and they want a quote. Ring them first if you need more detail, plans or an energy report. Write the quote in the quote tool, with each option as its own line if there is more than one, and send it. Sending it moves the card to Quote Sent and starts the follow-up.</p>
       </div>
       <div class="why">
         <h4>CALL {{contact.first_name}}: quote follow up</h4>
@@ -595,27 +624,37 @@ CHASE Daniel: purchase order</pre>
       <div class="why">
         <h4>CALL {{contact.first_name}}: callback as asked</h4>
         <p class="fine">Follow-Up &middot; OFFICE &middot; due At the time they asked</p>
-        <p>The customer asked to be rung at this time. Ring them, then move the card on: Quote Sent once a quote goes, Inspection Required if a visit is needed, Quote Accepted if they say yes, Nurture if it is not now, or Lost with a reason.</p>
+        <p>The customer asked to be rung at this time. Ring them, then move the card on: Quoting if they now want a quote, Quote Accepted if they say yes to a quote already sent, Nurture if it is not now, or Lost with a reason. Want more time on a quote? Set a new callback time.</p>
       </div>
       <div class="why">
         <h4>CHECK-IN {{contact.first_name}}: a year since the quote</h4>
         <p class="fine">Nurture &middot; OFFICE &middot; due 12 months</p>
-        <p>A year since this job went to Nurture. Ring and ask whether it is back on. Quotes often come back after one or two years. If it is, refresh the quote against current prices and send it, which moves the card to Quote Sent.</p>
+        <p>A year since this job went to Nurture. Ring and ask whether it is back on. Quotes often come back after one or two years. If it is, move the card to Quoting so the quote is refreshed against current prices.</p>
       </div>
       <div class="why">
         <h4>REVIEW {{contact.first_name}}: still a fit?</h4>
         <p class="fine">Nurture &middot; OWNER &middot; due Quarterly</p>
-        <p>Quarterly review of the nurture list. Remove anyone who is not a real job, and move anyone who has come back to Quote Sent or New Lead. A clean list keeps the emails landing in inboxes rather than in spam.</p>
+        <p>Quarterly review of the nurture list. Remove anyone who is not a real job, and move anyone who has come back to Quoting. A clean list keeps the emails landing in inboxes rather than in spam.</p>
       </div>
       <div class="why">
         <h4>NEXT {{contact.first_name}}: inspection or booking</h4>
-        <p class="fine">Quote Accepted &middot; OFFICE &middot; due Same day</p>
+        <p class="fine">Quote Accepted &middot; OWNER &middot; due Same day</p>
         <p>The customer has accepted. Check the option they chose is on the card, then decide the next step: move the card to Inspection Required if something needs checking on site first, otherwise to Booking Required so the install date can be booked.</p>
+      </div>
+      <div class="why">
+        <h4>BOOK {{contact.first_name}}: site inspection</h4>
+        <p class="fine">Inspection Required &middot; OWNER &middot; due 2 days</p>
+        <p>Book the site inspection in the inspection calendar from the card, at a time that suits the customer. Confirm the address and access to the areas being sprayed. The confirmation and the morning text go by themselves.</p>
+      </div>
+      <div class="why">
+        <h4>ATTEND {{contact.first_name}}: inspection, {{opportunity.site_address}}</h4>
+        <p class="fine">Inspection Required &middot; ESTIMATOR &middot; due On the date</p>
+        <p>Attend the inspection. Before you leave, record on the card: the area in square metres, the foam type, access notes, and anything that will slow the crew down. Then move the card to Booking Required, or close it as Lost if the job cannot be done.</p>
       </div>
       <div class="why">
         <h4>BOOK {{contact.first_name}}: install date</h4>
         <p class="fine">Booking Required &middot; OWNER &middot; due 2 business days</p>
-        <p>Book the install date in the install calendar from the card, and put the crew on it. Book it here first, not in a phone calendar, because the booking is what sends the confirmation and sets up the reminders and the deposit timing.</p>
+        <p>Book the install in the calendar for the vehicle doing the job: the InjectaCore rig, the van, the Fuso truck or the Mercedes rig. A job over several days or using two rigs gets a booking for each block. Book it here first, not in the Apple calendar, because the booking is what sends the confirmation and sets up the reminders and the deposit.</p>
       </div>
       <div class="why">
         <h4>RESCHEDULE {{contact.first_name}}: cannot make {{opportunity.job_date}}</h4>
@@ -625,12 +664,17 @@ CHASE Daniel: purchase order</pre>
       <div class="why">
         <h4>CALL {{contact.first_name}}: date not confirmed</h4>
         <p class="fine">Job Booked &middot; OFFICE &middot; due Day before the job, if neither reminder was answered</p>
-        <p>Neither reminder got a Yes or a No. Ring to confirm the job is still on, that access is clear, and that someone over eighteen will be there to let the crew in.</p>
+        <p>Neither the 7 day nor the 48 hour reminder got a Yes or a No. Ring to confirm the job is still on, that access is clear, and that someone over eighteen will be there to let the crew in.</p>
+      </div>
+      <div class="why">
+        <h4>INVOICE {{contact.first_name}}: check and send the deposit invoice</h4>
+        <p class="fine">Deposit Requested &middot; OWNER &middot; due 2 business days</p>
+        <p>A draft deposit invoice is ready, made from the accepted quote with the quote and any purchase order attached. Check the amount, the due date and the payment terms, then send it. Sending it emails the customer and moves the card to Deposit Requested. Nothing is sent until you do.</p>
       </div>
       <div class="why">
         <h4>CHASE {{contact.first_name}}: deposit unpaid</h4>
-        <p class="fine">Deposit Requested &middot; OFFICE &middot; due On the due date, if unpaid</p>
-        <p>The deposit was due today and has not landed. Ring the customer today: most late deposits are a missed email, not a change of mind. If it will not be paid in time, tell the owner so the crew can be reassigned.</p>
+        <p class="fine">Deposit Requested &middot; OWNER &middot; due On the due date, if unpaid</p>
+        <p>The deposit was due today and has not landed. The customer has had a text asking for the remittance. Check for a reply; if it will not arrive in time, move the crew to other work and tell the customer.</p>
       </div>
       <div class="why">
         <h4>PHOTOS {{opportunity.site_address}}</h4>
@@ -643,13 +687,23 @@ CHASE Daniel: purchase order</pre>
         <p>Anything agreed on site that was not in the quote, such as an extra 100 sqm, goes out from the variation document for the customer to sign, and onto the card the same day. Left to invoicing, it surprises the customer.</p>
       </div>
       <div class="why">
+        <h4>INVOICE {{contact.first_name}}: check and send the final invoice</h4>
+        <p class="fine">Job Completed &middot; OWNER &middot; due 2 business days</p>
+        <p>The job is marked complete and a draft final invoice is ready: the balance after any deposit, with the payment schedule and the accepted quote and any purchase order attached. Adjust it for the area actually sprayed, with a variation invoice or a credit, then send it. Sending it starts the payment reminders.</p>
+      </div>
+      <div class="why">
+        <h4>REVIEW {{contact.first_name}}: ask for a Google review?</h4>
+        <p class="fine">Job Completed &middot; OWNER &middot; due 7 days</p>
+        <p>The job is marked complete. Leave Ask for Google review on Yes, or set it to No on the contact for a job that had problems or a repeat commercial client such as Bondor or Australian Housing. Yes sends one text four weeks after the job. No sends no review request and no referral email.</p>
+      </div>
+      <div class="why">
         <h4>CHASE {{contact.first_name}}: payment overdue</h4>
-        <p class="fine">Job Completed &middot; OFFICE &middot; due Day 14</p>
-        <p>Fourteen days unpaid. Ring rather than email: most late invoices are a question, not a refusal. Mark it paid the moment the money lands, which stops the reminders dead.</p>
+        <p class="fine">Job Completed &middot; OFFICE &middot; due Day 14 after it is sent</p>
+        <p>Fourteen days since the final invoice was sent, and it is unpaid. Ring rather than email: most late invoices are a question, not a refusal. Mark it paid the moment the money lands, which stops the reminders dead.</p>
       </div>
       <div class="why">
         <h4>SEND {{contact.first_name}}: job report and certificates</h4>
-        <p class="fine">Job Completed &middot; OFFICE &middot; due Same day as payment</p>
+        <p class="fine">Job Completed &middot; OWNER &middot; due Same day as payment</p>
         <p>The final invoice is paid. Send the job report from the saved template today, with the photos and the certificate of completion attached, then stamp Job report sent on the card. It never goes before the invoice is fully paid.</p>
       </div>
       <div class="why">
@@ -660,12 +714,12 @@ CHASE Daniel: purchase order</pre>
       <div class="why">
         <h4>CALL {{contact.first_name}}: commercial lead, {{contact.company}}</h4>
         <p class="fine">New Lead &middot; OFFICE &middot; due 15 minutes</p>
-        <p>Ring the commercial lead within 15 minutes, twice back to back if needed. Aim to come off the call knowing who decides, roughly how big it is, what the space is used for, whether it is operating during the works, and when they need it done. Put the company, site address and a site contact on the card.</p>
+        <p>Ring the commercial lead within 15 minutes, twice back to back if needed. Put the company, site address and a site contact on the card. They want a quote: move the card to Quoting, which hands it to the owner. No answer to either call: Dial 1.</p>
       </div>
       <div class="why">
-        <h4>ATTEND {{opportunity.site_address}}: inspection</h4>
-        <p class="fine">Inspection Required &middot; ESTIMATOR &middot; due On the date</p>
-        <p>Attend the visit with insurances and SWMS. Before you leave, record on the card: the area in square metres, the foam type, access notes, induction needs, and anything that will slow the crew down. Photos of problem areas help the proposal.</p>
+        <h4>QUOTE {{contact.first_name}}: scope and send the proposal</h4>
+        <p class="fine">Quoting &middot; OWNER &middot; due 5 business days</p>
+        <p>Ring them for the detail: who decides, roughly how big, what the space is used for, whether it is operating during the works, and the programme. Work out product, thickness, access, plant, staging and WHS, then send the proposal from the quote tool, which moves the card to Quote Sent.</p>
       </div>
       <div class="why">
         <h4>CALL {{contact.first_name}}: confirm receipt</h4>
@@ -688,9 +742,14 @@ CHASE Daniel: purchase order</pre>
         <p>A verbal yes with no purchase order yet. Chase it weekly. The job stays Open until the paperwork arrives, so this is the task that turns a promise into committed work.</p>
       </div>
       <div class="why">
+        <h4>ATTEND {{opportunity.site_address}}: inspection</h4>
+        <p class="fine">Inspection Required &middot; ESTIMATOR &middot; due On the date</p>
+        <p>Attend the visit with insurances and SWMS. Before you leave, record on the card: the area in square metres, the foam type, access notes, induction needs, and anything that will slow the crew down. Then move the card to Booking Required, or close it as Lost.</p>
+      </div>
+      <div class="why">
         <h4>BOOK {{contact.first_name}}: works dates</h4>
         <p class="fine">Booking Required &middot; OWNER &middot; due 2 business days</p>
-        <p>Agree the start and finish dates with the client, then book them in the install calendar from the card with the crew. Book it there first, because the booking sends the mobilisation email and sets up the reminders.</p>
+        <p>Agree the start and finish dates with the client, then book each block in the calendar for the vehicle doing it, with the crew. Book it in the platform first, because the booking sends the mobilisation email and sets up the reminders. It then shows in the Apple calendar too.</p>
       </div>
       <div class="why">
         <h4>INDUCT crew: {{opportunity.site_address}}</h4>
@@ -709,7 +768,7 @@ CHASE Daniel: purchase order</pre>
       </div>
       <div class="why">
         <h4>CLAIM {{opportunity.site_address}}: progress claim</h4>
-        <p class="fine">Job Booked &middot; OFFICE &middot; due Per milestone</p>
+        <p class="fine">Job Booked &middot; OWNER &middot; due Per milestone</p>
         <p>Issue the progress claim for the completed stage, put its invoice number on the card, and attach the photos, any signed variations, the accepted quote and the purchase order.</p>
       </div>
       <div class="why">
@@ -811,10 +870,12 @@ TODAY
 
 NEEDS YOU
   Leads not called       {{list}}
+  Quotes to write        {{list, waiting in Quoting}}
   Callbacks due          {{list}}
   Installs to book       {{list, over 2 days in Booking Required}}
   Dates not confirmed    {{list, no Yes or No on either reminder}}
   Deposits unpaid        {{list with amount and due date}}
+  Invoices to send       {{list, drafts not yet sent}}
   Invoices overdue       {{list with amount and days}}
   Job reports to send    {{list, paid but report not sent}}
   Retentions due         {{list with release date}}</pre>
@@ -827,6 +888,7 @@ NEEDS YOU
     <pre class="screen">LAST WEEK, BOTH BOARDS
   Enquiries              {{count}}, by source
   Median time to first call
+  Days in Quoting        {{average}}
   Closed as Unreachable  {{count}}
   Quotes sent            {{count}}, {{value}}
   Quotes accepted        {{count}}, {{value}}
@@ -927,27 +989,35 @@ DELIVERY
       <li>Every workflow has an error branch that alerts, so failures are not silent</li>
       <li>New Lead is assigned to the office on both boards, and no path leaves a lead unassigned</li>
       <li>The 15 minute timer emails the office, and the 1 hour step reaches the owner by text and email: a second person, not the same one</li>
+      <li>Alert channels follow the role: nothing to the office goes by SMS, everything to the owner goes by SMS and email, and one event never sends the owner two texts</li>
+      <li>Moving a card to Quoting assigns it to the owner and fires alert 14 by text and email. The automatic new-lead assignment to the office does not fire alert 14</li>
       <li>Quiet hours applied to outbound customer messaging, not just internal alerts</li>
       <li>Every sequence has a stop condition on reply</li>
       <li>Entering Quote Accepted kills every sales sequence on the card, tested mid-follow-up</li>
       <li>An add-on quote accepted on a job under way updates the value and creates the office task, and does not resend the thank-you or move the card</li>
       <li>The accept and decline buttons tested on a quote with two options: the card moves, and the option chosen is recorded</li>
-      <li>The Yes and No links on both reminders tested by email and by text. No fires alert 12 and sends REM-05, and nothing reschedules itself</li>
+      <li>Inspection Required is reached only from Quote Accepted. A cancelled inspection alerts the owner and tasks the owner to rebook; nothing rebooks itself</li>
+      <li>The Yes and No links on every reminder tested by email and by text, including the month-out email. No fires alert 12 and sends REM-05, and nothing reschedules itself</li>
+      <li>The month-out email goes only for a job booked more than 6 weeks ahead</li>
+      <li>Deposit and final invoices are created as drafts with a task to the owner, and nothing reaches a customer until the owner sends it. Reminders start only on send</li>
       <li>Deposit timing tested three ways: stock open cell, special order, and a job booked less than 14 days out</li>
+      <li>A deposit unpaid at 4pm on its due date sends DEP-03 to the customer and alert 13 together. Nothing is sent before the due date</li>
+      <li>Decided which system sends invoice reminders, the platform or Xero, and the other switched off, so a customer never gets both</li>
       <li>Deposit and final invoices carry the accepted quote, and the purchase order where there is one. Payment schedules tested with a percentage stage and a fixed stage</li>
       <li>A GST invoice tested syncing to Xero before the Xero sync is promised. Only GST-free invoices have been seen reaching Xero so far</li>
       <li>Payment receipt sync agreed with the bookkeeper. If marking an invoice paid before the transfer clears breaks reconciliation, switch it off</li>
       <li>Contract and variation templates fill in the client details and go for digital signature, tested with an extra 100 sqm variation</li>
-      <li>The job report task fires only when the final invoice is fully paid</li>
-      <li>ask_for_google_review is Yes by default, and a contact set to No gets no review request</li>
+      <li>The job report task goes to the owner, and only when the final invoice is fully paid</li>
+      <li>The review task reaches the owner at Job Completed. ask_for_google_review is Yes by default, and a contact set to No gets neither the review text nor the referral email</li>
+      <li>Four install calendars built, one per vehicle: the InjectaCore rig, the van, the Fuso truck and the Mercedes rig. A test job booked over two days on two rigs shows correct job_date, job_end_date and vehicles_booked</li>
+      <li>Two-way sync with the owner's Apple (iCloud) calendar done under the separate calendars task. A booking moved in either place moves in the other, and the reminders follow it</li>
       <li>The Whole pipeline view built and checked: every open card on both boards, in stage order</li>
       <li>Nothing live was lost when stages were deleted during the 2 October call: every workflow trigger, filter and move step points at a stage that exists, and no open card was left without a stage</li>
       <li>Old stages removed only after their cards were moved to the new ones</li>
-      <li>Rachael's mobile confirmed as 0428 26 36 26 before any message goes</li>
+      <li>Rachael's mobile, 0428 26 36 26, checked in a test text and a test email</li>
       <li>Human labels stored in the dropdown fields, so echoed emails do not read "new-build"</li>
       <li>SPF and DKIM on the sending domain, and a test email checked in Gmail and Outlook</li>
       <li>Every merge field and trigger link confirmed against the platform version, with a test sent to yourself</li>
-      <li>Apple and Outlook calendar sync done under the separate calendars task, and a test install booking seen on both</li>
       <li>Alert volume measured after week one. More than about fifteen a day to one person means something is wrong</li>
       <li>A test lead pushed end to end through both boards, watching what arrives and when</li>
     </ul>

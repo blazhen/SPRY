@@ -25,13 +25,13 @@ template text ready to paste into the builder.
 
 1. Create the custom values on the new sub-account and fill them in. That table is the whole template mechanism, including the person who signs the messages and their mobile.
 2. Create the custom fields below. The website webhook keys are fixed; map them on the way in.
-3. Build both boards with the same thirteen stages, keys and order. The whole-pipeline view depends on it.
+3. Build both boards with the same fourteen stages, keys and order. The whole-pipeline view depends on it.
 4. Import the messages. Anything tagged Core works unchanged for any trade or service business.
 5. Rewrite only the messages tagged Trade specific. They name the product or the physical work, so they cannot be tokenised without turning into mush.
 6. Replace the sample customers in the data file so previews read right for the new trade.
-7. Run npm run docs:crm. The checker fails on any missing sample value, any email without a preheader, any agency wording in text the client reads, and any drift between the two boards.
+7. Run npm run docs:crm. The checker fails on any missing sample value, any email without a preheader, any agency wording in text the client reads, any alert channel that breaks the role rule, and any drift between the two boards.
 
-Of the 62 messages, 8 are trade-specific: R-FU-02, NUR-01, NUR-02, JOB-02, JOB-05, RPT-01, C-MOB-01, C-DONE-01.
+Of the 63 messages, 8 are trade-specific: R-FU-02, NUR-01, NUR-02, JOB-02, JOB-05, RPT-01, C-MOB-01, C-DONE-01.
 Everything else moves between clients untouched.
 
 ### A warning about tokens
@@ -89,8 +89,8 @@ works for a different client.
 | `business_phone_e164` | +611300177729 | For tel: links |
 | `contact_name` | Rachael Angus | Signs the customer messages. Handles about 99% of customer contact. |
 | `contact_first_name` | Rachael | The short form, where a full name reads stiffly |
-| `contact_mobile` | 0428 26 36 26 | Rachael's mobile, to confirm. The number customers are asked to ring in messages. |
-| `contact_mobile_e164` | +61428263626 | Rachael's mobile, to confirm. For tel: links. |
+| `contact_mobile` | 0428 26 36 26 | Rachael's mobile, confirmed by Glenn on the 2 Oct call. The number customers are asked to ring in messages. |
+| `contact_mobile_e164` | +61428263626 | Rachael's mobile, confirmed by Glenn on the 2 Oct call. For tel: links. |
 | `business_email` | info@sprayitsolutions.com.au | From address and reply-to. The sending domain needs SPF and DKIM before go-live. |
 | `from_name_contact` | Rachael at SprayIT Solutions | From name on the personal emails |
 | `from_name_brand` | SprayIT Solutions | From name on confirmations, reminders and invoices |
@@ -102,14 +102,14 @@ works for a different client.
 | `service_area` | Australia-wide |  |
 | `trade_noun` | spray foam insulation | How the work is named in a message: "your spray foam insulation enquiry" |
 | `trade_verb` | insulation | The short form: "your insulation job" |
-| `inspection_noun` | site inspection | What the measure-up visit is called. About one job in ten or twenty needs one. |
+| `inspection_noun` | site inspection | What the measure-up visit is called. About one job in ten or twenty needs one, after the quote is accepted. |
 | `consult_length` | 15 minute | The phone call offered in the day 4 email and on the site |
 | `office_hours` | Mon to Fri, 7am to 5pm | To confirm with Glenn |
-| `quote_turnaround` | 2 business days | How soon after the call the written quote goes out |
+| `quote_turnaround` | 2 business days | How soon after the call the written quote usually goes out |
 | `sms_signoff` | Rachael, SprayIT Solutions | Sender identification on every SMS |
 
-> **Needs Glenn:** trading hours, and confirmation that 0428 26 36 26 is
-> Rachael's mobile and the number customers should ring.
+> **Needs Glenn:** trading hours. Rachael's mobile, 0428 26 36 26, was
+> confirmed by Glenn on the 2 October call.
 >
 > There is deliberately no ABN field: quotes and invoices are documents the
 > client issues himself and they carry it, so repeating it in a covering email
@@ -169,19 +169,18 @@ Set the first-touch fields only if empty. Overwriting them on every visit destro
 | `last_attempt_at` | Last attempt | Date | Each call logged |
 | `preferred_contact` | Preferred contact | Dropdown: call, sms, email | Asked on the first call |
 | `do_not_sms` | Do not SMS | Checkbox | Manual, on request, and by STOP |
-| `ask_for_google_review` | Ask for Google review | Dropdown: Yes, No. Default Yes. | WF-01 sets Yes if empty. Set to No by hand for a job with problems, and for repeat commercial clients such as Bondor and Australian Housing. |
+| `ask_for_google_review` | Ask for Google review | Dropdown: Yes, No. Default Yes. | WF-01 sets Yes if empty. The owner sets No from the task at Job Completed for a job with problems, and for repeat commercial clients such as Bondor and Australian Housing. No also skips the referral email. |
 
-Not from the website. Set by workflows or by hand. ask_for_google_review replaces a review stage: it is Yes unless someone sets it to No.
+Not from the website. Set by workflows or by hand. ask_for_google_review replaces a review stage: it is Yes unless the owner sets it to No from the task at Job Completed.
 
 ### 3.5 Opportunity fields
 
 | Key | Label | Type | Stage it is set |
 | --- | --- | --- | --- |
 | `site_address` | Site address | Text | New Lead, on the first call |
-| `access_notes` | Access notes | Multi-line | Inspection Required, or the first call |
-| `sqm_estimate` | Area, sqm | Number | Inspection Required, or the first call |
-| `product_type` | Product | Dropdown: open cell, closed cell, both | Quote Sent |
-| `inspection_date` | Inspection date | Date | Inspection Required, from the inspection calendar |
+| `access_notes` | Access notes | Multi-line | Quoting, or Inspection Required |
+| `sqm_estimate` | Area, sqm | Number | Quoting, or Inspection Required |
+| `product_type` | Product | Dropdown: open cell, closed cell, both | Quoting |
 | `callback_at` | Callback time | Date and time | Follow-Up. Required on entry. |
 | `quote_number` | Quote number | Text | Quote Sent |
 | `quote_link` | Online quote | URL | Quote Sent, from the quote tool |
@@ -190,23 +189,26 @@ Not from the website. Set by workflows or by hand. ask_for_google_review replace
 | `po_number` | Purchase order | Text | Quote Accepted, where the client issues one. On commercial, entering it sets Won. |
 | `foam_order_type` | Foam order | Dropdown: Stock open cell, Special order | Quote Accepted. Decides the deposit due date. |
 | `deposit_amount` | Deposit amount | Monetary | Quote Accepted, where a deposit applies |
-| `job_date` | Install date | Date | Job Booked, from the install calendar booking |
-| `job_end_date` | Finish date | Date | Job Booked, multi-day and commercial works |
+| `inspection_date` | Inspection date | Date | Inspection Required, from the inspection calendar |
+| `job_date` | Install date | Date | Job Booked: the first day booked across the install calendars |
+| `job_end_date` | Finish date | Date | Job Booked: the last day booked, for multi-day works |
+| `vehicles_booked` | Vehicles | Multi-select: InjectaCore rig, Van, Fuso truck, Mercedes rig | Job Booked, from the install calendars. A job can use two. |
+| `job_booked_at` | Install booked on | Date | Job Booked, stamped on the first booking. Decides whether the month-out check goes. |
 | `crew_assigned` | Crew | Text | Job Booked, from the install calendar |
 | `job_confirmed` | Date confirmed | Dropdown: Yes, No | Job Booked, by the Yes and No buttons on the reminders |
 | `deposit_due_date` | Deposit due | Date | Job Booked: 1 business day before job_date for stock open cell, 7 days before for special order |
-| `deposit_invoice_sent_at` | Deposit invoice sent | Date | Deposit Requested |
+| `deposit_invoice_sent_at` | Deposit invoice sent | Date | Deposit Requested, when the owner sends the draft |
 | `deposit_received_at` | Deposit received | Date | Deposit Requested, when paid |
 | `variation_amount` | Variations | Monetary | Job Booked or Job Completed, as each variation is signed |
 | `photos_captured` | Photos captured | Checkbox | Job Completed. Required before the job can be marked complete. |
-| `invoice_number`, `invoice_sent_at` | Final invoice | Text, Date | Job Completed |
+| `invoice_number`, `invoice_sent_at` | Final invoice | Text, Date | Job Completed, when the owner sends the draft |
 | `final_invoice_paid_at` | Final invoice paid | Date | Job Completed, when fully paid |
 | `job_report_sent_at` | Job report sent | Date | Job Completed, when the report goes |
 | `retention_amount` | Retention held | Monetary | Job Completed, before it is marked paid |
 | `retention_release_date` | Retention release | Date | Job Completed, before it is marked paid |
 | `lost_reason` | Lost reason | Dropdown | On Lost |
 
-product_type and foam_order_type are the fields here that are genuinely trade-specific. For another client they become whatever their equivalent choices are.
+product_type, foam_order_type and vehicles_booked are the fields here that are genuinely trade-specific. For another client they become whatever their equivalent choices are.
 
 ---
 
@@ -215,11 +217,11 @@ product_type and foam_order_type are the fields here that are genuinely trade-sp
 | Asset | Used by | Status |
 | --- | --- | --- |
 | Phone call calendar | X-APPT, DIAL-03 | Needs the Systemations calendar built, embedded on the site at /book/ |
-| Inspection calendar | X-INSP, C-INSP-01 | Needs building. Staff attend, so no no-show handling. |
-| Install calendar | JOB-01, JOB-02, REM, C-MOB-01 | Needs building. Bookings are made here first; Apple and Outlook sync is the separate calendars task. |
+| Inspection calendar | X-INSP, C-INSP-01 | Needs building. Used after a quote is accepted. Staff attend, so no no-show handling; a cancellation alerts the owner to rebook. |
+| Install calendars, one per vehicle | JOB-01, JOB-02, REM, C-MOB-01 | Four to build: the InjectaCore rig, the van, the Fuso truck and the Mercedes rig. Bookings run over several days, and one job can use two rigs on different days. Book in the platform first. Two-way sync with the owner's Apple (iCloud) calendar is the separate calendars task. |
 | Quote tool with accept and decline buttons | R-QUOTE-01, C-PROP-01 | Several options per job, one accepted. Optional upgrades pending scope confirmation. |
 | Trigger links, Yes and No | REM-01 to 04 | Two links, each firing WF-20 with its branch, landing on a short thank-you page |
-| Invoice templates with payment schedules | DEP-02, PAY-01, C-PAY-01 | Percentage or fixed stages with due dates. Accepted quote attached, and the purchase order where there is one. |
+| Invoice templates with payment schedules | DEP-02, PAY-01, C-PAY-01 | Created as drafts from the accepted quote, checked and sent by the owner. Percentage or fixed stages with due dates. Accepted quote attached, and the purchase order where there is one. |
 | Contract and variation documents | Job Booked, Job Completed | Templates that fill in the client details for digital signature, including variations such as an extra 100 sqm |
 | Job report template and certificate of completion | RPT-01, C-DONE-01 | Needs Glenn's existing report and certificate. Sent only after the final invoice is paid. |
 | Retention claim template | RET-01 | Needs the claim format Glenn uses |
@@ -262,7 +264,7 @@ Three rules that apply to every message:
 
 ## 6. Message inventory
 
-62 messages. Every SMS fits in one segment with the sample values and a
+63 messages. Every SMS fits in one segment with the sample values and a
 realistic shortened link, which was checked rather than assumed.
 
 | ID | Channel | Trigger | Delay | Type | Reuse | Appears in |
@@ -300,17 +302,18 @@ realistic shortened link, which was checked rather than assumed.
 | REM-03 | Email | Job upcoming | 48 hours before the job | TRANS | CORE | Residential · Job Booked, Commercial · Job Booked |
 | REM-04 | SMS | Job upcoming | 48 hours before the job | TRANS | CORE | Residential · Job Booked, Commercial · Job Booked |
 | REM-05 | SMS | They tap No on a reminder | Straight away | TRANS | CORE | Residential · Job Booked, Commercial · Job Booked |
+| REM-06 | Email | Job booked more than 6 weeks ahead | 30 days before the job | TRANS | CORE | Residential · Job Booked, Commercial · Job Booked |
 | JOB-04 | SMS | Job day | 6:30am on the job date | TRANS | CORE | Residential · Job Booked |
 | JOB-06 | SMS | Crew running late | Sent by the crew, from a saved template | TRANS | CORE | Residential · Job Booked, Commercial · Job Booked |
-| DEP-02 | Email | Deposit invoice sent, enters Deposit Requested | 14 days before the job, or at once if the job is closer | TRANS | CORE | Residential · Deposit Requested, Commercial · Deposit Requested |
-| DEP-03 | SMS | Deposit unpaid | 2 days before it is due | TRANS | CORE | Residential · Deposit Requested, Commercial · Deposit Requested |
+| DEP-02 | Email | The owner sends the deposit invoice, enters Deposit Requested | When it is sent, from a draft prepared 14 days before the job | TRANS | CORE | Residential · Deposit Requested, Commercial · Deposit Requested |
+| DEP-03 | SMS | Deposit unpaid at its due date | 4:00pm on the due date | TRANS | CORE | Residential · Deposit Requested, Commercial · Deposit Requested |
 | DEP-01 | SMS | Deposit invoice marked paid | Immediately | TRANS | CORE | Residential · Deposit Requested, Commercial · Deposit Requested |
 | JOB-05 | Email | Job marked complete, enters Job Completed | Immediately | TRANS | **TRADE** | Residential · Job Completed |
-| PAY-01 | Email | Job marked complete, final invoice sent | Immediately, with the invoice attached | TRANS | CORE | Residential · Job Completed, Commercial · Job Completed |
-| PAY-02 | SMS | Invoice unpaid | Day 7 | TRANS | CORE | Residential · Job Completed |
-| PAY-03 | Email | Invoice unpaid | Day 14 | TRANS | CORE | Residential · Job Completed |
+| PAY-01 | Email | The owner sends the final invoice | When it is sent, with the invoice attached | TRANS | CORE | Residential · Job Completed, Commercial · Job Completed |
+| PAY-02 | SMS | Final invoice unpaid | Day 7 after it is sent | TRANS | CORE | Residential · Job Completed |
+| PAY-03 | Email | Final invoice unpaid | Day 14 after it is sent | TRANS | CORE | Residential · Job Completed |
 | RPT-01 | Email | Final invoice paid | Same day, sent by hand with the report attached | TRANS | **TRADE** | Residential · Job Completed, Commercial · Job Completed |
-| REV-01 | SMS | Job completed, Ask for Google review is Yes | 4 weeks after the job date | TRANS | CORE | Residential · Job Completed, Commercial · Job Completed |
+| REV-01 | SMS | Job completed, and Ask for Google review left on Yes | 4 weeks after the job date | TRANS | CORE | Residential · Job Completed, Commercial · Job Completed |
 | REV-02 | Email | Final invoice paid | +7 days | MKTG | CORE | Residential · Job Completed |
 | REV-03 | Email | Job completed | 12 months after the job | MKTG | CORE | Residential · Job Completed |
 | RET-01 | Email | Retention release date reached | On the release date, sent by hand with the claim attached | TRANS | CORE | Residential · Retention Claim, Commercial · Retention Claim |
@@ -376,9 +379,9 @@ What happens next:
 
   1. We ring you for a short chat about the building and what you want from it.
   2. We send you a written quote, usually within {{custom_values.quote_turnaround}} of the call. There is no obligation.
-  3. If the job needs a look in person, we visit the site first and quote after that.
+  3. Once you are happy with the quote, we book the install date.
 
-Most jobs can be quoted from the call. Some need a site visit first, and we will tell you on the call if yours is one of them.
+We quote from the call. If a job needs a look in person, we quote it first so you know the price, and visit once you are happy with it, before the install is booked.
 
 {{custom_values.contact_name}}
 {{custom_values.business_name}}
@@ -387,7 +390,7 @@ Most jobs can be quoted from the call. Some need a site visit first, and we will
 
 *Stops:* Sends once. *Window:* sends immediately.
 
-Echoing their answers back cuts "did that go through?" replies and catches a wrong postcode before it costs anyone a trip. It no longer promises a site visit before every quote, because only about one job in ten or twenty needs one.
+Echoing their answers back cuts "did that go through?" replies and catches a wrong postcode before it costs anyone a trip. It does not promise a site visit, because only about one job in ten or twenty needs one, and that visit comes after the quote is accepted.
 
 **Agency note.** Store the human label in each dropdown field (Home, not home) or this email echoes the raw form value.
 
@@ -436,7 +439,7 @@ We still have not managed to catch you, so here is a simpler way. Pick a time th
 
 {{custom_values.booking_url}}
 
-It is a {{custom_values.consult_length}} call about the building and what you want from it. If we can quote from the call, we will. If the job needs a look in person, we will say so and book that instead.
+It is a {{custom_values.consult_length}} call about the building and what you want from it, and it is all we need to write your quote.
 
 {{custom_values.contact_name}}
 {{custom_values.business_name}}
@@ -823,7 +826,7 @@ Quotes from Nurture regularly come back after one or two years. Everyone in Nurt
 **From:** {{custom_values.from_name_contact}} <{{custom_values.business_email}}>  
 **Reply-to:** {{custom_values.business_email}}  
 **Subject:** Thanks for going ahead, {{contact.first_name}}  
-**Preheader:** What happens from here: the install date, two reminders, and the deposit closer to the day.
+**Preheader:** What happens from here: the install date, the reminders, and the deposit closer to the day.
 
 ```
 Hi {{contact.first_name}},
@@ -831,7 +834,7 @@ Hi {{contact.first_name}},
 Thanks for accepting quote {{opportunity.quote_number}}. Here is how it runs from here.
 
   1. We book your install date and confirm it with you by text and email.
-  2. We remind you 7 days and 48 hours before the job, and ask you to confirm the date still works.
+  2. We remind you before the job, a week out and two days out, and a month out if it is booked well ahead, and ask you to confirm the date still works.
   3. Where a deposit applies, the invoice comes about two weeks before the job, not now.
   4. The crew arrives on the day and does the work. The final invoice follows when the job is complete.
 
@@ -880,7 +883,7 @@ You are in the diary.
   Where   {{opportunity.site_address}}
   Crew    {{opportunity.crew_assigned}}
 
-We will check in 7 days and 48 hours before, and ask you to confirm the date still works.
+We will check in before the job, and ask you to confirm the date still works.
 
 To help us get in and out cleanly, before we arrive:
 
@@ -931,7 +934,7 @@ If it no longer works, a week of notice means we can move the crew and the rig t
 
 Yes is recorded on the card and nothing else happens. No goes to the team straight away. Nothing is rescheduled automatically.
 
-**Agency note.** Yes and No are trigger links. Each fires WF-20 with its own branch and lands on a short thank-you page. The same two links are used in all four reminders.
+**Agency note.** Yes and No are trigger links. Each fires WF-22 with its own branch and lands on a short thank-you page. The same two links are used in all five reminders, REM-01 to REM-04 and REM-06.
 
 ### REM-02 · SMS · Job upcoming, 7 days before the job · TRANS · CORE
 
@@ -986,6 +989,33 @@ Thanks for letting us know, {{contact.first_name}}. We will ring you shortly to 
 
 Nothing is moved automatically. A person rings, agrees the new date, and moves the crew and the rig.
 
+### REM-06 · Email · Job booked more than 6 weeks ahead, 30 days before the job · TRANS · CORE
+
+**From:** {{custom_values.from_name_brand}} <{{custom_values.business_email}}>  
+**Reply-to:** {{custom_values.business_email}}  
+**Subject:** A month to go: still on track for {{opportunity.job_date}}?  
+**Preheader:** A quick check that the date still works. One tap either way.
+
+```
+Hi {{contact.first_name}},
+
+We are booked to do the work at {{opportunity.site_address}} on {{opportunity.job_date}}, about a month from now.
+
+Is that still on schedule at your end?
+
+  Yes, still on track: {{trigger_link.confirm_yes}}
+  No, things have moved: {{trigger_link.confirm_no}}
+
+If it has moved, a month of notice lets us find you a better date and put the crew on other work. If you tap No, we will ring you to rearrange.
+
+{{custom_values.business_name}}
+{{custom_values.business_phone}}
+```
+
+*Stops:* Only when the booking was made more than 6 weeks before the job. Cancelled if the booking is cancelled. Re-queued if the date moves. *Window:* waits for the send window.
+
+Glenn raised this on the call, for jobs booked months out, where a builder's programme often slips. Easy to drop if it is not wanted.
+
 ### JOB-04 · SMS · Job day, 6:30am on the job date · TRANS · CORE
 
 ```
@@ -1009,7 +1039,7 @@ Not automated. A saved snippet the crew can send from the app in one tap, becaus
 
 Timed to the install date and the foam, never to the booking.
 
-### DEP-02 · Email · Deposit invoice sent, enters Deposit Requested, 14 days before the job, or at once if the job is closer · TRANS · CORE
+### DEP-02 · Email · The owner sends the deposit invoice, enters Deposit Requested, when it is sent, from a draft prepared 14 days before the job · TRANS · CORE
 
 **From:** {{custom_values.from_name_brand}} <{{custom_values.business_email}}>  
 **Reply-to:** {{custom_values.business_email}}  
@@ -1036,17 +1066,21 @@ Payment details are on the invoice. When it lands we send a one-line confirmatio
 
 *Stops:* Sends once per job. *Window:* waits for the send window.
 
-Sent two weeks before the install date, never at booking, so a job booked months ahead does not sit on an unpaid invoice. The 14 day send point is to confirm with Glenn.
+Never at booking. A draft is prepared two weeks before the install date, which is when Glenn said on the call he generally sends deposit invoices, and the owner checks it and sends it. A job booked months ahead never sits on an unpaid invoice.
 
-**Agency note.** Deposits are a liability in the accounts until the job is done, not sales income. Map the deposit item in Xero to the deposit liability account, not to sales. No card storage and no automatic charging.
+**Agency note.** Invoices are not sent automatically: the workflow creates a draft and the owner presses send, as Glenn asked on the call. Once he has settled how he wants them set out, the send can be automated. Deposits are a liability in the accounts until the job is done, not sales income: map the deposit item in Xero to the deposit liability account. No card storage and no automatic charging.
 
-### DEP-03 · SMS · Deposit unpaid, 2 days before it is due · TRANS · CORE
+### DEP-03 · SMS · Deposit unpaid at its due date, 4:00pm on the due date · TRANS · CORE
 
 ```
-Hi {{contact.first_name}}, a reminder your deposit of {{opportunity.deposit_amount}} is due {{opportunity.deposit_due_date}}, ahead of your job. Details are on the invoice. {{custom_values.sms_signoff}}
+Hi {{contact.first_name}}, we have not received your deposit of {{opportunity.deposit_amount}} yet. If you have paid, please reply with the remittance. {{custom_values.sms_signoff}}
 ```
 
-*Stops:* Stops dead the moment the deposit is marked paid. *Window:* waits for the send window.
+*Stops:* Sends once. Not sent if the deposit is marked paid before 4pm. *Window:* waits for the send window.
+
+No reminder before the due date: Xero already sends its own. This goes only when the deposit is actually late, at the same moment the team is told, so nobody has to type it.
+
+**Agency note.** Decide which system sends invoice reminders, the platform or Xero, so a customer never gets both. If Xero keeps its reminders, switch off the platform's own invoice reminders for that invoice type.
 
 ### DEP-01 · SMS · Deposit invoice marked paid, immediately · TRANS · CORE
 
@@ -1095,7 +1129,7 @@ The final invoice is on its way separately. Once it is paid, we send your job re
 
 The report and the certificates are deliberately not in this email. They go once the final invoice is paid.
 
-### PAY-01 · Email · Job marked complete, final invoice sent, immediately, with the invoice attached · TRANS · CORE
+### PAY-01 · Email · The owner sends the final invoice, when it is sent, with the invoice attached · TRANS · CORE
 
 **From:** {{custom_values.from_name_brand}} <{{custom_values.business_email}}>  
 **Reply-to:** {{custom_values.business_email}}  
@@ -1122,9 +1156,9 @@ Any questions about it, ring {{custom_values.contact_mobile}}.
 
 *Stops:* Sends once per invoice. *Window:* waits for the send window.
 
-**Agency note.** Invoices sync to Xero. Only GST-free invoices have been seen reaching Xero so far and these carry GST, so test a GST invoice before promising the sync. If marking an invoice paid in the platform before the bank transfer clears upsets the bookkeeper's reconciliation, switch off the payment receipt sync and let Xero record the payment.
+**Agency note.** Created as a draft when the job is marked complete, checked and sent by the owner, as Glenn asked on the call; the send can be automated once he has settled the layout. Invoices sync to Xero. Only GST-free invoices have been seen reaching Xero so far and these carry GST, so test a GST invoice before promising the sync. If marking an invoice paid in the platform before the bank transfer clears upsets the bookkeeper's reconciliation, switch off the payment receipt sync and let Xero record the payment.
 
-### PAY-02 · SMS · Invoice unpaid, day 7 · TRANS · CORE
+### PAY-02 · SMS · Final invoice unpaid, day 7 after it is sent · TRANS · CORE
 
 ```
 Hi {{contact.first_name}}, a reminder that invoice {{opportunity.invoice_number}} is due. Any questions, ring {{custom_values.contact_mobile}}. {{custom_values.sms_signoff}}
@@ -1132,7 +1166,9 @@ Hi {{contact.first_name}}, a reminder that invoice {{opportunity.invoice_number}
 
 *Stops:* Stops dead the moment payment is marked. *Window:* waits for the send window.
 
-### PAY-03 · Email · Invoice unpaid, day 14 · TRANS · CORE
+**Agency note.** Xero sends its own invoice reminders. Decide which system sends them so a customer never gets both, and switch the other off.
+
+### PAY-03 · Email · Final invoice unpaid, day 14 after it is sent · TRANS · CORE
 
 **From:** {{custom_values.from_name_brand}} <{{custom_values.business_email}}>  
 **Reply-to:** {{custom_values.business_email}}  
@@ -1181,15 +1217,15 @@ Keep it with your building records. If the surveyor needs anything else from us,
 
 Only ever sent once the final invoice is fully paid. A task to send it is created the moment the invoice is marked paid.
 
-### REV-01 · SMS · Job completed, Ask for Google review is Yes, 4 weeks after the job date · TRANS · CORE
+### REV-01 · SMS · Job completed, and Ask for Google review left on Yes, 4 weeks after the job date · TRANS · CORE
 
 ```
-Hi {{contact.first_name}}, if you are happy with the job, a short Google review really helps: {{custom_values.review_url}} {{custom_values.sms_signoff}}
+Hi {{contact.first_name}}, how is it going since the job? If you are happy with it, a Google review really helps: {{custom_values.review_url}} {{custom_values.sms_signoff}}
 ```
 
 *Stops:* Ask once. Do not chase reviews. Not sent if Ask for Google review is No. *Window:* waits for the send window.
 
-Asked once, by text, four weeks after the job, inside the four to six weeks agreed. Only contacts with Ask for Google review set to Yes get it. It is Yes unless someone sets it to No for a job with problems or a repeat commercial client.
+Asks how it is going first, then for the review. Once, by text, four weeks after the job, inside the four to six weeks agreed. When the job is marked complete the owner gets a task to leave Ask for Google review on Yes or set it to No, for a job with problems or a repeat commercial client.
 
 ### REV-02 · Email · Final invoice paid, +7 days · MKTG · CORE
 
@@ -1212,7 +1248,7 @@ Most of our work comes from people passing our name on. If someone you know is f
 You are getting this because you agreed to hear from us. {{unsubscribe_link}}
 ```
 
-*Stops:* Only if consent_marketing is yes. *Window:* waits for the send window.
+*Stops:* Only if consent_marketing is yes, and Ask for Google review is Yes. A job the owner set to No gets no referral ask either. *Window:* waits for the send window.
 
 ### REV-03 · Email · Job completed, 12 months after the job · MKTG · CORE
 
@@ -1636,16 +1672,18 @@ A reference from a facilities manager is worth more on a commercial tender than 
 
 ## 16. Build order
 
-Do not build all 62 at once. In order of what earns most:
+Do not build all 63 at once. In order of what earns most:
 
 1. **SYS-01**, missed call text-back. Highest return of anything here.
-2. **X-ACK-01, X-ACK-02, alert 7**, the two minute acknowledgement and the 15 minute call timer.
+2. **X-ACK-01, X-ACK-02, alerts 1 and 7**, the two minute acknowledgement, the new lead email, and the 15 minute call timer.
 3. **DIAL-01 to 04**, the tried-to-call text and the three Dial 2 emails, with the honest close.
-4. **R-QUOTE, R-FU-01 to 04, LOST-01**, the quote with its accept button, the follow-up that converts quotes, and the goodbye.
-5. **X-ACC-01, X-ACC-02, JOB-01, JOB-02, REM-01 to 05**, acceptance, the booking, and the two confirm reminders.
-6. **DEP-01 to 03**, deposit timing by foam type, and the unpaid alert.
-7. **JOB-04, JOB-05, PAY-01 to 03, RPT-01**, the job day, the final invoice, and the job report once it is paid.
-8. **X-APPT, X-INSP**, the phone call booking and the site inspection, used by a minority of jobs.
-9. **REV-01**, the review ask, gated on Ask for Google review.
-10. **NUR-01 to 04, REV-02, REV-03**, once there is a consented list worth mailing.
-11. **RET-01 and the commercial set**, last. That board moves slowly enough that a person writing the email is still viable meanwhile.
+4. **Quoting, alert 14**, the hand-over to the owner, by text and email, so no quote waits unseen.
+5. **R-QUOTE, R-FU-01 to 04, LOST-01**, the quote with its accept button, the follow-up that converts quotes, and the goodbye.
+6. **X-ACC-01, X-ACC-02, JOB-01, JOB-02, REM-01 to 05**, acceptance, the booking, and the confirm reminders.
+7. **DEP-01 to 03, PAY-01 to 03**, the draft deposit and final invoices for the owner to send, the deposit timing by foam type, and the late-deposit text.
+8. **JOB-04, JOB-05, RPT-01**, the job day, the completion note, and the job report once the invoice is paid.
+9. **X-APPT, X-INSP**, the phone call booking and the site inspection, used by a minority of jobs.
+10. **REV-01**, the review ask, gated on Ask for Google review.
+11. **REM-06**, the month-out check for jobs booked far ahead. Easy to drop.
+12. **NUR-01 to 04, REV-02, REV-03**, once there is a consented list worth mailing.
+13. **RET-01 and the commercial set**, last. That board moves slowly enough that a person writing the email is still viable meanwhile.

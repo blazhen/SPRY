@@ -307,7 +307,7 @@
     (stage.alerts || []).forEach(function (n) {
       var a = J.alerts[n - 1];
       html += '<div class="trow"><span class="tprio ' + a.prio + '">' + ({ now: 'Act now', heads: 'Heads up', win: 'Win', fyi: 'Good to know' })[a.prio] + '</span>'
-        + '<div class="trow__b"><b>' + esc(a.name) + '</b> · ' + esc(roleLabel(a.to)) + ', by ' + esc(a.channel)
+        + '<div class="trow__b"><b>' + esc(a.name) + '</b> · ' + esc(roleLabel(a.to)) + ', by ' + esc(CLIENT ? roleWords(a.channel) : a.channel)
         + '<span class="desc">' + esc(a.desc) + '</span>'
         + '<span class="when">Fires when: ' + esc(CLIENT && a.plain ? a.plain.toLowerCase() : a.trigger) + '.' + (AGENCY ? ' ' + esc(a.why) : '') + '</span>'
         + '<pre class="' + (CLIENT ? 'notif' : '') + '">' + renderTokens(a.body, mode, S) + '</pre></div></div>';
@@ -363,8 +363,8 @@
   /* Where the sale is, from the stage's phase. The won stage is a real,
      numbered stage on both boards; there are no status-only markers. */
   var PHASE_TEXT = {
-    client: { sale: 'Still winning the job', either: 'Before or after the yes', won: 'The job is won here', job: 'Won, job underway' },
-    agency: { sale: 'Open · sales', either: 'Open or Won', won: 'Set to Won here', job: 'Won · delivery' },
+    client: { sale: 'Still winning the job', won: 'The job is won here', job: 'Won, job underway' },
+    agency: { sale: 'Open · sales', won: 'Set to Won here', job: 'Won · delivery' },
   };
   function stageFacts(stage, pipeline) {
     var phase = stage.phase || 'sale';
@@ -596,7 +596,7 @@
 
     /* alerts, roles, quiet hours, compliance, build order */
     set('tblAlerts', J.alerts.map(function (a) {
-      return '<tr><td class="mono">' + a.n + '</td><td><b>' + esc(a.name) + '</b><br><span style="color:var(--ink-3)">' + esc(a.why) + '</span></td><td>' + esc(a.trigger) + '</td><td>' + esc(a.to) + '</td><td>' + esc(a.channel) + '</td></tr>';
+      return '<tr><td class="mono">' + a.n + '</td><td><b>' + esc(a.name) + '</b><br><span style="color:var(--ink-3)">' + esc(a.why) + '</span></td><td>' + esc(CLIENT && a.plain ? a.plain : a.trigger) + '</td><td>' + esc(roleLabel(a.to)) + '</td><td>' + esc(CLIENT ? roleWords(a.channel) : a.channel) + '</td></tr>';
     }).join(''));
     set('tblRoles', J.roles.map(function (r) {
       return '<tr><td><code>' + esc(r.key) + '</code></td><td>' + esc(r.who) + '</td><td>' + esc(r.owns) + '</td></tr>';
@@ -806,17 +806,21 @@
     'opportunity.site_address': 'the site', 'opportunity.name': 'the job', 'opportunity.value': 'the value', 'opportunity.deposit_amount': 'the deposit',
     'opportunity.job_date': 'the install date', 'opportunity.deposit_due_date': 'the due date', 'opportunity.retention_amount': 'the retention',
     'opportunity.accepted_quote_option': 'the option chosen', 'opportunity.inspection_date': 'the inspection date',
-    'message.body': 'their message', 'review.rating': '2', 'review.author': 'a customer', 'workflow.name': 'a workflow', 'error.message': 'what broke', 'time': 'the time',
+    'message.body': 'their message', 'task.title': 'what is waiting on you', 'review.rating': '2', 'review.author': 'a customer', 'workflow.name': 'a workflow', 'error.message': 'what broke', 'time': 'the time',
   };
   function plainTokens(t) { return renderTokens(t, 'preview', Object.assign({}, samplesFor('residential'), GENERIC)).replace(/ class="pz[^"]*"/g, ''); }
 
   /* Role codes read as plain words on the client pages. Never a person's
      name: the roles table says who fills each one, and the alerts and tasks
      keep working when somebody new is hired. */
+  function roleWords(text) {
+    return String(text).replace(/\bOWNER\b/g, 'the owner').replace(/\bOFFICE\b/g, 'the office');
+  }
   function roleLabel(role) {
     if (!CLIENT) return role;
     var map = { OWNER: 'The owner', OFFICE: 'The office', ESTIMATOR: 'The estimator', CREW_LEAD: 'The crew lead', 'Assigned user': 'Whoever owns the job' };
-    return String(role).replace(/Assigned user|OWNER|OFFICE|ESTIMATOR|CREW_LEAD/g, function (r) { return map[r] || r; });
+    return String(role).replace(/Assigned user|OWNER|OFFICE|ESTIMATOR|CREW_LEAD/g, function (r) { return map[r] || r; })
+      .replace(/(.)\b(The|Whoever) (owner|office|estimator|crew lead|owns)/g, function (m, pre, w, rest) { return pre + w.toLowerCase() + ' ' + rest; });
   }
 
   function autoList(stage, pid) {
@@ -865,7 +869,7 @@
     set('gPrincipleBody', esc(g.principle.body));
     set('gRoutine', g.routine.map(function (r) { return '<div class="g-row"><div class="g-when">' + esc(r.when) + '</div><div>' + esc(r.what) + '</div></div>'; }).join(''));
     set('gAlerts', J.alerts.map(function (a) {
-      return '<tr><td><b>' + esc(a.name) + '</b><br><span style="color:var(--ink-3)">' + esc(a.plain || a.trigger) + '</span></td><td>' + esc(roleLabel(a.to)) + '</td><td>' + esc(g.alertActions[a.n] || '') + '</td></tr>';
+      return '<tr><td><b>' + esc(a.name) + '</b><br><span style="color:var(--ink-3)">' + esc(a.plain || a.trigger) + '</span></td><td>' + esc(roleLabel(a.to)) + '</td><td>' + esc(roleWords(a.channel)) + '</td><td>' + esc(g.alertActions[a.n] || '') + '</td></tr>';
     }).join(''));
     set('gHowTo', g.howTo.map(function (h) { return '<div class="cx"><h3>' + esc(h.title) + '</h3><p>' + esc(h.body) + '</p></div>'; }).join(''));
     set('gNever', g.never.map(function (s) { return '<li>' + esc(s) + '</li>'; }).join(''));

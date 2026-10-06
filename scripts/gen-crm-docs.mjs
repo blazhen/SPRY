@@ -114,36 +114,51 @@ const goLiveMd = J.goLive.map((s) => `- [ ] ${s}`).join('\n')
 /* How a card moves, stage by stage. Shared by the pipeline document and its
    HTML page. */
 const MOVES = [
-  ["New Lead", "The lead lands and the acknowledgement text and email go. Ring within 15 minutes, twice back to back. If they answer and it is a job, the quote is sent, which moves the card to Quote Sent. If it needs a site visit first, Inspection Required. A request to ring back later goes to Follow-Up; not now goes to Nurture. No answer to either call: Dial 1."],
+  ["New Lead", "The lead lands and the acknowledgement text and email go. Ring within 15 minutes, twice back to back. They answer and want a quote: Quoting. A request to ring back later: Follow-Up. Not now: Nurture. No answer to either call: Dial 1."],
   ["Dial 1", "Entering it sends the tried-to-call text about ten seconds later. A second round of calls the same day. Still nothing: Dial 2."],
   ["Dial 2", "Entering it starts three emails: a check-in on day 2, an offer of a time to talk on day 4, and an honest close on day 7. Any reply or booking stops them. Nothing by day 8: Lost, reason Unreachable."],
-  ["Inspection Required", "About one job in ten or twenty. Either before the quote, or after acceptance and before Booking Required. Staff attend, so there is no no-show handling."],
+  ["Quoting", "The office has spoken to them and they want a quote. The card is assigned to the owner, who gets a text and an email and a task to write and send it, often ringing them first for more detail. Sending the quote moves the card to Quote Sent."],
   ["Quote Sent", "The quote carries accept and decline buttons, and can carry more than one option. Follow-ups on days 2, 5, 10 and 21. Accept moves the card to Quote Accepted by itself; decline closes it as Lost. A yes by phone or a purchase order is moved by hand."],
-  ["Follow-Up", "The customer asked for a callback. A task at the time they asked; every sequence paused."],
-  ["Nurture", "Not now, or not affordable yet. Quotes come back after one or two years, so the card is kept: a marketing drip for those who opted in, and a call for everyone at twelve months."],
-  ["Quote Accepted", "The job is won. Thank-you and what happens next, with no deposit request. Then Inspection Required if something needs checking, otherwise Booking Required. An add-on quote on a live job never brings a card back here."],
-  ["Booking Required", "The owner books the install date in the platform's install calendar."],
-  ["Job Booked", "The booking moves the card here. Confirmation, preparation notes, and reminders 7 days and 48 hours before by email and text, each with Yes and No. A No alerts the team; rescheduling is done by a person."],
-  ["Deposit Requested", "Entered when the deposit invoice goes, 14 days before the job, timed by foam type. Jobs with no deposit skip it."],
-  ["Job Completed", "The crew marks the job complete, which sends the final invoice. The job report and certificates go only once it is paid. Paid with no retention: the card closes as Won."],
+  ["Follow-Up", "The customer asked for a callback. A task at the time they asked; every sequence paused. Then Quoting, Quote Accepted, Nurture or Lost."],
+  ["Nurture", "Not now, or not affordable yet. Quotes come back after one or two years, so the card is kept: a marketing drip for those who opted in, and a call for everyone at twelve months. Coming back means Quoting."],
+  ["Quote Accepted", "The job is won. Thank-you and what happens next, with no deposit request. The owner then moves it to Inspection Required if the site needs a look, otherwise Booking Required. An add-on quote on a live job never brings a card back here."],
+  ["Inspection Required", "Only after acceptance, about one job in ten or twenty. Staff attend, so there is no no-show handling. A cancellation alerts the owner, who rebooks it. Then Booking Required, or Lost if the job cannot be done."],
+  ["Booking Required", "The owner books the install in the calendar for the vehicle doing it: the InjectaCore rig, the van, the Fuso truck or the Mercedes rig. Several days or two rigs means a booking for each block. Two-way sync with the Apple calendar."],
+  ["Job Booked", "The booking moves the card here. Confirmation and preparation notes, then reminders a month before (only when booked more than six weeks ahead), 7 days and 48 hours before, each with Yes and No. A No alerts the team; rescheduling is done by a person."],
+  ["Deposit Requested", "A draft deposit invoice is prepared 14 days before the job, timed by foam type, and the owner checks it and sends it. Sending it moves the card here. Unpaid at 4pm on the due date: a text asks for the remittance and the team is told. Jobs with no deposit skip it."],
+  ["Job Completed", "The crew marks the job complete. A draft final invoice is prepared for the owner to check and send, with a task to decide on the Google review. The reminders start when it is sent. The job report goes only once it is paid. Paid with no retention: the card closes as Won."],
   ["Retention Claim", "Run by hand, with a task on the release date."],
 ]
 
-/* Decisions taken on the client's behalf that Glenn should confirm. Shared by
+/* Things still to confirm with Glenn after the 2 October call. Shared by
    the pipeline document and its HTML page. */
 const OPEN_ITEMS = [
-  `Rachael's mobile, ${cv('contact_mobile')}, is the number in every customer message and the SMS sign-off. Glenn confirmed the number in the templates is hers; confirm it before go-live.`,
-  'Deposit timing. The deposit invoice goes 14 days before the install date, or straight away if the job is closer than that. It is due 1 business day before for stock open cell and 7 days before for special-order foam. The call notes also said "2 weeks before install"; this reading reconciles the two.',
-  'Inspection Required is stage 4, used by about one job in ten or twenty: before the quote when a job cannot be priced from the call, or after acceptance and before Booking Required.',
-  'The Google review request goes 4 weeks after the job date, inside the 4 to 6 weeks discussed, and only when Ask for Google review is Yes.',
-  'Optional upgrades on a quote that update the total live (for example R2.5 to R4) are pending scope confirmation. Nothing is built for them.',
-  'Xero sync for invoices carrying GST is untested. Only GST-free invoices have been seen reaching Xero so far.',
-  'Commercial jobs are marked Won on a written acceptance (the accept button or a signed acceptance) or a purchase order. A verbal yes sits in Quote Accepted, status Open, until the paperwork lands.',
-  'The out-of-hours text gives the mobile for anything urgent. Confirm that is wanted, or point it at the business line.',
-  'Commercial payment terms, and whether progress claims follow a percentage, a milestone or a monthly cycle.',
-  'Trading hours, and whether Saturday work happens. The send windows and quiet hours are placeholders shaped like a normal trades week.',
-  'Service area boundary, so Outside service area can be automated.',
-  'Whether AI voice calls are recorded, which decides the script opening.',
+  "Commercial payment terms, and whether progress claims follow a percentage, a milestone or a monthly cycle.",
+  "Which system sends invoice reminders, the platform or Xero. Glenn said Xero already sends them; a customer should never get both.",
+  "How Glenn wants invoices set out. Until he has settled it, deposit and final invoices are drafts he checks and sends; once he has, the send can be automated.",
+  "The month-out check (REM-06) for jobs booked more than six weeks ahead was raised by Glenn on the call. Easy to drop if it is not wanted.",
+  "The morning-of \"crew on the way\" text (JOB-04) is still in. On the call Glenn said a reminder on the morning was probably not needed, since the crew arrive at seven; confirm whether to keep the on-the-way text or drop it.",
+  "Optional upgrades on a quote that update the total live (for example R2.5 to R4) are pending scope confirmation. Nothing is built for them.",
+  "Xero sync for invoices carrying GST is untested. Only GST-free invoices have been seen reaching Xero so far.",
+  "The out-of-hours text gives Rachael's mobile for anything urgent. Confirm that is wanted, or point it at the business line.",
+  "Trading hours, and whether Saturday work happens. The send windows and quiet hours are placeholders shaped like a normal trades week.",
+  "Service area boundary, so Outside service area can be automated.",
+  "Whether AI voice calls are recorded, which decides the script opening.",
+]
+
+/* Deposits, invoices and payment, as agreed on the call. Shared by the
+   pipeline document and its HTML page. */
+const MONEY = [
+  ["Never at booking.", "A draft deposit invoice is prepared 14 days before the install date, or straight away if the job is closer, which is when Glenn said on the call he generally sends them. It is due 1 business day before the job for stock open cell, and 7 days before for special-order foam, because that material is made and shipped for the job and is only ordered once the deposit lands."],
+  ["Drafts, sent by the owner.", "Deposit and final invoices are created as drafts from the accepted quote and the owner checks and sends each one, as Glenn asked. Sending is what moves the card and starts the reminders. Once he has settled how he wants them set out, the send can be automated."],
+  ["Unpaid at its due date.", "At 4pm on the due date, one text asks the customer for the remittance, and the owner and the office are told, so the crew can be reassigned. Nothing goes before the due date, because Xero already sends its own reminders. No card storage, no automatic charging."],
+  ["Deposits are a liability", "in the accounts, not sales income, until the job is done. Map the deposit item in Xero accordingly."],
+  ["The final invoice", "is prepared when the crew marks the job complete: the balance after any deposit, with a payment schedule by percentage or fixed amounts, each with a due date. The owner adjusts it for the area actually sprayed, with a variation or a credit, and sends it."],
+  ["Every invoice carries the accepted quote,", "which holds the terms and conditions, and the client's purchase order where there is one."],
+  ["The job report and certificates of completion", "go only once the final invoice is fully paid, sent by the owner from a task."],
+  ["Retentions", "on larger commercial jobs, held six to twelve months, sit in Retention Claim with a task on the release date."],
+  ["Xero.", "Sync is agreed, but only GST-free invoices have been seen reaching Xero so far and these carry GST: test a GST invoice before promising it. If marking an invoice paid in the platform before the bank transfer clears breaks the bookkeeper's reconciliation, switch off the payment receipt sync. Decide which system sends invoice reminders, so a customer never gets both."],
+  ["Contracts and variations.", "Document templates fill in the client details for digital signature, including site variations such as an extra 100 sqm agreed mid-job."],
 ]
 
 /* ============================================================ MESSAGING */
@@ -228,8 +243,8 @@ works for a different client.
 | --- | --- | --- |
 ${valuesTable}
 
-> **Needs Glenn:** trading hours, and confirmation that ${cv('contact_mobile')} is
-> Rachael's mobile and the number customers should ring.
+> **Needs Glenn:** trading hours. Rachael's mobile, ${cv('contact_mobile')}, was
+> confirmed by Glenn on the 2 October call.
 >
 > There is deliberately no ABN field: quotes and invoices are documents the
 > client issues himself and they carry it, so repeating it in a covering email
@@ -247,11 +262,11 @@ ${fieldsMd('3')}
 | Asset | Used by | Status |
 | --- | --- | --- |
 | Phone call calendar | X-APPT, DIAL-03 | Needs the Systemations calendar built, embedded on the site at /book/ |
-| Inspection calendar | X-INSP, C-INSP-01 | Needs building. Staff attend, so no no-show handling. |
-| Install calendar | JOB-01, JOB-02, REM, C-MOB-01 | Needs building. Bookings are made here first; Apple and Outlook sync is the separate calendars task. |
+| Inspection calendar | X-INSP, C-INSP-01 | Needs building. Used after a quote is accepted. Staff attend, so no no-show handling; a cancellation alerts the owner to rebook. |
+| Install calendars, one per vehicle | JOB-01, JOB-02, REM, C-MOB-01 | Four to build: the InjectaCore rig, the van, the Fuso truck and the Mercedes rig. Bookings run over several days, and one job can use two rigs on different days. Book in the platform first. Two-way sync with the owner's Apple (iCloud) calendar is the separate calendars task. |
 | Quote tool with accept and decline buttons | R-QUOTE-01, C-PROP-01 | Several options per job, one accepted. Optional upgrades pending scope confirmation. |
 | Trigger links, Yes and No | REM-01 to 04 | Two links, each firing WF-20 with its branch, landing on a short thank-you page |
-| Invoice templates with payment schedules | DEP-02, PAY-01, C-PAY-01 | Percentage or fixed stages with due dates. Accepted quote attached, and the purchase order where there is one. |
+| Invoice templates with payment schedules | DEP-02, PAY-01, C-PAY-01 | Created as drafts from the accepted quote, checked and sent by the owner. Percentage or fixed stages with due dates. Accepted quote attached, and the purchase order where there is one. |
 | Contract and variation documents | Job Booked, Job Completed | Templates that fill in the client details for digital signature, including variations such as an extra 100 sqm |
 | Job report template and certificate of completion | RPT-01, C-DONE-01 | Needs Glenn's existing report and certificate. Sent only after the final invoice is paid. |
 | Retention claim template | RET-01 | Needs the claim format Glenn uses |
@@ -393,9 +408,12 @@ ignore it inside a fortnight, and then the one alert that actually mattered gets
 ignored too. There are ${J.alerts.length} real-time alerts in this document. After the
 October call the list was reworked: the hour-long unattended lead alert became a
 fifteen minute email to the office, the missed site visit alert went because
-our own people attend every visit, and two were added that each protect a crew
-day: a customer saying the booked date no longer works, and a deposit unpaid at
-its due date. Anything that goes to the owner arrives by text and by email.
+our own people attend every visit, and three were added: a customer saying the
+booked date no longer works, a deposit unpaid at its due date, and anything
+assigned to someone. The channel follows the role, as agreed on the call:
+anything to the office arrives by email and in-app, never by text, so it sits
+there unread until it is dealt with; anything to the owner arrives by text and
+by email, so it is seen on site.
 
 ---
 
@@ -411,7 +429,9 @@ ${J.roles.map((r) => `| \`${r.key}\` | ${r.who} | ${r.owns} |`).join('\n')}
 OWNER and ESTIMATOR are the same person, so the escalation ladder in §5 runs from
 the office to the owner, which is a genuine second person.
 
-**Assignment.** New Lead is assigned to the office on both boards. If more
+**Assignment.** New Lead is assigned to the office on both boards. Moving a
+card to Quoting assigns it to the owner, who is told by text and email (alert
+14). If more
 people take first calls later, switch that assignment to round robin.
 Unassigned leads are the single most common way a lead dies: everybody assumes
 somebody.
@@ -437,7 +457,7 @@ ${alertBodies}
 
 Listed so nobody adds them back in later without a reason.
 
-- Stage changes in general. Only a quote accepted, a deposit landing, a No on a reminder and an unpaid deposit do.
+- Stage changes in general. Only a hand-over to someone, a quote accepted, a deposit landing, a No on a reminder and an unpaid deposit do.
 - A customer not turning up. Our own people attend site visits, so there is no no-show.
 - Emails opened or links clicked. Interesting, not actionable.
 - Form views, page views, chat opens.
@@ -554,10 +574,12 @@ TODAY
 
 NEEDS YOU
   Leads not called       {{list}}
+  Quotes to write        {{list, waiting in Quoting}}
   Callbacks due          {{list}}
   Installs to book       {{list, over 2 days in Booking Required}}
   Dates not confirmed    {{list, no Yes or No on either reminder}}
   Deposits unpaid        {{list with amount and due date}}
+  Invoices to send       {{list, drafts not yet sent}}
   Invoices overdue       {{list with amount and days}}
   Job reports to send    {{list, paid but report not sent}}
   Retentions due         {{list with release date}}
@@ -572,6 +594,7 @@ be the thing their eye lands on when they stop scrolling.
 LAST WEEK, BOTH BOARDS
   Enquiries              {{count}}, by source
   Median time to first call
+  Days in Quoting        {{average}}
   Closed as Unreachable  {{count}}
   Quotes sent            {{count}}, {{value}}
   Quotes accepted        {{count}}, {{value}}
@@ -744,11 +767,13 @@ How to build it is in [CRM-PIPELINES.md](CRM-PIPELINES.md) §5.
 
 ## Conventions that apply to every workflow
 
-- **Stop on reply.** Every sales sequence checks for an inbound reply before each send and stops if one has arrived. WF-30 handles the pause; each sequence still needs its own exit condition. Reminders about an agreed date keep running.
+- **Stop on reply.** Every sales sequence checks for an inbound reply before each send and stops if one has arrived. WF-34 handles the pause; each sequence still needs its own exit condition. Reminders about an agreed date keep running.
 - **Send window.** Anything the messaging kit marks "waits for the send window" sits behind a Wait until a time window step: 8am to 8pm, Monday to Saturday. Confirmations are exempt.
 - **Acceptance kills sales.** WF-14 stops every sales sequence before it does anything else. Test it specifically: accept a quote mid-follow-up and confirm nothing further sends.
 - **Add-on quotes.** WF-12 checks \`is-active-job\` before it moves anything. An accepted add-on or variation quote on a live job updates the value and tasks the office; it never resends the thank-you or moves the card.
-- **Book in the platform first.** Install dates go in the install calendar, never a phone calendar first, because WF-18 is what moves the card and starts the reminders and the deposit timing.
+- **Book in the platform first.** Install dates go in the calendar for the vehicle doing the job, never straight into the Apple calendar first, because WF-20 is what moves the card and starts the reminders and the deposit timing. There is one install calendar per vehicle, and one job can hold bookings on two.
+- **Invoices are drafts.** WF-24 and WF-27 create deposit and final invoices as drafts with a task to the owner; WF-25 and WF-28 run only when the owner sends them. Nothing is invoiced automatically until Glenn asks for it.
+- **Alerts follow the role.** Anything to the office by email and in-app, never SMS; anything to the owner by SMS and email. The checker enforces it.
 - **No automatic rescheduling.** A No on a reminder alerts the team. Crews and rigs are moved by a person.
 - **Error branches.** Every workflow gets an error branch that fires alert 11 with the workflow name and the contact.
 - **Human labels.** Dropdown fields store the label, not the form value, or the echo emails read "new-build".
@@ -761,7 +786,7 @@ ${workflowsMd}`
 /* ============================================================= PIPELINES */
 /* Stages the AI may move a card into. Everything else is a person's call. */
 const AI_MAY = ['new-lead', 'follow-up', 'nurture']
-const phaseWord = { sale: 'Open, still winning the job', either: 'Open or Won: before the quote, or after the yes', won: 'Set to Won here', job: 'Won, job underway' }
+const phaseWord = { sale: 'Open, still winning the job', won: 'Set to Won here', job: 'Won, job underway' }
 const stageTable = (p) => p.stages.map((s) => `| ${s.n} | **${s.name}** | ${s.means} | ${s.exits} | ${s.stalls || ''} |`).join('\n')
 const bothTable = RES.stages.map((s, i) => `| ${s.n} | **${s.name}** | ${phaseWord[s.phase]} | ${s.means} | ${COM.stages[i].means} |`).join('\n')
 const autoTable = RES.stages.map((s, i) => {
@@ -775,8 +800,9 @@ const pipelines = `# CRM Pipelines: ${BRAND}
 
 Pipeline and stage design for the Systemations build. Revised after the client
 call on Friday 2 October 2026, which replaced "Contacting" with Dial 1 and
-Dial 2, dropped the stages that did not fit the way the business works, and put
-both boards on the same ${STAGES} stages.
+Dial 2, added Quoting for the hand-over to the owner, put Inspection Required
+after acceptance, dropped the stages that did not fit the way the business
+works, and put both boards on the same ${STAGES} stages.
 
 This is the reference for three audiences: whoever configures Systemations, whoever runs
 the board day to day, and the AI agent that will be allowed to move cards on it.
@@ -810,9 +836,7 @@ lets every figure be read by sector as well as in total.
 
 ## 2. The ${STAGES} stages
 
-New Lead > Dial 1 > Dial 2 > Inspection Required > Quote Sent > Follow-Up >
-Nurture > Quote Accepted > Booking Required > Job Booked > Deposit Requested >
-Job Completed > Retention Claim.
+${RES.stages.map((s) => s.name).join(' > ')}.
 
 | # | Stage | Status | Residential: it means | Commercial: it means |
 | --- | --- | --- | --- | --- |
@@ -838,10 +862,12 @@ ${stageTable(RES)}
 
 - **New Lead exists to be measured.** Time to first call is the single biggest lever in the pipeline, and the 15 minute timer is what protects it.
 - **Dial 1 and Dial 2 are capped.** Two rounds of calls and a text, then three emails over a week, then Lost with the reason Unreachable. Nothing rots.
+- **Quoting makes the hand-over visible.** Once the office has spoken to them and they want a quote, the card is assigned to the owner, who gets a text and an email. Anyone can see the job is waiting on the quote.
 - **Quote Sent carries the buttons.** The accept button moves the card and records the option chosen, so most acceptances need nobody to touch the board.
-- **Booking Required is separate from Quote Accepted** because an inspection can sit between them, and because a job waiting for a date should be visible as exactly that.
-- **Deposit Requested is timed to the job, not the booking.** A job booked months out gets no invoice until two weeks before.
-- **Job Completed is where the money and the paperwork meet.** Final invoice on completion; job report and certificates only once it is paid.
+- **Inspection Required comes after the yes.** Most jobs are quoted from the call; where the area is uncertain the quote covers the worst case, and the visit happens once the customer is happy with the price.
+- **Booking Required is separate from Quote Accepted** because an inspection can sit between them, and because a job waiting for a date should be visible as exactly that. One calendar per vehicle.
+- **Deposit Requested is timed to the job, not the booking.** A job booked months out gets no invoice until two weeks before, and then only once the owner has checked the draft and sent it.
+- **Job Completed is where the money and the paperwork meet.** A draft final invoice for the owner on completion; job report and certificates only once it is paid; and the owner's call on whether to ask for a review.
 
 ---
 
@@ -852,7 +878,8 @@ ${stageTable(RES)}
 ${stageTable(COM)}
 
 **What is different on commercial.** The first email asks for the five things
-that make the scoping call useful. Inspections need inductions, PPE and a site
+that make the scoping call useful, and in Quoting the owner nearly always rings
+for more detail before pricing. Inspections need inductions, PPE and a site
 contact. The proposal can be accepted online, by a signed acceptance or by a
 purchase order, and a verbal yes is never counted as Won. Job Booked carries the
 mobilisation email with SWMS and insurances, inductions, a 6:30am text to the
@@ -886,7 +913,7 @@ Accepted is a real stage where the status is set, not a marker.
 | Question | Where the answer lives |
 | --- | --- |
 | What might we win? | Open cards, stages 1 to 7 |
-| What have we committed to deliver? | Won cards, stages 8 to 13, and Inspection Required cards that are Won |
+| What have we committed to deliver? | Won cards, stages 8 to 14 |
 | What is the forecast worth? | **Open only.** Never the whole board. |
 
 ### Lost reasons (fixed list, single select)
@@ -906,7 +933,7 @@ exists to answer the second one. A "not now" is Nurture, not Lost.
 
 | Stage | What value to carry |
 | --- | --- |
-| New Lead to Follow-Up, before a quote | Zero |
+| New Lead to Quoting, and Follow-Up before a quote | Zero |
 | Quote Sent onward | The quoted figure; on a job with options, the option most likely to be chosen |
 | Quote Accepted onward | The accepted option, plus accepted add-ons and signed variations |
 | Nurture | The last quoted figure, so the forecast of returning work is visible |
@@ -918,15 +945,7 @@ so those cards carry nothing until a real number exists.
 
 ## 8. Deposits, invoices and payment
 
-- **Deposits are never sent at booking.** The deposit invoice goes 14 days before the install date, or straight away if the job is less than 14 days out. It is due 1 business day before the job for stock open cell, and 7 days before for special-order foam, because that material is made and shipped for the job. To confirm with Glenn.
-- **An unpaid deposit at its due date** alerts the owner and the office, so the crew can be reassigned. No card storage, no automatic charging.
-- **Deposits are a liability in the accounts**, not sales income, until the job is done. Map the deposit item in Xero accordingly.
-- **The final invoice goes when the crew marks the job complete.** One invoice can carry a payment schedule, by percentage or fixed amounts, each with a due date.
-- **Every invoice carries the accepted quote**, which holds the terms and conditions, and the client's purchase order where there is one.
-- **The job report and certificates of completion** go only once the final invoice is fully paid.
-- **Retentions** on larger commercial jobs, held six to twelve months, sit in Retention Claim with a task on the release date.
-- **Xero.** Sync is agreed, but only GST-free invoices have been seen reaching Xero so far and these carry GST: test a GST invoice before promising it. If marking an invoice paid in the platform before the bank transfer clears breaks the bookkeeper's reconciliation, switch off the payment receipt sync.
-- **Contracts and variations.** Document templates fill in the client details for digital signature, including site variations such as an extra 100 sqm agreed mid-job.
+${MONEY.map(([k, v]) => `- **${k}** ${v}`).join('\n')}
 
 ---
 
@@ -1036,11 +1055,11 @@ and the job together, an unfiltered figure is meaningless.
 4. **Committed work**, status Won and not yet closed. This is the schedule, and the cash coming.
 5. **Quote Sent to Quote Accepted**, by board and by source. Measure conversion across the sales stages only.
 6. **Online acceptance rate.** How many acceptances come from the button rather than a phone call.
-7. **Days in Booking Required.** Should be under two.
+7. **Days in Quoting and in Booking Required.** Both should be under two business days, five for commercial quotes.
 8. **Reminder answers.** Yes, No and no answer, and how many Nos turn into a new date.
 9. **Days from acceptance to final payment**, and deposits paid late.
 10. **Lost reason mix.** Watch the ratio of *Price* to *Chose batts*.
-11. **Nurture returns.** Cards that come back to Quote Sent after six, twelve and twenty-four months.
+11. **Nurture returns.** Cards that come back to Quoting after six, twelve and twenty-four months.
 12. **Paid revenue by \`utm_source\` / \`gclid\` / \`fbclid\`.** The attribution fields survive all the way to payment, so ad spend can be judged on money received rather than on form fills.
 
 ---
@@ -1103,9 +1122,9 @@ const pipelinesHtml = `${pipesHead}
     <p class="standfirst">
       One board for residential, one for commercial, each running a job from first
       enquiry to final payment on the same card. Revised after the client call on
-      Friday 2 October 2026: Contacting became Dial 1 and Dial 2, stages that did not
-      fit were removed, and both boards now share one shape, so the whole business
-      reads in a single view.
+      Friday 2 October 2026: Contacting became Dial 1 and Dial 2, Quoting was added for
+      the hand-over to the owner, Inspection Required moved after acceptance, and both
+      boards now share one shape, so the whole business reads in a single view.
     </p>
     <div class="meta">
       <div><b>Prepared for</b><span>${esc(J.meta.preparedFor)}</span></div>
@@ -1194,13 +1213,7 @@ ${['Price', 'Went with another contractor', 'Chose batts or another product', 'T
   <section id="money">
     <div class="sec-head"><span class="sec-n">07</span><h2>Deposits, invoices and payment</h2></div>
     <ul class="plain">
-      <li><b>Never at booking.</b> The deposit invoice goes 14 days before the install date, or straight away if the job is closer. Due 1 business day before for stock open cell, 7 days before for special-order foam. To confirm with Glenn.</li>
-      <li><b>Unpaid at its due date:</b> the owner and the office are told, so the crew can be reassigned. No card storage, no automatic charging.</li>
-      <li><b>Deposits are a liability</b> in the accounts until the job is done, not sales income.</li>
-      <li><b>The final invoice goes when the crew marks the job complete,</b> with its payment schedule, the accepted quote and any purchase order attached.</li>
-      <li><b>The job report and certificates</b> go only once the final invoice is fully paid.</li>
-      <li><b>Xero:</b> test a GST invoice before promising the sync. Switch off payment receipt sync if marking paid early breaks the bookkeeper's reconciliation.</li>
-      <li><b>Contracts and variations</b> go out from templates that fill in the client details for digital signature.</li>
+${MONEY.map(([k, v]) => `      <li><b>${esc(k)}</b> ${esc(v)}</li>`).join('\n')}
     </ul>
   </section>
 

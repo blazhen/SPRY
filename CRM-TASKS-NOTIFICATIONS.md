@@ -29,12 +29,15 @@ Reports go in the daily summary. Only actions interrupt.
 This is the rule that decides everything below, and it is the one most CRM
 builds get wrong. A system that pings on every stage change trains everyone to
 ignore it inside a fortnight, and then the one alert that actually mattered gets
-ignored too. There are 13 real-time alerts in this document. After the
+ignored too. There are 14 real-time alerts in this document. After the
 October call the list was reworked: the hour-long unattended lead alert became a
 fifteen minute email to the office, the missed site visit alert went because
-our own people attend every visit, and two were added that each protect a crew
-day: a customer saying the booked date no longer works, and a deposit unpaid at
-its due date. Anything that goes to the owner arrives by text and by email.
+our own people attend every visit, and three were added: a customer saying the
+booked date no longer works, a deposit unpaid at its due date, and anything
+assigned to someone. The channel follows the role, as agreed on the call:
+anything to the office arrives by email and in-app, never by text, so it sits
+there unread until it is dealt with; anything to the owner arrives by text and
+by email, so it is seen on site.
 
 ---
 
@@ -45,15 +48,17 @@ of staff is a reassignment rather than a rewrite.
 
 | Role | Who at SprayIT | Owns |
 | --- | --- | --- |
-| `OWNER` | Glenn Angus | Commercial work, pricing, booking install dates, anything escalated |
-| `OFFICE` | Rachael Angus | First response, calls, chasing, invoicing. About 99% of customer contact. |
-| `ESTIMATOR` | Glenn Angus | Quotes and site inspections |
+| `OWNER` | Glenn Angus | Writing and sending quotes, commercial work, booking install dates, checking and sending invoices, job reports, anything escalated |
+| `OFFICE` | Rachael Angus | First response, calls, follow-ups, chasing payments. About 99% of customer contact. |
+| `ESTIMATOR` | Glenn Angus | Site inspections, and the scoping call on commercial jobs |
 | `CREW_LEAD` | Per job | The job day: running late text, photos, variations, marking the job complete |
 
 OWNER and ESTIMATOR are the same person, so the escalation ladder in §5 runs from
 the office to the owner, which is a genuine second person.
 
-**Assignment.** New Lead is assigned to the office on both boards. If more
+**Assignment.** New Lead is assigned to the office on both boards. Moving a
+card to Quoting assigns it to the owner, who is told by text and email (alert
+14). If more
 people take first calls later, switch that assignment to round robin.
 Unassigned leads are the single most common way a lead dies: everybody assumes
 somebody.
@@ -62,23 +67,24 @@ somebody.
 
 ## 3. Real-time alerts
 
-13. These interrupt. Everything else waits for the daily summary.
+14. These interrupt. Everything else waits for the daily summary.
 
 | # | Alert | Trigger | To | Channel | Why it interrupts |
 | --- | --- | --- | --- | --- | --- |
-| 1 | **New enquiry** | Opportunity created | Assigned user | SMS and in-app | Speed to lead is the whole game. |
-| 2 | **Missed call** | Inbound call not answered | OFFICE | SMS | The auto-reply already went. A person still has to ring back. |
-| 3 | **Inbound reply** | Contact replies by SMS | Assigned user | In-app and SMS | A reply is a live conversation. Every sequence on the card pauses. |
-| 4 | **Phone call booked** | Appointment booked in the phone call calendar | Assigned user | In-app | The diary changed. |
-| 5 | **Phone call cancelled** | Appointment cancelled in the phone call calendar | Assigned user | SMS | A hole in the day, recoverable if caught early. |
+| 1 | **New enquiry** | Opportunity created | OFFICE | Email and in-app | Speed to lead is the whole game. |
+| 2 | **Missed call** | Inbound call not answered | OFFICE | Email and in-app | The auto-reply already went. A person still has to ring back. |
+| 3 | **Inbound reply** | Contact replies by SMS | Assigned user | Email and in-app to OFFICE, or SMS and email to OWNER | A reply is a live conversation. Every sales sequence on the card pauses. |
+| 4 | **Phone call booked** | Appointment booked in the phone call calendar | Assigned user | Email and in-app to OFFICE, or SMS and email to OWNER | The diary changed. |
+| 5 | **Phone call or inspection cancelled** | Appointment cancelled in the phone call or inspection calendar | Assigned user, or OWNER for an inspection | Email and in-app to OFFICE, or SMS and email to OWNER | A hole in the day, recoverable if caught early. Inspections are rebooked by a person, because a free slot is not always a workable one. |
 | 6 | **Commercial enquiry** | Opportunity created on the Commercial board | OWNER | SMS and email | Different sale, and the owner wants to know immediately. |
-| 7 | **New lead not called after 15 minutes** | No call logged 15 business minutes after the lead arrives | OFFICE | Email | Time to first contact is the one number that moves everything else. Business hours only, so it pauses overnight. |
-| 8 | **Quote accepted** | Card enters Quote Accepted | OWNER and OFFICE | SMS and email | Triggers the next step: an inspection, or the install date. |
-| 9 | **Deposit received** | Deposit invoice marked paid | OFFICE | In-app | The date is secure. |
+| 7 | **New lead not called after 15 minutes** | No call logged 15 business minutes after the lead arrives | OFFICE | Email and in-app | Time to first contact is the one number that moves everything else. Business hours only, so it pauses overnight. |
+| 8 | **Quote accepted** | Card enters Quote Accepted | OWNER and OFFICE | SMS and email to OWNER, email and in-app to OFFICE | Triggers the next step: an inspection, or the install date. |
+| 9 | **Deposit received** | Deposit invoice marked paid | OWNER and OFFICE | SMS and email to OWNER, email and in-app to OFFICE | Special-order foam is only ordered once the deposit lands, and the date is now secure. |
 | 10 | **Negative review or complaint** | Review under 4 stars, or a complaint tag | OWNER | SMS and email | Reputation decays fast. A same-day call fixes most of them. |
 | 11 | **Automation failure** | Workflow error, or the lead webhook returns 4xx or 5xx | OWNER | SMS and email | A silent failure means leads are vanishing. The platform will not tell you loudly, so this is built deliberately. |
-| 12 | **Customer cannot make the booked date** | A No on the 7 day or 48 hour reminder | OWNER and OFFICE | SMS and email | A crew and a rig are booked around this job. The sooner a person knows, the sooner both can go to other work. |
-| 13 | **Deposit unpaid at its due date** | deposit_due_date reached and the deposit invoice is unpaid | OWNER and OFFICE | SMS and email | Special-order foam and a crew day are committed against this job. The due date is set early enough to reassign both. |
+| 12 | **Customer cannot make the booked date** | A No on the one month, 7 day or 48 hour reminder | OWNER and OFFICE | SMS and email to OWNER, email and in-app to OFFICE | A crew and a rig are booked around this job. The sooner a person knows, the sooner both can go to other work. |
+| 13 | **Deposit unpaid at its due date** | 4pm on deposit_due_date and the deposit invoice is unpaid | OWNER and OFFICE | SMS and email to OWNER, email and in-app to OFFICE | Special-order foam and a crew day are committed against this job. The due date is set early enough to reassign both. |
+| 14 | **Assigned to you** | A card is assigned or reassigned to someone, or a task is created for OWNER | Whoever it is assigned to | SMS and email to OWNER, email to OFFICE | Agreed on the call: anything handed to the owner arrives by text so it is seen on site, and by email so it is still there that night. |
 
 ### What each one says
 
@@ -87,10 +93,10 @@ roof can read the first one and decide whether to climb down.
 
 ### 1. New enquiry
 
-**Priority:** Act now · **To:** Assigned user · **By:** SMS and in-app
+**Priority:** Act now · **To:** OFFICE · **By:** Email and in-app
 **Fires when:** Opportunity created
 
-A website enquiry has been created and assigned. The message carries their name, number, property type, what needs doing, timeframe, postcode and where they came from, so it can be acted on without opening the CRM.
+A website enquiry has been created and assigned to the office. The message carries their name, number, property type, what needs doing, timeframe, postcode and where they came from, so it can be acted on without opening the CRM.
 
 ```
 NEW LEAD: {{contact.first_name}} {{contact.last_name}}
@@ -100,11 +106,11 @@ NEW LEAD: {{contact.first_name}} {{contact.last_name}}
 Source: {{contact.utm_source}}
 ```
 
-Enough to act without opening the CRM. Someone standing on a roof can read that and decide whether to climb down.
+Enough to act without opening the CRM. By email, so it sits there unread until somebody has dealt with it.
 
 ### 2. Missed call
 
-**Priority:** Act now · **To:** OFFICE · **By:** SMS
+**Priority:** Act now · **To:** OFFICE · **By:** Email and in-app
 **Fires when:** Inbound call not answered
 
 An inbound call to the business number went unanswered. The caller has already had an automatic text back, so this is the reminder that someone still owes them a call.
@@ -115,10 +121,10 @@ MISSED CALL: {{contact.phone}} ({{contact.first_name}}). Text-back sent. Ring th
 
 ### 3. Inbound reply
 
-**Priority:** Act now · **To:** Assigned user · **By:** In-app and SMS
+**Priority:** Act now · **To:** Assigned user · **By:** Email and in-app to OFFICE, or SMS and email to OWNER
 **Fires when:** Contact replies by SMS
 
-A customer has replied by text. Every outbound sequence on that contact pauses the moment it arrives, so nothing automatic talks over a live conversation.
+A customer has replied by text. Every sales sequence on that contact pauses the moment it arrives, so nothing automatic talks over a live conversation.
 
 ```
 REPLY from {{contact.first_name}}: "{{message.body}}"
@@ -126,7 +132,7 @@ REPLY from {{contact.first_name}}: "{{message.body}}"
 
 ### 4. Phone call booked
 
-**Priority:** Good to know · **To:** Assigned user · **By:** In-app
+**Priority:** Good to know · **To:** Assigned user · **By:** Email and in-app to OFFICE, or SMS and email to OWNER
 **Fires when:** Appointment booked in the phone call calendar
 
 Somebody has booked a phone call from the day 4 email or the website. It is in the diary and the confirmation has gone, so the point of the alert is to read their enquiry before ringing.
@@ -135,15 +141,16 @@ Somebody has booked a phone call from the day 4 email or the website. It is in t
 BOOKED: {{contact.first_name}}, {{appointment.start_time}}. Read the enquiry before the call.
 ```
 
-### 5. Phone call cancelled
+### 5. Phone call or inspection cancelled
 
-**Priority:** Heads up · **To:** Assigned user · **By:** SMS
-**Fires when:** Appointment cancelled in the phone call calendar
+**Priority:** Heads up · **To:** Assigned user, or OWNER for an inspection · **By:** Email and in-app to OFFICE, or SMS and email to OWNER
+**Fires when:** Appointment cancelled in the phone call or inspection calendar
 
-A booked phone call has been cancelled, leaving a hole in the day. Caught early, a short call usually rebooks it.
+A booked phone call or site inspection has been cancelled. A phone call goes to whoever owns the job; an inspection goes to the owner, who rebooks it. Nothing is rebooked automatically.
 
 ```
-CANCELLED: {{contact.first_name}}, {{appointment.start_time}}. Slot is open. A short call often rebooks it.
+CANCELLED: {{contact.first_name}}, {{appointment.title}}, {{appointment.start_time}}.
+Ring them to rebook.
 ```
 
 ### 6. Commercial enquiry
@@ -161,7 +168,7 @@ COMMERCIAL LEAD: {{contact.first_name}} {{contact.last_name}}, {{contact.company
 
 ### 7. New lead not called after 15 minutes
 
-**Priority:** Act now · **To:** OFFICE · **By:** Email
+**Priority:** Act now · **To:** OFFICE · **By:** Email and in-app
 **Fires when:** No call logged 15 business minutes after the lead arrives
 
 A new lead has been on the board for fifteen business minutes and no call has been logged against it. It names the lead and the time it arrived, so whoever picks it up can ring straight away.
@@ -173,26 +180,26 @@ Arrived {{time}}. Fifteen minutes and no call logged. Ring them now.
 
 ### 8. Quote accepted
 
-**Priority:** Win · **To:** OWNER and OFFICE · **By:** SMS and email
+**Priority:** Win · **To:** OWNER and OFFICE · **By:** SMS and email to OWNER, email and in-app to OFFICE
 **Fires when:** Card enters Quote Accepted
 
-A card has reached Quote Accepted, from the accept button or moved by hand. It names the job, the value and the option chosen, and it is the signal to book the install date. Add-on quotes on a job already under way do not fire it.
+A card has reached Quote Accepted, from the accept button or moved by hand. It names the job, the value and the option chosen, and it is the signal to decide on an inspection and book the install date. Add-on quotes on a job already under way do not fire it.
 
 ```
 QUOTE ACCEPTED: {{opportunity.name}}, {{opportunity.value}}
 Option: {{opportunity.accepted_quote_option}}
-Next: book the install date.
+Next: inspection or install date.
 ```
 
 ### 9. Deposit received
 
-**Priority:** Win · **To:** OFFICE · **By:** In-app
+**Priority:** Win · **To:** OWNER and OFFICE · **By:** SMS and email to OWNER, email and in-app to OFFICE
 **Fires when:** Deposit invoice marked paid
 
-A deposit invoice has been marked paid. The customer has had a one-line confirmation, so this is for the record and for whoever is watching the crew diary.
+A deposit invoice has been marked paid. The customer has had a one-line confirmation. On special-order foam this is the signal to order the material, which is only ordered once the deposit lands.
 
 ```
-DEPOSIT IN: {{contact.first_name}}, {{opportunity.deposit_amount}}. Job on {{opportunity.job_date}} is secure.
+DEPOSIT IN: {{contact.first_name}}, {{opportunity.deposit_amount}}. Job on {{opportunity.job_date}} is secure. Special order? Order the foam now.
 ```
 
 ### 10. Negative review or complaint
@@ -219,10 +226,10 @@ WORKFLOW FAILED: {{workflow.name}} on {{contact.first_name}} {{contact.last_name
 
 ### 12. Customer cannot make the booked date
 
-**Priority:** Act now · **To:** OWNER and OFFICE · **By:** SMS and email
-**Fires when:** A No on the 7 day or 48 hour reminder
+**Priority:** Act now · **To:** OWNER and OFFICE · **By:** SMS and email to OWNER, email and in-app to OFFICE
+**Fires when:** A No on the one month, 7 day or 48 hour reminder
 
-A customer tapped No on the 7 day or the 48 hour reminder. It names the job, the date and the address. Nothing is rescheduled automatically: the team rings the customer, agrees a new date, and moves the crew and the rig by hand.
+A customer tapped No on one of the reminders before the job. It names the job, the date and the address. Nothing is rescheduled automatically: the team rings the customer, agrees a new date, and moves the crew and the rig by hand.
 
 ```
 CANNOT MAKE IT: {{contact.first_name}} {{contact.last_name}}, {{contact.phone}}
@@ -232,22 +239,36 @@ Ring them today. Crew and rig need moving by hand.
 
 ### 13. Deposit unpaid at its due date
 
-**Priority:** Heads up · **To:** OWNER and OFFICE · **By:** SMS and email
-**Fires when:** deposit_due_date reached and the deposit invoice is unpaid
+**Priority:** Heads up · **To:** OWNER and OFFICE · **By:** SMS and email to OWNER, email and in-app to OFFICE
+**Fires when:** 4pm on deposit_due_date and the deposit invoice is unpaid
 
-A deposit has reached its due date without being paid. It names the job, the amount and the install date, so the team can ring the customer and decide in time whether the crew holds the date or is reassigned.
+A deposit has reached 4pm on its due date without being paid. The customer has just had a text asking for the remittance. It names the job, the amount and the install date, so the owner can decide in time whether the crew holds the date or goes to another job.
 
 ```
 DEPOSIT UNPAID: {{opportunity.name}}, {{opportunity.deposit_amount}}
 Due {{opportunity.deposit_due_date}}. Job booked {{opportunity.job_date}}.
-Ring them today and decide whether the crew holds.
+The customer has been texted. Decide whether the crew holds.
 ```
+
+### 14. Assigned to you
+
+**Priority:** Act now · **To:** Whoever it is assigned to · **By:** SMS and email to OWNER, email to OFFICE
+**Fires when:** A card is assigned or reassigned to someone, or a task is created for OWNER
+
+A card has been assigned to someone, or a task has been created for the owner. The commonest case is the office handing a lead to the owner in Quoting. It names the job and what is waiting, so it can be dealt with that day. Where another alert already carries the same news, this one does not fire again.
+
+```
+ASSIGNED TO YOU: {{opportunity.name}}, {{contact.phone}}
+{{task.title}}
+```
+
+The automatic assignment of a new lead to the office does not fire this. Alert 1 already covers it.
 
 ### What deliberately does not alert
 
 Listed so nobody adds them back in later without a reason.
 
-- Stage changes in general. Only a quote accepted, a deposit landing, a No on a reminder and an unpaid deposit do.
+- Stage changes in general. Only a hand-over to someone, a quote accepted, a deposit landing, a No on a reminder and an unpaid deposit do.
 - A customer not turning up. Our own people attend site visits, so there is no no-show.
 - Emails opened or links clicked. Interesting, not actionable.
 - Form views, page views, chat opens.
@@ -260,7 +281,7 @@ Listed so nobody adds them back in later without a reason.
 ## 4. Tasks
 
 Alerts say *something happened*. Tasks say *you owe something*, and they persist
-until closed. Anything with a deadline is a task, not an alert. 46 in
+until closed. Anything with a deadline is a task, not an alert. 54 in
 total across both boards.
 
 ### Naming convention
@@ -279,23 +300,27 @@ so a list of twenty tasks is scannable without opening any of them.
 | 1. New Lead | `CALL {{contact.first_name}}: new lead, {{contact.areas}}` | OFFICE | 15 minutes |
 | 2. Dial 1 | `CALL {{contact.first_name}}: second round of calls` | OFFICE | Later the same day |
 | 3. Dial 2 | `CALL {{contact.first_name}}: one more try` | OFFICE | Day 4 |
-| 4. Inspection Required | `BOOK {{contact.first_name}}: site inspection` | OFFICE | 2 days |
-| 4. Inspection Required | `ATTEND {{contact.first_name}}: inspection, {{opportunity.site_address}}` | ESTIMATOR | On the date |
+| 4. Quoting | `QUOTE {{contact.first_name}}: write and send the quote` | OWNER | 2 business days |
 | 5. Quote Sent | `CALL {{contact.first_name}}: quote follow up` | OFFICE | Day 2 |
 | 5. Quote Sent | `DECIDE {{contact.first_name}}: accepted, nurture or lost` | OFFICE | Day 21 |
 | 6. Follow-Up | `CALL {{contact.first_name}}: callback as asked` | OFFICE | At the time they asked |
 | 7. Nurture | `CHECK-IN {{contact.first_name}}: a year since the quote` | OFFICE | 12 months |
 | 7. Nurture | `REVIEW {{contact.first_name}}: still a fit?` | OWNER | Quarterly |
-| 8. Quote Accepted | `NEXT {{contact.first_name}}: inspection or booking` | OFFICE | Same day |
-| 9. Booking Required | `BOOK {{contact.first_name}}: install date` | OWNER | 2 business days |
-| 10. Job Booked | `RESCHEDULE {{contact.first_name}}: cannot make {{opportunity.job_date}}` | OWNER | Same day |
-| 10. Job Booked | `CALL {{contact.first_name}}: date not confirmed` | OFFICE | Day before the job, if neither reminder was answered |
-| 11. Deposit Requested | `CHASE {{contact.first_name}}: deposit unpaid` | OFFICE | On the due date, if unpaid |
-| 12. Job Completed | `PHOTOS {{opportunity.site_address}}` | CREW_LEAD | Before marking it complete |
-| 12. Job Completed | `VARIATIONS {{contact.first_name}}: record any extras` | CREW_LEAD | Before marking it complete |
-| 12. Job Completed | `CHASE {{contact.first_name}}: payment overdue` | OFFICE | Day 14 |
-| 12. Job Completed | `SEND {{contact.first_name}}: job report and certificates` | OFFICE | Same day as payment |
-| 13. Retention Claim | `CLAIM {{contact.first_name}}: retention of {{opportunity.retention_amount}}` | OFFICE | On the release date |
+| 8. Quote Accepted | `NEXT {{contact.first_name}}: inspection or booking` | OWNER | Same day |
+| 9. Inspection Required | `BOOK {{contact.first_name}}: site inspection` | OWNER | 2 days |
+| 9. Inspection Required | `ATTEND {{contact.first_name}}: inspection, {{opportunity.site_address}}` | ESTIMATOR | On the date |
+| 10. Booking Required | `BOOK {{contact.first_name}}: install date` | OWNER | 2 business days |
+| 11. Job Booked | `RESCHEDULE {{contact.first_name}}: cannot make {{opportunity.job_date}}` | OWNER | Same day |
+| 11. Job Booked | `CALL {{contact.first_name}}: date not confirmed` | OFFICE | Day before the job, if neither reminder was answered |
+| 12. Deposit Requested | `INVOICE {{contact.first_name}}: check and send the deposit invoice` | OWNER | 2 business days |
+| 12. Deposit Requested | `CHASE {{contact.first_name}}: deposit unpaid` | OWNER | On the due date, if unpaid |
+| 13. Job Completed | `PHOTOS {{opportunity.site_address}}` | CREW_LEAD | Before marking it complete |
+| 13. Job Completed | `VARIATIONS {{contact.first_name}}: record any extras` | CREW_LEAD | Before marking it complete |
+| 13. Job Completed | `INVOICE {{contact.first_name}}: check and send the final invoice` | OWNER | 2 business days |
+| 13. Job Completed | `REVIEW {{contact.first_name}}: ask for a Google review?` | OWNER | 7 days |
+| 13. Job Completed | `CHASE {{contact.first_name}}: payment overdue` | OFFICE | Day 14 after it is sent |
+| 13. Job Completed | `SEND {{contact.first_name}}: job report and certificates` | OWNER | Same day as payment |
+| 14. Retention Claim | `CLAIM {{contact.first_name}}: retention of {{opportunity.retention_amount}}` | OFFICE | On the release date |
 
 ### Commercial & Industrial
 
@@ -304,27 +329,31 @@ so a list of twenty tasks is scannable without opening any of them.
 | 1. New Lead | `CALL {{contact.first_name}}: commercial lead, {{contact.company}}` | OFFICE | 15 minutes |
 | 2. Dial 1 | `CALL {{contact.first_name}}: second round of calls` | OFFICE | Later the same day |
 | 3. Dial 2 | `CALL {{contact.first_name}}: one more try` | OFFICE | Day 4 |
-| 4. Inspection Required | `BOOK {{contact.first_name}}: site inspection` | OFFICE | 2 days |
-| 4. Inspection Required | `ATTEND {{opportunity.site_address}}: inspection` | ESTIMATOR | On the date |
+| 4. Quoting | `QUOTE {{contact.first_name}}: scope and send the proposal` | OWNER | 5 business days |
 | 5. Quote Sent | `CALL {{contact.first_name}}: confirm receipt` | ESTIMATOR | 2 days |
 | 5. Quote Sent | `CHASE {{contact.first_name}}: decision date` | OWNER | Day 7, then day 21 |
 | 6. Follow-Up | `CALL {{contact.first_name}}: callback as asked` | OFFICE | At the time they asked |
 | 7. Nurture | `CHECK-IN {{contact.first_name}}: {{opportunity.site_address}}` | OWNER | Quarterly |
 | 8. Quote Accepted | `CHASE {{contact.first_name}}: purchase order` | OFFICE | Weekly, until it lands |
-| 8. Quote Accepted | `NEXT {{contact.first_name}}: inspection or booking` | OFFICE | Same day |
-| 9. Booking Required | `BOOK {{contact.first_name}}: works dates` | OWNER | 2 business days |
-| 10. Job Booked | `INDUCT crew: {{opportunity.site_address}}` | CREW_LEAD | Before start |
-| 10. Job Booked | `SWMS {{opportunity.site_address}}: issue and confirm receipt` | OWNER | Before start |
-| 10. Job Booked | `RESCHEDULE {{contact.first_name}}: cannot make {{opportunity.job_date}}` | OWNER | Same day |
-| 10. Job Booked | `UPDATE {{contact.first_name}}: weekly progress` | OWNER | Every Friday while live |
-| 10. Job Booked | `CLAIM {{opportunity.site_address}}: progress claim` | OFFICE | Per milestone |
-| 11. Deposit Requested | `CHASE {{contact.first_name}}: deposit unpaid` | OFFICE | On the due date, if unpaid |
-| 12. Job Completed | `PHOTOS {{opportunity.site_address}}: this stage` | CREW_LEAD | End of each stage |
-| 12. Job Completed | `VARIATIONS {{opportunity.site_address}}: record and get signed` | CREW_LEAD | As they happen |
-| 12. Job Completed | `CHASE {{contact.first_name}}: claim overdue` | OFFICE | Day 30 |
-| 12. Job Completed | `SEND {{contact.first_name}}: job report and certificates` | OFFICE | Same day as payment |
-| 12. Job Completed | `REFERENCE {{contact.first_name}}: ask, and record the answer` | OWNER | Day 7 |
-| 13. Retention Claim | `CLAIM {{contact.first_name}}: retention of {{opportunity.retention_amount}}` | OFFICE | On the release date |
+| 8. Quote Accepted | `NEXT {{contact.first_name}}: inspection or booking` | OWNER | Same day |
+| 9. Inspection Required | `BOOK {{contact.first_name}}: site inspection` | OWNER | 2 days |
+| 9. Inspection Required | `ATTEND {{opportunity.site_address}}: inspection` | ESTIMATOR | On the date |
+| 10. Booking Required | `BOOK {{contact.first_name}}: works dates` | OWNER | 2 business days |
+| 11. Job Booked | `INDUCT crew: {{opportunity.site_address}}` | CREW_LEAD | Before start |
+| 11. Job Booked | `SWMS {{opportunity.site_address}}: issue and confirm receipt` | OWNER | Before start |
+| 11. Job Booked | `RESCHEDULE {{contact.first_name}}: cannot make {{opportunity.job_date}}` | OWNER | Same day |
+| 11. Job Booked | `UPDATE {{contact.first_name}}: weekly progress` | OWNER | Every Friday while live |
+| 11. Job Booked | `CLAIM {{opportunity.site_address}}: progress claim` | OWNER | Per milestone |
+| 12. Deposit Requested | `INVOICE {{contact.first_name}}: check and send the deposit invoice` | OWNER | 2 business days |
+| 12. Deposit Requested | `CHASE {{contact.first_name}}: deposit unpaid` | OWNER | On the due date, if unpaid |
+| 13. Job Completed | `PHOTOS {{opportunity.site_address}}: this stage` | CREW_LEAD | End of each stage |
+| 13. Job Completed | `VARIATIONS {{opportunity.site_address}}: record and get signed` | CREW_LEAD | As they happen |
+| 13. Job Completed | `INVOICE {{contact.first_name}}: check and send the final invoice` | OWNER | 2 business days |
+| 13. Job Completed | `REVIEW {{contact.first_name}}: ask for a Google review?` | OWNER | 7 days |
+| 13. Job Completed | `CHASE {{contact.first_name}}: claim overdue` | OFFICE | Day 30 |
+| 13. Job Completed | `SEND {{contact.first_name}}: job report and certificates` | OWNER | Same day as payment |
+| 13. Job Completed | `REFERENCE {{contact.first_name}}: ask, and record the answer` | OWNER | Day 7 |
+| 14. Retention Claim | `CLAIM {{contact.first_name}}: retention of {{opportunity.retention_amount}}` | OFFICE | On the release date |
 
 ### Always on
 
@@ -344,7 +373,7 @@ already happened automatically, and what moving the card will trigger next.
 
 **Stage:** New Lead · **Assigned:** OFFICE · **Due:** 15 minutes
 
-Ring the new lead within 15 minutes. The acknowledgement text and email have already gone. Ring twice, back to back. No answer to either: move the card to Dial 1. If they answer and it is a job, send the quote within two business days, or move the card to Inspection Required if it needs a site visit first.
+Ring the new lead within 15 minutes. The acknowledgement text and email have already gone. Ring twice, back to back. No answer to either: move the card to Dial 1. If they answer and want a quote, move the card to Quoting, which hands it to the owner to write the quote. Ring back later: Follow-Up. Not now: Nurture.
 
 ### `CALL {{contact.first_name}}: second round of calls`
 
@@ -358,17 +387,11 @@ Second round of calls, at a different time of day from the first. Ring twice bac
 
 One more call on the day the booking email goes. They have had a text and two emails, so keep it short: you are ringing about their enquiry and can talk whenever suits. Log it on the card either way.
 
-### `BOOK {{contact.first_name}}: site inspection`
+### `QUOTE {{contact.first_name}}: write and send the quote`
 
-**Stage:** Inspection Required · **Assigned:** OFFICE · **Due:** 2 days
+**Stage:** Quoting · **Assigned:** OWNER · **Due:** 2 business days
 
-Book the site inspection in the inspection calendar from the card, at a time that suits the customer. Confirm the address and access to the areas being sprayed. The confirmation and the morning text go by themselves.
-
-### `ATTEND {{contact.first_name}}: inspection, {{opportunity.site_address}}`
-
-**Stage:** Inspection Required · **Assigned:** ESTIMATOR · **Due:** On the date
-
-Attend the inspection. Before you leave, record on the card: the area in square metres, the foam type, access notes, and anything that will slow the crew down. Photos of problem areas help the quote.
+The office has spoken to them and they want a quote. Ring them first if you need more detail, plans or an energy report. Write the quote in the quote tool, with each option as its own line if there is more than one, and send it. Sending it moves the card to Quote Sent and starts the follow-up.
 
 ### `CALL {{contact.first_name}}: quote follow up`
 
@@ -386,31 +409,43 @@ Twenty-one days with no decision. Move the card: Quote Accepted if they said yes
 
 **Stage:** Follow-Up · **Assigned:** OFFICE · **Due:** At the time they asked
 
-The customer asked to be rung at this time. Ring them, then move the card on: Quote Sent once a quote goes, Inspection Required if a visit is needed, Quote Accepted if they say yes, Nurture if it is not now, or Lost with a reason.
+The customer asked to be rung at this time. Ring them, then move the card on: Quoting if they now want a quote, Quote Accepted if they say yes to a quote already sent, Nurture if it is not now, or Lost with a reason. Want more time on a quote? Set a new callback time.
 
 ### `CHECK-IN {{contact.first_name}}: a year since the quote`
 
 **Stage:** Nurture · **Assigned:** OFFICE · **Due:** 12 months
 
-A year since this job went to Nurture. Ring and ask whether it is back on. Quotes often come back after one or two years. If it is, refresh the quote against current prices and send it, which moves the card to Quote Sent.
+A year since this job went to Nurture. Ring and ask whether it is back on. Quotes often come back after one or two years. If it is, move the card to Quoting so the quote is refreshed against current prices.
 
 ### `REVIEW {{contact.first_name}}: still a fit?`
 
 **Stage:** Nurture · **Assigned:** OWNER · **Due:** Quarterly
 
-Quarterly review of the nurture list. Remove anyone who is not a real job, and move anyone who has come back to Quote Sent or New Lead. A clean list keeps the emails landing in inboxes rather than in spam.
+Quarterly review of the nurture list. Remove anyone who is not a real job, and move anyone who has come back to Quoting. A clean list keeps the emails landing in inboxes rather than in spam.
 
 ### `NEXT {{contact.first_name}}: inspection or booking`
 
-**Stage:** Quote Accepted · **Assigned:** OFFICE · **Due:** Same day
+**Stage:** Quote Accepted · **Assigned:** OWNER · **Due:** Same day
 
 The customer has accepted. Check the option they chose is on the card, then decide the next step: move the card to Inspection Required if something needs checking on site first, otherwise to Booking Required so the install date can be booked.
+
+### `BOOK {{contact.first_name}}: site inspection`
+
+**Stage:** Inspection Required · **Assigned:** OWNER · **Due:** 2 days
+
+Book the site inspection in the inspection calendar from the card, at a time that suits the customer. Confirm the address and access to the areas being sprayed. The confirmation and the morning text go by themselves.
+
+### `ATTEND {{contact.first_name}}: inspection, {{opportunity.site_address}}`
+
+**Stage:** Inspection Required · **Assigned:** ESTIMATOR · **Due:** On the date
+
+Attend the inspection. Before you leave, record on the card: the area in square metres, the foam type, access notes, and anything that will slow the crew down. Then move the card to Booking Required, or close it as Lost if the job cannot be done.
 
 ### `BOOK {{contact.first_name}}: install date`
 
 **Stage:** Booking Required · **Assigned:** OWNER · **Due:** 2 business days
 
-Book the install date in the install calendar from the card, and put the crew on it. Book it here first, not in a phone calendar, because the booking is what sends the confirmation and sets up the reminders and the deposit timing.
+Book the install in the calendar for the vehicle doing the job: the InjectaCore rig, the van, the Fuso truck or the Mercedes rig. A job over several days or using two rigs gets a booking for each block. Book it here first, not in the Apple calendar, because the booking is what sends the confirmation and sets up the reminders and the deposit.
 
 ### `RESCHEDULE {{contact.first_name}}: cannot make {{opportunity.job_date}}`
 
@@ -422,13 +457,19 @@ The customer tapped No on a reminder. Ring them today, agree a new date, then mo
 
 **Stage:** Job Booked · **Assigned:** OFFICE · **Due:** Day before the job, if neither reminder was answered
 
-Neither reminder got a Yes or a No. Ring to confirm the job is still on, that access is clear, and that someone over eighteen will be there to let the crew in.
+Neither the 7 day nor the 48 hour reminder got a Yes or a No. Ring to confirm the job is still on, that access is clear, and that someone over eighteen will be there to let the crew in.
+
+### `INVOICE {{contact.first_name}}: check and send the deposit invoice`
+
+**Stage:** Deposit Requested · **Assigned:** OWNER · **Due:** 2 business days
+
+A draft deposit invoice is ready, made from the accepted quote with the quote and any purchase order attached. Check the amount, the due date and the payment terms, then send it. Sending it emails the customer and moves the card to Deposit Requested. Nothing is sent until you do.
 
 ### `CHASE {{contact.first_name}}: deposit unpaid`
 
-**Stage:** Deposit Requested · **Assigned:** OFFICE · **Due:** On the due date, if unpaid
+**Stage:** Deposit Requested · **Assigned:** OWNER · **Due:** On the due date, if unpaid
 
-The deposit was due today and has not landed. Ring the customer today: most late deposits are a missed email, not a change of mind. If it will not be paid in time, tell the owner so the crew can be reassigned.
+The deposit was due today and has not landed. The customer has had a text asking for the remittance. Check for a reply; if it will not arrive in time, move the crew to other work and tell the customer.
 
 ### `PHOTOS {{opportunity.site_address}}`
 
@@ -442,15 +483,27 @@ Photograph the finished work from the app before leaving site, and tick Photos c
 
 Anything agreed on site that was not in the quote, such as an extra 100 sqm, goes out from the variation document for the customer to sign, and onto the card the same day. Left to invoicing, it surprises the customer.
 
+### `INVOICE {{contact.first_name}}: check and send the final invoice`
+
+**Stage:** Job Completed · **Assigned:** OWNER · **Due:** 2 business days
+
+The job is marked complete and a draft final invoice is ready: the balance after any deposit, with the payment schedule and the accepted quote and any purchase order attached. Adjust it for the area actually sprayed, with a variation invoice or a credit, then send it. Sending it starts the payment reminders.
+
+### `REVIEW {{contact.first_name}}: ask for a Google review?`
+
+**Stage:** Job Completed · **Assigned:** OWNER · **Due:** 7 days
+
+The job is marked complete. Leave Ask for Google review on Yes, or set it to No on the contact for a job that had problems or a repeat commercial client such as Bondor or Australian Housing. Yes sends one text four weeks after the job. No sends no review request and no referral email.
+
 ### `CHASE {{contact.first_name}}: payment overdue`
 
-**Stage:** Job Completed · **Assigned:** OFFICE · **Due:** Day 14
+**Stage:** Job Completed · **Assigned:** OFFICE · **Due:** Day 14 after it is sent
 
-Fourteen days unpaid. Ring rather than email: most late invoices are a question, not a refusal. Mark it paid the moment the money lands, which stops the reminders dead.
+Fourteen days since the final invoice was sent, and it is unpaid. Ring rather than email: most late invoices are a question, not a refusal. Mark it paid the moment the money lands, which stops the reminders dead.
 
 ### `SEND {{contact.first_name}}: job report and certificates`
 
-**Stage:** Job Completed · **Assigned:** OFFICE · **Due:** Same day as payment
+**Stage:** Job Completed · **Assigned:** OWNER · **Due:** Same day as payment
 
 The final invoice is paid. Send the job report from the saved template today, with the photos and the certificate of completion attached, then stamp Job report sent on the card. It never goes before the invoice is fully paid.
 
@@ -464,13 +517,13 @@ The retention release date has arrived. Send the retention claim from the saved 
 
 **Stage:** New Lead · **Assigned:** OFFICE · **Due:** 15 minutes
 
-Ring the commercial lead within 15 minutes, twice back to back if needed. Aim to come off the call knowing who decides, roughly how big it is, what the space is used for, whether it is operating during the works, and when they need it done. Put the company, site address and a site contact on the card.
+Ring the commercial lead within 15 minutes, twice back to back if needed. Put the company, site address and a site contact on the card. They want a quote: move the card to Quoting, which hands it to the owner. No answer to either call: Dial 1.
 
-### `ATTEND {{opportunity.site_address}}: inspection`
+### `QUOTE {{contact.first_name}}: scope and send the proposal`
 
-**Stage:** Inspection Required · **Assigned:** ESTIMATOR · **Due:** On the date
+**Stage:** Quoting · **Assigned:** OWNER · **Due:** 5 business days
 
-Attend the visit with insurances and SWMS. Before you leave, record on the card: the area in square metres, the foam type, access notes, induction needs, and anything that will slow the crew down. Photos of problem areas help the proposal.
+Ring them for the detail: who decides, roughly how big, what the space is used for, whether it is operating during the works, and the programme. Work out product, thickness, access, plant, staging and WHS, then send the proposal from the quote tool, which moves the card to Quote Sent.
 
 ### `CALL {{contact.first_name}}: confirm receipt`
 
@@ -496,11 +549,17 @@ Quarterly check-in on a future-budget project. Offer to refresh the proposal aga
 
 A verbal yes with no purchase order yet. Chase it weekly. The job stays Open until the paperwork arrives, so this is the task that turns a promise into committed work.
 
+### `ATTEND {{opportunity.site_address}}: inspection`
+
+**Stage:** Inspection Required · **Assigned:** ESTIMATOR · **Due:** On the date
+
+Attend the visit with insurances and SWMS. Before you leave, record on the card: the area in square metres, the foam type, access notes, induction needs, and anything that will slow the crew down. Then move the card to Booking Required, or close it as Lost.
+
 ### `BOOK {{contact.first_name}}: works dates`
 
 **Stage:** Booking Required · **Assigned:** OWNER · **Due:** 2 business days
 
-Agree the start and finish dates with the client, then book them in the install calendar from the card with the crew. Book it there first, because the booking sends the mobilisation email and sets up the reminders.
+Agree the start and finish dates with the client, then book each block in the calendar for the vehicle doing it, with the crew. Book it in the platform first, because the booking sends the mobilisation email and sets up the reminders. It then shows in the Apple calendar too.
 
 ### `INDUCT crew: {{opportunity.site_address}}`
 
@@ -522,7 +581,7 @@ Friday progress email from the saved template. Fill in three lines: what was com
 
 ### `CLAIM {{opportunity.site_address}}: progress claim`
 
-**Stage:** Job Booked · **Assigned:** OFFICE · **Due:** Per milestone
+**Stage:** Job Booked · **Assigned:** OWNER · **Due:** Per milestone
 
 Issue the progress claim for the completed stage, put its invoice number on the card, and attach the photos, any signed variations, the accepted quote and the purchase order.
 
@@ -627,10 +686,12 @@ TODAY
 
 NEEDS YOU
   Leads not called       {{list}}
+  Quotes to write        {{list, waiting in Quoting}}
   Callbacks due          {{list}}
   Installs to book       {{list, over 2 days in Booking Required}}
   Dates not confirmed    {{list, no Yes or No on either reminder}}
   Deposits unpaid        {{list with amount and due date}}
+  Invoices to send       {{list, drafts not yet sent}}
   Invoices overdue       {{list with amount and days}}
   Job reports to send    {{list, paid but report not sent}}
   Retentions due         {{list with release date}}
@@ -645,6 +706,7 @@ be the thing their eye lands on when they stop scrolling.
 LAST WEEK, BOTH BOARDS
   Enquiries              {{count}}, by source
   Median time to first call
+  Days in Quoting        {{average}}
   Closed as Unreachable  {{count}}
   Quotes sent            {{count}}, {{value}}
   Quotes accepted        {{count}}, {{value}}
@@ -704,7 +766,7 @@ goodwill than it earns.
 | Layer | What changes |
 | --- | --- |
 | **Roles** (§2) | Reassign OWNER, OFFICE, ESTIMATOR, CREW_LEAD |
-| **Alerts** (§3) | Nothing. All 13 are trade-agnostic. |
+| **Alerts** (§3) | Nothing. All 14 are trade-agnostic. |
 | **Tasks** (§4) | Verbs may change (`SPRAY` to `INSTALL`). Structure holds. |
 | **Escalation** (§5) | The 15 minute threshold is worth tuning to their volume |
 | **Digests** (§6) | Nothing, if the pipeline shape is reused |
@@ -722,26 +784,34 @@ by week three.
 - [ ] Every workflow has an error branch that alerts, so failures are not silent
 - [ ] New Lead is assigned to the office on both boards, and no path leaves a lead unassigned
 - [ ] The 15 minute timer emails the office, and the 1 hour step reaches the owner by text and email: a second person, not the same one
+- [ ] Alert channels follow the role: nothing to the office goes by SMS, everything to the owner goes by SMS and email, and one event never sends the owner two texts
+- [ ] Moving a card to Quoting assigns it to the owner and fires alert 14 by text and email. The automatic new-lead assignment to the office does not fire alert 14
 - [ ] Quiet hours applied to outbound customer messaging, not just internal alerts
 - [ ] Every sequence has a stop condition on reply
 - [ ] Entering Quote Accepted kills every sales sequence on the card, tested mid-follow-up
 - [ ] An add-on quote accepted on a job under way updates the value and creates the office task, and does not resend the thank-you or move the card
 - [ ] The accept and decline buttons tested on a quote with two options: the card moves, and the option chosen is recorded
-- [ ] The Yes and No links on both reminders tested by email and by text. No fires alert 12 and sends REM-05, and nothing reschedules itself
+- [ ] Inspection Required is reached only from Quote Accepted. A cancelled inspection alerts the owner and tasks the owner to rebook; nothing rebooks itself
+- [ ] The Yes and No links on every reminder tested by email and by text, including the month-out email. No fires alert 12 and sends REM-05, and nothing reschedules itself
+- [ ] The month-out email goes only for a job booked more than 6 weeks ahead
+- [ ] Deposit and final invoices are created as drafts with a task to the owner, and nothing reaches a customer until the owner sends it. Reminders start only on send
 - [ ] Deposit timing tested three ways: stock open cell, special order, and a job booked less than 14 days out
+- [ ] A deposit unpaid at 4pm on its due date sends DEP-03 to the customer and alert 13 together. Nothing is sent before the due date
+- [ ] Decided which system sends invoice reminders, the platform or Xero, and the other switched off, so a customer never gets both
 - [ ] Deposit and final invoices carry the accepted quote, and the purchase order where there is one. Payment schedules tested with a percentage stage and a fixed stage
 - [ ] A GST invoice tested syncing to Xero before the Xero sync is promised. Only GST-free invoices have been seen reaching Xero so far
 - [ ] Payment receipt sync agreed with the bookkeeper. If marking an invoice paid before the transfer clears breaks reconciliation, switch it off
 - [ ] Contract and variation templates fill in the client details and go for digital signature, tested with an extra 100 sqm variation
-- [ ] The job report task fires only when the final invoice is fully paid
-- [ ] ask_for_google_review is Yes by default, and a contact set to No gets no review request
+- [ ] The job report task goes to the owner, and only when the final invoice is fully paid
+- [ ] The review task reaches the owner at Job Completed. ask_for_google_review is Yes by default, and a contact set to No gets neither the review text nor the referral email
+- [ ] Four install calendars built, one per vehicle: the InjectaCore rig, the van, the Fuso truck and the Mercedes rig. A test job booked over two days on two rigs shows correct job_date, job_end_date and vehicles_booked
+- [ ] Two-way sync with the owner's Apple (iCloud) calendar done under the separate calendars task. A booking moved in either place moves in the other, and the reminders follow it
 - [ ] The Whole pipeline view built and checked: every open card on both boards, in stage order
 - [ ] Nothing live was lost when stages were deleted during the 2 October call: every workflow trigger, filter and move step points at a stage that exists, and no open card was left without a stage
 - [ ] Old stages removed only after their cards were moved to the new ones
-- [ ] Rachael's mobile confirmed as 0428 26 36 26 before any message goes
+- [ ] Rachael's mobile, 0428 26 36 26, checked in a test text and a test email
 - [ ] Human labels stored in the dropdown fields, so echoed emails do not read "new-build"
 - [ ] SPF and DKIM on the sending domain, and a test email checked in Gmail and Outlook
 - [ ] Every merge field and trigger link confirmed against the platform version, with a test sent to yourself
-- [ ] Apple and Outlook calendar sync done under the separate calendars task, and a test install booking seen on both
 - [ ] Alert volume measured after week one. More than about fifteen a day to one person means something is wrong
 - [ ] A test lead pushed end to end through both boards, watching what arrives and when
