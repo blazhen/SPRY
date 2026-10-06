@@ -593,131 +593,117 @@
 
 <header class="masthead">
   <div class="masthead-inner">
-    <p class="kicker">Spray It Solutions &middot; Systemations</p>
-    <h1>Two pipelines, and what every stage is for</h1>
+    <p class="kicker">SprayIT Solutions &middot; Systemations &middot; Doc 1 of 3</p>
+    <h1>Two boards, the same 13 stages, and what every stage is for</h1>
     <p class="standfirst">
-      One board for residential, one for commercial. Each runs a job from first
-      enquiry to final payment. Written against what the website already captures,
-      so nothing here needs a field that does not exist yet. The Messaging Kit, the
-      Alerts and Tasks page and the customer journey page are its companions.
+      One board for residential, one for commercial, each running a job from first
+      enquiry to final payment on the same card. Revised after the client call on
+      Friday 2 October 2026: Contacting became Dial 1 and Dial 2, stages that did not
+      fit were removed, and both boards now share one shape, so the whole business
+      reads in a single view.
     </p>
     <div class="meta">
-      <div><b>Prepared for</b><span>Glenn, Spray It Solutions</span></div>
+      <div><b>Prepared for</b><span>Glenn and Rachael, SprayIT Solutions</span></div>
       <div><b>System</b><span>Systemations</span></div>
-      <div><b>Status</b><span>Draft for review</span></div>
-      <div><b>Source of truth</b><span class="mono">CRM-PIPELINES.md</span></div>
+      <div><b>Status</b><span>Revised, for review</span></div>
+      <div><b>Source of truth</b><span class="mono">journey-data.js</span></div>
     </div>
   </div>
 </header>
 
 <div class="wrap">
 
-  <!-- ===================================================================== -->
   <section id="shape">
-    <div class="sec-head"><span class="sec-n">01</span><h2>Two pipelines, split by sector</h2></div>
-
+    <div class="sec-head"><span class="sec-n">01</span><h2>Two boards, one shape</h2></div>
     <div class="stack">
       <div class="t-scroll">
         <table>
-          <thead>
-            <tr><th>Pipeline</th><th>Covers</th><th>Stages</th></tr>
-          </thead>
+          <thead><tr><th>Board</th><th>Covers</th><th>Stages</th></tr></thead>
           <tbody>
-            <tr><td>Residential</td><td>Homes, new builds, sheds, garages</td><td class="num">12</td></tr>
-            <tr><td>Commercial &amp; Industrial</td><td>Factories, warehouses, cold storage, farms, large spans</td><td class="num">13</td></tr>
+            <tr><td>Residential</td><td>Homes, new builds, sheds and garages. A phone call, a written quote, an install date, and a job that is usually done in a day.</td><td class="num">13</td></tr>
+            <tr><td>Commercial &amp; Industrial</td><td>Factories, warehouses, cold storage, agricultural facilities, data centres and mine sites. The same thirteen stages as residential, with company records, purchase orders, SWMS, inductions, site contacts and longer lead times.</td><td class="num">13</td></tr>
           </tbody>
         </table>
       </div>
-
       <div class="why">
-        <h4>Why the split is by sector, not by sales against delivery</h4>
+        <h4>Why two boards with the same stages</h4>
         <p>
-          Residential and commercial are genuinely different sales. A roof retrofit
-          closes off one phone call and one site visit. A 26,000&nbsp;sqm industrial job
-          runs through specification, tender, procurement and a purchase order, and takes
-          months. Forced onto one board the stages stop meaning anything, because half the
-          cards skip half the stages and every conversion figure becomes an average of two
-          unrelated processes. That is the split worth having, so it is the one we spend on.
+          The stages are the same, so somebody new learns one board and can read the other,
+          and the whole business can be read in one view. The detail is not the same: a
+          commercial job carries a company, a purchase order, SWMS, inductions, a site
+          contact, progress claims and often a retention, and it runs for months. Keeping
+          the boards apart keeps those cards from cluttering the residential work.
         </p>
       </div>
     </div>
   </section>
 
-  <!-- ===================================================================== -->
-  <section id="wonline">
-    <div class="sec-head"><span class="sec-n">02</span><h2>The Won line</h2></div>
-
+  <section id="stages">
+    <div class="sec-head"><span class="sec-n">02</span><h2>The 13 stages</h2></div>
     <div class="stack">
-      <p>
-        Because delivery lives on the same board as the sale, one rule holds the whole
-        design together.
-      </p>
-
-      <div class="keystone">
-        <p class="big">Mark the opportunity Won when the customer accepts, not when the job is finished or paid.</p>
-        <p class="sub">
-          Systemations tracks <b>status</b> (Open, Won, Lost, Abandoned) separately from
-          <b>stage</b>. A card can be status <code>Won</code> and still sit in the
-          "In Progress" stage. That is what keeps two different questions separable on a
-          single board.
-        </p>
-      </div>
-
       <div class="t-scroll">
         <table>
-          <thead><tr><th>Question</th><th>Where the answer lives</th></tr></thead>
+          <thead><tr><th>#</th><th>Stage</th><th>Status</th><th>Residential: it means</th><th>Commercial: it means</th></tr></thead>
           <tbody>
-            <tr><td>What might we win?</td><td>Open opportunities, stages 1 to 8</td></tr>
-            <tr><td>What have we committed to deliver?</td><td>Won opportunities, stages 9 onward</td></tr>
-            <tr><td>What is the forecast worth?</td><td><span class="urgent">Open only.</span> Never the whole board.</td></tr>
+            <tr><td class="num">1</td><td><b>New Lead</b></td><td>Open, still winning the job</td><td>A lead has landed. Nobody has rung them yet.</td><td>A lead has landed on the commercial board. Nobody has rung them yet.</td></tr>
+            <tr><td class="num">2</td><td><b>Dial 1</b></td><td>Open, still winning the job</td><td>Rung twice back to back with no answer. A text has gone.</td><td>Rung twice back to back with no answer. A text has gone.</td></tr>
+            <tr><td class="num">3</td><td><b>Dial 2</b></td><td>Open, still winning the job</td><td>Two rounds of calls with no answer. The emails are running.</td><td>Two rounds of calls with no answer. The emails are running.</td></tr>
+            <tr><td class="num">4</td><td><b>Inspection Required</b></td><td>Open or Won: before the quote, or after the yes</td><td>The job needs a site visit before it can be quoted or booked.</td><td>The works need a site visit before they can be priced or booked.</td></tr>
+            <tr><td class="num">5</td><td><b>Quote Sent</b></td><td>Open, still winning the job</td><td>A written quote is with them, with accept and decline buttons.</td><td>A priced proposal is with them, with an online accept button.</td></tr>
+            <tr><td class="num">6</td><td><b>Follow-Up</b></td><td>Open, still winning the job</td><td>A conversation is live and the customer has asked for a call at a later time.</td><td>A conversation is live and the client has asked for a call at a later time.</td></tr>
+            <tr><td class="num">7</td><td><b>Nurture</b></td><td>Open, still winning the job</td><td>A real job that is not happening now: not now, or not affordable yet.</td><td>A real project in a future budget cycle.</td></tr>
+            <tr><td class="num">8</td><td><b>Quote Accepted</b></td><td>Set to Won here</td><td>They have accepted a quote, online, by phone or with a purchase order.</td><td>The client has accepted, online, in writing or verbally.</td></tr>
+            <tr><td class="num">9</td><td><b>Booking Required</b></td><td>Won, job underway</td><td>Accepted, and ready for an install date in the calendar.</td><td>Accepted. The works dates need booking in the calendar.</td></tr>
+            <tr><td class="num">10</td><td><b>Job Booked</b></td><td>Won, job underway</td><td>An install date is booked in the calendar.</td><td>The works dates are booked.</td></tr>
+            <tr><td class="num">11</td><td><b>Deposit Requested</b></td><td>Won, job underway</td><td>The deposit invoice is out. The job is booked and waiting for its date.</td><td>The deposit invoice is out. The works are booked and waiting for their start.</td></tr>
+            <tr><td class="num">12</td><td><b>Job Completed</b></td><td>Won, job underway</td><td>The crew has marked the job complete. The final invoice is out.</td><td>The works are complete. The final claim is out.</td></tr>
+            <tr><td class="num">13</td><td><b>Retention Claim</b></td><td>Won, job underway</td><td>Part of the payment is being held back until a defects period ends.</td><td>A retention is being held, usually for six to twelve months after completion.</td></tr>
           </tbody>
         </table>
       </div>
-
-      <p class="fine">
-        Residential marks Won on quote acceptance. Commercial marks Won on the purchase
-        order, never on a verbal.
-      </p>
-
-      <h3>What the merge costs</h3>
+      <p class="fine">A dial is a call attempt, not a conversation, which is why Contacting became Dial 1 and Dial 2. The names are written so somebody new can read the board without training.</p>
+      <h3>How a card moves</h3>
       <ul class="plain">
-        <li><b>Every value report has to filter on status.</b> An unfiltered "pipeline value" now adds work already sold to work still being chased, and reads roughly double what is actually in play. Save the filtered views as the defaults so nobody has to remember.</li>
-        <li><b>The boards are long.</b> Twelve and thirteen columns is a lot of horizontal scrolling, particularly on a phone. Saved views per stage group are the fix.</li>
-        <li><b>Stage conversion rates get muddier.</b> "Quote Sent to Scheduled" is a real conversion; "Scheduled to In Progress" is just work happening. Only measure conversion across the sales stages.</li>
-      </ul>
-
-      <h3>What it buys</h3>
-      <ul class="plain">
-        <li>Two boards instead of three, which a family business will actually keep updated.</li>
-        <li>One card per job, so no handover step, no duplicate record, and the full history from first click to final invoice in one place.</li>
-        <li>Attribution survives to the end. You can ask what a Google Ads click was eventually worth in <em>paid revenue</em>, not just in quotes sent.</li>
+        <li><b>New Lead.</b> The lead lands and the acknowledgement text and email go. Ring within 15 minutes, twice back to back. If they answer and it is a job, the quote is sent, which moves the card to Quote Sent. If it needs a site visit first, Inspection Required. A request to ring back later goes to Follow-Up; not now goes to Nurture. No answer to either call: Dial 1.</li>
+        <li><b>Dial 1.</b> Entering it sends the tried-to-call text about ten seconds later. A second round of calls the same day. Still nothing: Dial 2.</li>
+        <li><b>Dial 2.</b> Entering it starts three emails: a check-in on day 2, an offer of a time to talk on day 4, and an honest close on day 7. Any reply or booking stops them. Nothing by day 8: Lost, reason Unreachable.</li>
+        <li><b>Inspection Required.</b> About one job in ten or twenty. Either before the quote, or after acceptance and before Booking Required. Staff attend, so there is no no-show handling.</li>
+        <li><b>Quote Sent.</b> The quote carries accept and decline buttons, and can carry more than one option. Follow-ups on days 2, 5, 10 and 21. Accept moves the card to Quote Accepted by itself; decline closes it as Lost. A yes by phone or a purchase order is moved by hand.</li>
+        <li><b>Follow-Up.</b> The customer asked for a callback. A task at the time they asked; every sequence paused.</li>
+        <li><b>Nurture.</b> Not now, or not affordable yet. Quotes come back after one or two years, so the card is kept: a marketing drip for those who opted in, and a call for everyone at twelve months.</li>
+        <li><b>Quote Accepted.</b> The job is won. Thank-you and what happens next, with no deposit request. Then Inspection Required if something needs checking, otherwise Booking Required. An add-on quote on a live job never brings a card back here.</li>
+        <li><b>Booking Required.</b> The owner books the install date in the platform's install calendar.</li>
+        <li><b>Job Booked.</b> The booking moves the card here. Confirmation, preparation notes, and reminders 7 days and 48 hours before by email and text, each with Yes and No. A No alerts the team; rescheduling is done by a person.</li>
+        <li><b>Deposit Requested.</b> Entered when the deposit invoice goes, 14 days before the job, timed by foam type. Jobs with no deposit skip it.</li>
+        <li><b>Job Completed.</b> The crew marks the job complete, which sends the final invoice. The job report and certificates go only once it is paid. Paid with no retention: the card closes as Won.</li>
+        <li><b>Retention Claim.</b> Run by hand, with a task on the release date.</li>
       </ul>
     </div>
   </section>
 
-  <!-- ===================================================================== -->
   <section id="residential">
     <div class="sec-head"><span class="sec-n">03</span><h2>Residential</h2></div>
 
     <div class="board">
       <div class="board-top">
         <span class="board-name">Residential</span>
-        <span class="board-note">Homes, new builds, sheds and garages &middot; 12 stages</span>
+        <span class="board-note">Homes, new builds, sheds and garages &middot; 13 stages</span>
       </div>
       <ol class="flow rail-res">
-        <li class="stage"><span class="stage-n"><span class="ai-dot"></span>01</span><span class="stage-name">New Enquiry</span><span class="rot rot-urgent">1 business hour</span></li>
-        <li class="stage"><span class="stage-n"><span class="ai-dot"></span>02</span><span class="stage-name">Contacting</span><span class="rot">2 days</span></li>
-        <li class="stage"><span class="stage-n"><span class="ai-dot"></span>03</span><span class="stage-name">Qualified</span><span class="rot">3 days</span></li>
-        <li class="stage"><span class="stage-n"><span class="ai-dot"></span>04</span><span class="stage-name">Assessment Booked</span><span class="rot">on the date</span></li>
-        <li class="stage"><span class="stage-n">05</span><span class="stage-name">Quoting</span><span class="rot rot-urgent">2 days</span></li>
-        <li class="stage"><span class="stage-n">06</span><span class="stage-name">Quote Sent</span><span class="rot">3 days</span></li>
-        <li class="stage"><span class="stage-n">07</span><span class="stage-name">Follow&#8209;up</span><span class="rot">30 days</span></li>
-        <li class="stage"><span class="stage-n"><span class="ai-dot"></span>08</span><span class="stage-name">Nurture</span><span class="rot">quarterly</span></li>
+        <li class="stage"><span class="stage-n"><span class="ai-dot"></span>01</span><span class="stage-name">New Lead</span><span class="rot rot-urgent">15 minutes to the first call</span></li>
+        <li class="stage"><span class="stage-n">02</span><span class="stage-name">Dial 1</span><span class="rot">end of the same day</span></li>
+        <li class="stage"><span class="stage-n">03</span><span class="stage-name">Dial 2</span><span class="rot">7 days</span></li>
+        <li class="stage"><span class="stage-n">04</span><span class="stage-name">Inspection Required</span><span class="rot">5 days to book the visit</span></li>
+        <li class="stage"><span class="stage-n">05</span><span class="stage-name">Quote Sent</span><span class="rot">21 days</span></li>
+        <li class="stage"><span class="stage-n"><span class="ai-dot"></span>06</span><span class="stage-name">Follow-Up</span><span class="rot">a day past the callback time</span></li>
+        <li class="stage"><span class="stage-n"><span class="ai-dot"></span>07</span><span class="stage-name">Nurture</span><span class="rot">review quarterly</span></li>
         <li class="wonline" aria-hidden="true"><b>Won<br>line</b></li>
-        <li class="stage sold"><span class="stage-n">09</span><span class="stage-name">Scheduled</span><span class="rot">on the date</span></li>
-        <li class="stage sold"><span class="stage-n">10</span><span class="stage-name">In Progress</span><span class="rot">3 days over</span></li>
-        <li class="stage sold"><span class="stage-n">11</span><span class="stage-name">Invoiced</span><span class="rot">14 days</span></li>
-        <li class="stage sold"><span class="stage-n">12</span><span class="stage-name">Paid &amp; Closed</span><span class="rot">triggers follow-up</span></li>
+        <li class="stage"><span class="stage-n">08</span><span class="stage-name">Quote Accepted</span><span class="rot">1 day</span></li>
+        <li class="stage sold"><span class="stage-n">09</span><span class="stage-name">Booking Required</span><span class="rot">2 business days</span></li>
+        <li class="stage sold"><span class="stage-n">10</span><span class="stage-name">Job Booked</span><span class="rot">the job date</span></li>
+        <li class="stage sold"><span class="stage-n">11</span><span class="stage-name">Deposit Requested</span><span class="rot">the deposit due date</span></li>
+        <li class="stage sold"><span class="stage-n">12</span><span class="stage-name">Job Completed</span><span class="rot">14 days</span></li>
+        <li class="stage sold"><span class="stage-n">13</span><span class="stage-name">Retention Claim</span><span class="rot">the release date</span></li>
       </ol>
       <div class="legend">
         <span><span class="ai-dot"></span> AI may move a card here</span>
@@ -728,134 +714,106 @@
 
     <div class="t-scroll" style="margin-top:1rem">
       <table>
-        <thead>
-          <tr><th>Stage</th><th>It means</th><th>Exits when</th><th>Stalls after</th></tr>
-        </thead>
+        <thead><tr><th>Stage</th><th>It means</th><th>Exits when</th><th>Stalls after</th></tr></thead>
         <tbody>
-          <tr><td>1. New Enquiry</td><td>Lead has landed. Nobody has touched it.</td><td>First contact attempt is logged</td><td class="urgent">1 business hour</td></tr>
-          <tr><td>2. Contacting</td><td>At least one attempt made, no two-way conversation yet</td><td>They reply, or attempts are exhausted</td><td class="num">2 days</td></tr>
-          <tr><td>3. Qualified</td><td>We have spoken to them and it is a job we want</td><td>Site assessment is booked</td><td class="num">3 days</td></tr>
-          <tr><td>4. Assessment Booked</td><td>Date and time in the diary</td><td>The assessment happens</td><td class="num">on the date</td></tr>
-          <tr><td>5. Quoting</td><td>Measured up, preparing the number</td><td>Quote is sent</td><td class="urgent">2 days</td></tr>
-          <tr><td>6. Quote Sent</td><td>Written quote delivered, value on the card</td><td>Accepted, declined, or gone quiet</td><td class="num">3 days</td></tr>
-          <tr><td>7. Follow-up</td><td>Chasing a decision</td><td>Won, Lost, or moved to Nurture</td><td class="num">30 days</td></tr>
-          <tr><td>8. Nurture</td><td>Real job, wrong time</td><td>They re-engage, back to Qualified</td><td class="num">review quarterly</td></tr>
-          <tr class="divider"><td colspan="4">Won is marked here, on quote acceptance</td></tr>
-          <tr><td>9. Scheduled</td><td>Accepted, deposit received, date and crew locked</td><td>Crew starts</td><td class="num">on the date</td></tr>
-          <tr><td>10. In Progress</td><td>On site</td><td>Work finished</td><td class="num">3 days over</td></tr>
-          <tr><td>11. Invoiced</td><td>Work complete, photos captured, invoice out</td><td>Payment received</td><td class="num">14 days</td></tr>
-          <tr><td>12. Paid &amp; Closed</td><td>Done</td><td>Closes the card</td><td class="num">&mdash;</td></tr>
+          <tr><td>1. New Lead</td><td>A lead has landed. Nobody has rung them yet.</td><td>They are rung, and either answer or do not</td><td class="urgent">15 minutes to the first call</td></tr>
+          <tr><td>2. Dial 1</td><td>Rung twice back to back with no answer. A text has gone.</td><td>They answer or reply, or the second round of calls gets nothing</td><td class="num">End of the same day</td></tr>
+          <tr><td>3. Dial 2</td><td>Two rounds of calls with no answer. The emails are running.</td><td>They reply or book a call, or day 7 passes with nothing</td><td class="num">7 days</td></tr>
+          <tr><td>4. Inspection Required</td><td>The job needs a site visit before it can be quoted or booked.</td><td>The visit is done, then the quote is sent or the install is ready to book</td><td class="num">5 days to book the visit</td></tr>
+          <tr><td>5. Quote Sent</td><td>A written quote is with them, with accept and decline buttons.</td><td>They accept, decline, ask to be rung later, or go quiet past day 21</td><td class="num">21 days</td></tr>
+          <tr><td>6. Follow-Up</td><td>A conversation is live and the customer has asked for a call at a later time.</td><td>The callback happens and the card moves on</td><td class="num">A day past the callback time</td></tr>
+          <tr><td>7. Nurture</td><td>A real job that is not happening now: not now, or not affordable yet.</td><td>They come back: to Quote Sent for a fresh quote, or New Lead</td><td class="num">Review quarterly</td></tr>
+          <tr class="divider"><td colspan="4">Won is set here, on acceptance</td></tr>
+          <tr><td>8. Quote Accepted</td><td>They have accepted a quote, online, by phone or with a purchase order.</td><td>An inspection is needed, or the install date is ready to book</td><td class="num">1 day</td></tr>
+          <tr><td>9. Booking Required</td><td>Accepted, and ready for an install date in the calendar.</td><td>The install is booked in the calendar</td><td class="num">2 business days</td></tr>
+          <tr><td>10. Job Booked</td><td>An install date is booked in the calendar.</td><td>The deposit invoice is sent, or the crew marks the job complete</td><td class="num">The job date</td></tr>
+          <tr><td>11. Deposit Requested</td><td>The deposit invoice is out. The job is booked and waiting for its date.</td><td>The crew marks the job complete</td><td class="num">The deposit due date</td></tr>
+          <tr><td>12. Job Completed</td><td>The crew has marked the job complete. The final invoice is out.</td><td>The final invoice is paid</td><td class="num">14 days</td></tr>
+          <tr><td>13. Retention Claim</td><td>Part of the payment is being held back until a defects period ends.</td><td>The retention is paid</td><td class="num">The release date</td></tr>
         </tbody>
       </table>
     </div>
-
-    <h3>The stages that carry weight</h3>
-    <ul class="plain">
-      <li><b>New Enquiry exists to be measured.</b> Time to first contact is the single biggest lever in the pipeline, and it cannot be measured if leads land straight into Contacting.</li>
-      <li><b>Contacting is capped.</b> Five attempts over seven days across call, SMS and email. When the cap is hit the card goes to Lost with reason <em>Unreachable</em>, rather than being left to rot.</li>
-      <li><b>Qualified is where a deal becomes real.</b> Building type, areas, access, timeframe, and confirmation we are talking to whoever decides. This is where a forecast value is first set.</li>
-      <li><b>Assessment Booked follows the consult, not the form.</b> Spray foam cannot be quoted without seeing the building, and a rig should not cross Melbourne before the job is qualified. The calendar sells a fifteen minute phone call; a human books the site assessment afterwards.</li>
-      <li><b>Quoting is time-boxed at two days.</b> A quote that takes a week loses jobs that were already won on the day.</li>
-      <li><b>Nurture is a siding, not a step.</b> It sits beside the sales run because cards arrive from Follow-up and leave backwards to Qualified.</li>
-      <li><b>Invoiced is where the photos get captured.</b> Completed jobs are the source of the site photography, which matters more than usual given competitors have been lifting images off the old website. Make it a required task on entry or it will not happen.</li>
-      <li><b>Paid &amp; Closed is the most valuable stage on either board.</b> It fires a review request, a referral ask, and a check-in scheduled twelve months out.</li>
-    </ul>
   </section>
 
-  <!-- ===================================================================== -->
   <section id="commercial">
     <div class="sec-head"><span class="sec-n">04</span><h2>Commercial &amp; Industrial</h2></div>
 
     <div class="board">
       <div class="board-top">
         <span class="board-name">Commercial &amp; Industrial</span>
-        <span class="board-note">Factories, warehouses, cold storage, farms, large spans &middot; 13 stages</span>
+        <span class="board-note">Factories, warehouses, cold storage, agricultural facilities, data centres and mine sites &middot; 13 stages</span>
       </div>
       <ol class="flow rail-com">
-        <li class="stage"><span class="stage-n"><span class="ai-dot"></span>01</span><span class="stage-name">New Enquiry</span><span class="rot rot-urgent">1 business hour</span></li>
-        <li class="stage"><span class="stage-n"><span class="ai-dot"></span>02</span><span class="stage-name">Contacting</span><span class="rot">3 days</span></li>
-        <li class="stage"><span class="stage-n"><span class="ai-dot"></span>03</span><span class="stage-name">Qualified / Scoping</span><span class="rot">5 days</span></li>
-        <li class="stage"><span class="stage-n">04</span><span class="stage-name">Inspection Booked</span><span class="rot">on the date</span></li>
-        <li class="stage"><span class="stage-n">05</span><span class="stage-name">Specifying</span><span class="rot">5 days</span></li>
-        <li class="stage"><span class="stage-n">06</span><span class="stage-name">Proposal Submitted</span><span class="rot">7 days</span></li>
-        <li class="stage"><span class="stage-n">07</span><span class="stage-name">Commercial Review</span><span class="rot">14 days</span></li>
-        <li class="stage"><span class="stage-n">08</span><span class="stage-name">Awaiting PO</span><span class="rot">14 days</span></li>
-        <li class="stage"><span class="stage-n">09</span><span class="stage-name">Future Project</span><span class="rot">quarterly</span></li>
+        <li class="stage"><span class="stage-n"><span class="ai-dot"></span>01</span><span class="stage-name">New Lead</span><span class="rot rot-urgent">15 minutes to the first call</span></li>
+        <li class="stage"><span class="stage-n">02</span><span class="stage-name">Dial 1</span><span class="rot">end of the same day</span></li>
+        <li class="stage"><span class="stage-n">03</span><span class="stage-name">Dial 2</span><span class="rot">7 days</span></li>
+        <li class="stage"><span class="stage-n">04</span><span class="stage-name">Inspection Required</span><span class="rot">5 days to book the visit</span></li>
+        <li class="stage"><span class="stage-n">05</span><span class="stage-name">Quote Sent</span><span class="rot">21 days</span></li>
+        <li class="stage"><span class="stage-n"><span class="ai-dot"></span>06</span><span class="stage-name">Follow-Up</span><span class="rot">a day past the callback time</span></li>
+        <li class="stage"><span class="stage-n"><span class="ai-dot"></span>07</span><span class="stage-name">Nurture</span><span class="rot">review quarterly</span></li>
         <li class="wonline" aria-hidden="true"><b>Won<br>line</b></li>
-        <li class="stage sold"><span class="stage-n">10</span><span class="stage-name">Mobilising</span><span class="rot">on the date</span></li>
-        <li class="stage sold"><span class="stage-n">11</span><span class="stage-name">In Progress</span><span class="rot">per programme</span></li>
-        <li class="stage sold"><span class="stage-n">12</span><span class="stage-name">Invoicing</span><span class="rot">30 days</span></li>
-        <li class="stage sold"><span class="stage-n">13</span><span class="stage-name">Paid &amp; Closed</span><span class="rot">triggers follow-up</span></li>
+        <li class="stage"><span class="stage-n">08</span><span class="stage-name">Quote Accepted</span><span class="rot">1 day, or 14 days waiting on a purchase order</span></li>
+        <li class="stage sold"><span class="stage-n">09</span><span class="stage-name">Booking Required</span><span class="rot">2 business days</span></li>
+        <li class="stage sold"><span class="stage-n">10</span><span class="stage-name">Job Booked</span><span class="rot">the start date</span></li>
+        <li class="stage sold"><span class="stage-n">11</span><span class="stage-name">Deposit Requested</span><span class="rot">the deposit due date</span></li>
+        <li class="stage sold"><span class="stage-n">12</span><span class="stage-name">Job Completed</span><span class="rot">30 days</span></li>
+        <li class="stage sold"><span class="stage-n">13</span><span class="stage-name">Retention Claim</span><span class="rot">the release date</span></li>
       </ol>
       <div class="legend">
         <span><span class="ai-dot"></span> AI may move a card here</span>
         <span><span class="swatch-sold"></span> already sold, status Won</span>
-        <span>The AI hands over at stage 03 and touches nothing beyond it</span>
+        <span class="rot-urgent mono">red = the clock that matters</span>
       </div>
     </div>
 
     <div class="t-scroll" style="margin-top:1rem">
       <table>
-        <thead>
-          <tr><th>Stage</th><th>It means</th><th>Exits when</th><th>Stalls after</th></tr>
-        </thead>
+        <thead><tr><th>Stage</th><th>It means</th><th>Exits when</th><th>Stalls after</th></tr></thead>
         <tbody>
-          <tr><td>1. New Enquiry</td><td>Untouched</td><td>First attempt logged</td><td class="urgent">1 business hour</td></tr>
-          <tr><td>2. Contacting</td><td>Attempted, no conversation yet</td><td>They reply</td><td class="num">3 days</td></tr>
-          <tr><td>3. Qualified / Scoping</td><td>Decision maker identified, scale and programme understood</td><td>Inspection booked</td><td class="num">5 days</td></tr>
-          <tr><td>4. Inspection Booked</td><td>Site visit in the diary</td><td>The visit happens</td><td class="num">on the date</td></tr>
-          <tr><td>5. Specifying</td><td>Product, thickness, access, plant, staging and WHS being worked out</td><td>Proposal issued</td><td class="num">5 days</td></tr>
-          <tr><td>6. Proposal Submitted</td><td>Priced proposal or tender lodged</td><td>Shortlisted, declined, or quiet</td><td class="num">7 days</td></tr>
-          <tr><td>7. Commercial Review</td><td>They are evaluating: clarifications, value engineering, references, insurances, SWMS</td><td>A decision</td><td class="num">14 days</td></tr>
-          <tr><td>8. Awaiting PO</td><td>Verbally won, paperwork pending</td><td>PO or signed contract received</td><td class="num">14 days</td></tr>
-          <tr><td>9. Future Project</td><td>Real project, future budget cycle</td><td>It comes back around</td><td class="num">review quarterly</td></tr>
-          <tr class="divider"><td colspan="4">Won is marked here, on the purchase order</td></tr>
-          <tr><td>10. Mobilising</td><td>PO in hand. Programme, access, inductions, SWMS, materials.</td><td>Crew starts</td><td class="num">on the date</td></tr>
-          <tr><td>11. In Progress</td><td>On site, possibly in stages</td><td>Works complete</td><td class="num">per programme</td></tr>
-          <tr><td>12. Invoicing</td><td>Progress claims or final invoice out</td><td>Payment received</td><td class="num">30 days</td></tr>
-          <tr><td>13. Paid &amp; Closed</td><td>Done</td><td>Closes the card</td><td class="num">&mdash;</td></tr>
+          <tr><td>1. New Lead</td><td>A lead has landed on the commercial board. Nobody has rung them yet.</td><td>They are rung, and either answer or do not</td><td class="urgent">15 minutes to the first call</td></tr>
+          <tr><td>2. Dial 1</td><td>Rung twice back to back with no answer. A text has gone.</td><td>They answer or reply, or the second round of calls gets nothing</td><td class="num">End of the same day</td></tr>
+          <tr><td>3. Dial 2</td><td>Two rounds of calls with no answer. The emails are running.</td><td>They reply or book a call, or day 7 passes with nothing</td><td class="num">7 days</td></tr>
+          <tr><td>4. Inspection Required</td><td>The works need a site visit before they can be priced or booked.</td><td>The visit is done, then the proposal is sent or the works are ready to book</td><td class="num">5 days to book the visit</td></tr>
+          <tr><td>5. Quote Sent</td><td>A priced proposal is with them, with an online accept button.</td><td>Accepted, declined, deferred, or quiet past day 21</td><td class="num">21 days</td></tr>
+          <tr><td>6. Follow-Up</td><td>A conversation is live and the client has asked for a call at a later time.</td><td>The callback happens and the card moves on</td><td class="num">A day past the callback time</td></tr>
+          <tr><td>7. Nurture</td><td>A real project in a future budget cycle.</td><td>It comes back: to Quote Sent for a refreshed proposal</td><td class="num">Review quarterly</td></tr>
+          <tr class="divider"><td colspan="4">Won is set here, on a written acceptance or a purchase order</td></tr>
+          <tr><td>8. Quote Accepted</td><td>The client has accepted, online, in writing or verbally.</td><td>An inspection is needed, or the works are ready to book</td><td class="num">1 day, or 14 days waiting on a purchase order</td></tr>
+          <tr><td>9. Booking Required</td><td>Accepted. The works dates need booking in the calendar.</td><td>The works are booked in the calendar</td><td class="num">2 business days</td></tr>
+          <tr><td>10. Job Booked</td><td>The works dates are booked.</td><td>The deposit invoice is sent, or the works are marked complete</td><td class="num">The start date</td></tr>
+          <tr><td>11. Deposit Requested</td><td>The deposit invoice is out. The works are booked and waiting for their start.</td><td>The works are marked complete</td><td class="num">The deposit due date</td></tr>
+          <tr><td>12. Job Completed</td><td>The works are complete. The final claim is out.</td><td>The final claim is paid</td><td class="num">30 days</td></tr>
+          <tr><td>13. Retention Claim</td><td>A retention is being held, usually for six to twelve months after completion.</td><td>The retention is paid</td><td class="num">The release date</td></tr>
         </tbody>
       </table>
     </div>
+  </section>
 
-    <div class="stack" style="margin-top:1.4rem">
-      <div class="why">
-        <h4>Why stages 7 and 8 are separate</h4>
-        <p>
-          "They are still deciding" and "they have chosen us and procurement is slow" look
-          identical on a board and are completely different for forecasting. Splitting them
-          is what makes a commercial forecast worth reading.
-        </p>
-      </div>
-      <div class="why">
-        <h4>Why commercial gets Mobilising and residential does not</h4>
-        <p>
-          A house job goes from accepted to scheduled. An industrial job needs site
-          inductions, SWMS sign off, access arrangements and often a staged programme
-          before anyone turns up. That work is real, it takes weeks, and hiding it inside
-          "Scheduled" makes the board lie about where the job is. For the same reason the
-          billing stage is <em>Invoicing</em>, not Invoiced: large jobs bill in progress
-          claims rather than one invoice.
-        </p>
-      </div>
+  <section id="overview">
+    <div class="sec-head"><span class="sec-n">05</span><h2>The whole pipeline in one view</h2></div>
+    <div class="stack">
+      <p>Both boards use the same thirteen stages in the same order, so the whole business reads in one view: every open job, residential and commercial, stage by stage. The boards stay separate for the day-to-day work. The overview is for seeing all of it at once, and it is where the owner looks first on a Monday.</p>
+      <ol class="plain">
+        <li>Keep the stage names and order identical on both boards. The overview depends on it, and the checker fails if the two boards drift apart.</li>
+        <li>Opportunities, list view: filter on both pipelines and status Open, sort by stage, and save it as "Whole pipeline". Share it with the owner and the office. Confirm at build that the list view takes both pipelines in one filter.</li>
+        <li>If the list view cannot take both pipelines, build the same thing as a contact smart list filtered on the stage tags: stage-res-&lt;key&gt; or stage-com-&lt;key&gt; for the same key, one saved filter per stage.</li>
+        <li>Dashboard, "Whole pipeline": a stage funnel widget for each board side by side, both filtered to status Open, plus open value and won value, each filtered on status. Never an unfiltered value.</li>
+        <li>Weekly figures such as quotes sent and quotes accepted are reported once across both boards, because the stage keys match.</li>
+      </ol>
     </div>
   </section>
 
-  <!-- ===================================================================== -->
   <section id="status">
-    <div class="sec-head"><span class="sec-n">05</span><h2>Status, and Lost reasons</h2></div>
-
+    <div class="sec-head"><span class="sec-n">06</span><h2>Status, the Won line, and Lost reasons</h2></div>
     <div class="stack">
-      <p>
-        Do not build "Won" or "Lost" stages. Status already carries it, building it twice
-        double-counts, and it breaks the built-in conversion reporting.
-      </p>
+      <div class="keystone">
+        <p class="big">The job is Won when the card enters Quote Accepted.</p>
+        <p class="sub">On residential, any acceptance: the button, a phone call or a purchase order. On commercial, a written acceptance or a purchase order; a verbal yes waits in Quote Accepted, status Open, until the paperwork lands. Quote Accepted is a real stage, not a marker, and there are no Won or Lost stages.</p>
+      </div>
       <ul class="plain">
-        <li><b>Won</b> at acceptance or PO received, then the card keeps moving through the delivery stages.</li>
-        <li><b>Lost</b> with a reason, always. A Lost with no reason teaches nothing.</li>
+        <li><b>Lost</b> with a reason, always. A Lost with no reason teaches nothing. A not now is Nurture, not Lost.</li>
         <li><b>Abandoned</b> for duplicates, spam and wrong numbers, so they stay out of the conversion maths entirely.</li>
       </ul>
-
       <h3>Lost reasons, fixed list, single select</h3>
       <div class="chips">
         <span class="chip">Price</span>
@@ -867,307 +825,101 @@
         <span class="chip">Unreachable</span>
         <span class="chip">Not the decision maker</span>
         <span class="chip">Budget withdrawn</span>
+        <span class="chip">Cancelled after acceptance</span>
         <span class="chip">Duplicate</span>
         <span class="chip">Spam</span>
       </div>
-      <p class="fine">
-        The distinction worth having is <em>Price</em> against <em>Chose batts</em>. They
-        point at completely different fixes, and the R-value explainer on the website
-        exists to answer the second one.
-      </p>
     </div>
   </section>
 
-  <!-- ===================================================================== -->
-  <section id="value">
-    <div class="sec-head"><span class="sec-n">06</span><h2>What value a card carries</h2></div>
-
-    <div class="stack">
-      <div class="t-scroll">
-        <table>
-          <thead><tr><th>Stage</th><th>Value on the opportunity</th></tr></thead>
-          <tbody>
-            <tr><td>New Enquiry, Contacting</td><td>Zero</td></tr>
-            <tr><td>Qualified</td><td>A default estimate by property type and area, for forecasting only</td></tr>
-            <tr><td>Quote Sent onward</td><td>The actual quoted figure</td></tr>
-            <tr><td>Delivery stages</td><td>Unchanged from the accepted figure, plus variations</td></tr>
-          </tbody>
-        </table>
-      </div>
-      <p>
-        A real number before the site assessment produces a forecast made of guesses. Zero
-        until Quote Sent produces a pipeline that appears worthless. The estimate at
-        Qualified is the compromise.
-      </p>
-      <p>
-        Variations agreed on site go on the card as they happen, not at invoicing.
-        Otherwise the delivery half of the board understates what is owed.
-      </p>
-      <div class="ask">
-        <b>Needs Glenn:</b> the default value bands per property type, and the deposit
-        percentage that gates Scheduled. These have to be real numbers, not invented ones.
-      </div>
-    </div>
+  <section id="money">
+    <div class="sec-head"><span class="sec-n">07</span><h2>Deposits, invoices and payment</h2></div>
+    <ul class="plain">
+      <li><b>Never at booking.</b> The deposit invoice goes 14 days before the install date, or straight away if the job is closer. Due 1 business day before for stock open cell, 7 days before for special-order foam. To confirm with Glenn.</li>
+      <li><b>Unpaid at its due date:</b> the owner and the office are told, so the crew can be reassigned. No card storage, no automatic charging.</li>
+      <li><b>Deposits are a liability</b> in the accounts until the job is done, not sales income.</li>
+      <li><b>The final invoice goes when the crew marks the job complete,</b> with its payment schedule, the accepted quote and any purchase order attached.</li>
+      <li><b>The job report and certificates</b> go only once the final invoice is fully paid.</li>
+      <li><b>Xero:</b> test a GST invoice before promising the sync. Switch off payment receipt sync if marking paid early breaks the bookkeeper's reconciliation.</li>
+      <li><b>Contracts and variations</b> go out from templates that fill in the client details for digital signature.</li>
+    </ul>
   </section>
 
-  <!-- ===================================================================== -->
-  <section id="routing">
-    <div class="sec-head"><span class="sec-n">07</span><h2>Which pipeline a lead enters</h2></div>
-
-    <div class="stack">
-      <p>Routed automatically on <code>propertyType</code> from the website webhook.</p>
-      <div class="t-scroll">
-        <table>
-          <thead><tr><th>propertyType</th><th>Pipeline</th></tr></thead>
-          <tbody>
-            <tr><td><code>home</code>, <code>new-build</code></td><td>Residential</td></tr>
-            <tr><td><code>shed</code></td><td>Residential</td></tr>
-            <tr><td><code>factory</code></td><td>Commercial &amp; Industrial</td></tr>
-            <tr><td><code>farm</code></td><td>Commercial &amp; Industrial</td></tr>
-            <tr><td><code>other</code></td><td>Residential, plus a review task to confirm</td></tr>
-          </tbody>
-        </table>
-      </div>
-      <p class="fine">
-        Worth adding once volume justifies it: any enquiry whose message mentions a square
-        metre figure above a threshold, a tender, or a builder or head contractor goes to
-        Commercial regardless of <code>propertyType</code>. A card that turns out to be on
-        the wrong board gets <em>moved</em>, not recreated: moving preserves the
-        attribution and the consent record.
-      </p>
-    </div>
-  </section>
-
-  <!-- ===================================================================== -->
-  <section id="fields">
-    <div class="sec-head"><span class="sec-n">08</span><h2>Fields to create in Systemations</h2></div>
-
-    <div class="stack">
-      <p>
-        These map one to one onto what the site already posts, so no transformation is
-        needed. Names below are the JSON keys from the lead webhook.
-      </p>
-
-      <h3>Job detail</h3>
-      <div class="t-scroll">
-        <table>
-          <thead><tr><th>Field</th><th>Type</th><th>Values</th></tr></thead>
-          <tbody>
-            <tr><td><code>propertyType</code></td><td>Single select</td><td>home, new-build, shed, factory, farm, other</td></tr>
-            <tr><td><code>areas</code></td><td>Text, comma separated</td><td>roof, walls, underfloor, whole, unsure</td></tr>
-            <tr><td><code>stage</code></td><td>Single select</td><td>existing, construction, planning</td></tr>
-            <tr><td><code>timeframe</code></td><td>Single select</td><td>asap, 1-3-months, 3-plus-months, researching</td></tr>
-            <tr><td><code>postcode</code></td><td>Text</td><td></td></tr>
-            <tr><td><code>message</code></td><td>Long text</td><td></td></tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="ask" style="margin-top:1rem">
-        <b>Rename this one:</b> <code>stage</code> is the <em>building's</em> stage, retrofit
-        or under construction or still planning. It is not the pipeline stage. Map it into
-        Systemations as <code>buildingStage</code> or the two will be confused within a week,
-        which matters more now the boards are twelve and thirteen columns long.
-      </div>
-
-      <h3>Consent evidence</h3>
-      <div class="t-scroll">
-        <table>
-          <thead><tr><th>Field</th><th>Type</th></tr></thead>
-          <tbody>
-            <tr><td><code>consent_marketing</code></td><td>yes / no</td></tr>
-            <tr><td><code>consent_text</code></td><td>Long text</td></tr>
-            <tr><td><code>consent_at</code></td><td>Date and time</td></tr>
-            <tr><td><code>consent_page</code></td><td>Text, URL</td></tr>
-          </tbody>
-        </table>
-      </div>
-
-      <h3>Attribution</h3>
-      <p class="fine">
-        <code>utm_source</code>, <code>utm_medium</code>, <code>utm_campaign</code>,
-        <code>utm_term</code>, <code>utm_content</code>, <code>utm_id</code>,
-        <code>gclid</code>, <code>fbclid</code>, plus first and last touch:
-        <code>first_touch_at</code>, <code>first_touch_referrer</code>,
-        <code>first_touch_landing</code>, <code>last_touch_referrer</code>,
-        <code>last_touch_landing</code>.
-      </p>
-
-      <h3>Housekeeping</h3>
-      <p class="fine">
-        <code>source</code> (always <code>website</code>), <code>form</code> (always
-        <code>quote_request</code>), <code>submitted_at</code>, <code>page_title</code>,
-        <code>phone_raw</code>. Phone arrives already normalised to E.164
-        (<code>+61…</code>), because that is what the CRM matches a person on across web,
-        SMS, chat and voice. <code>phone_raw</code> keeps whatever they actually typed.
-      </p>
-    </div>
-  </section>
-
-  <!-- ===================================================================== -->
   <section id="automation">
-    <div class="sec-head"><span class="sec-n">09</span><h2>What fires at each stage</h2></div>
-    <p class="fine" style="margin-bottom:1rem">Message ids refer to the Messaging Kit. The customer journey page shows each of these under its stage, for both boards.</p>
-
+    <div class="sec-head"><span class="sec-n">08</span><h2>What fires at each stage</h2></div>
+    <p class="fine" style="margin-bottom:1rem">Message ids refer to the Messaging Kit, alert numbers to Alerts and Tasks. The customer journey page shows each of these under its stage, for both boards.</p>
     <div class="t-scroll">
       <table>
-        <thead><tr><th>Trigger</th><th>Action</th><th>Messages</th></tr></thead>
+        <thead><tr><th>Stage</th><th>Residential messages</th><th>Commercial messages</th><th>Alerts</th></tr></thead>
         <tbody>
-          <tr><td>Enters New Enquiry</td><td>SMS acknowledgement within 2 minutes, email echo of the enquiry. Call task assigned. Alert to the assigned user.</td><td class="mono">X-ACK-01, X-ACK-02 (C-ACK-01 on commercial)</td></tr>
-          <tr><td>1 business hour in New Enquiry</td><td>Escalate to a second person</td><td class="mono"></td></tr>
-          <tr><td>Enters Contacting</td><td>Start the five-attempt sequence across call, SMS and email</td><td class="mono">X-CHASE-01 to 04</td></tr>
-          <tr><td>Attempts exhausted</td><td>Lost, reason <em>Unreachable</em></td><td class="mono"></td></tr>
-          <tr><td>Phone consult booked, at any point</td><td>Confirmation, reminders at 24 hours and 2 hours, no-show and change handling</td><td class="mono">X-APPT-01 to 06</td></tr>
-          <tr><td>Enters Qualified</td><td>Set forecast value. Point them at the calendar for the assessment.</td><td class="mono">X-BOOK-01, X-BOOK-02</td></tr>
-          <tr><td>Enters Assessment Booked / Inspection Booked</td><td>Confirmation with the address. Morning-of text.</td><td class="mono">R-ASSESS-01, R-ASSESS-02 (C-INSP-01)</td></tr>
-          <tr><td>Assessment done, enters Quoting / Specifying</td><td>Tell them when the quote lands. Start the 2 day clock (5 on commercial).</td><td class="mono">R-QUOTING-01 (C-SPEC-01)</td></tr>
-          <tr><td>Enters Quote Sent / Proposal Submitted</td><td>Delivery confirmation. Follow-ups at day 2, 5, 10, 21 (day 7, 21 on commercial).</td><td class="mono">R-QUOTE-01, R-QUOTE-02, R-FU-01 (C-PROP-01, C-PROP-02)</td></tr>
-          <tr><td>Enters Follow-up / Commercial Review</td><td>The rest of the sequence, ending in a decision</td><td class="mono">R-FU-02 to 04 (C-PROP-03)</td></tr>
-          <tr><td>Marked Lost</td><td>Reason required. Graceful goodbye on residential. Nurture if the reason was timing.</td><td class="mono">LOST-01</td></tr>
-          <tr><td>Enters Nurture / Future Project</td><td>Consent-gated drip at 0, 30 and 90 days (quarterly on commercial)</td><td class="mono">NUR-01 to 03 (C-FUT-01)</td></tr>
-          <tr><td>Enters Awaiting PO</td><td>List what mobilisation needs. Weekly PO chase task.</td><td class="mono">C-PO-01</td></tr>
-          <tr class="divider"><td colspan="3">Status set to Won</td></tr>
-          <tr><td>Status set to Won</td><td>Thank them and set out the steps. Deposit request where one applies. Handover tasks. <b>Stop every sales sequence.</b></td><td class="mono">X-WON-01, X-WON-02 (C-MOB-01)</td></tr>
-          <tr><td>Deposit received</td><td>One-line confirmation, and scheduling unblocks</td><td class="mono">DEP-01</td></tr>
-          <tr><td>Enters Scheduled / Mobilising</td><td>Booking with preparation notes. Reminder the afternoon before.</td><td class="mono">JOB-01, JOB-02, JOB-03 (C-MOB-01)</td></tr>
-          <tr><td>Enters In Progress</td><td>Crew on the way text. Photo and variation tasks on the crew lead. Weekly progress on staged commercial jobs.</td><td class="mono">JOB-04, JOB-06 (C-SITE-01, C-PROG-01)</td></tr>
-          <tr><td>Enters Invoiced / Invoicing</td><td>Completion note with photos, then the invoice separately. Reminders at day 7 and 14, stopped on payment.</td><td class="mono">JOB-05, PAY-01 to 03 (C-DONE-01, C-PAY-01)</td></tr>
-          <tr><td>Enters Paid &amp; Closed</td><td>Review request next day, referral ask at a week, 12 month check-in. Reference request on commercial.</td><td class="mono">REV-01 to 03 (C-CLOSE-01)</td></tr>
-          <tr><td>Any time</td><td>Missed call text-back, out of hours reply</td><td class="mono">SYS-01, SYS-02</td></tr>
+          <tr><td>1. New Lead</td><td class="mono">X-ACK-01, X-ACK-02</td><td class="mono">X-ACK-01, C-ACK-01</td><td class="mono">1, 6, 7</td></tr>
+          <tr><td>2. Dial 1</td><td class="mono">DIAL-01</td><td class="mono">DIAL-01</td><td class="mono">3</td></tr>
+          <tr><td>3. Dial 2</td><td class="mono">DIAL-02, DIAL-03, DIAL-04, X-APPT-01, X-APPT-02, X-APPT-03, X-APPT-04, X-APPT-06</td><td class="mono">DIAL-02, DIAL-03, DIAL-04, X-APPT-01, X-APPT-02, X-APPT-03, X-APPT-04, X-APPT-06</td><td class="mono">3, 4, 5</td></tr>
+          <tr><td>4. Inspection Required</td><td class="mono">X-INSP-01, X-INSP-02, X-APPT-06</td><td class="mono">C-INSP-01, X-INSP-02, X-APPT-06</td><td class="mono">none</td></tr>
+          <tr><td>5. Quote Sent</td><td class="mono">R-QUOTE-01, R-QUOTE-02, R-FU-01, R-FU-02, R-FU-03, R-FU-04, LOST-01</td><td class="mono">C-PROP-01, C-PROP-02, C-PROP-03</td><td class="mono">3</td></tr>
+          <tr><td>6. Follow-Up</td><td class="mono">none</td><td class="mono">none</td><td class="mono">3</td></tr>
+          <tr><td>7. Nurture</td><td class="mono">NUR-01, NUR-02, NUR-03, NUR-04</td><td class="mono">C-FUT-01</td><td class="mono">3</td></tr>
+          <tr><td>8. Quote Accepted</td><td class="mono">X-ACC-01, X-ACC-02</td><td class="mono">C-PO-01</td><td class="mono">8</td></tr>
+          <tr><td>9. Booking Required</td><td class="mono">none</td><td class="mono">none</td><td class="mono">none</td></tr>
+          <tr><td>10. Job Booked</td><td class="mono">JOB-01, JOB-02, REM-01, REM-02, REM-03, REM-04, REM-05, JOB-04, JOB-06</td><td class="mono">C-MOB-01, REM-01, REM-02, REM-03, REM-04, REM-05, C-SITE-01, C-PROG-01, C-PAY-01, JOB-06</td><td class="mono">12</td></tr>
+          <tr><td>11. Deposit Requested</td><td class="mono">DEP-02, DEP-03, DEP-01</td><td class="mono">DEP-02, DEP-03, DEP-01</td><td class="mono">9, 13</td></tr>
+          <tr><td>12. Job Completed</td><td class="mono">JOB-05, PAY-01, PAY-02, PAY-03, RPT-01, REV-01, REV-02, REV-03</td><td class="mono">C-DONE-01, PAY-01, RPT-01, C-CLOSE-01, REV-01</td><td class="mono">10</td></tr>
+          <tr><td>13. Retention Claim</td><td class="mono">RET-01</td><td class="mono">RET-01</td><td class="mono">none</td></tr>
         </tbody>
       </table>
     </div>
-
-    <div class="cols" style="margin-top:1.2rem">
-      <div class="ask">
-        <b>Rule one:</b> every reminder and follow-up sequence stops the moment the person
-        replies. A sequence that keeps firing after someone has answered is the fastest way
-        to turn a won job into a complaint.
-      </div>
-      <div class="ask">
-        <b>Rule two:</b> setting Won must kill every sales sequence on the card. On a merged
-        board the sales and delivery automation live on the same record, so a quote
-        follow-up firing at a customer whose job is already booked is a real and easy
-        failure.
-      </div>
-    </div>
   </section>
 
-  <!-- ===================================================================== -->
   <section id="ai">
-    <div class="sec-head"><span class="sec-n">10</span><h2>What the AI is allowed to do</h2></div>
-
-    <p style="margin-bottom:1.2rem">
-      The voice and chat agents share these boards with the family. That only works if the
-      boundary is written down, and on merged boards the boundary is simply the Won line:
-      the AI works the sales half and never crosses it.
-    </p>
-
+    <div class="sec-head"><span class="sec-n">09</span><h2>What the AI is allowed to do</h2></div>
     <div class="cols">
       <div class="rule rule-yes">
         <h4>The AI may</h4>
         <ul>
-          <li>Create the opportunity and move New Enquiry to Contacting</li>
-          <li>Qualify: building type, areas, access, timeframe, decision maker</li>
-          <li>Move a card to Qualified once those are captured</li>
-          <li>Book, reschedule and cancel in the phone consult calendar, and move to Assessment Booked</li>
-          <li>Send reminders and confirmations</li>
+          <li>Create the opportunity at New Lead</li>
           <li>Answer what the site already answers: what spray foam is, open cell against closed cell, the process, the service area</li>
-          <li>Move a card to Nurture when someone says not now</li>
+          <li>Book, reschedule and cancel in the phone call calendar</li>
+          <li>Move a card to Follow-Up with a callback time, or to Nurture when someone says not now</li>
         </ul>
       </div>
-
       <div class="rule rule-no">
         <h4>The AI may not</h4>
         <ul>
           <li>Send a quote, or state a price, a firm lead time, or a performance figure</li>
-          <li>Set or change the opportunity value</li>
-          <li>Set any status: not Won, not Lost, not Abandoned</li>
-          <li>Move any card past Qualified on the Commercial board</li>
-          <li><b>Move any card at or beyond the Won line on either board</b></li>
-          <li>Promise compliance, suitability or warranty outcomes for a specific building</li>
+          <li>Set or change the value, or any status</li>
+          <li><b>Move any card to Quote Accepted or beyond, on either board</b></li>
+          <li>Book an install date, or touch a deposit, an invoice or a retention</li>
         </ul>
       </div>
-
       <div class="rule rule-esc">
-        <h4>Escalate to a human immediately</h4>
+        <h4>Escalate to a person immediately</h4>
         <ul>
           <li>Any commercial enquiry, once identified as commercial</li>
           <li>Any request for a firm price</li>
-          <li>Anything mentioning a complaint, insurance, legal, or an existing job</li>
-          <li>Any contact about a job already in delivery, including "where is the crew"</li>
-          <li>An unhappy customer, at any point</li>
-          <li>Anything the agent has answered twice without the person accepting the answer</li>
+          <li>Anything about a booked job, including a change of date</li>
+          <li>A complaint, insurance or legal question, or an unhappy customer</li>
         </ul>
       </div>
     </div>
-
-    <div class="why" style="margin-top:1.2rem">
-      <h4>Why the AI is barred from quoting</h4>
-      <p>
-        Not caution for its own sake. Spray foam cannot be priced without seeing the
-        building, so any number given on a call is either wrong or becomes a commitment.
-        The consult exists to qualify. The assessment exists to price.
-      </p>
-    </div>
   </section>
 
-  <!-- ===================================================================== -->
-  <section id="compliance">
-    <div class="sec-head"><span class="sec-n">11</span><h2>Compliance the pipeline has to respect</h2></div>
-
-    <ul class="plain">
-      <li><b>Spam Act 2003.</b> Marketing SMS and email need express consent, and the evidence is what the person was actually shown. That is why <code>consent_text</code>, <code>consent_at</code> and <code>consent_page</code> travel with the record and must survive the import onto the contact. Transactional messages about an enquiry someone made are a different thing and are fine.</li>
-      <li><b>Do Not Call Register.</b> Applies to cold outbound, not to someone who enquired. Any purchased or scraped list needs washing first.</li>
-      <li><b>Call recording.</b> If AI voice calls are recorded, callers must be told at the start of the call. Victoria's rules on recording private conversations are strict, so this is a script requirement rather than a nice to have.</li>
-      <li><b>Australian Consumer Law.</b> Any performance claim the agent makes has to be substantiated. Same reason the R-value figure on the website is gated behind sign-off rather than published.</li>
-    </ul>
-  </section>
-
-  <!-- ===================================================================== -->
-  <section id="reports">
-    <div class="sec-head"><span class="sec-n">12</span><h2>Reports worth watching</h2></div>
-
-    <p style="margin-bottom:1rem">
-      Every value report below filters on <b>status</b>. On a merged board an unfiltered
-      figure is meaningless.
-    </p>
-
-    <ul class="plain">
-      <li><b>Time to first contact</b> on New Enquiry. The one number that moves everything else.</li>
-      <li><b>Open pipeline value,</b> status Open only. This is the forecast.</li>
-      <li><b>Committed work,</b> status Won and not yet Paid &amp; Closed. This is the schedule, and the cash coming.</li>
-      <li><b>Enquiry to Qualified, by source.</b> Separates traffic quality from sales execution.</li>
-      <li><b>Qualified to Assessment Booked.</b> If this sags, the consult script is the problem.</li>
-      <li><b>Days in Quoting.</b> Should be under two.</li>
-      <li><b>Quote Sent to Won,</b> by sector. Measure conversion across the sales stages only; the delivery stages are not conversions.</li>
-      <li><b>Days from Won to Paid &amp; Closed.</b> Only visible because delivery is on the same board, and it is the number that tells you whether the business can take more work.</li>
-      <li><b>Lost reason mix.</b> Watch the ratio of <em>Price</em> to <em>Chose batts</em>.</li>
-      <li><b>Paid revenue by <code>utm_source</code>, <code>gclid</code> and <code>fbclid</code>.</b> The attribution fields now survive all the way to payment, so ad spend can be judged on money received rather than on form fills.</li>
-    </ul>
-  </section>
-
-  <!-- ===================================================================== -->
   <section id="open">
-    <div class="sec-head"><span class="sec-n">13</span><h2>Open items for Glenn</h2></div>
-
-    <div class="cols">
-      <div class="rule rule-esc">
-        <h4>Before the boards go live</h4>
-        <ul>
-          <li>Default opportunity value bands per property type</li>
-          <li>Deposit percentage and terms that gate Scheduled</li>
-          <li>Service area boundary, so <em>Outside service area</em> can be automated</li>
-        </ul>
-      </div>
-      <div class="rule rule-esc">
-        <h4>Decisions to make</h4>
-        <ul>
-          <li>Whether farm and agricultural work sits in Commercial or gets its own board</li>
-          <li>Who is second in line when a New Enquiry escalates after an hour</li>
-          <li>Whether AI voice calls are recorded, which decides the script opening</li>
-          <li>Whether progress claims on commercial jobs need their own reporting, or the Invoicing stage is enough</li>
-        </ul>
-      </div>
+    <div class="sec-head"><span class="sec-n">10</span><h2>Open items to confirm with Glenn</h2></div>
+    <div class="rule rule-esc">
+      <ul>
+        <li>Rachael's mobile, 0428 26 36 26, is the number in every customer message and the SMS sign-off. Glenn confirmed the number in the templates is hers; confirm it before go-live.</li>
+        <li>Deposit timing. The deposit invoice goes 14 days before the install date, or straight away if the job is closer than that. It is due 1 business day before for stock open cell and 7 days before for special-order foam. The call notes also said "2 weeks before install"; this reading reconciles the two.</li>
+        <li>Inspection Required is stage 4, used by about one job in ten or twenty: before the quote when a job cannot be priced from the call, or after acceptance and before Booking Required.</li>
+        <li>The Google review request goes 4 weeks after the job date, inside the 4 to 6 weeks discussed, and only when Ask for Google review is Yes.</li>
+        <li>Optional upgrades on a quote that update the total live (for example R2.5 to R4) are pending scope confirmation. Nothing is built for them.</li>
+        <li>Xero sync for invoices carrying GST is untested. Only GST-free invoices have been seen reaching Xero so far.</li>
+        <li>Commercial jobs are marked Won on a written acceptance (the accept button or a signed acceptance) or a purchase order. A verbal yes sits in Quote Accepted, status Open, until the paperwork lands.</li>
+        <li>The out-of-hours text gives the mobile for anything urgent. Confirm that is wanted, or point it at the business line.</li>
+        <li>Commercial payment terms, and whether progress claims follow a percentage, a milestone or a monthly cycle.</li>
+        <li>Trading hours, and whether Saturday work happens. The send windows and quiet hours are placeholders shaped like a normal trades week.</li>
+        <li>Service area boundary, so Outside service area can be automated.</li>
+        <li>Whether AI voice calls are recorded, which decides the script opening.</li>
+      </ul>
     </div>
   </section>
 

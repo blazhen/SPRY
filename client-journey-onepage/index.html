@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Spray It Solutions customer journey</title>
-<meta name="description" content="Every message a Spray It Solutions customer receives, from the first enquiry to a year after the job, and what the team sees behind each one." />
+<title>SprayIT Solutions customer journey</title>
+<meta name="description" content="Every message a SprayIT Solutions customer receives, from the first enquiry to a year after the job, and what the team sees behind each one." />
 <meta name="robots" content="noindex, nofollow" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -18,8 +18,8 @@
   <section class="hero">
     <div class="wrap">
       <div class="topbar">
-        <img class="brandlogo l" src="logo.png" alt="Spray It Solutions" width="211" height="128" />
-        <img class="brandlogo d" src="logo-light.png" alt="Spray It Solutions" width="289" height="174" />
+        <img class="brandlogo l" src="logo.png" alt="SprayIT Solutions" width="211" height="128" />
+        <img class="brandlogo d" src="logo-light.png" alt="SprayIT Solutions" width="289" height="174" />
         <div class="topright">
           <span class="toptag">Customer communications</span>
           <button type="button" class="iconbtn" id="printBtn" title="Print or save as PDF" aria-label="Print or save as PDF">
@@ -30,7 +30,7 @@
           </button>
         </div>
       </div>
-      <p class="eyebrow">The Spray It Solutions experience</p>
+      <p class="eyebrow">The SprayIT Solutions experience</p>
       <h1>Every message a customer receives, from the first enquiry to a <em>year after</em> the job</h1>
       <p class="lede">What lands in their inbox and on their phone at each stage, in the words they will actually read. Under every message is what happens behind the scenes: the alert that reaches your team, and the task that keeps the job moving.</p>
 
@@ -39,21 +39,21 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5V5a2 2 0 0 1 2-2h13v18H6a2 2 0 0 1-2-1.5z"/><path d="M8 7h7M8 11h7"/></svg>
           How to run it <span class="btn__sub">what you do, stage by stage</span>
         </a>
-        <a class="btn" href="#residential/new-enquiry">Start at the first enquiry</a>
+        <a class="btn" href="#residential/new-lead">Start at the first enquiry</a>
       </div>
       <p class="hint hint--client" style="margin-top:.9rem">Emma and Daniel are <span class="pzchip">sample customers</span>. The real person's name, address and dates fill in automatically.</p>
 
       <div class="stats">
-        <span class="stat"><b id="statStages">25</b><span>stages</span></span>
-        <span class="stat"><b id="statMessages">58</b><span>messages</span></span>
-        <span class="stat"><b id="statEmails">33</b><span>emails</span></span>
-        <span class="stat"><b id="statSms">25</b><span>texts</span></span>
-        <span class="stat"><b id="statTasks">41</b><span>tasks</span></span>
-        <span class="stat"><b id="statAlerts">11</b><span>alerts</span></span>
+        <span class="stat"><b id="statStages">13</b><span>stages on each board</span></span>
+        <span class="stat"><b id="statMessages">62</b><span>messages</span></span>
+        <span class="stat"><b id="statEmails">38</b><span>emails</span></span>
+        <span class="stat"><b id="statSms">24</b><span>texts</span></span>
+        <span class="stat"><b id="statTasks">46</b><span>tasks</span></span>
+        <span class="stat"><b id="statAlerts">13</b><span>alerts</span></span>
       </div>
 
       <div class="howto">
-        <div class="howto__step"><span class="howto__n">1</span><div><b>Pick a pipeline.</b> Residential is homes, sheds and new builds. Commercial is factories, warehouses and farms.</div></div>
+        <div class="howto__step"><span class="howto__n">1</span><div><b>Pick a board.</b> Residential is homes, sheds and new builds. Commercial is factories, warehouses and farms. Both have the same thirteen stages.</div></div>
         <div class="howto__step"><span class="howto__n">2</span><div><b>Click a stage along the line.</b> Each one is a moment in the job.</div></div>
         <div class="howto__step"><span class="howto__n">3</span><div><b>Read what the customer gets,</b> then what your team sees. Step through with the buttons at the bottom.</div></div>
       </div>
@@ -81,6 +81,14 @@
     </nav>
   </main>
 
+  <!-- ======================= WHOLE PIPELINE ======================= -->
+  <section class="appendix alt" id="whole">
+    <div class="wrap">
+      <div class="sec-head"><span class="sec-n">A0</span><h2>The whole pipeline in one view</h2></div>
+      <div id="overview"></div>
+    </div>
+  </section>
+
   <!-- ======================= MORE DETAIL ======================= -->
   <details class="more" id="more">
     <summary class="wrap">
@@ -92,13 +100,13 @@
       <div class="wrap">
         <div class="sec-head"><span class="sec-n">A1</span><h2>Set once, used everywhere</h2></div>
         <p class="sec-lede">Your name, your number, your links and the way the work is described all come from this one table. Change a value here and every message that uses it changes with it, so a new phone number or a new booking link is a one-line edit rather than a hunt through fifty messages.</p>
-        <div class="t-scroll"><table><thead><tr><th>Detail</th><th>Spray It Solutions</th><th>Notes</th></tr></thead><tbody id="tblValues"></tbody></table></div>
+        <div class="t-scroll"><table><thead><tr><th>Detail</th><th>SprayIT Solutions</th><th>Notes</th></tr></thead><tbody id="tblValues"></tbody></table></div>
       </div>
     </section>
 
     <section class="appendix alt" id="index">
       <div class="wrap">
-        <div class="sec-head"><span class="sec-n">A2</span><h2>All <span id="cntMessages">58</span> messages, in one place</h2></div>
+        <div class="sec-head"><span class="sec-n">A2</span><h2>All <span id="cntMessages">62</span> messages, in one place</h2></div>
         <p class="sec-lede">Every message in the journey, with when it sends and which stages show it. Click a stage to jump to it.</p>
         <div class="t-scroll"><table><thead><tr><th>Channel</th><th>When it sends</th><th>Kind</th><th>Subject</th><th>Where it appears</th></tr></thead><tbody id="tblMessages"></tbody></table></div>
       </div>
@@ -106,11 +114,11 @@
 
     <section class="appendix" id="alerts">
       <div class="wrap">
-        <div class="sec-head"><span class="sec-n">A3</span><h2>The <span id="cntAlerts">11</span> alerts that reach your phone</h2></div>
+        <div class="sec-head"><span class="sec-n">A3</span><h2>The <span id="cntAlerts">13</span> alerts that reach your phone</h2></div>
         <p class="sec-lede">An alert is a request to do something. If nothing needs doing it goes in the morning summary instead. These are the only things that buzz a phone, so when one does, it matters.</p>
         <div class="t-scroll"><table><thead><tr><th>#</th><th>Alert</th><th>Fires when</th><th>To</th><th>How</th></tr></thead><tbody id="tblAlerts"></tbody></table></div>
         <div class="sec-head" style="margin-top:2.4rem"><span class="sec-n">A4</span><h2>Who does what</h2></div>
-        <div class="t-scroll"><table><thead><tr><th>Role</th><th>At Spray It</th><th>Looks after</th></tr></thead><tbody id="tblRoles"></tbody></table></div>
+        <div class="t-scroll"><table><thead><tr><th>Role</th><th>At SprayIT</th><th>Looks after</th></tr></thead><tbody id="tblRoles"></tbody></table></div>
       </div>
     </section>
 
@@ -136,14 +144,14 @@
   <!-- ======================= CLOSING ======================= -->
   <section class="close">
     <div class="wrap">
-      <p class="close__q">Automatic, but never <em>automated</em>. This is how Spray It Solutions looks after people from the first two minutes.</p>
+      <p class="close__q">Automatic, but never <em>automated</em>. This is how SprayIT Solutions looks after people from the first two minutes.</p>
       <p class="close__s">Every word here is a starting point. The tone, the timing and the wording are all yours to change. Tell us what does not sound like you and we will change it.</p>
     </div>
   </section>
 
   <footer>
     <div class="wrap foot">
-      <span><b>Spray It Solutions</b> · Carrum Downs, Victoria · 1300 177 729</span>
+      <span><b>SprayIT Solutions</b> · Carrum Downs, Victoria · 1300 177 729</span>
       <span>Prepared for Glenn and Rachael by <b>Systemations</b></span>
     </div>
   </footer>

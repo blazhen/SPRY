@@ -36,7 +36,9 @@ const stagesUsing = (id) => {
   return [...new Set(out)]
 }
 
-const fromLine = (m) => (m.from === 'owner' ? '{{custom_values.from_name_owner}}' : '{{custom_values.from_name_brand}}') + ' &lt;{{custom_values.business_email}}&gt;'
+const FROM_KEY = { contact: 'from_name_contact', brand: 'from_name_brand' }
+const fromLine = (m) => `{{custom_values.${FROM_KEY[m.from] || 'from_name_brand'}}} &lt;{{custom_values.business_email}}&gt;`
+const cv = (k) => (J.customValues.find((v) => v.key === k) || {}).value
 
 const msg = (id) => {
   const m = M[id]
@@ -61,8 +63,32 @@ const msg = (id) => {
   return h
 }
 
+/* Journey order. Every message lands in exactly one section, or the page is
+   not written: a page that silently drops a message is worse than none.
+   Entries are exact ids or id prefixes. */
+const SECTIONS = [
+  ['06', 'shared', 'Shared: first contact, Dial 1 and Dial 2', ['X-ACK', 'DIAL', 'X-APPT', 'X-INSP'], 'Used by both boards: the acknowledgement, the tried-to-call text, the three Dial 2 emails, the phone call booking and the site inspection.'],
+  ['07', 'residential', 'Residential: quote to decision', ['R-QUOTE', 'R-FU', 'LOST']],
+  ['08', 'nurture', 'Nurture', ['NUR'], 'Marketing. Sends only when <code>consent_marketing</code> is <code>yes</code>. Every one carries an unsubscribe.'],
+  ['09', 'booked', 'Quote accepted, booking and reminders', ['X-ACC', 'JOB-01', 'JOB-02', 'REM', 'JOB-04', 'JOB-06']],
+  ['10', 'deposit', 'Deposit', ['DEP'], 'Timed to the install date and the foam, never to the booking.'],
+  ['11', 'completed', 'Job completed and payment', ['JOB-05', 'PAY', 'RPT', 'REV']],
+  ['12', 'retention', 'Retention', ['RET']],
+  ['13', 'system', 'Always on', ['SYS']],
+  ['14', 'commercial', 'Commercial', ['C-'], 'Commercial buys differently. These are longer, plainer and carry no urgency devices, because the reader is a facility manager or a builder with a file open, not a homeowner.'],
+]
+const inSection = (prefixes) => ids.filter((x) => prefixes.some((p) => x === p || x.startsWith(p)))
+{
+  const seen = new Map()
+  for (const s of SECTIONS) for (const id of inSection(s[3])) {
+    if (seen.has(id)) { console.error(id + ' is in two sections'); process.exit(1) }
+    seen.set(id, s[2])
+  }
+  const loose = ids.filter((id) => !seen.has(id))
+  if (loose.length) { console.error('messages in no section: ' + loose.join(', ')); process.exit(1) }
+}
 const section = (n, id, title, prefixes, intro) => {
-  const members = ids.filter((x) => prefixes.some((p) => x.startsWith(p)))
+  const members = inSection(prefixes)
   return `  <section id="${id}">
     <div class="sec-head"><span class="sec-n">${n}</span><h2>${title}</h2></div>
 ${intro ? `    <div class="stack"><p>${intro}</p></div>\n` : ''}${members.map(msg).join('\n')}  </section>\n`
@@ -89,7 +115,7 @@ const body = `
 
 <header class="masthead">
   <div class="masthead-inner">
-    <p class="kicker">Spray It Solutions &middot; Systemations &middot; Doc 2 of 3</p>
+    <p class="kicker">${esc(J.brand.name)} &middot; Systemations &middot; Doc 2 of 3</p>
     <h1>Every message the pipelines send</h1>
     <p class="standfirst">
       ${count} SMS and emails with their sender, subject and preheader, the custom fields they
@@ -97,7 +123,7 @@ const body = `
       Change a value once and every message that uses it follows.
     </p>
     <div class="meta">
-      <div><b>Prepared for</b><span>Glenn, Spray It Solutions</span></div>
+      <div><b>Prepared for</b><span>${esc(J.meta.preparedFor)}</span></div>
       <div><b>System</b><span>Systemations</span></div>
       <div><b>Messages</b><span>${count}</span></div>
       <div><b>Source of truth</b><span class="mono">journey-data.js</span></div>
@@ -123,8 +149,11 @@ const body = `
       <h3>Sender identity</h3>
       <p>
         Every email carries a From name, a From address and a Reply-to. Two From names are used:
-        <code>from_name_owner</code>, "Glenn at Spray It Solutions", on anything personal, and
-        <code>from_name_brand</code>, "Spray It Solutions", on confirmations, invoices and paperwork.
+        <code>from_name_contact</code>, "${esc(cv('from_name_contact'))}", on anything personal, signed
+        ${esc(cv('contact_name'))} with the mobile ${esc(cv('contact_mobile'))}, and
+        <code>from_name_brand</code>, "${esc(cv('from_name_brand'))}", on confirmations, reminders, invoices and
+        paperwork, signed with the business name and the business line. Messages are written as the business,
+        "we", and "ring us" lines use the mobile, because Rachael handles about 99% of customer contact.
         Both send from <code>business_email</code>. The sending domain needs SPF and DKIM before
         go-live, or the first thing the customer sees is a spam warning.
       </p>
@@ -153,15 +182,16 @@ const body = `
       </p>
       <div class="t-scroll">
         <table>
-          <thead><tr><th>Custom value</th><th>Spray It Solutions</th><th>Notes</th></tr></thead>
+          <thead><tr><th>Custom value</th><th>${esc(J.brand.name)}</th><th>Notes</th></tr></thead>
           <tbody>
 ${valuesRows}
           </tbody>
         </table>
       </div>
       <div class="ask">
-        <b>Needs Glenn:</b> trading hours. That is the only outstanding value. There is deliberately
-        no ABN value: quotes and invoices are documents Glenn issues himself and they carry it.
+        <b>Needs Glenn:</b> trading hours, and confirmation that ${esc(cv('contact_mobile'))} is Rachael's mobile and
+        the number customers should ring. There is deliberately no ABN value: quotes and invoices are documents
+        the business issues itself and they carry it.
       </div>
     </div>
   </section>
@@ -208,7 +238,7 @@ ${fieldsHtml()}
   <section id="inventory">
     <div class="sec-head"><span class="sec-n">05</span><h2>All ${count} messages</h2></div>
     <div class="stack">
-      <p>Every SMS fits in one segment with the sample values, checked on the journey page rather than assumed.</p>
+      <p>Every SMS fits in one segment with the sample values and a realistic shortened link, checked rather than assumed.</p>
       <div class="t-scroll">
         <table>
           <thead><tr><th>ID</th><th>Channel</th><th>Trigger</th><th>Type</th><th>Reuse</th><th>Appears in</th></tr></thead>
@@ -220,20 +250,14 @@ ${inventoryRows}
     </div>
   </section>
 
-${section('06', 'shared', 'Shared messages', ['X-ACK', 'X-CHASE', 'X-APPT', 'X-BOOK'], 'Used by both boards: the chase, the phone consult booking, and the step from the call to the assessment.')}
-${section('07', 'residential', 'Residential: assessment to decision', ['R-ASSESS', 'R-QUOTING', 'R-QUOTE', 'R-FU', 'LOST'])}
-${section('08', 'delivery', 'Won and delivery', ['X-WON', 'DEP', 'JOB', 'PAY'])}
-${section('09', 'after', 'After the job', ['REV'])}
-${section('10', 'nurture', 'Nurture', ['NUR'], 'Marketing. Sends only when <code>consent_marketing</code> is <code>yes</code>. Every one carries an unsubscribe.')}
-${section('11', 'system', 'Always on', ['SYS'])}
-${section('12', 'commercial', 'Commercial', ['C-'], 'Commercial buys differently. These are longer, plainer and carry no urgency devices, because the reader is a facility manager or a builder with a file open, not a homeowner.')}
+${SECTIONS.map((s) => section(...s)).join('\n')}
   <div class="ask">
     <b>Needs Glenn:</b> payment terms for commercial work, and whether progress claims
     follow a percentage, a milestone, or a monthly cycle.
   </div>
 
   <section id="order">
-    <div class="sec-head"><span class="sec-n">13</span><h2>Build order</h2></div>
+    <div class="sec-head"><span class="sec-n">15</span><h2>Build order</h2></div>
     <div class="stack">
       <p>Do not build all ${count} at once. In order of what earns most:</p>
       <ol class="plain">
@@ -247,7 +271,7 @@ ${J.buildOrder.map((b) => `        <li><b>${esc(b.ids)}</b>, ${esc(b.why.charAt(
 
 const out = head + body
 const dashes = (out.match(/\u2014/g) || []).length
-const vendor = (out.match(/GoHighLevel|\bGHL\b/g) || []).length
+const vendor = (out.match(/GoHighLevel|HighLevel|LeadConnector|\bGHL\b|Spray It/g) || []).length
 const abn = (out.match(/ABN \{\{/g) || []).length
 if (dashes || vendor || abn) { console.error(`em dashes ${dashes}, vendor ${vendor}, abn tokens ${abn}`); process.exit(1) }
 fs.writeFileSync(SCRATCH + 'messaging.html', out + '\n</body>\n</html>\n')

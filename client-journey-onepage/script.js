@@ -30,7 +30,16 @@
     return n;
   };
   var TOKEN = /\{\{\s*([a-zA-Z0-9_.]+)\s*\}\}/g;
-  var isLinkKey = function (k) { return /(_url|_link)$/.test(k); };
+  var isLinkKey = function (k) { return /(_url|_link)$/.test(k) || /^trigger_link\./.test(k); };
+
+  /* Who an email is from. 'contact' is the person who handles customer
+     contact, signed with their name and mobile; 'brand' is the business, on
+     confirmations, reminders and invoices. */
+  var FROM = {
+    contact: { name: '{{custom_values.from_name_contact}}', initials: (J.brand.contactInitials || 'SI'), cls: 'ava' },
+    brand: { name: '{{custom_values.from_name_brand}}', initials: 'SI', cls: 'ava green' },
+  };
+  var fromOf = function (m) { return FROM[m.from] || FROM.brand; };
 
   /* Agency view. agency.html sets window.JOURNEY_AGENCY; index.html also
      accepts ?agency on the address. Either way the page shows what is only
@@ -175,7 +184,7 @@
   /* Raw text handed to the clipboard. Tokens intact, ready for the builder. */
   function copyText(m, id) {
     if (m.channel === 'sms') return m.body;
-    var from = m.from === 'owner' ? '{{custom_values.from_name_owner}}' : '{{custom_values.from_name_brand}}';
+    var from = fromOf(m).name;
     var out = [
       'ID: ' + id,
       'From: ' + from + ' <{{custom_values.business_email}}>',
@@ -216,9 +225,10 @@
 
   function renderEmail(m, id, pipelineId) {
     var mode = state.view, S = samplesFor(pipelineId);
-    var fromName = m.from === 'owner' ? '{{custom_values.from_name_owner}}' : '{{custom_values.from_name_brand}}';
-    var initials = m.from === 'owner' ? esc(J.brand.ownerInitials) : 'SI';
-    var avaCls = m.from === 'owner' ? 'ava' : 'ava green';
+    var sender = fromOf(m);
+    var fromName = sender.name;
+    var initials = esc(sender.initials);
+    var avaCls = sender.cls;
     var toLine = mode === 'fields'
       ? '<span class="tk">{{contact.full_name}}</span> <span class="addr">&lt;<span class="tk">{{contact.email}}</span>&gt;</span>'
       : '<b>' + esc(S['contact.full_name']) + '</b> <span class="addr">&lt;' + esc(S['contact.email']) + '&gt;</span>';
@@ -252,7 +262,7 @@
     var optout = m.type === 'MKTG' ? '<span>Reply STOP to opt out</span>' : '<span>Sender identified</span>';
     if (CLIENT) {
       meta = st.segments === 1 ? 'One text message' : st.segments + ' text messages';
-      optout = m.type === 'MKTG' ? '<span>Includes an opt-out</span>' : '<span>Signed off as ' + esc(J.brand.shortName) + '</span>';
+      optout = m.type === 'MKTG' ? '<span>Includes an opt-out</span>' : '<span>Signed off as ' + esc(J.brand.smsSignoff || J.brand.shortName) + '</span>';
     }
     return '<div class="phone"><div class="phone__notch"></div>'
       + '<div class="phone__who"><b>' + esc(J.brand.name) + '</b>Text message</div>'
@@ -293,7 +303,7 @@
     var html = '<div class="team__head">' + ICON.bell + 'Behind the scenes · what your team sees</div><div class="team__grid">';
 
     html += '<div class="team__col"><h4>Alerts that interrupt</h4>';
-    if (!stage.alerts || !stage.alerts.length) html += '<p class="trow__b" style="color:var(--ink-3)">Nothing here interrupts anyone. This stage waits for the daily digest.</p>';
+    if (!stage.alerts || !stage.alerts.length) html += '<p class="trow__b" style="color:var(--ink-3)">Nothing here interrupts anyone. This stage waits for the daily summary.</p>';
     (stage.alerts || []).forEach(function (n) {
       var a = J.alerts[n - 1];
       html += '<div class="trow"><span class="tprio ' + a.prio + '">' + ({ now: 'Act now', heads: 'Heads up', win: 'Win', fyi: 'Good to know' })[a.prio] + '</span>'
@@ -350,15 +360,19 @@
     return 'stage-' + (pipeline.id === 'residential' ? 'res' : 'com') + '-' + stage.key;
   }
 
+  /* Where the sale is, from the stage's phase. The won stage is a real,
+     numbered stage on both boards; there are no status-only markers. */
+  var PHASE_TEXT = {
+    client: { sale: 'Still winning the job', either: 'Before or after the yes', won: 'The job is won here', job: 'Won, job underway' },
+    agency: { sale: 'Open · sales', either: 'Open or Won', won: 'Set to Won here', job: 'Won · delivery' },
+  };
   function stageFacts(stage, pipeline) {
-    var idx = pipeline ? pipeline.stages.indexOf(stage) : -1;
-    var wonIdx = pipeline ? pipeline.stages.findIndex(function (s) { return s.won; }) : -1;
-    var status = stage.won ? 'Status set to Won' : (idx > -1 && wonIdx > -1 && idx > wonIdx) ? 'Won · delivery' : 'Open · sales';
+    var phase = stage.phase || 'sale';
+    var status = PHASE_TEXT[CLIENT ? 'client' : 'agency'][phase] || '';
     var html = '<div class="facts">';
-    if (CLIENT) status = stage.won ? 'The sale is won here' : (idx > -1 && wonIdx > -1 && idx > wonIdx) ? 'Sale won, job underway' : 'Still winning the job';
     if (stage.exits) html += '<div class="fact"><b>' + (CLIENT ? 'Moves on when' : 'Exits when') + '</b><span>' + esc(stage.exits) + '</span></div>';
     if (stage.stalls) html += '<div class="fact"><b>' + (CLIENT ? 'Flag it after' : 'Stalls after') + '</b><span>' + esc(stage.stalls) + '</span></div>';
-    if (pipeline) html += '<div class="fact' + (status.indexOf('on') > -1 || status.indexOf('Won') > -1 ? ' won' : '') + '"><b>' + (CLIENT ? 'Where the sale is' : 'Status') + '</b><span>' + status + '</span></div>';
+    if (pipeline && status) html += '<div class="fact' + (phase === 'won' || phase === 'job' ? ' won' : '') + '"><b>' + (CLIENT ? 'Where the sale is' : 'Status') + '</b><span>' + status + '</span></div>';
     if (AGENCY) {
       var tg = stageTag(stage, pipeline);
       if (tg) html += '<div class="fact fact--tag"><b>Tag on the contact</b><span><code>' + esc(tg) + '</code></span></div>';
@@ -379,7 +393,8 @@
     sec.setAttribute('role', 'tabpanel');
     sec.setAttribute('aria-label', stage.name);
 
-    var badge = stage.won ? '<span class="badge won">Won</span>' : stage.n ? '<span class="badge">' + String(stage.n).padStart(2, '0') + '</span>' : '<span class="badge">All</span>';
+    var isWonStage = pipeline && pipeline.wonAt === stage.key;
+    var badge = stage.n ? '<span class="badge' + (isWonStage ? ' won' : '') + '">' + String(stage.n).padStart(2, '0') + '</span>' : '<span class="badge">All</span>';
     var head = '<div class="stage__head"><div>'
       + '<div class="stage__k">' + badge + (pipeline ? esc(pipeline.name) + ' · ' : '') + esc(stage.name) + '</div>'
       + '<h2 class="stage__t">' + esc(stage.headline) + '</h2>'
@@ -424,7 +439,7 @@
   }
 
   function buildSeg() {
-    var items = J.pipelines.map(function (p) { return { id: p.id, label: p.name, n: p.stages.filter(function (s) { return !s.won; }).length + ' stages' }; });
+    var items = J.pipelines.map(function (p) { return { id: p.id, label: p.name, n: p.stages.length + ' stages' }; });
     items.push({ id: 'always-on', label: 'Always on', n: '' });
     segEl.innerHTML = items.map(function (i) {
       return '<button type="button" data-pipeline="' + i.id + '" aria-pressed="' + (i.id === state.pipeline) + '">' + esc(i.label) + (i.n ? '<span class="n">' + esc(i.n) + '</span>' : '') + '</button>';
@@ -433,11 +448,10 @@
 
   function buildRail() {
     var p = pipelineById(state.pipeline);
-    var wonIdx = p.stages.findIndex(function (s) { return s.won; });
     railEl.innerHTML = p.stages.map(function (s, i) {
       var here = p.stages.findIndex(function (x) { return x.key === state.stage; });
-      var cls = 'node' + (s.won ? ' won' : '') + (wonIdx > -1 && i > wonIdx ? ' delivery' : '') + (p.system ? ' sys' : '') + (here > -1 && i < here ? ' done' : '');
-      var num = s.won ? 'Won' : s.n ? String(s.n).padStart(2, '0') : '';
+      var cls = 'node' + (p.wonAt === s.key ? ' won' : '') + (s.phase === 'job' ? ' delivery' : '') + (p.system ? ' sys' : '') + (here > -1 && i < here ? ' done' : '');
+      var num = s.n ? String(s.n).padStart(2, '0') : '';
       var count = msgCount(s);
       return '<button type="button" class="' + cls + '" role="tab" data-stage="' + esc(s.key) + '" aria-selected="' + (s.key === state.stage) + '" tabindex="' + (s.key === state.stage ? 0 : -1) + '">'
         + '<span class="bead"></span><span class="lbl">' + esc(s.name) + '</span><span class="num">' + esc(num) + (count ? ' · ' + count : '') + '</span></button>';
@@ -603,7 +617,7 @@
       + '<div class="tagfam">' + J.tags.families.map(function (f) {
         return '<div class="tagfam__i"><code>' + esc(f.k) + '</code><b>' + esc(f.life) + '</b><p>' + esc(f.why) + '</p></div>';
       }).join('') + '</div>'
-      + '<table class="tagtbl"><thead><tr><th>Tag</th><th>What it means</th><th>Set by</th></tr></thead><tbody>'
+      + '<div class="t-scroll"><table class="tagtbl"><thead><tr><th>Tag</th><th>What it means</th><th>Set by</th></tr></thead><tbody>'
       + J.tags.list.map(function (t) {
         var by = (J.workflows || []).filter(function (w) { return w.tags && (w.tags.add || []).indexOf(t.t) > -1; }).map(function (w) { return w.id; });
         var off = (J.workflows || []).filter(function (w) { return w.tags && (w.tags.remove || []).indexOf(t.t) > -1; }).map(function (w) { return w.id; });
@@ -611,7 +625,7 @@
           + (by.length ? by.join(', ') : '<span class="tag__none">' + esc(t.by || 'nothing sets this yet') + '</span>')
           + (off.length ? '<br><span class="tag__off">off again: ' + off.join(', ') + '</span>' : '')
           + '</td></tr>';
-      }).join('') + '</tbody></table>');
+      }).join('') + '</tbody></table></div>');
 
     if (J.customFields) set('customFields', J.customFields.map(function (g) {
       return '<h3 class="fields__h">' + esc(g.group) + '</h3>'
@@ -628,8 +642,10 @@
     if (J.goLive) set('goLive', J.goLive.map(function (s) { return '<li><label class="check"><input type="checkbox"> <span>' + esc(s) + '</span></label></li>'; }).join(''));
 
     /* hero stats */
-    var stages = 0, tasks = 0;
-    J.pipelines.forEach(function (p) { p.stages.forEach(function (s) { if (!s.won) stages += 1; tasks += (s.tasks || []).length; }); });
+    /* Both boards carry the same stages, so the count is the stages on one
+       board; the label on the page says so. */
+    var stages = J.pipelines[0].stages.length, tasks = 0;
+    J.pipelines.forEach(function (p) { p.stages.forEach(function (s) { tasks += (s.tasks || []).length; }); });
     tasks += (J.alwaysOn.tasks || []).length;
     var emails = ids.filter(function (id) { return J.messages[id].channel === 'email'; }).length;
     text('statStages', stages);
@@ -641,6 +657,32 @@
     text('cntAlerts', J.alerts.length);
     text('statWorkflows', (J.workflows || []).length);
     text('cntMessages', ids.length);
+  }
+
+  /* ------------------------------------------------------ whole pipeline */
+  /* Both boards carry the same stages in the same order, so the overview is
+     one row per stage with a column per board. The client page shows what
+     each stage means; the agency page adds how to build the view. */
+  function renderOverview() {
+    var host = document.getElementById('overview');
+    if (!host || !J.overview) return;
+    var boards = J.pipelines;
+    var rows = boards[0].stages.map(function (s, i) {
+      var cells = boards.map(function (p) {
+        var st = p.stages[i];
+        return '<td>' + esc(st.means) + '<br><span class="ov__exit">Moves on when: ' + esc(st.exits) + '</span></td>';
+      }).join('');
+      var won = boards[0].wonAt === s.key;
+      return '<tr' + (won ? ' class="ov__won"' : '') + '><td class="mono">' + String(s.n).padStart(2, '0') + '</td><td><b>' + esc(s.name) + '</b>'
+        + (won ? '<br><span class="ov__exit">The job is won here</span>' : '') + '</td>' + cells + '</tr>';
+    }).join('');
+    var html = '<p class="sec-lede">' + esc(J.overview.lede) + '</p>'
+      + '<div class="t-scroll"><table class="ov"><thead><tr><th>#</th><th>Stage</th>'
+      + boards.map(function (p) { return '<th>' + esc(p.name) + '</th>'; }).join('')
+      + '</tr></thead><tbody>' + rows + '</tbody></table></div>';
+    if (AGENCY) html += '<h3 class="fields__h" style="margin-top:1.6rem">Building the view in the platform</h3><ol class="ol">'
+      + J.overview.build.map(function (b) { return '<li><span>' + esc(b) + '</span></li>'; }).join('') + '</ol>';
+    host.innerHTML = html;
   }
 
   /* ------------------------------------------------------------ workflows */
@@ -762,14 +804,18 @@
     'contact.areas': 'what needs doing', 'contact.phone': 'their number', 'contact.property_type': 'the property', 'contact.timeframe': 'their timeframe',
     'contact.postcode': 'their postcode', 'contact.utm_source': 'where they came from', 'appointment.start_time': 'the time',
     'opportunity.site_address': 'the site', 'opportunity.name': 'the job', 'opportunity.value': 'the value', 'opportunity.deposit_amount': 'the deposit',
+    'opportunity.job_date': 'the install date', 'opportunity.deposit_due_date': 'the due date', 'opportunity.retention_amount': 'the retention',
+    'opportunity.accepted_quote_option': 'the option chosen', 'opportunity.inspection_date': 'the inspection date',
     'message.body': 'their message', 'review.rating': '2', 'review.author': 'a customer', 'workflow.name': 'a workflow', 'error.message': 'what broke', 'time': 'the time',
   };
   function plainTokens(t) { return renderTokens(t, 'preview', Object.assign({}, samplesFor('residential'), GENERIC)).replace(/ class="pz[^"]*"/g, ''); }
 
-  /* Role codes read as people on the client pages. */
+  /* Role codes read as plain words on the client pages. Never a person's
+     name: the roles table says who fills each one, and the alerts and tasks
+     keep working when somebody new is hired. */
   function roleLabel(role) {
     if (!CLIENT) return role;
-    var map = { OWNER: 'Glenn', OFFICE: 'The office', ESTIMATOR: 'The estimator', CREW_LEAD: 'The crew lead', 'Assigned user': 'Whoever it is assigned to' };
+    var map = { OWNER: 'The owner', OFFICE: 'The office', ESTIMATOR: 'The estimator', CREW_LEAD: 'The crew lead', 'Assigned user': 'Whoever owns the job' };
     return String(role).replace(/Assigned user|OWNER|OFFICE|ESTIMATOR|CREW_LEAD/g, function (r) { return map[r] || r; });
   }
 
@@ -791,7 +837,7 @@
         out.push('<li>' + label + (m.type === 'MKTG' ? ' <span class="chip chip--mktg">Only if they opted in</span>' : '') + '</li>');
       });
     });
-    (stage.alerts || []).forEach(function (n) { var a = J.alerts[n - 1]; out.push('<li><b>Alert to ' + esc(roleLabel(a.to).replace(/^Whoever/, 'whoever').replace(/^The /, 'the ')) + ':</b> ' + esc(a.plain || a.name) + '</li>'); });
+    (stage.alerts || []).forEach(function (n) { var a = J.alerts[n - 1]; out.push('<li><b>Alert to ' + esc(roleLabel(a.to).replace(/^Whoever/, 'whoever').replace(/^The /, 'the ').replace(/ and The /, ' and the ')) + ':</b> ' + esc(a.plain || a.name) + '</li>'); });
     if (stage.escalation) out.push('<li><b>If nobody moves it:</b> ' + esc(stage.escalation) + '</li>');
     return out.length ? '<ul class="g-list">' + out.join('') + '</ul>' : '<p class="g-none">Nothing sends here. This stage is a conversation.</p>';
   }
@@ -830,10 +876,11 @@
     var draw = function () {
       var p = pipelineById(pid);
       host.innerHTML = p.stages.map(function (s, i) {
-        var num = s.won ? 'Won' : s.n ? String(s.n).padStart(2, '0') : 'All';
+        var num = s.n ? String(s.n).padStart(2, '0') : 'All';
         var todo = (s.clientDo || []).length;
-        return '<details class="g-stage' + (s.won ? ' g-stage--won' : '') + '"' + (i === 0 ? ' open' : '') + '>'
-          + '<summary><div class="g-stage__head"><span class="badge' + (s.won ? ' won' : '') + '">' + esc(num) + '</span>'
+        var isWon = p.wonAt === s.key;
+        return '<details class="g-stage' + (isWon ? ' g-stage--won' : '') + '"' + (i === 0 ? ' open' : '') + '>'
+          + '<summary><div class="g-stage__head"><span class="badge' + (isWon ? ' won' : '') + '">' + esc(num) + '</span>'
           + '<div><h3>' + esc(s.name) + '</h3><p>' + esc(s.means || s.headline) + '</p></div>'
           + '<span class="g-stage__count">' + (todo ? '<b>' + todo + '</b> for you' : 'nothing for you') + '</span>'
           + ICON.chev.replace('<svg ', '<svg class="g-stage__chev" ') + '</div></summary>'
@@ -1000,6 +1047,7 @@
   if (CLIENT) state.view = 'preview';
   renderPageNav();
   buildAppendices();
+  renderOverview();
   renderWorkflows();
   renderGuide();
   if (main) {

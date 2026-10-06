@@ -4,7 +4,8 @@
  * - every message referenced by a stage exists
  * - every message is referenced by at least one stage
  * - every merge field used has a sample value
- * - every email has subject, preheader, from, sig
+ * - every email has subject, preheader, from, sig, and a sender the pages know
+ * - both boards carry the same numbered stages in the same order, no Won markers
  * - no em dashes, no vendor name, anywhere in the folder
  */
 import fs from 'node:fs'
@@ -27,6 +28,27 @@ const referenced = new Set()
 const stages = []
 for (const p of J.pipelines) for (const s of p.stages) stages.push({ p: p.id, s })
 stages.push({ p: 'always-on', s: J.alwaysOn })
+
+/* the boards: every stage is numbered in order, carries a phase, and both
+   boards share the same keys and names in the same order. The whole-pipeline
+   view and the stage tags both depend on that. There are no status-only
+   marker stages: the stage where the job is won is a real, numbered stage. */
+{
+  const PHASES = ['sale', 'either', 'won', 'job']
+  for (const p of J.pipelines) {
+    p.stages.forEach((s, i) => {
+      if (s.n !== i + 1) bad(`${p.id}/${s.key} is numbered ${s.n}, expected ${i + 1}`)
+      if (!PHASES.includes(s.phase)) bad(`${p.id}/${s.key} has no phase (one of ${PHASES.join(', ')})`)
+      if (s.won) bad(`${p.id}/${s.key} is a Won marker; the won stage is a numbered stage named by pipeline.wonAt`)
+    })
+    if (!p.stages.some((s) => s.key === p.wonAt)) bad(`${p.id} wonAt "${p.wonAt}" is not one of its stages`)
+  }
+  const shape = (p) => p.stages.map((s) => s.key + '=' + s.name).join(' > ')
+  const first = J.pipelines[0]
+  for (const p of J.pipelines.slice(1)) if (shape(p) !== shape(first)) bad(`${p.id} does not have the same stages, in the same order, as ${first.id}`)
+  if (!J.overview || !Array.isArray(J.overview.build) || !J.overview.build.length) bad('overview (the whole-pipeline view) is missing its build steps')
+  ok(`${J.pipelines.length} boards with the same ${first.stages.length} stages in the same order: ${first.stages.map((s) => s.name).join(', ')}`)
+}
 for (const { p, s } of stages) {
   for (const g of s.groups || []) for (const id of g.messages) {
     referenced.add(id)
@@ -63,10 +85,14 @@ for (const { p, s } of stages) {
 if (missing.size) for (const m of missing) bad('no sample value for ' + m)
 else ok(`${usedTokens.size} distinct merge fields, all have sample values`)
 
-/* email completeness */
+/* email completeness. `from` is a sender the pages and documents know how to
+   render, and its From name is a custom value that exists. */
+const FROM = { contact: 'from_name_contact', brand: 'from_name_brand' }
 for (const [id, m] of Object.entries(J.messages)) {
   if (m.channel === 'email') {
     for (const f of ['subject', 'preheader', 'from', 'sig']) if (!m[f]) bad(`${id} has no ${f}`)
+    if (m.from && !FROM[m.from]) bad(`${id} is from "${m.from}", which is not one of ${Object.keys(FROM).join(', ')}`)
+    else if (m.from && !J.customValues.some((v) => v.key === FROM[m.from])) bad(`${id} needs the custom value ${FROM[m.from]}`)
     if (m.preheader && m.preheader.length > 110) bad(`${id} preheader is ${m.preheader.length} chars, keep under 110`)
     if (m.subject && m.subject.length > 78) bad(`${id} subject is ${m.subject.length} chars`)
     if (m.type === 'MKTG' && !/unsubscribe_link/.test(m.footer || '')) bad(`${id} is marketing but has no unsubscribe`)
@@ -89,6 +115,7 @@ for (const { p, s } of stages) {
 }
 for (const v of J.customValues) clientText.push([`value ${v.key}`, v.note])
 for (const c of J.compliance) clientText.push([`compliance ${c.title}`, c.body])
+if (J.overview) clientText.push(['overview', J.overview.lede])
 for (const [where, text] of clientText) if (AGENCY_WORDS.test(text)) bad(`agency wording where the client reads it: ${where}`)
 ok('nothing agency-facing in the text the client reads (agency notes live in agencyNote)')
 
@@ -153,7 +180,7 @@ else {
     if (named.size !== J.tags.list.length) bad('a tag is listed twice')
     for (const t of J.tags.list) {
       if (!t.why) bad(`${t.t} has no note saying what it means`)
-      if (!/^(been|is|from)-/.test(t.t)) bad(`${t.t} is not in a family`)
+      if (!/^(been|is|from)-/.test(t.t)) bad(`${t.t} is not in a tag group (been-, is-, from-)`)
     }
     /* a tag nothing sets has to say why, or it is just a tag nobody uses */
     const setBy = new Set(J.workflows.flatMap((w) => (w.tags && w.tags.add) || []))
@@ -246,6 +273,6 @@ ok('no em dashes, no vendor name, nothing left from the previous client')
 let tasks = 0
 for (const { s } of stages) tasks += (s.tasks || []).length
 const emails = Object.values(J.messages).filter((m) => m.channel === 'email').length
-console.log(`\nstages ${stages.length - 3} (plus 2 Won markers and Always on), messages ${Object.keys(J.messages).length} (${emails} email, ${Object.keys(J.messages).length - emails} sms), tasks ${tasks}, alerts ${J.alerts.length}`)
+console.log(`\nstages ${stages.length - 1} (${J.pipelines.map((p) => p.stages.length).join(' + ')} across ${J.pipelines.length} boards, plus Always on), messages ${Object.keys(J.messages).length} (${emails} email, ${Object.keys(J.messages).length - emails} sms), tasks ${tasks}, alerts ${J.alerts.length}`)
 console.log(fail ? `\n${fail} FAILED` : '\nALL CHECKS PASSED')
 process.exit(fail ? 1 : 0)

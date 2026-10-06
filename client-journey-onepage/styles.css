@@ -1,5 +1,5 @@
 /* ============================================================================
-   Spray It Solutions customer journey
+   SprayIT Solutions customer journey
    Brand: navy #002396, green #8DC63F. Type: Archivo for display, IBM Plex
    Sans for body, IBM Plex Mono for ids and merge fields. Same system as the
    three CRM documents, so the four read as a set.
@@ -473,9 +473,9 @@ td .chip { font-size: .58rem; }
 @media print { .more > summary { display: none; } .more .appendix { display: block; } }
 
 /* -------------------------------------------------------------- workflows */
-/* Twenty-nine workflows expanded is twenty-two screens. Collapsed, the whole
+/* Thirty-five workflows expanded is many screens. Collapsed, the whole
    build is one screen you can scan, and each one opens where you are. */
-.wf-list { display: grid; gap: .5rem; }
+.wf-list { display: grid; gap: .5rem; grid-template-columns: minmax(0, 1fr); }
 .wf { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; box-shadow: var(--shadow-s); scroll-margin-top: 8rem; overflow: hidden; }
 .wf > summary { list-style: none; cursor: pointer; padding: .8rem 1.1rem; }
 .wf > summary::-webkit-details-marker { display: none; }
@@ -683,6 +683,12 @@ footer { border-top: 1px solid var(--line); padding: 1.8rem 0 3rem; }
 
 /* phone numbers and short codes never break across lines */
 .pz--nw { white-space: nowrap; }
+
+/* ------------------------------------------------------- whole pipeline */
+/* One row per stage, a column per board. The won stage is tinted. */
+.ov td { vertical-align: top; }
+.ov__exit { display: inline-block; margin-top: .25rem; font-size: .82rem; color: var(--ink-3); }
+.ov tr.ov__won td { background: var(--green-wash); }
 
 /* ------------------------------------------------------------------ print */
 @media print {
