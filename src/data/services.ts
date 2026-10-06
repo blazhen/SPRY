@@ -1,4 +1,5 @@
 import type { ImageAsset } from '@/lib/images'
+import { routes } from '@/data/routes'
 
 export interface SubService {
   label: string
@@ -22,7 +23,7 @@ export const services: Service[] = [
     index: '01',
     title: 'Residential',
     lede: 'Homes that hold their temperature. We seal the three places a house leaks most: under the floor, through the roof, and out through the walls.',
-    href: '/residential',
+    href: routes.residential,
     image: {
       id: 'photo-1590725140246-20acdee442be',
       alt: 'Warm timber-lined A-frame living room with soft lamplight and a comfortable sofa',
@@ -48,7 +49,7 @@ export const services: Service[] = [
     index: '02',
     title: 'Commercial',
     lede: 'Sheds, plants and remote sites. Our rigs travel to the job, whatever its size and wherever it is, and we work around your operation.',
-    href: '/commercial',
+    href: routes.commercial,
     image: {
       id: 'photo-1553413077-190dd305871c',
       alt: 'Long aisle of high racking inside a working distribution warehouse',

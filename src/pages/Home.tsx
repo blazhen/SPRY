@@ -70,7 +70,7 @@ export default function Home() {
       <MidCta />
 
       <Suspense
-        fallback={<div className="min-h-[60vh] bg-bone" aria-hidden="true" />}
+        fallback={<div className="min-h-[60vh] bg-surface" aria-hidden="true" />}
       >
         <Testimonials />
       </Suspense>

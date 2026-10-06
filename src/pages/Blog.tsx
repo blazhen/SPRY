@@ -7,6 +7,7 @@ import ProtectedImage from '@/components/ui/ProtectedImage'
 import Breadcrumbs from '@/components/Breadcrumbs'
 import { PageCta } from '@/components/PageParts'
 import { blogIntro, blogPosts, formatPostDate } from '@/data/blog'
+import { postPath, routes } from '@/data/routes'
 
 /**
  * Blog index.
@@ -21,9 +22,9 @@ export default function Blog() {
   return (
     <>
       <Seo
-        title="Blog | Spray It Solutions"
-        description="Case studies from real spray foam jobs, and plain explanations of the questions we get asked most."
-        path="/blog"
+        title="Insights & Tips on Spray Foam Insulation | SprayIT Blog"
+        description="Explore the SprayIT Blog for expert tips, industry news, and practical advice on spray foam insulation for residential and commercial properties in Melbourne"
+        path={routes.blog}
       />
 
       <section
@@ -48,7 +49,7 @@ export default function Blog() {
           {lead && (
             <article className="mt-14 grid items-center gap-8 border-t border-line/10 pt-12 lg:grid-cols-12 lg:gap-12">
               <div className="lg:col-span-7">
-                <Link to={`/blog/${lead.slug}`} className="block overflow-hidden rounded-xl border border-line/10">
+                <Link to={postPath(lead.slug)} className="block overflow-hidden rounded-xl border border-line/10">
                   <div className="relative aspect-[16/9]">
                     <ProtectedImage
                       src={lead.image}
@@ -65,12 +66,12 @@ export default function Blog() {
                   Latest · {formatPostDate(lead.date)}
                 </p>
                 <h2 className="mt-5 font-display text-h2 font-semibold leading-tight text-bone">
-                  <Link to={`/blog/${lead.slug}`} className="hover:text-accent">
+                  <Link to={postPath(lead.slug)} className="hover:text-accent">
                     {lead.title}
                   </Link>
                 </h2>
                 <p className="mt-5 max-w-measure text-body text-bone-400">{lead.excerpt}</p>
-                <Link to={`/blog/${lead.slug}`} className="link-wipe mt-7 inline-flex text-accent">
+                <Link to={postPath(lead.slug)} className="link-wipe mt-7 inline-flex text-accent">
                   Read the article
                   <ArrowUpRight className="size-4" aria-hidden="true" />
                 </Link>
@@ -84,7 +85,7 @@ export default function Blog() {
                 <li key={post.slug}>
                   <article className="flex h-full flex-col">
                     <Link
-                      to={`/blog/${post.slug}`}
+                      to={postPath(post.slug)}
                       className="block overflow-hidden rounded-xl border border-line/10"
                     >
                       <div className="relative aspect-[16/10]">
@@ -100,7 +101,7 @@ export default function Blog() {
                       {formatPostDate(post.date)}
                     </p>
                     <h3 className="mt-3 font-display text-h4 font-semibold leading-tight text-bone">
-                      <Link to={`/blog/${post.slug}`} className="hover:text-accent">
+                      <Link to={postPath(post.slug)} className="hover:text-accent">
                         {post.title}
                       </Link>
                     </h3>

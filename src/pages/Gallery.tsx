@@ -23,6 +23,7 @@ import ProtectedImage from '@/components/ui/ProtectedImage'
 import Breadcrumbs from '@/components/Breadcrumbs'
 import MidCta from '@/components/MidCta'
 import { PageCta } from '@/components/PageParts'
+import { routes } from '@/data/routes'
 import {
   factSheets,
   factSheetsIntro,
@@ -352,9 +353,9 @@ export default function Gallery() {
   return (
     <div ref={scope}>
       <Seo
-        title="Photo Gallery & Fact Sheets | Spray It Solutions"
-        description="Spray foam insulation jobs photographed on site, with the building, the foam and the thickness for each, plus test reports, safety data sheets and product documentation."
-        path="/gallery"
+        title="Spray Foam Insulation Photo Gallery | SprayIT Solutions Melbourne"
+        description="Explore our photo gallery showcasing spray foam insulation projects for residential and commercial properties in Melbourne. See SprayIT Solutions in action!"
+        path={routes.gallery}
       />
 
       {/* ---------------------------------------------------- Photographs */}

@@ -9,7 +9,7 @@ export interface Faq {
 
 /** One FAQ section: its heading and the questions under it. */
 export interface FaqSet {
-  id: 'general' | 'residential' | 'commercial' | 'sprayFoam'
+  id: 'general' | 'residential' | 'commercial' | 'sprayFoam' | 'underfloor' | 'roof' | 'walls'
   intro: SectionIntro
   items: Faq[]
 }
@@ -53,51 +53,70 @@ export const faqs: Faq[] = [
 export const faqSets: Record<FaqSet['id'], FaqSet> = {
   general: { id: 'general', intro: faqIntro, items: faqs },
 
+  /* The agency's own ten, from their residential outline, as written. The last
+     four were in title case in the draft and are set in sentence case here
+     to match the first six. */
   residential: {
-    id: 'residential',
+    id: "residential",
     intro: {
-      eyebrow: 'Questions',
-      headingLines: ['FAQs about', 'residential', 'insulation.'],
-      accentWord: 'residential',
+      eyebrow: "Questions",
+      headingLines: [
+        "Spray Foam FAQs"
+      ],
+      accentWord: "FAQs"
     },
     items: [
       {
-        id: 'res-retrofit',
-        question: 'Can you insulate the walls of an existing home without pulling them apart?',
-        answer:
-          'Yes. In an existing brick veneer home the cavity is filled from outside through small access points, so nothing internal is disturbed and nobody has to move out. The access points are made good afterwards. In a new build the foam goes between the studs before the walls are lined.',
+        id: "res-older",
+        question: "Is spray foam suitable for older homes?",
+        answer: "It can suit some older properties, depending on the construction, existing materials, and access. We recommend an assessment before deciding on the appropriate application."
       },
       {
-        id: 'res-first',
-        question: 'Which part of the house should we insulate first?',
-        answer:
-          'In most homes around a third of the heat is lost through the roof, around a quarter through the walls and the rest through the floor. If you can only do one, the roof is usually the biggest single gain. But insulating one surface and leaving the others helps less than people expect, because heating and cooling take whichever path is still open.',
+        id: "res-renovations",
+        question: "Can spray foam be used during renovations?",
+        answer: "Yes. Renovations can provide access to areas that may otherwise be difficult to reach. Suitability depends on the area being renovated and the existing structure."
       },
       {
-        id: 'res-underfloor',
-        question: 'Do you insulate under a suspended timber floor?',
-        answer:
-          'Yes, and it is the surface almost everybody skips. A suspended timber floor sits above open, moving air, which is exactly why the floor is cold in July and why insulating the roof alone never quite fixes the room. The foam is sprayed to the underside of the floor, between the joists, from the subfloor.',
+        id: "res-parts",
+        question: "Which parts of my home can be insulated?",
+        answer: "SprayIT Solutions provides suitable residential applications for underfloor, roof and ceiling, and wall areas. Available options depend on your home’s construction and access."
       },
       {
-        id: 'res-penetrations',
-        question: 'What happens around downlights, flues and wiring in the roof?',
-        answer:
-          'We insulate around roof and ceiling penetrations while keeping all the required clearances around downlights, flues and electrical equipment. It is part of every roof job, not an extra.',
+        id: "res-comfort",
+        question: "Can insulation improve indoor comfort?",
+        answer: "Effective insulation can reduce unwanted heat transfer, which may help maintain more stable, comfortable indoor temperatures."
       },
       {
-        id: 'res-after',
-        question: 'What changes once the house is done?',
-        answer:
-          'The first thing owners report is not a number on a bill. It is that the house holds its temperature: one temperature room to room, warm for hours after the heating goes off, and no draft crossing the floor. The bill follows, because the heating cycles less often and runs at a lower setting to reach the same comfort.',
+        id: "res-draughts",
+        question: "Does spray foam help reduce draughts?",
+        answer: "Spray foam expands into suitable gaps and spaces, helping form an air barrier in the treated area. This can reduce unwanted air movement where gaps are contributing to draughts."
       },
       {
-        id: 'res-older',
-        question: 'Does it suit older homes?',
-        answer:
-          'Older housing is where it pays off hardest. Pre-1990 homes in Victoria usually have no insulation at all in the walls or the subfloor, and many have too little in the ceiling. Those are the houses where the difference is felt in the first week.',
+        id: "res-moisture",
+        question: "Can spray foam fix moisture or condensation problems?",
+        answer: "Spray foam should not be used to conceal or compensate for an active leak, drainage problem, or persistently damp substrate. Ventilation, temperature, building design, and water ingress can all affect moisture and condensation. The underlying cause should be investigated before insulation is installed. Different foam systems also have different vapour and moisture characteristics, so the right product must be selected for specific application."
       },
-    ],
+      {
+        id: "res-time",
+        question: "How long does spray foam take to install?",
+        answer: "Installation time depends on the size and condition of the area, access and the complexity of the project. A site assessment can provide a more accurate timeframe."
+      },
+      {
+        id: "res-new",
+        question: "Is spray foam suitable for new homes?",
+        answer: "Spray foam can be considered for suitable areas of new homes. Construction can also provide easier access to areas that may become harder to reach once the property is completed."
+      },
+      {
+        id: "res-energy",
+        question: "Can home insulation help reduce energy use?",
+        answer: "Effective insulation can reduce heat transfer and may reduce the heating or cooling needed to maintain indoor comfort. Actual energy use varies between homes."
+      },
+      {
+        id: "res-choose",
+        question: "How do I choose the right home insulation?",
+        answer: "The right option depends on the area being insulated, the existing construction, access and the home’s thermal requirements. A professional assessment can help identify a suitable approach."
+      }
+    ]
   },
 
   commercial: {
@@ -186,5 +205,138 @@ export const faqSets: Record<FaqSet['id'], FaqSet> = {
           'Foam that stays exposed to the weather, on a roof for example, is protected with a coating over the top. We apply polyurea and aliphatic coating systems, and acrylic roof coatings, as part of the same job: the foam does the insulating and the coating takes the sun and the rain.',
       },
     ],
+  },
+
+  /* One set per service page, each written for that page. None repeats another page. */
+  underfloor: {
+    id: "underfloor",
+    intro: {
+      eyebrow: "Questions",
+      headingLines: [
+        "FAQs about",
+        "underfloor insulation."
+      ],
+      accentWord: "underfloor"
+    },
+    items: [
+      {
+        id: "uf-why",
+        question: "Why insulate under the floor?",
+        answer: "Because the floor is often the coldest surface in an older home and the one left uninsulated. Sealing it from below stops the draught between the boards, keeps warmth in the room and means the heating works less hard to reach the same comfort."
+      },
+      {
+        id: "uf-space",
+        question: "How much space do you need under the floor?",
+        answer: "As a guide, at least 400mm of clear space below the floor, so the crew can reach every part of it safely. If your subfloor is tighter than that, ring us and we will tell you honestly whether it can be done."
+      },
+      {
+        id: "uf-batts",
+        question: "Is spray foam better than underfloor batts or foil?",
+        answer: "Batts and foil are cut to fit and held up with supports, so they leave gaps at the joists and can drop over time. Spray foam bonds to the underside of the floor and fills the gaps between the boards, so it seals the floor as well as insulating it, and it stays in place for the life of the building."
+      },
+      {
+        id: "uf-draught",
+        question: "Will it stop the draught coming up through the floorboards?",
+        answer: "Yes, and it is usually the first thing people notice. The foam seals the gaps between the boards from below, so outside air can no longer come up through them."
+      },
+      {
+        id: "uf-move-out",
+        question: "Do we have to move out while you spray?",
+        answer: "No. The area being sprayed is kept clear of people and pets while we work, and the space needs some time before it is used again. Depending on the foam that is anywhere from about an hour to a full day, and the crew will tell you which applies."
+      },
+      {
+        id: "uf-damp",
+        question: "What if the subfloor is damp?",
+        answer: "We check the subfloor before recommending a foam. Foam should never cover up a leak, a drainage problem or a subfloor with no ventilation, so the cause is found and fixed first."
+      }
+    ]
+  },
+
+  roof: {
+    id: "roof",
+    intro: {
+      eyebrow: "Questions",
+      headingLines: [
+        "FAQs about roof",
+        "and ceiling insulation."
+      ],
+      accentWord: "roof"
+    },
+    items: [
+      {
+        id: "rc-existing",
+        question: "Can you insulate an existing roof without replacing it?",
+        answer: "Usually, yes. Where we can reach the underside of the roof or the ceiling space, foam is applied to an existing roof without major renovation. Where access is tight, we will tell you what is possible before quoting."
+      },
+      {
+        id: "rc-where",
+        question: "Should the foam go under the roof or on the ceiling?",
+        answer: "It depends on how the roof is built, whether the roof space is used, and how it is ventilated. We look at the roof first and recommend the approach that suits it."
+      },
+      {
+        id: "rc-penetrations",
+        question: "What happens around downlights, flues and wiring?",
+        answer: "We insulate around roof and ceiling penetrations while keeping all the required clearances around downlights, flues and electrical equipment. It is part of every roof job, not an extra."
+      },
+      {
+        id: "rc-last",
+        question: "How long does spray foam in a roof last?",
+        answer: "It is designed to last the life of the building. It cures hard and bonded to the surface, so it does not sag, shift or settle the way batts do."
+      },
+      {
+        id: "rc-summer",
+        question: "Does it help in summer as well as winter?",
+        answer: "Yes. The roof is where most heat comes in on a hot day as well as where it escapes on a cold night, so sealing it helps the house hold its temperature in both seasons."
+      },
+      {
+        id: "rc-curved",
+        question: "Can spray foam go on a curved or unusual roof?",
+        answer: "Yes. Because it is sprayed rather than cut, it follows curves, angles and awkward spaces that cut insulation cannot. Our photo gallery has a curved roof in Cremorne done exactly that way."
+      }
+    ]
+  },
+
+  walls: {
+    id: "walls",
+    intro: {
+      eyebrow: "Questions",
+      headingLines: [
+        "FAQs about wall",
+        "and retrofit insulation."
+      ],
+      accentWord: "retrofit"
+    },
+    items: [
+      {
+        id: "wl-linings",
+        question: "Can you insulate walls without removing the plasterboard?",
+        answer: "Yes, where the cavity suits it. InjectaCore is installed through small access points, so the internal linings stay in place, and the access points are made good afterwards."
+      },
+      {
+        id: "wl-injectacore",
+        question: "What is InjectaCore?",
+        answer: "A specialist injection-foam insulation system for existing wall cavities. It is installed through small access points, without needing the entire wall lining to be removed, which is what makes it possible to insulate a wall that is already built."
+      },
+      {
+        id: "wl-suitable",
+        question: "Which walls are suitable?",
+        answer: "It depends on the construction and the cavity. Brick veneer and weatherboard homes with clear cavities are usually good candidates. Cavities that are blocked, damp or too narrow may not be, and we check before quoting."
+      },
+      {
+        id: "wl-occupied",
+        question: "Do we need to move out for retrofit wall insulation?",
+        answer: "No. It is done with the house lived in. The rooms being worked on need to be clear while we are in them."
+      },
+      {
+        id: "wl-open",
+        question: "Can you spray the walls while the frame is open?",
+        answer: "Yes. In a new build or a renovation, foam is sprayed between the studs before the lining goes on. It fills the cavity flush to the frame and seals around pipes and wiring."
+      },
+      {
+        id: "wl-noise",
+        question: "Will wall insulation make the house quieter?",
+        answer: "Filling the cavity reduces the sound travelling through the wall, so most homes are noticeably quieter, particularly on a busy road or between a bedroom and a living area."
+      }
+    ]
   },
 }

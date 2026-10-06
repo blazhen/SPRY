@@ -10,9 +10,11 @@ interface PageStubProps {
   title: string
   lede: string
   path: string
-  /** Overrides the SEO title; defaults to `<title> | Spray It Solutions`. */
+  /** Overrides the SEO title; defaults to `<title> | SprayIT Solutions`. */
   seoTitle?: string
   seoDescription?: string
+  /** Keep the page out of search results, as the not-found page must be. */
+  noindex?: boolean
 }
 
 /**
@@ -29,6 +31,7 @@ export default function PageStub({
   path,
   seoTitle,
   seoDescription,
+  noindex = false,
 }: PageStubProps) {
   return (
     <>
@@ -36,6 +39,7 @@ export default function PageStub({
         title={seoTitle ?? `${title.replace(/\.$/, '')} | ${site.name}`}
         description={seoDescription ?? lede}
         path={path}
+        noindex={noindex}
       />
 
       <section className="relative flex min-h-[78svh] flex-col justify-center overflow-hidden bg-ink pb-section pt-[calc(var(--header-h)+6rem)]">
@@ -64,7 +68,7 @@ export default function PageStub({
               href={site.phone.tel}
               variant="primary"
               strength={0.3}
-              ariaLabel={`Call Spray It Solutions on ${site.phone.display}`}
+              ariaLabel={`Call SprayIT Solutions on ${site.phone.display}`}
             >
               <Phone className="size-4" aria-hidden="true" />
               {site.cta.secondary.label}

@@ -1,6 +1,11 @@
+import { routes, SITE_ORIGIN } from '@/data/routes'
+
 /**
  * Company-wide facts: contact details, navigation, SEO defaults.
  * Everything here is real SprayIT content. Treat as source of truth.
+ *
+ * The business name is SprayIT Solutions: capital S, I and T, SprayIT as one
+ * word, as Glenn asked on the 2 October call. Never "Spray It".
  */
 
 export interface NavChild {
@@ -33,7 +38,7 @@ export interface SocialLink {
 }
 
 export const site = {
-  name: 'Spray It Solutions',
+  name: 'SprayIT Solutions',
   shortName: 'SprayIT',
   tagline: 'A premium and highly effective insulation solution.',
 
@@ -41,7 +46,7 @@ export const site = {
   capability:
     'Three custom-built vehicle-based spray rigs plus two non-vehicle reactors; applying open- and closed-cell polyurethane foams, polyurea and aliphatic coatings. Any size, any site.',
 
-  founded: 'Family-owned, with decades of experience.',
+  founded: 'Spray-applied insulation specialists since 1995.',
 
   /**
    * Written the way the Google Business Profile writes it, abbreviations and
@@ -133,7 +138,7 @@ export const site = {
   cta: {
     /* One label, everywhere: header, hero, footer, the phone bar and the
        closing band all say the same thing. */
-    primary: { label: 'Get a Free Quote', href: '/contact' },
+    primary: { label: 'Get a Free Quote', href: routes.contact },
     secondary: { label: 'Call 1300 177 729', href: 'tel:+611300177729' },
   },
 
@@ -146,35 +151,35 @@ export const site = {
 /**
  * The Services menu: each service page with the work grouped under it.
  *
- * The sub-service links land on the section of the page that covers that
- * work, and on Residential they also preselect the matching surface on the
- * interactive house. They are the same links the footer uses, so the two
- * never disagree about where a service lives.
+ * The residential sub-services each have their own page, at the address the
+ * old site used for them. The commercial ones are sections of the Commercial
+ * page. They are the same links the footer uses, so the two never disagree
+ * about where a service lives.
  */
 export const servicesMenu: NavGroup[] = [
   {
     label: 'Spray Foam',
-    href: '/spray-foam',
+    href: routes.sprayFoam,
     blurb: 'How it works, open cell against closed cell, and why it beats batts.',
   },
   {
     label: 'Residential',
-    href: '/residential',
-    blurb: 'Homes, sheds and new builds: roof, walls and underfloor.',
+    href: routes.residential,
+    blurb: 'Homes, renovations and new builds: underfloor, roof and walls.',
     children: [
-      { label: 'Underfloor', href: '/residential#underfloor' },
-      { label: 'Roof & Ceiling', href: '/residential#roof' },
-      { label: 'Wall', href: '/residential#walls' },
+      { label: 'Underfloor', href: routes.underfloor },
+      { label: 'Roof & Ceiling', href: routes.roofCeiling },
+      { label: 'Walls & Retrofit', href: routes.walls },
     ],
   },
   {
     label: 'Commercial',
-    href: '/commercial',
+    href: routes.commercial,
     blurb: 'Factories, cold storage, farms, processing plants and mine sites.',
     children: [
-      { label: 'Factory & Warehouse', href: '/commercial#industrial' },
-      { label: 'Farming', href: '/commercial#agri' },
-      { label: 'Mining', href: '/commercial#mining' },
+      { label: 'Factory & Warehouse', href: routes.commercial + '#industrial' },
+      { label: 'Farming', href: routes.commercial + '#agri' },
+      { label: 'Mining', href: routes.commercial + '#mining' },
     ],
   },
 ]
@@ -186,11 +191,11 @@ export const servicesMenu: NavGroup[] = [
  * for Gallery and Blog without crowding.
  */
 export const navItems: NavItem[] = [
-  { index: '01', label: 'About', href: '/about' },
-  { index: '02', label: 'Services', href: '/spray-foam', groups: servicesMenu },
-  { index: '03', label: 'Gallery', href: '/gallery' },
-  { index: '04', label: 'Blog', href: '/blog' },
-  { index: '05', label: 'Contact', href: '/contact' },
+  { index: '01', label: 'About', href: routes.about },
+  { index: '02', label: 'Services', href: routes.sprayFoam, groups: servicesMenu },
+  { index: '03', label: 'Gallery', href: routes.gallery },
+  { index: '04', label: 'Blog', href: routes.blog },
+  { index: '05', label: 'Contact', href: routes.contact },
 ]
 
 /**
@@ -225,11 +230,18 @@ export const marqueeItems: string[] = [
   'Any Size, Any Site',
 ]
 
+/**
+ * Home page title and description, and the defaults for any page that sets
+ * none. The title and description are the ones the SEO agency already has
+ * live on the old site, carried across word for word so the cutover does not
+ * undo their on-page work. Every page's own pair lives with that page.
+ */
 export const seo = {
-  title: 'Spray Foam Insulation Australia-wide | Spray It Solutions',
+  title: 'Spray Foam Insulation Melbourne | SprayIT Solutions Australia',
   description:
-    'Spray foam insulation Australia-wide: a premium and highly effective insulation solution with superior real-world performance and air sealing. Get your free quote today.',
-  canonical: 'https://www.sprayitsolutions.com.au/',
+    'Looking for spray foam insulation in Melbourne and across Australia? We deliver quality foam insulation for homes and businesses. Get your free quote today!',
+  /** No www, matching the live site. */
+  canonical: SITE_ORIGIN + '/',
   ogImage:
     'https://images.unsplash.com/photo-1568605114967-8130f3a36994?auto=format&fit=crop&w=1200&q=75',
   locale: 'en_AU',

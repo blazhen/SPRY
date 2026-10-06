@@ -12,6 +12,7 @@ import type { SectionIntro } from '@/data/content'
 
 export const contactIntro: SectionIntro = {
   eyebrow: 'Get a quote',
+  keyword: 'Contact SprayIT Solutions',
   headingLines: ['Tell us what', 'needs insulating.'],
   accentWord: 'insulating',
   lede: 'A few details is all it takes. We will come back to you with honest advice on whether spray foam is the right answer, what it involves and what it costs.',
@@ -33,11 +34,11 @@ export const contactCopy = {
   bookLink: 'Book a 15 minute phone call',
 }
 
-export const CONSENT_VERSION = 'v1-2026-08'
+export const CONSENT_VERSION = 'v2-2026-10'
 
 /** Shown beside the unticked marketing checkbox, and stored with the record. */
 export const MARKETING_CONSENT_TEXT =
-  'I agree to receive SMS and email updates from Spray It Solutions about quotes, offers and services. I can opt out at any time by replying STOP or using the unsubscribe link.'
+  'I agree to receive SMS and email updates from SprayIT Solutions about quotes, offers and services. I can opt out at any time by replying STOP or using the unsubscribe link.'
 
 /**
  * Always shown, never a checkbox. Replying to an enquiry is consent the
@@ -100,7 +101,7 @@ export const thanks = {
   quote: {
     eyebrow: 'Enquiry received',
     title: 'Thanks, we have got it.',
-    lede: 'One of the family will be in touch, usually the same working day. If it is urgent, call us on 1300 177 729.',
+    lede: 'One of our team will be in touch, usually the same working day. If it is urgent, call us on 1300 177 729.',
   },
   booked: {
     eyebrow: 'Call booked',

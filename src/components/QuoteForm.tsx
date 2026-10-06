@@ -2,6 +2,7 @@ import { useRef, useState, type FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { AlertCircle, ArrowUpRight } from 'lucide-react'
 import { site } from '@/data/site'
+import { routes } from '@/data/routes'
 import {
   CONSENT_VERSION,
   ENQUIRY_NOTICE,
@@ -64,7 +65,7 @@ export default function QuoteForm() {
     // Honeypot: a real person never sees this field, so anything in it is a
     // bot. Reported as success so the bot has no signal to adapt to.
     if (get('company_website')) {
-      navigate('/thanks/quote')
+      navigate(routes.thanksQuote)
       return
     }
     // Bots submit near instantly. Three seconds is under any human fill time.
@@ -117,7 +118,7 @@ export default function QuoteForm() {
     })
 
     if (result.ok) {
-      navigate('/thanks/quote')
+      navigate(routes.thanksQuote)
       return
     }
     setStatus('failed')
@@ -412,7 +413,7 @@ export default function QuoteForm() {
         </label>
         <p className="mt-4 border-t border-line/10 pt-4 text-small leading-relaxed text-bone-400">
           {ENQUIRY_NOTICE}{' '}
-          <Link to="/privacy" className="link-wipe font-semibold text-bone">
+          <Link to={routes.privacy} className="link-wipe font-semibold text-bone">
             privacy policy
           </Link>
           .
@@ -443,7 +444,7 @@ export default function QuoteForm() {
 
       <p className="text-small text-bone-400">
         {contactCopy.preferCall}{' '}
-        <Link to="/book" className="link-wipe font-semibold text-bone">
+        <Link to={routes.book} className="link-wipe font-semibold text-bone">
           {contactCopy.bookLink}
         </Link>
         , or call{' '}

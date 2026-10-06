@@ -5,7 +5,7 @@ import { integrations } from '@/config/integrations'
 interface SeoProps {
   title?: string
   description?: string
-  /** Path relative to the site root, e.g. `/residential`. */
+  /** Path relative to the site root, e.g. `/residential/`. */
   path?: string
   image?: string
   /** Emit the LocalBusiness structured data (homepage only). */

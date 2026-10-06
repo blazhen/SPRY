@@ -1,13 +1,13 @@
 import Seo from '@/components/ui/Seo'
 import { PageCta, PageHero, Prose } from '@/components/PageParts'
 import FoamComparison from '@/components/FoamComparison'
-import HeroObject3D from '@/components/HeroObject3D'
 import InsulationScene from '@/components/InsulationScene'
 import RValueExplainer from '@/components/RValueExplainer'
 import MidCta from '@/components/MidCta'
 import FAQ from '@/components/FAQ'
 import { sprayFoamPage } from '@/data/pages'
 import { faqSets } from '@/data/faqs'
+import { routes } from '@/data/routes'
 
 /**
  * Spray foam, the technical page.
@@ -24,16 +24,11 @@ export default function SprayFoam() {
       <Seo
         title={sprayFoamPage.seoTitle}
         description={sprayFoamPage.seoDescription}
-        path="/spray-foam"
+        path={routes.sprayFoam}
       />
-      {/* The other two pages open on the building they serve. This one opens
-          on the material itself, cycling between the two foams, which is the
-          argument the whole page then unpacks. */}
-      <PageHero
-        page={sprayFoamPage}
-        crumb="Spray Foam"
-        aside={<HeroObject3D kind="foam" className="mx-auto aspect-square w-full max-w-[26rem]" />}
-      />
+      {/* Foam going on, photographed on a job. The 3D wall further down is
+          where the reader turns the material over and looks. */}
+      <PageHero page={sprayFoamPage} crumb="What Is Spray Foam" />
 
       <Prose page={sprayFoamPage} id="how" />
       <FoamComparison />

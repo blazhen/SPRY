@@ -28,6 +28,11 @@ export interface RuntimeConfig {
   googleAdsBookingLabel?: string
   metaPixelId?: string
   /**
+   * The src URL of the Google reviews widget, from the platform's reviews
+   * widget embed code. When set, it replaces the testimonial carousel.
+   */
+  reviewsWidgetUrl?: string
+  /**
    * 'history' gives clean URLs (/contact) but needs the host to serve
    * index.html for unknown paths. 'hash' (/#/contact) works on any static host
    * with no server configuration at all. See index.html for the trade-off.
@@ -100,6 +105,9 @@ export const integrations = {
   },
   get metaPixelId() {
     return read(runtime().metaPixelId, env.VITE_META_PIXEL_ID)
+  },
+  get reviewsWidgetUrl() {
+    return read(runtime().reviewsWidgetUrl, env.VITE_REVIEWS_WIDGET_URL)
   },
   /** Defaults to clean URLs; only falls back to hashes when asked. */
   get router(): 'history' | 'hash' {

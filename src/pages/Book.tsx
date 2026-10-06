@@ -5,6 +5,7 @@ import Breadcrumbs from '@/components/Breadcrumbs'
 import { integrations, isConfigured } from '@/config/integrations'
 import { booking } from '@/data/booking'
 import { site } from '@/data/site'
+import { routes } from '@/data/routes'
 
 const ICONS = { clock: Clock, phone: PhoneCall, shield: ShieldCheck }
 
@@ -24,7 +25,7 @@ const ICONS = { clock: Clock, phone: PhoneCall, shield: ShieldCheck }
 export default function Book() {
   return (
     <>
-      <Seo title={booking.seoTitle} description={booking.seoDescription} path="/book" />
+      <Seo title={booking.seoTitle} description={booking.seoDescription} path={routes.book} />
 
       <section className="bg-ink pb-section pt-[calc(var(--header-h)+clamp(2.5rem,6vh,4.5rem))]">
         <div className="shell">

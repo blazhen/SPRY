@@ -310,7 +310,7 @@ export default function Hero() {
                 href={site.phone.tel}
                 variant="ghost"
                 strength={0.24}
-                ariaLabel={`Call Spray It Solutions on ${site.phone.display}`}
+                ariaLabel={`Call SprayIT Solutions on ${site.phone.display}`}
               >
                 <Phone className="size-4" aria-hidden="true" />
                 {site.cta.secondary.label}

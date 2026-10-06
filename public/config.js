@@ -23,6 +23,10 @@
  * googleAdsQuoteLabel  Conversion label, as AW-XXXXXXXXX/AbC-labelhere.
  * googleAdsBookingLabel Same, for the booking conversion.
  * metaPixelId          Meta pixel ID.
+ * reviewsWidgetUrl     Systemations > Reputation > Widgets > Google reviews
+ *                      widget > embed code. Copy the src URL out of the
+ *                      iframe. Once set, the live Google reviews replace the
+ *                      testimonial cards on every page that shows them.
  * router               "history" for clean URLs like /contact. If /contact
  *                      404s on the host, switch to "hash" and links become
  *                      /#/contact, which works anywhere.
@@ -37,6 +41,7 @@ window.SPRAYIT_CONFIG = {
   googleAdsQuoteLabel: '__GOOGLE_ADS_QUOTE_LABEL__',
   googleAdsBookingLabel: '__GOOGLE_ADS_BOOKING_LABEL__',
   metaPixelId: '__META_PIXEL_ID__',
+  reviewsWidgetUrl: '__REVIEWS_WIDGET_URL__',
   router: 'history',
   staging: true,
 }

@@ -83,15 +83,32 @@ export default function SectionHeading({
       ref={scope}
       className={`${align === 'center' ? 'text-center' : ''} ${className}`}
     >
-      <span className={`eyebrow ${align === 'center' ? 'justify-center' : ''}`} data-reveal-eyebrow>
-        {intro.eyebrow}
-      </span>
+      {!intro.keyword && (
+        <span className={`eyebrow ${align === 'center' ? 'justify-center' : ''}`} data-reveal-eyebrow>
+          {intro.eyebrow}
+        </span>
+      )}
 
-      <Tag id={headingId} className={`mt-6 ${headingClassName}`}>
-        {intro.headingLines.map((line) => (
+      <Tag id={headingId} className={`${intro.keyword ? '' : 'mt-6'} ${headingClassName}`}>
+        {/* The search phrase, styled as the eyebrow it replaces but inside
+            the heading, so it is the first thing in the H1. */}
+        {intro.keyword && (
+          <>
+            <span
+              className={`eyebrow mb-6 flex ${align === 'center' ? 'justify-center' : ''}`}
+              data-reveal-eyebrow
+            >
+              {intro.keyword}
+            </span>{' '}
+          </>
+        )}
+        {/* A space between lines: they are separate blocks on screen, but a
+            crawler reading the text would otherwise run them together. */}
+        {intro.headingLines.map((line, i) => (
           <span className="line-mask" key={line}>
             <span className="line-inner" data-reveal-line>
               {renderLine(line)}
+              {i < intro.headingLines.length - 1 ? ' ' : ''}
             </span>
           </span>
         ))}

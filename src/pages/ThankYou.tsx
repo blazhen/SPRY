@@ -5,6 +5,7 @@ import Seo from '@/components/ui/Seo'
 import { thanks } from '@/data/forms'
 import { site } from '@/data/site'
 import { trackConversion } from '@/lib/analytics'
+import { routes } from '@/data/routes'
 
 /**
  * Confirmation pages, at their own URLs.
@@ -29,9 +30,9 @@ export default function ThankYou() {
   return (
     <>
       <Seo
-        title={`${copy.title} | Spray It Solutions`}
+        title={`${copy.title} | SprayIT Solutions`}
         description={copy.lede}
-        path={`/thanks/${booked ? 'booked' : 'quote'}`}
+        path={booked ? routes.thanksBooked : routes.thanksQuote}
         noindex
       />
 

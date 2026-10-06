@@ -164,7 +164,7 @@ export default function HeroEditorial() {
               href={site.phone.tel}
               variant="outline-ink"
               strength={0.24}
-              ariaLabel={`Call Spray It Solutions on ${site.phone.display}`}
+              ariaLabel={`Call SprayIT Solutions on ${site.phone.display}`}
             >
               <Phone className="size-4" aria-hidden="true" />
               {site.cta.secondary.label}
@@ -180,7 +180,7 @@ export default function HeroEditorial() {
               <span className="font-semibold text-ink">5.0</span>
             </span>
             <span className="hidden h-4 w-px bg-ink/20 sm:block" aria-hidden="true" />
-            <span>Family-owned · Australia-wide</span>
+            <span>Melbourne based · Australia-wide</span>
             <span className="hidden h-4 w-px bg-ink/20 sm:block" aria-hidden="true" />
             <span>Decades of experience</span>
           </div>

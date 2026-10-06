@@ -6,11 +6,19 @@ import { testimonials } from '@/data/testimonials'
 import { testimonialsFootnote, testimonialsIntro } from '@/data/content'
 import { testimonialVideo, workCopy } from '@/data/videos'
 import { site } from '@/data/site'
+import { integrations } from '@/config/integrations'
 import SectionHeading from '@/components/ui/SectionHeading'
 import VideoEmbed from '@/components/ui/VideoEmbed'
 
 /**
- * Testimonial carousel.
+ * Testimonial carousel, or the live Google reviews widget once it is set up.
+ *
+ * The SEO agency asked for the Google widget in place of the cards: reviews a
+ * visitor can check on Google carry more weight than quotes we print
+ * ourselves. The widget's address goes in public/config.js; until it is
+ * there, the customer letters show as before. The section sits on the pale
+ * ground rather than the brand navy, because navy is the colour of every call
+ * to action on the site and the reviews read as one more of them.
  *
  * Embla handles drag/swipe; everything announced to assistive tech is wired by
  * hand: the region carries `aria-roledescription="carousel"`, each slide is
@@ -103,44 +111,60 @@ export default function Testimonials() {
     }
   }
 
+  const widgetUrl = integrations.reviewsWidgetUrl
+
   return (
-    <section className="relative bg-bone py-section text-ink" aria-labelledby="testimonials-heading">
+    <section className="relative border-t border-line/6 bg-surface py-section text-bone" aria-labelledby="testimonials-heading">
       <div className="shell">
         <div className="flex flex-wrap items-end justify-between gap-8">
           <SectionHeading
             intro={testimonialsIntro}
             headingId="testimonials-heading"
-            tone="on-light"
             className="max-w-2xl"
           />
 
           {/* --- Controls --- */}
-          <div className="flex flex-col items-start gap-2.5">
-            <div className="flex items-center gap-3">
-              <button
-                type="button"
-                onClick={scrollPrev}
-                className="grid size-12 place-items-center rounded-pill border-2 border-ink bg-ink text-bone transition-colors duration-300 hover:bg-transparent hover:text-ink"
-                aria-controls="testimonial-viewport"
-              >
-                <ArrowLeft className="size-5" strokeWidth={2.4} aria-hidden="true" />
-                <span className="sr-only">Previous testimonial</span>
-              </button>
-              <button
-                type="button"
-                onClick={scrollNext}
-                className="grid size-12 place-items-center rounded-pill border-2 border-ink bg-ink text-bone transition-colors duration-300 hover:bg-transparent hover:text-ink"
-                aria-controls="testimonial-viewport"
-              >
-                <ArrowRight className="size-5" strokeWidth={2.4} aria-hidden="true" />
-                <span className="sr-only">Next testimonial</span>
-              </button>
+          {!widgetUrl && (
+            <div className="flex flex-col items-start gap-2.5">
+              <div className="flex items-center gap-3">
+                <button
+                  type="button"
+                  onClick={scrollPrev}
+                  className="grid size-12 place-items-center rounded-pill border-2 border-bone/25 bg-ink-800 text-bone transition-colors duration-300 hover:border-bone hover:bg-bone hover:text-ink"
+                  aria-controls="testimonial-viewport"
+                >
+                  <ArrowLeft className="size-5" strokeWidth={2.4} aria-hidden="true" />
+                  <span className="sr-only">Previous testimonial</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={scrollNext}
+                  className="grid size-12 place-items-center rounded-pill border-2 border-bone/25 bg-ink-800 text-bone transition-colors duration-300 hover:border-bone hover:bg-bone hover:text-ink"
+                  aria-controls="testimonial-viewport"
+                >
+                  <ArrowRight className="size-5" strokeWidth={2.4} aria-hidden="true" />
+                  <span className="sr-only">Next testimonial</span>
+                </button>
+              </div>
+              <p className="text-small text-bone-400">Drag, swipe or scroll sideways</p>
             </div>
-            <p className="text-small text-ink/70">Drag, swipe or scroll sideways</p>
-          </div>
+          )}
         </div>
       </div>
 
+      {widgetUrl ? (
+        /* The platform's widget pulls the reviews from the Google listing, so
+           they are always the current ones and link back to it. */
+        <div className="shell mt-14">
+          <iframe
+            src={widgetUrl}
+            title="Google reviews for SprayIT Solutions"
+            loading="lazy"
+            className="block h-[38rem] w-full rounded-xl border border-line/10 bg-ink-800"
+          />
+        </div>
+      ) : (
+        <>
       {/* --- Viewport (full-bleed so slides run off the right edge) --- */}
       <div
         className="mt-14"
@@ -169,7 +193,7 @@ export default function Testimonials() {
                 >
                   <figure
                     className={`flex h-full flex-col justify-between overflow-hidden rounded-xl border p-8 transition-colors duration-500 ease-expo lg:p-9 ${
-                      isActive ? 'border-ink/25 bg-ink text-bone' : 'border-ink/12 bg-bone-200/50'
+                      isActive ? 'border-accent/35 bg-ink-800 shadow-lift' : 'border-line/12 bg-ink-800/60'
                     }`}
                   >
                     <div data-tst-inner className="will-change-transform">
@@ -180,13 +204,13 @@ export default function Testimonials() {
                           Google link below. */}
                       <div className="flex items-center justify-end gap-4">
                         <Quote
-                          className={`size-7 ${isActive ? 'text-accent' : 'text-ink/20'}`}
+                          className={`size-7 ${isActive ? 'text-accent' : 'text-bone/15'}`}
                           aria-hidden="true"
                         />
                       </div>
 
                       <blockquote
-                        className={`mt-7 text-lead ${isActive ? 'text-bone' : 'text-ink/80'}`}
+                        className={`mt-7 text-lead ${isActive ? 'text-bone' : 'text-bone-400'}`}
                       >
                         <p>“{item.quote}”</p>
                       </blockquote>
@@ -194,19 +218,19 @@ export default function Testimonials() {
 
                     <figcaption
                       className={`mt-9 flex items-end justify-between gap-4 border-t pt-6 ${
-                        isActive ? 'border-line/15' : 'border-ink/12'
+                        isActive ? 'border-line/15' : 'border-line/12'
                       }`}
                     >
                       <span>
                         <span
                           className={`block font-display text-h4 font-semibold ${
-                            isActive ? 'text-bone' : 'text-ink'
+                            'text-bone'
                           }`}
                         >
                           {item.name}
                         </span>
                         <span
-                          className={`text-small ${isActive ? 'text-bone-400' : 'text-ink/60'}`}
+                          className={`text-small ${'text-bone-400'}`}
                         >
                           {item.suburb}
                         </span>
@@ -216,7 +240,7 @@ export default function Testimonials() {
                         className={`shrink-0 whitespace-nowrap rounded-pill border px-3 py-1 text-eyebrow font-bold uppercase tracking-[0.14em] ${
                           isActive
                             ? 'border-accent/50 text-accent'
-                            : 'border-ink/20 text-ink/60'
+                            : 'border-line/20 text-bone-400'
                         }`}
                       >
                         {item.scope}
@@ -239,13 +263,13 @@ export default function Testimonials() {
               aria-label={`Go to testimonial ${i + 1} of ${snaps.length}`}
               aria-current={i === selected}
               className={`h-1 rounded-pill transition-all duration-500 ease-expo ${
-                i === selected ? 'w-10 bg-accent' : 'w-5 bg-ink/20 hover:bg-ink/40'
+                i === selected ? 'w-10 bg-accent' : 'w-5 bg-bone/20 hover:bg-bone/40'
               }`}
             />
           ))}
         </div>
 
-        <p className="shell mt-10 max-w-measure text-small text-ink/60">
+        <p className="shell mt-10 max-w-measure text-small text-bone-400">
           {testimonialsFootnote}
         </p>
 
@@ -254,6 +278,11 @@ export default function Testimonials() {
           Testimonial {selected + 1} of {testimonials.length}: {testimonials[selected]?.name},{' '}
           {testimonials[selected]?.suburb}.
         </p>
+      </div>
+        </>
+      )}
+
+      <div>
 
         {site.reviewsUrl && (
           <p className="shell mt-6">
@@ -261,7 +290,7 @@ export default function Testimonials() {
               href={site.reviewsUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="link-wipe font-semibold text-ink"
+              className="link-wipe font-semibold text-bone"
             >
               Read all of our Google reviews
               <ArrowUpRight className="size-4" aria-hidden="true" />
@@ -274,7 +303,7 @@ export default function Testimonials() {
             billing rather than being padded into a carousel of one. */}
         {/* `shell` because this sits outside the section's container div, the
             same reason the dots row above re-applies it. */}
-        <div className="shell mt-20 grid items-center gap-10 border-t border-ink/12 pt-16 lg:grid-cols-12 lg:gap-14">
+        <div className="shell mt-20 grid items-center gap-10 border-t border-line/12 pt-16 lg:grid-cols-12 lg:gap-14">
           <div className="lg:col-span-5">
             <p className="text-eyebrow font-bold uppercase tracking-[0.2em] text-accent">
               {workCopy.testimonialEyebrow}
@@ -282,7 +311,7 @@ export default function Testimonials() {
             <h3 className="mt-5 font-display text-h3 font-semibold leading-tight">
               {testimonialVideo.title}
             </h3>
-            <p className="mt-5 max-w-measure text-body text-ink/70">{testimonialVideo.blurb}</p>
+            <p className="mt-5 max-w-measure text-body text-bone-400">{testimonialVideo.blurb}</p>
           </div>
 
           <div className="lg:col-span-7">

@@ -77,7 +77,7 @@ export function HeroPreviewPage() {
   return (
     <>
       <Helmet>
-        <title>{`Hero preview: ${variant.name} | Spray It Solutions`}</title>
+        <title>{`Hero preview: ${variant.name} | SprayIT Solutions`}</title>
         <meta name="robots" content="noindex, nofollow" />
       </Helmet>
 
@@ -129,7 +129,7 @@ export function HeroesIndexPage() {
   return (
     <>
       <Helmet>
-        <title>Hero variants | Spray It Solutions</title>
+        <title>Hero variants | SprayIT Solutions</title>
         <meta name="robots" content="noindex, nofollow" />
       </Helmet>
 

@@ -1,9 +1,10 @@
 import { Link, useLocation } from 'react-router-dom'
 import { ArrowUpRight, Phone } from 'lucide-react'
 import { site } from '@/data/site'
+import { routes, samePath } from '@/data/routes'
 
 /** Pages where the bar would point at the page you are already on. */
-const HIDDEN_ON = ['/contact', '/book']
+const HIDDEN_ON = [routes.contact, routes.book]
 
 /**
  * Two buttons pinned to the bottom of a phone screen: call, and get a quote.
@@ -17,7 +18,7 @@ const HIDDEN_ON = ['/contact', '/book']
 export default function MobileCtaBar() {
   const { pathname } = useLocation()
   if (
-    HIDDEN_ON.includes(pathname) ||
+    HIDDEN_ON.some((path) => samePath(pathname, path)) ||
     pathname.startsWith('/thanks') ||
     pathname.startsWith('/heroes')
   ) {

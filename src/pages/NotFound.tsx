@@ -7,7 +7,8 @@ export default function NotFound() {
       title="That page does not exist."
       lede="That address does not exist on this site. Try the menu above, or call us and we will point you at what you need."
       path="/404"
-      seoTitle="Page not found | Spray It Solutions"
+      seoTitle="Page not found | SprayIT Solutions"
+      noindex
     />
   )
 }

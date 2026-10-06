@@ -1,4 +1,5 @@
 import type { SectionIntro } from '@/data/content'
+import { routes } from '@/data/routes'
 
 /**
  * The blog, carried across from the site this one replaces.
@@ -25,6 +26,11 @@ export interface BlogBlock {
 export interface BlogPost {
   slug: string
   title: string
+  /**
+   * The page title, where it differs from the heading. Set to the wording the
+   * post already ranks under on the live site, so moving it does not reset it.
+   */
+  seoTitle?: string
   /** ISO date, used for display and for ordering. */
   date: string
   /** ISO date of the last substantive edit. Shown beside the published date when set. */
@@ -53,15 +59,16 @@ export interface BlogAuthor {
  */
 export const blogAuthor: BlogAuthor = {
   name: 'Glenn Angus',
-  role: 'Owner, Spray It Solutions',
-  bio: 'Glenn owns and runs Spray It Solutions, the family-owned spray foam contractor behind every job on this site. Decades on the tools, quoting and applying open and closed cell foam, polyurea and aliphatic coatings, on everything from a single subfloor to a 30,863 square metre plant.',
-  href: '/about',
+  role: 'Owner, SprayIT Solutions',
+  bio: 'Glenn owns and runs SprayIT Solutions, the spray foam contractor behind every job on this site. Decades on the tools, quoting and applying open and closed cell foam, polyurea and aliphatic coatings, on everything from a single subfloor to a 30,863 square metre plant.',
+  href: routes.about,
 }
 
 export const blogPosts: BlogPost[] = [
   {
     slug: 'spray-foam-acoustic-insulation-icynene-noise-reduction',
     title: 'How Icynene Open-Cell Foam Improves Sound Control',
+    seoTitle: 'Spray Foam Acoustic Insulation: How Icynene Reduces Noise in Homes Across Victoria | SprayIT Solutions',
     date: '2026-06-02',
     image: '/blog/acoustic-foam.webp',
     alt: 'Open-cell spray foam applied to a wall for sound control',
@@ -320,6 +327,7 @@ export const blogPosts: BlogPost[] = [
   {
     slug: 'sprayit-solutions-transformed-sunrice-roof',
     title: 'Sealing the Future: How High-Density Spray Foam & Acrylic Coatings Rescued a Live Food-Grade Facility',
+    seoTitle: 'How SprayIT Solutions Transformed the Roof of SunRice Australia’s Food Packing Facility | SprayIT Solutions',
     date: '2026-02-17',
     image: '/gallery/sunrice-roof-hero.webp',
     alt: 'Completed white sprayed roof on a food-grade processing facility',
@@ -382,6 +390,7 @@ export const blogPosts: BlogPost[] = [
 
 export const blogIntro: SectionIntro = {
   eyebrow: 'Blog',
+  keyword: 'Spray Foam Insulation Blog',
   headingLines: ['What we have', 'learned on site.'],
   accentWord: 'learned',
   lede: 'Case studies from real jobs, and plain explanations of the things people ask us about most.',

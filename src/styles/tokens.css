@@ -1,5 +1,5 @@
 /* ============================================================================
-   Spray It Solutions brand tokens
+   SprayIT Solutions brand tokens
    Single source of truth. These custom properties are mapped into the Tailwind
    theme (see tailwind.config.js) so `bg-ink`, `text-accent` etc. all resolve
    back to here. Change a value once, it changes everywhere.

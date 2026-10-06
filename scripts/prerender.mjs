@@ -39,29 +39,25 @@ import { chromium } from 'playwright'
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const DIST = path.join(ROOT, 'dist')
 const LIVE = process.argv.includes('--live')
-const ORIGIN = 'https://www.sprayitsolutions.com.au'
+/* The domain Google already indexes: no www, and every page address ends in
+   a slash, exactly as WordPress serves it. */
+const ORIGIN = 'https://sprayitsolutions.com.au'
 
-/** Every public route. Blog articles are read from their data file. */
-const STATIC_ROUTES = [
-  '/',
-  '/about',
-  '/spray-foam',
-  '/residential',
-  '/commercial',
-  '/gallery',
-  '/blog',
-  '/contact',
-  '/book',
-  '/privacy',
-  '/thanks/quote',
-  '/thanks/booked',
-]
+/**
+ * Every public route, read from src/data/routes.ts so this list cannot drift
+ * from the app's own. Blog articles are read from their data file and live at
+ * the root, as they do on WordPress.
+ */
+const routesSource = fs.readFileSync(path.join(ROOT, 'src/data/routes.ts'), 'utf8')
+const routesBlock = routesSource.slice(routesSource.indexOf('export const routes'), routesSource.indexOf('} as const'))
+const STATIC_ROUTES = [...routesBlock.matchAll(/:\s*'(\/[^']*)'/g)].map((m) => m[1])
+if (STATIC_ROUTES.length < 10) throw new Error(`Read only ${STATIC_ROUTES.length} routes from src/data/routes.ts`)
 /** Rendered, but kept out of the sitemap: they are noindex confirmation pages. */
-const NOINDEX = new Set(['/thanks/quote', '/thanks/booked'])
+const NOINDEX = new Set(['/thanks/quote/', '/thanks/booked/'])
 
 const blogSource = fs.readFileSync(path.join(ROOT, 'src/data/blog.ts'), 'utf8')
 const slugs = [...blogSource.matchAll(/^\s*slug:\s*'([^']+)'/gm)].map((m) => m[1])
-const routes = [...STATIC_ROUTES, ...slugs.map((slug) => `/blog/${slug}`)]
+const routes = [...STATIC_ROUTES, ...slugs.map((slug) => `/${slug}/`)]
 
 const shellPath = path.join(DIST, '404.html')
 if (!fs.existsSync(shellPath)) {
@@ -178,7 +174,7 @@ for (const route of routes) {
     if (!html.includes(rendered.root)) problems.push('root placeholder not found in shell')
 
     const outFile =
-      route === '/' ? path.join(DIST, 'index.html') : path.join(DIST, route.slice(1), 'index.html')
+      route === '/' ? path.join(DIST, 'index.html') : path.join(DIST, route.slice(1).replace(/\/$/, ''), 'index.html')
     fs.mkdirSync(path.dirname(outFile), { recursive: true })
     fs.writeFileSync(outFile, html)
 
@@ -206,7 +202,7 @@ fs.writeFileSync(
     '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
     ...urls.map(
       (route) =>
-        `  <url><loc>${ORIGIN}${route === '/' ? '/' : route}</loc><lastmod>${today}</lastmod></url>`,
+        `  <url><loc>${ORIGIN}${route}</loc><lastmod>${today}</lastmod></url>`,
     ),
     '</urlset>',
     '',

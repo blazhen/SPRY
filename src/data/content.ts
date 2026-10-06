@@ -1,4 +1,5 @@
 import type { ImageAsset } from '@/lib/images'
+import { routes } from '@/data/routes'
 
 /**
  * Section-level editorial copy.
@@ -9,6 +10,13 @@ import type { ImageAsset } from '@/lib/images'
 
 export interface SectionIntro {
   eyebrow: string
+  /**
+   * The search phrase this page targets. When set, it replaces the eyebrow
+   * and is rendered as the first line inside the heading itself, so the H1
+   * reads "Commercial Spray Foam Insulation. Buildings measured in hectares."
+   * while the page looks the way it always has.
+   */
+  keyword?: string
   /** Heading split into lines so the mask reveal can stagger them. */
   headingLines: string[]
   /** Word inside the heading rendered in the accent colour. */
@@ -29,7 +37,7 @@ export const hero = {
     rating: 5,
     ratingLabel: 'Rated 5.0 on Google by our customers',
     stat: 'Air leakage: up to 40% of energy cost',
-    provenance: 'Family-owned · Australia-wide',
+    provenance: 'Melbourne based · Australia-wide',
   },
   scrollCue: 'Scroll',
   /** Copy for the interactive thermal-camera lens over the hero photograph. */
@@ -55,6 +63,8 @@ export const hero = {
  * genuine before and after reading rather than an invented number.
  */
 export const heroHouse = {
+  /** The search phrase, first in the H1. The live home title targets it. */
+  keyword: 'Spray Foam Insulation Melbourne',
   headlineLines: ['Stop paying to', 'heat the sky.'],
   accentLineIndex: 1,
   subhead:
@@ -247,7 +257,7 @@ export const heroEditorial = {
   /** Swaps on a loop under the static line. All real benefits, no filler. */
   cycling: ['seals every gap.', 'cuts the bills.', 'holds the heat.'],
   subhead:
-    'Open- and closed-cell polyurethane foam, applied by the family that owns the rigs. Three vehicle-based spray units and two reactors, anywhere in Australia.',
+    'Open- and closed-cell polyurethane foam, applied by our own crews on our own rigs. Three vehicle-based spray units and two reactors, anywhere in Australia.',
   scrollCue: 'Scroll',
   proofLabel: 'Measured on a customer’s own meter',
   image: {
@@ -267,7 +277,7 @@ export const heroComfort = {
   headlineLines: ['The same house.', 'A completely', 'different winter.'],
   accentLineIndex: 2,
   subhead:
-    'Spray foam seals the gaps batts leave behind, so the warmth you have already paid for stays in the room. Family-owned, Australia-wide.',
+    'Spray foam seals the gaps batts leave behind, so the warmth you have already paid for stays in the room. Melbourne based, Australia-wide.',
   scrollCue: 'Scroll',
   /** Instruction shown until the visitor takes hold of the divider. */
   hint: 'Drag to compare',
@@ -399,13 +409,13 @@ export const whatIsSprayFoam = {
     label: 'Applied by us, not subcontracted',
     text: 'Our own rigs, our own applicators, our own quoting. What we quote is what you pay.',
   },
-  cta: { label: 'Learn more about spray foam', href: '/spray-foam' },
+  cta: { label: 'Learn more about spray foam', href: routes.sprayFoam },
   image: {
     // The client's own rig, from their existing site. Replaces the stock
     // applicator photograph that used to sit under a caption about the work
     // not being subcontracted, which was the wrong image for that sentence.
     id: '/site/truck-rig.webp',
-    alt: 'A Spray It Solutions truck loaded with its spray rig, parked in the workshop',
+    alt: 'A SprayIT Solutions truck loaded with its spray rig, parked in the workshop',
   } satisfies ImageAsset,
   imageSecondary: {
     id: 'photo-1626885930974-4b69aa21bbf9',
@@ -511,20 +521,20 @@ export const quoteCta = {
   assurances: [
     'Honest, itemised quoting',
     'Australia-wide',
-    'Family-owned since day one',
+    'Specialists since 1995',
   ],
 }
 
 export const footer = {
   blurb:
-    'Spray It Solutions is a family-owned insulation contractor in Victoria. We apply polyurethane foam, polyurea and aliphatic coatings to homes, factories, farms and mine sites Australia-wide.',
+    'SprayIT Solutions is a spray foam insulation contractor based in Carrum Downs, Melbourne. We apply polyurethane foam, polyurea and aliphatic coatings to homes, factories, farms and mine sites Australia-wide.',
   columns: [
     {
       title: 'Services',
       links: [
-        { label: 'Spray Foam', href: '/spray-foam' },
-        { label: 'Residential', href: '/residential' },
-        { label: 'Commercial', href: '/commercial' },
+        { label: 'Spray Foam', href: routes.sprayFoam },
+        { label: 'Residential', href: routes.residential },
+        { label: 'Commercial', href: routes.commercial },
       ],
     },
     /* The same targets as the Services menu, so a sub-service lives in one
@@ -532,24 +542,26 @@ export const footer = {
     {
       title: 'Residential',
       links: [
-        { label: 'Underfloor', href: '/residential#underfloor' },
-        { label: 'Roof & Ceiling', href: '/residential#roof' },
-        { label: 'Wall', href: '/residential#walls' },
+        { label: 'Underfloor', href: routes.underfloor },
+        { label: 'Roof & Ceiling', href: routes.roofCeiling },
+        { label: 'Walls & Retrofit', href: routes.walls },
       ],
     },
     {
       title: 'Commercial',
       links: [
-        { label: 'Factory & Warehouse', href: '/commercial#industrial' },
-        { label: 'Farming', href: '/commercial#agri' },
-        { label: 'Mining', href: '/commercial#mining' },
+        { label: 'Factory & Warehouse', href: routes.commercial + '#industrial' },
+        { label: 'Farming', href: routes.commercial + '#agri' },
+        { label: 'Mining', href: routes.commercial + '#mining' },
       ],
     },
     {
       title: 'Company',
       links: [
-        { label: 'About', href: '/about' },
-        { label: 'Contact', href: '/contact' },
+        { label: 'About', href: routes.about },
+        { label: 'Gallery', href: routes.gallery },
+        { label: 'Blog', href: routes.blog },
+        { label: 'Contact', href: routes.contact },
       ],
     },
   ],
@@ -559,8 +571,8 @@ export const footer = {
 export const stubPages = {
   about: {
     eyebrow: 'About',
-    title: 'Family-owned, decades deep.',
-    lede: 'The full About page is next in the build. It will cover the family story, the rigs, the crew and the standards we hold ourselves to.',
+    title: 'Three decades on the tools.',
+    lede: 'The full About page is next in the build. It will cover the story, the rigs, the crew and the standards we hold ourselves to.',
   },
   'spray-foam': {
     eyebrow: 'Spray foam',

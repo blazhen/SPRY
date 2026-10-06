@@ -6,4 +6,4 @@ Allow: /
 Disallow: /heroes
 Disallow: /thanks/
 
-Sitemap: https://www.sprayitsolutions.com.au/sitemap.xml
+Sitemap: https://sprayitsolutions.com.au/sitemap.xml

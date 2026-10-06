@@ -205,7 +205,7 @@ export default function StageRing({ stages, label }: StageRingProps) {
                         {stage.figure}
                       </span>
                       <span className="mt-2 text-eyebrow font-bold uppercase tracking-[0.2em] text-bone-400">
-                        Spray It
+                        SprayIT
                       </span>
                       <span className="mt-3 h-px w-10 bg-accent/60" />
                     </div>

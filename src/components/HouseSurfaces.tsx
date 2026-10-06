@@ -22,7 +22,7 @@ type SurfaceId = HouseSurface['id']
  * to suppress under reduced motion: the only movement is a colour change on
  * selection, which is the interaction itself.
  */
-/** `/residential#walls` opens the diagram on the walls. */
+/** `/residential/#walls` opens the diagram on the walls. */
 const surfaceFromHash = (hash: string): SurfaceId | undefined =>
   houseSurfaces.find((s) => `#${s.id}` === hash)?.id
 

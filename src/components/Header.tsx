@@ -7,6 +7,7 @@ import { useReducedMotion } from '@/hooks/useReducedMotion'
 import { navItems, site, type NavItem } from '@/data/site'
 import MagneticButton from '@/components/ui/MagneticButton'
 import Logo from '@/components/ui/Logo'
+import { samePath } from '@/data/routes'
 
 /** How long the desktop menu stays open after the pointer leaves it. */
 const MENU_LINGER_MS = 140
@@ -32,7 +33,7 @@ export default function Header() {
   const { pathname } = useLocation()
   /* The quote page already is the quote form, so the header CTA there would
      link to the page you are reading. It offers the phone instead. */
-  const onQuotePage = pathname === site.cta.primary.href
+  const onQuotePage = samePath(pathname, site.cta.primary.href)
   const lenis = useLenis()
   const reduced = useReducedMotion()
 
@@ -44,7 +45,12 @@ export default function Header() {
   const linger = useRef<number | null>(null)
 
   const services = navItems.find((item) => item.groups)
-  const onServicesPage = services?.groups?.some((group) => pathname === group.href) ?? false
+  const onServicesPage =
+    services?.groups?.some(
+      (group) =>
+        samePath(pathname, group.href) ||
+        (group.children?.some((child) => samePath(pathname, child.href)) ?? false),
+    ) ?? false
 
   // --- Scroll state ------------------------------------------------------
   useLenis(({ scroll }) => {

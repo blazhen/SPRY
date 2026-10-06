@@ -1,14 +1,14 @@
 import { lazy, Suspense } from 'react'
 import Seo from '@/components/ui/Seo'
 import { PageCta, PageHero, Prose } from '@/components/PageParts'
-import HeroObject3D from '@/components/HeroObject3D'
 import HouseSurfaces from '@/components/HouseSurfaces'
 import WorkVideos from '@/components/WorkVideos'
 import StatBand from '@/components/StatBand'
 import MidCta from '@/components/MidCta'
 import FAQ from '@/components/FAQ'
-import { residentialPage } from '@/data/pages'
+import { residentialCta, residentialPage } from '@/data/pages'
 import { faqSets } from '@/data/faqs'
+import { routes } from '@/data/routes'
 
 const Testimonials = lazy(() => import('@/components/Testimonials'))
 
@@ -22,41 +22,41 @@ const workIntro = {
 /**
  * Residential.
  *
- * Leads with the interactive house, because "three surfaces, seal all three"
- * is a spatial argument and reads far better as a diagram than as prose. The
- * testimonials sit near the end where the reader is deciding rather than
- * learning, and the page closes on its own questions.
+ * The copy and its heading order are the SEO agency's residential outline:
+ * the H1, the retrofit section, the three services, why insulate, how we
+ * assess, why choose us, the closing call to action and then the questions.
+ * The interactive house, the numbers, the videos and the reviews sit between
+ * those sections rather than replacing any of them, so the outline reads
+ * top to bottom exactly as written.
+ *
+ * The hero is a photograph of a technician spraying a home, which is what the
+ * agency asked for in place of the 3D house.
  */
 export default function Residential() {
   return (
     <>
-      <Seo
-        title={residentialPage.seoTitle}
-        description={residentialPage.seoDescription}
-        path="/residential"
-      />
-      <PageHero
-        page={residentialPage}
-        crumb="Residential"
-        aside={<HeroObject3D kind="house" className="mx-auto aspect-square w-full max-w-[26rem]" />}
-      />
+      <Seo title={residentialPage.seoTitle} description={residentialPage.seoDescription} path={routes.residential} />
+      <PageHero page={residentialPage} crumb="Residential" />
 
-      <HouseSurfaces />
+      <Prose page={residentialPage} id="intro" />
       <Prose page={residentialPage} id="retrofit" />
+      <Prose page={residentialPage} id="services" />
+      <HouseSurfaces />
+
+      <Prose page={residentialPage} id="why-insulate" />
       <StatBand />
+      <Prose page={residentialPage} id="assessment" />
 
       <WorkVideos sector="residential" intro={workIntro} />
       <MidCta heading="Sound like your house?" />
 
-      <Prose page={residentialPage} id="outcome" />
-
-      <Suspense fallback={<div className="min-h-[50vh] bg-bone" aria-hidden="true" />}>
+      <Suspense fallback={<div className="min-h-[50vh] bg-surface" aria-hidden="true" />}>
         <Testimonials />
       </Suspense>
 
+      <Prose page={residentialPage} id="why-us" />
+      <PageCta heading={residentialCta.heading} text={residentialCta.text} />
       <FAQ set={faqSets.residential} />
-
-      <PageCta />
     </>
   )
 }

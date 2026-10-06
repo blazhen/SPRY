@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import { BrowserRouter, HashRouter, Route, Routes, useLocation } from 'react-router-dom'
+import { BrowserRouter, HashRouter, Navigate, Route, Routes, useLocation, useParams } from 'react-router-dom'
 import { HelmetProvider } from 'react-helmet-async'
 import { ReactLenis, useLenis, type LenisRef } from 'lenis/react'
 
@@ -24,7 +24,18 @@ import Gallery from '@/pages/Gallery'
 import Blog from '@/pages/Blog'
 import BlogPost from '@/pages/BlogPost'
 import NotFound from '@/pages/NotFound'
+import ServicePage from '@/pages/ServicePage'
 import { HeroesIndexPage, HeroPreviewPage } from '@/pages/HeroPreview'
+import { legacyRedirects, postPath, routes } from '@/data/routes'
+
+/** Route patterns take the address without its trailing slash; both forms match. */
+const at = (path: string) => (path === '/' ? '/' : path.replace(/\/$/, ''))
+
+/** An article's old staging address, /blog/<slug>, now lives at /<slug>/. */
+function OldPostAddress() {
+  const { slug = '' } = useParams()
+  return <Navigate to={postPath(slug)} replace />
+}
 
 /**
  * Keeps ScrollTrigger's cached positions in sync with Lenis' virtual scroll.
@@ -168,17 +179,31 @@ export default function App() {
           <RouteAnalytics />
           <Routes>
             <Route element={<Layout />}>
-              <Route path="/" element={<Home />} />
-              <Route path="/about" element={<About />} />
-              <Route path="/spray-foam" element={<SprayFoam />} />
-              <Route path="/residential" element={<Residential />} />
-              <Route path="/commercial" element={<Commercial />} />
-              <Route path="/contact" element={<Contact />} />
-              <Route path="/book" element={<Book />} />
-              <Route path="/gallery" element={<Gallery />} />
-          <Route path="/blog" element={<Blog />} />
-          <Route path="/blog/:slug" element={<BlogPost />} />
-          <Route path="/privacy" element={<Privacy />} />
+              <Route path={at(routes.home)} element={<Home />} />
+              <Route path={at(routes.about)} element={<About />} />
+              <Route path={at(routes.sprayFoam)} element={<SprayFoam />} />
+              <Route path={at(routes.residential)} element={<Residential />} />
+              <Route path={at(routes.underfloor)} element={<ServicePage id="underfloor" />} />
+              <Route path={at(routes.roofCeiling)} element={<ServicePage id="roof" />} />
+              <Route path={at(routes.walls)} element={<ServicePage id="walls" />} />
+              <Route path={at(routes.commercial)} element={<Commercial />} />
+              <Route path={at(routes.contact)} element={<Contact />} />
+              <Route path={at(routes.book)} element={<Book />} />
+              <Route path={at(routes.gallery)} element={<Gallery />} />
+              <Route path={at(routes.blog)} element={<Blog />} />
+              <Route path={at(routes.privacy)} element={<Privacy />} />
+
+              {/* Articles sit at the root, as they did on the old site. Any
+                  other single-segment address lands here too and BlogPost
+                  shows the not-found page for it. */}
+              <Route path="/:slug" element={<BlogPost />} />
+              <Route path="/blog/:slug" element={<OldPostAddress />} />
+
+              {/* Old addresses. The host's redirect file carries the same
+                  list; this is the fallback for a host that ignores it. */}
+              {legacyRedirects.map(([from, to]) => (
+                <Route key={from} path={from.replace(/\*$/, '*')} element={<Navigate to={to} replace />} />
+              ))}
 
               {/* Confirmation pages. Distinct URLs so a conversion is only
                   counted once someone actually lands here. Both noindex. */}

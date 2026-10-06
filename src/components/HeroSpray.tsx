@@ -269,7 +269,7 @@ export default function HeroSpray() {
               href={site.phone.tel}
               variant="ghost"
               strength={0.24}
-              ariaLabel={`Call Spray It Solutions on ${site.phone.display}`}
+              ariaLabel={`Call SprayIT Solutions on ${site.phone.display}`}
             >
               <Phone className="size-4" aria-hidden="true" />
               {site.cta.secondary.label}
@@ -289,7 +289,7 @@ export default function HeroSpray() {
               {heroStat.headline} {heroStat.label}
             </span>
             <span className="hidden h-4 w-px bg-line/20 sm:block" aria-hidden="true" />
-            <span>Family-owned · Australia-wide</span>
+            <span>Melbourne based · Australia-wide</span>
           </div>
 
           <p

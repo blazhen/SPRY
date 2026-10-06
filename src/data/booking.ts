@@ -13,15 +13,16 @@ import type { SectionIntro } from '@/data/content'
  * human books the assessment.
  */
 export const booking = {
-  seoTitle: 'Book a Phone Call | Spray It Solutions',
+  seoTitle: 'Book a Phone Call | SprayIT Solutions',
   seoDescription:
-    'Book a free 15 minute phone call with Spray It Solutions. Talk through your building, what needs insulating and what it is likely to cost.',
+    'Book a free 15 minute phone call with SprayIT Solutions. Talk through your building, what needs insulating and what it is likely to cost.',
 
   intro: {
     eyebrow: 'Book a call',
+    keyword: 'Book a Phone Call',
     headingLines: ['Fifteen minutes', 'on the phone.'],
     accentWord: 'minutes',
-    lede: 'Pick a time that suits and one of the family will call you. No sales script, no obligation, just a straight conversation about your building.',
+    lede: 'Pick a time that suits and one of our team will call you. No sales script, no obligation, just a straight conversation about your building.',
   } satisfies SectionIntro,
 
   points: [
@@ -42,7 +43,7 @@ export const booking = {
     },
   ],
 
-  calendarTitle: 'Booking calendar for a phone call with Spray It Solutions',
+  calendarTitle: 'Booking calendar for a phone call with SprayIT Solutions',
   callInstead: 'Would rather just ring us? Call',
 
   fallbackTitle: 'Give us a call',

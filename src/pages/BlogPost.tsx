@@ -9,6 +9,7 @@ import { PageCta } from '@/components/PageParts'
 import NotFound from '@/pages/NotFound'
 import { blogAuthor, blogPosts, formatPostDate } from '@/data/blog'
 import { seo, site } from '@/data/site'
+import { postPath, routes } from '@/data/routes'
 
 /**
  * A single article.
@@ -40,7 +41,7 @@ export default function BlogPost() {
     }
   }
 
-  const url = new URL(`/blog/${post.slug}`, seo.canonical).toString()
+  const url = new URL(postPath(post.slug), seo.canonical).toString()
   const article = {
     '@context': 'https://schema.org',
     '@type': 'Article',
@@ -66,7 +67,7 @@ export default function BlogPost() {
 
   return (
     <>
-      <Seo title={`${post.title} | Spray It Solutions`} description={post.excerpt} path={`/blog/${post.slug}`} />
+      <Seo title={post.seoTitle ?? `${post.title} | SprayIT Solutions`} description={post.excerpt} path={postPath(post.slug)} />
       <Helmet>
         <script type="application/ld+json">{JSON.stringify(article)}</script>
       </Helmet>
@@ -76,9 +77,9 @@ export default function BlogPost() {
           <SectionBackdrop variant="orbs" tone="both" />
 
           <div className="relative shell max-w-4xl">
-            <Breadcrumbs items={[{ label: 'Blog', href: '/blog' }, { label: post.title }]} className="mb-8" />
+            <Breadcrumbs items={[{ label: 'Blog', href: routes.blog }, { label: post.title }]} className="mb-8" />
 
-            <Link to="/blog" className="link-wipe inline-flex text-small font-semibold text-bone-400">
+            <Link to={routes.blog} className="link-wipe inline-flex text-small font-semibold text-bone-400">
               <ArrowLeft className="size-4" aria-hidden="true" />
               All articles
             </Link>
@@ -160,7 +161,7 @@ export default function BlogPost() {
             })}
 
             <p className="mt-14 border-t border-line/10 pt-8">
-              <Link to="/contact" className="link-wipe font-semibold text-accent">
+              <Link to={routes.contact} className="link-wipe font-semibold text-accent">
                 Talk to us about your building
                 <ArrowUpRight className="size-4" aria-hidden="true" />
               </Link>

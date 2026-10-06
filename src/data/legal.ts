@@ -17,11 +17,11 @@
  */
 
 export const privacyMeta = {
-  title: 'Privacy Policy | Spray It Solutions',
+  title: 'Privacy Policy | SprayIT Solutions Melbourne',
   description:
-    'How Spray It Solutions collects, uses and protects your personal information, including SMS, phone and website data.',
+    "Review SprayIT Solutions' privacy policy to understand how we collect, use, and protect your personal information when you visit our website or use our services.",
   /** Update whenever the policy text changes. */
-  lastUpdated: '18 August 2026',
+  lastUpdated: '6 October 2026',
 }
 
 export interface PolicySection {
@@ -34,7 +34,7 @@ export const policySections: PolicySection[] = [
   {
     heading: 'Who we are',
     paragraphs: [
-      'Spray It Solutions is a family-owned insulation contractor based at Factory 4, 114 Colemans Road, Carrum Downs, Victoria 3201, operating Australia-wide.',
+      'SprayIT Solutions is a spray foam insulation contractor based at Factory 4/114 Colemans Rd, Carrum Downs VIC 3201, operating Australia-wide.',
       'We handle personal information in line with the Privacy Act 1988 (Cth) and the Australian Privacy Principles. This policy explains what we collect, why, and what you can ask us to do about it.',
     ],
   },
@@ -67,7 +67,7 @@ export const policySections: PolicySection[] = [
   {
     heading: 'Automated assistants',
     paragraphs: [
-      'We use automated systems to help answer calls and messages promptly, including outside business hours. If you are speaking or messaging with an automated assistant rather than a person, you will be told so, and you can ask to be put through to a member of the family at any point.',
+      'We use automated systems to help answer calls and messages promptly, including outside business hours. If you are speaking or messaging with an automated assistant rather than a person, you will be told so, and you can ask to be put through to a member of our team at any point.',
       'Anything you share with an assistant is stored in the same customer record a staff member would use, and is treated exactly the same way as the rest of your information under this policy.',
     ],
   },

@@ -333,6 +333,7 @@ export const galleryProjects: GalleryProject[] = [
 
 export const galleryIntro: SectionIntro = {
   eyebrow: 'Photo gallery',
+  keyword: 'Spray Foam Insulation Photo Gallery',
   headingLines: ['Work we have', 'actually done.'],
   accentWord: 'actually',
   lede: 'Photographed on our own jobs: a processing plant, two basketball halls, a basement car park, a zoo enclosure, a chicken shed, two film sets and the roofs, walls and floors of ordinary homes. Each job lists the town, the building, the foam and the thickness, wherever we have it.',

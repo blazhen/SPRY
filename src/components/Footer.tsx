@@ -13,6 +13,7 @@ import {
 import { footer } from '@/data/content'
 import { site, socialLinks, type SocialLink } from '@/data/site'
 import Logo from '@/components/ui/Logo'
+import { routes, samePath } from '@/data/routes'
 
 const socialIcons: Record<SocialLink['icon'], LucideIcon> = {
   linkedin: Linkedin,
@@ -136,7 +137,7 @@ export default function Footer() {
 
             {/* Quote nudge. Hidden on the quote page itself, where it would be
                 inviting someone to go to the page they are already on. */}
-            {pathname !== site.cta.primary.href && (
+            {!samePath(pathname, site.cta.primary.href) && (
               <div className="mt-12 flex flex-wrap items-center justify-between gap-6 rounded-lg border border-line/10 bg-ink-800 p-7">
                 <p className="max-w-md font-display text-h4 font-semibold text-bone">
                   {site.tagline}
@@ -155,7 +156,7 @@ export default function Footer() {
           <p className="flex flex-wrap items-center gap-x-2 gap-y-1">
             <span>© {year} {site.name}. ABN and licensing details on request.</span>
             <span aria-hidden="true">·</span>
-            <Link to="/privacy" className="link-wipe text-bone">
+            <Link to={routes.privacy} className="link-wipe text-bone">
               Privacy policy
             </Link>
           </p>

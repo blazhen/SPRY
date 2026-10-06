@@ -46,7 +46,7 @@ export const stats: Stat[] = [
     value: 3,
     suffix: '+',
     label: 'Decades of experience',
-    detail: 'Family-owned and operated in Victoria, working Australia-wide.',
+    detail: 'Spray-applied insulation since 1995. Based in Melbourne, working Australia-wide.',
   },
   {
     id: 'rigs',

@@ -312,14 +312,13 @@ export default function HeroHouse() {
       <div className="shell grid w-full items-center gap-0 lg:grid-cols-12 lg:gap-10">
         {/* ---------------- Copy: its own screen on mobile ---------------- */}
         <div className="flex flex-col justify-center pb-8 pt-[calc(var(--header-h)+1.5rem)] lg:col-span-4 lg:block lg:min-h-0 lg:py-0">
-          <p data-h-eyebrow className="eyebrow !text-bone-200">
-            {site.serviceArea}
-          </p>
-
-          {/* h2 scale, not h1. In a four-column well the h1 size wraps these
-              lines, and a wrapped line breaks out of its clip mask and makes
-              the copy column the tallest thing on the page. */}
-          <h1 className="mt-5 text-h1 font-semibold text-bone">
+          {/* The search phrase sits where the eyebrow was, styled as one,
+              but inside the H1 so the heading starts with it. The spaces
+              keep the lines apart for anything that reads the text. */}
+          <h1 className="text-h1 font-semibold text-bone">
+            <span data-h-eyebrow className="eyebrow mb-5 flex !text-bone-200">
+              {heroHouse.keyword}
+            </span>{' '}
             {heroHouse.headlineLines.map((line, i) => (
               <span className="line-mask" key={line}>
                 <span
@@ -329,6 +328,7 @@ export default function HeroHouse() {
                   data-h-line
                 >
                   {line}
+                  {i < heroHouse.headlineLines.length - 1 ? ' ' : ''}
                 </span>
               </span>
             ))}
@@ -347,7 +347,7 @@ export default function HeroHouse() {
               href={site.phone.tel}
               variant="ghost"
               strength={0.24}
-              ariaLabel={`Call Spray It Solutions on ${site.phone.display}`}
+              ariaLabel={`Call SprayIT Solutions on ${site.phone.display}`}
             >
               <Phone className="size-4" aria-hidden="true" />
               {site.cta.secondary.label}
@@ -363,7 +363,7 @@ export default function HeroHouse() {
               <span className="font-semibold text-bone">5.0</span>
             </span>
             <span className="hidden h-4 w-px bg-line/20 sm:block" aria-hidden="true" />
-            <span>Family-owned · Australia-wide</span>
+            <span>Melbourne based · Australia-wide</span>
           </div>
 
         </div>

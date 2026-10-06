@@ -172,7 +172,7 @@ export default function FAQ({ set = faqSets.general }: FAQProps) {
                 variant="ghost"
                 strength={0.2}
                 className="w-full"
-                ariaLabel={`Call Spray It Solutions on ${site.phone.display}`}
+                ariaLabel={`Call SprayIT Solutions on ${site.phone.display}`}
               >
                 <Phone className="size-4" aria-hidden="true" />
                 {site.cta.secondary.label}

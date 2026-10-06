@@ -5,6 +5,7 @@ import Breadcrumbs from '@/components/Breadcrumbs'
 import QuoteForm from '@/components/QuoteForm'
 import { contactIntro } from '@/data/forms'
 import { site } from '@/data/site'
+import { routes } from '@/data/routes'
 
 /**
  * Quote enquiry page.
@@ -19,9 +20,9 @@ export default function Contact() {
   return (
     <>
       <Seo
-        title="Get a Free Spray Foam Quote | Spray It Solutions"
-        description="Tell us what needs insulating and we will come back with honest advice and a free quote. Australia-wide."
-        path="/contact"
+        title="Contact SprayIT Solutions | Melbourne Spray Foam Insulation Experts"
+        description="Contact us: Get in touch with SprayIT Solutions for expert spray foam insulation services in Melbourne. Call, email, or use our form to request a free quote today!"
+        path={routes.contact}
       />
 
       <section className="bg-ink pb-section pt-[calc(var(--header-h)+clamp(2.5rem,6vh,4.5rem))]">
@@ -42,7 +43,7 @@ export default function Contact() {
                     {site.phone.display}
                   </a>
                   <p className="mt-1 text-small text-bone-400">
-                    Straight through to the family, not a call centre.
+                    Straight through to our team, not a call centre.
                   </p>
                 </dd>
               </div>

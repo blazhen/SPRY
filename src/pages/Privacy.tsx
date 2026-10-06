@@ -2,6 +2,7 @@ import Seo from '@/components/ui/Seo'
 import Breadcrumbs from '@/components/Breadcrumbs'
 import { policySections, privacyMeta } from '@/data/legal'
 import { site } from '@/data/site'
+import { routes } from '@/data/routes'
 
 /**
  * Privacy policy.
@@ -13,7 +14,7 @@ import { site } from '@/data/site'
 export default function Privacy() {
   return (
     <>
-      <Seo title={privacyMeta.title} description={privacyMeta.description} path="/privacy" />
+      <Seo title={privacyMeta.title} description={privacyMeta.description} path={routes.privacy} />
 
       <section className="bg-ink pb-section pt-[calc(var(--header-h)+clamp(2.5rem,6vh,4.5rem))]">
         <div className="shell max-w-4xl">

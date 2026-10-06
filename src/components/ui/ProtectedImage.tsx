@@ -11,6 +11,8 @@ interface ProtectedImageProps {
   width?: number
   height?: number
   loading?: 'lazy' | 'eager'
+  /** 'high' for the one image that is the largest thing above the fold. */
+  fetchPriority?: 'high' | 'low' | 'auto'
 }
 
 /**
@@ -43,6 +45,7 @@ export default function ProtectedImage({
   width,
   height,
   loading = 'lazy',
+  fetchPriority,
 }: ProtectedImageProps) {
   const [loaded, setLoaded] = useState(false)
   const block = (event: React.SyntheticEvent) => event.preventDefault()
@@ -61,7 +64,10 @@ export default function ProtectedImage({
         width={width}
         height={height}
         loading={loading}
-        decoding="async"
+        // Lower case on purpose: React 18 passes it through as the HTML
+        // attribute, where the camel-case prop only exists from React 19.
+        {...(fetchPriority ? { fetchpriority: fetchPriority } : {})}
+        decoding={fetchPriority === 'high' ? 'sync' : 'async'}
         draggable={false}
         onDragStart={block}
         onContextMenu={block}

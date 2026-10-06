@@ -2,6 +2,7 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import path from 'node:path'
 import fs from 'node:fs'
+import { legacyRedirects } from './src/data/routes'
 
 // https://vite.dev/config/
 /**
@@ -22,58 +23,20 @@ import fs from 'node:fs'
  */
 
 /**
- * Permanent redirects from the WordPress site this replaces.
+ * Permanent redirects for old addresses.
  *
- * That site has 31 indexed URLs and this one has eight, because six service
- * pages were consolidated into Residential and Commercial and two spray-foam
- * pages into one. Without these, every one of those addresses lands on the SPA
- * fallback and renders the not-found page with a 200, which search engines read
- * as a soft 404: the ranking is lost and nothing inherits it.
+ * The pages keep the addresses the WordPress site already ranks for, so most
+ * old URLs need no redirect at all. The list covers the few that were merged
+ * or renamed, and lives in src/data/routes.ts beside the addresses themselves:
+ * the app's own in-browser fallback reads the same list, so the two can never
+ * disagree. `/blog/<post>` is the address posts had on the staging build
+ * before they moved back to the root, where WordPress has them.
  *
  * Order matters. The catch-all rewrite has to stay last, or it swallows
  * everything above it.
  */
-const LEGACY_REDIRECTS: Array<[string, string]> = [
-  // Pages that simply changed address
-  ['/about-us', '/about'],
-  ['/contact-us', '/contact'],
-  ['/privacy-policy', '/privacy'],
-  ['/thank-you', '/thanks/quote'],
+const REDIRECTS: Array<[string, string]> = [...legacyRedirects, ['/blog/*', '/:splat']]
 
-  // Two spray-foam pages became one
-  ['/what-is-spray-foam', '/spray-foam'],
-  ['/spray-foam-insulation-system', '/spray-foam'],
-  ['/faq', '/spray-foam#faq'],
-  ['/fact-sheets', '/gallery#fact-sheets'],
-
-  // Residential services, now sections of one page
-  ['/services/under-floor-insulation', '/residential'],
-  ['/services/insulation-for-roof-and-ceiling', '/residential'],
-  ['/services/wall-insulation', '/residential'],
-
-  // Commercial services, likewise
-  ['/services/factory', '/commercial'],
-  ['/services/farming', '/commercial'],
-  ['/services/mining', '/commercial'],
-  ['/services', '/commercial'],
-
-  // Galleries and documents, all three rebuilt as one page
-  ['/photo-gallery', '/gallery'],
-  ['/video-gallery', '/gallery'],
-
-  // Blog and case studies. All four articles were migrated, so these point at
-  // the articles themselves rather than at whichever page was closest.
-  ['/sprayit-solutions-transformed-sunrice-roof', '/blog/sprayit-solutions-transformed-sunrice-roof'],
-  ['/spray-foam-insulation-why-choose', '/blog/spray-foam-insulation-why-choose'],
-  [
-    '/spray-foam-acoustic-insulation-icynene-noise-reduction',
-    '/blog/spray-foam-acoustic-insulation-icynene-noise-reduction',
-  ],
-  ['/energy-efficiency-standards-vic-rental-homes', '/blog/energy-efficiency-standards-vic-rental-homes'],
-  ['/blog-2/open-cell-spray-foam-facts', '/spray-foam'],
-  ['/blog-2', '/blog'],
-  ['/category/*', '/blog'],
-]
 function staticHostFallbacks(isLive: boolean) {
   return {
     name: 'spry-static-host-fallbacks',
@@ -82,11 +45,10 @@ function staticHostFallbacks(isLive: boolean) {
       const indexHtml = path.join(out, 'index.html')
       if (!fs.existsSync(indexHtml)) return
       fs.copyFileSync(indexHtml, path.join(out, '404.html'))
-      // WordPress served these with a trailing slash, so both forms are
-      // mapped. The SPA rewrite stays last so it cannot shadow them.
+      // Both forms are mapped, with and without the trailing slash. The SPA rewrite stays last so it cannot shadow them.
       const lines: string[] = [
-        '# Legacy URLs from the WordPress site this replaces.',
-        ...LEGACY_REDIRECTS.flatMap(([from, to]) =>
+        '# Old addresses, from src/data/routes.ts.',
+        ...REDIRECTS.flatMap(([from, to]) =>
           from.endsWith('*')
             ? [`${from}  ${to}  301`]
             : [`${from}  ${to}  301`, `${from}/  ${to}  301`],

@@ -1,6 +1,5 @@
 import Seo from '@/components/ui/Seo'
 import { PageCta, PageHero, Prose } from '@/components/PageParts'
-import HeroObject3D from '@/components/HeroObject3D'
 import SectorCards from '@/components/SectorCards'
 import ClientLogos from '@/components/ClientLogos'
 import WorkVideos from '@/components/WorkVideos'
@@ -8,6 +7,7 @@ import MidCta from '@/components/MidCta'
 import FAQ from '@/components/FAQ'
 import { commercialPage } from '@/data/pages'
 import { faqSets } from '@/data/faqs'
+import { routes } from '@/data/routes'
 
 const workIntro = {
   eyebrow: 'Commercial work',
@@ -30,13 +30,11 @@ export default function Commercial() {
       <Seo
         title={commercialPage.seoTitle}
         description={commercialPage.seoDescription}
-        path="/commercial"
+        path={routes.commercial}
       />
-      <PageHero
-        page={commercialPage}
-        crumb="Commercial"
-        aside={<HeroObject3D kind="warehouse" className="mx-auto aspect-square w-full max-w-[26rem]" />}
-      />
+      {/* A real commercial job on the tools, rather than the 3D warehouse:
+          the SEO agency asked for real work in the hero. */}
+      <PageHero page={commercialPage} crumb="Commercial" />
 
       <Prose page={commercialPage} id="scale" />
       <SectorCards />
