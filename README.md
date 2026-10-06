@@ -407,8 +407,9 @@ fails, so a dead URL degrades gracefully rather than showing a broken image.
 writes the result out as `dist/<route>/index.html`. The title, description, canonical,
 structured data, headings and copy are all in the raw HTML, which is what crawlers that
 do not run JavaScript, link previews and AI search bots read. The client app then
-renders over it. `dist/404.html` stays the untouched shell for unknown addresses, and
-the sitemap is generated from the same route list.
+renders over it. The last route rendered is the not-found page, into `dist/404.html`, which
+hosts serve with a 404 status for unknown addresses. The sitemap is generated from the
+same route list.
 
 **Fonts are self-hosted** from `public/fonts`: one Clash Display weight and three
 Satoshi weights, the only ones the site sets, declared in `tokens.css` with

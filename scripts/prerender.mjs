@@ -57,7 +57,15 @@ const NOINDEX = new Set(['/thanks/quote/', '/thanks/booked/'])
 
 const blogSource = fs.readFileSync(path.join(ROOT, 'src/data/blog.ts'), 'utf8')
 const slugs = [...blogSource.matchAll(/^\s*slug:\s*'([^']+)'/gm)].map((m) => m[1])
-const routes = [...STATIC_ROUTES, ...slugs.map((slug) => `/${slug}/`)]
+/**
+ * An address that matches nothing, rendered last into dist/404.html. Static
+ * hosts serve that file with a real 404 status for any unknown address, so a
+ * mistyped or retired URL gets the not-found page and a 404 rather than the
+ * soft 200 a single page app gives. Last, because 404.html is also the clean
+ * shell every other page is built from, read into memory above.
+ */
+const NOT_FOUND = '/this-page-does-not-exist/'
+const routes = [...STATIC_ROUTES, ...slugs.map((slug) => `/${slug}/`), NOT_FOUND]
 
 const shellPath = path.join(DIST, '404.html')
 if (!fs.existsSync(shellPath)) {
@@ -174,7 +182,9 @@ for (const route of routes) {
     if (!html.includes(rendered.root)) problems.push('root placeholder not found in shell')
 
     const outFile =
-      route === '/' ? path.join(DIST, 'index.html') : path.join(DIST, route.slice(1).replace(/\/$/, ''), 'index.html')
+      route === NOT_FOUND
+        ? path.join(DIST, '404.html')
+        : route === '/' ? path.join(DIST, 'index.html') : path.join(DIST, route.slice(1).replace(/\/$/, ''), 'index.html')
     fs.mkdirSync(path.dirname(outFile), { recursive: true })
     fs.writeFileSync(outFile, html)
 
@@ -194,7 +204,7 @@ else server.httpServer.close()
 
 /* The sitemap follows the same route list, so it can never drift from it. */
 const today = new Date().toISOString().slice(0, 10)
-const urls = routes.filter((route) => !NOINDEX.has(route))
+const urls = routes.filter((route) => !NOINDEX.has(route) && route !== NOT_FOUND)
 fs.writeFileSync(
   path.join(DIST, 'sitemap.xml'),
   [

@@ -28,8 +28,8 @@ What `dist/` contains:
 
 | Path | What it is |
 | --- | --- |
-| `index.html`, `about/index.html`, … | One pre-rendered file per page, sixteen in all. |
-| `404.html` | The untouched app shell. Unknown addresses fall back to it and the app shows its not-found page. |
+| `index.html`, `about-us/index.html`, … | One pre-rendered file per page, nineteen in all, at the addresses the old WordPress site used. |
+| `404.html` | The not-found page. Hosts serve it with a 404 status for any address that has no file. |
 | `config.js` | The runtime configuration, edited on the server (step 2). |
 | `sitemap.xml` | Generated from the same page list, so it can never list a page that does not exist. |
 | `robots.txt` | The staging build writes one that blocks everything. The live build does not. |
@@ -64,17 +64,19 @@ deliberately rather than ignored:
 
 ## 3. Check deep links
 
-Open `https://yourdomain.com/contact` directly (type it in, do not click
+Open `https://yourdomain.com/contact-us/` directly (type it in, do not click
 through). It should load the contact page. Every real address has its own
-file (`contact/index.html`), and every common host serves that file for
-`/contact`: Netlify, Cloudflare Pages, Vercel, GitHub Pages, nginx with
+file (`contact-us/index.html`), and every common host serves that file for
+`/contact-us/`: Netlify, Cloudflare Pages, Vercel, GitHub Pages, nginx with
 `try_files $uri $uri/index.html /404.html` and Apache with `DirectoryIndex`
 all do.
 
-For addresses that have no file, the build ships two fallbacks that most hosts
-pick up automatically: `404.html` (GitHub Pages, Cloudflare Pages and others)
-and `_redirects` (Netlify, Cloudflare Pages), which also carries the redirects
-from the old WordPress addresses.
+For addresses that have no file, most hosts pick up two files automatically:
+`404.html` (Cloudflare Pages, Netlify, GitHub Pages and others), served with a
+404 status, and `_redirects` (Netlify, Cloudflare Pages), which carries the
+redirects for old and merged addresses. Check that
+`https://yourdomain.com/no-such-page/` shows the not-found page and that the
+browser's network tab reports a 404, not a 200.
 
 If a real page still 404s, change one line in `config.js`:
 

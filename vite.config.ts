@@ -13,13 +13,16 @@ import { legacyRedirects } from './src/data/routes'
  * kills the funnel. These two files cover the common cases without needing
  * anyone to configure the host:
  *
- *   404.html     copied from index.html. GitHub Pages, Cloudflare Pages,
- *                Azure Static Web Apps and others serve it for unknown paths,
- *                which makes the SPA resolve correctly.
- *   _redirects   Netlify and Cloudflare Pages rewrite rule, same effect,
- *                plus the legacy URL map below.
+ *   404.html     copied from index.html, as the clean shell the pre-render
+ *                step builds every page from. Its last step then renders the
+ *                not-found page into it. Cloudflare Pages, Netlify, GitHub
+ *                Pages and others serve it with a 404 status for any address
+ *                that has no page, which is what search engines need to see.
+ *   _redirects   Netlify and Cloudflare Pages redirects for old addresses.
  *
- * If a host honours neither, switch `router` to 'hash' in index.html.
+ * There is deliberately no catch-all rewrite to the app. Every real page is
+ * pre-rendered to its own file, so one is not needed, and it would answer an
+ * unknown address with a 200: a soft 404, which is what staging does today.
  */
 
 /**
@@ -29,13 +32,10 @@ import { legacyRedirects } from './src/data/routes'
  * old URLs need no redirect at all. The list covers the few that were merged
  * or renamed, and lives in src/data/routes.ts beside the addresses themselves:
  * the app's own in-browser fallback reads the same list, so the two can never
- * disagree. `/blog/<post>` is the address posts had on the staging build
- * before they moved back to the root, where WordPress has them.
+ * disagree.
  *
- * Order matters. The catch-all rewrite has to stay last, or it swallows
- * everything above it.
+ * Each old address is mapped with and without its trailing slash.
  */
-const REDIRECTS: Array<[string, string]> = [...legacyRedirects, ['/blog/*', '/:splat']]
 
 function staticHostFallbacks(isLive: boolean) {
   return {
@@ -48,16 +48,11 @@ function staticHostFallbacks(isLive: boolean) {
       // Both forms are mapped, with and without the trailing slash. The SPA rewrite stays last so it cannot shadow them.
       const lines: string[] = [
         '# Old addresses, from src/data/routes.ts.',
-        ...REDIRECTS.flatMap(([from, to]) =>
+        ...legacyRedirects.flatMap(([from, to]) =>
           from.endsWith('*')
             ? [`${from}  ${to}  301`]
             : [`${from}  ${to}  301`, `${from}/  ${to}  301`],
         ),
-        '',
-        '# Single page app fallback. Must remain last. Points at the untouched',
-        '# shell rather than index.html, which the pre-render step turns into',
-        '# the home page: an unknown address must not open with home content.',
-        '/*  /404.html  200',
         '',
       ]
       fs.writeFileSync(path.join(out, '_redirects'), lines.join('\n'))
