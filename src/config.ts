@@ -4,9 +4,11 @@
  * ─────────────────────────────────────────────────────────────────────────
  *  HERO A/B
  * ─────────────────────────────────────────────────────────────────────────
- * Three complete heroes are built and all are production-ready. Change this
+ * Eight complete heroes are built and all are production-ready. Change this
  * one value to swap which renders on the homepage.
  *
+ *   'photo'   → HeroPhotos.tsx   Photographs of the crew at work, rotating.
+ *                               The SEO agency asked for this on 29 September.
  *   'house'   → HeroHouse.tsx    Pinned house cutaway, sealed zone by zone
  *                               while the real meter reading counts down.
  *   'spray'   → HeroSpray.tsx    Pinned wall cavity that the visitor fills by
@@ -28,13 +30,14 @@
  * Every variant is also viewable on its own at /heroes, one page each.
  */
 export const ACTIVE_HERO:
+  | 'photo'
   | 'house'
   | 'spray'
   | 'foam'
   | 'editorial'
   | 'comfort'
   | 'thermal'
-  | 'seal' = 'house'
+  | 'seal' = 'photo'
 
 /**
  * Brief brand wipe on first load.

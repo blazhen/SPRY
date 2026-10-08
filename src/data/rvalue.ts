@@ -48,6 +48,7 @@ export const rvalueClaim = {
 
 export const rvalueIntro: SectionIntro = {
   eyebrow: 'R-value, honestly',
+  keyword: 'Insulation R-Value Explained',
   headingLines: ['Same number.', 'Different building.'],
   accentWord: 'Different',
   lede: 'Two products can carry an identical R-value and behave nothing alike once they are installed. The rating describes the material on a test bench, not the wall you end up with.',

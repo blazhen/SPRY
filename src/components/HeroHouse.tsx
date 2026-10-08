@@ -1,9 +1,11 @@
 import { useEffect, useRef, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { ArrowDown, ArrowUpRight, Phone } from 'lucide-react'
 import { gsap, useGSAP } from '@/lib/gsap'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
 import { heroHouse } from '@/data/content'
 import { site } from '@/data/site'
+import { routes } from '@/data/routes'
 import MagneticButton from '@/components/ui/MagneticButton'
 import HouseSection, { type HouseSeason } from '@/components/HouseSection'
 import Stars from '@/components/ui/Stars'
@@ -27,10 +29,17 @@ import Stars from '@/components/ui/Stars'
  *
  * The pin is gated on width, height and a runtime measurement. Where it will
  * not fit, and on compact screens, the same sequence plays once on entry.
+ *
+ * `as="section"` runs it further down the home page instead, under the photo
+ * hero the SEO agency asked for: the same pinned house, with an H2 of its own
+ * and no second set of quote buttons.
  */
-export default function HeroHouse() {
+export default function HeroHouse({ as = 'hero' }: { as?: 'hero' | 'section' } = {}) {
   const scope = useRef<HTMLElement>(null)
   const reduced = useReducedMotion()
+  const isHero = as === 'hero'
+  const heading = isHero ? heroHouse : heroHouse.section
+  const Heading = isHero ? 'h1' : 'h2'
 
   /**
    * The season runs on a timer rather than on scroll position. Scroll already
@@ -63,8 +72,12 @@ export default function HeroHouse() {
       }
 
       if (!reduced) {
-        gsap
-          .timeline({ defaults: { ease: 'power3.out' } })
+        // As the hero it plays on load; as a section, when it scrolls in.
+        const intro = gsap
+          .timeline({
+            defaults: { ease: 'power3.out' },
+            ...(isHero ? {} : { scrollTrigger: { trigger: section, start: 'top 75%', once: true } }),
+          })
           .from('[data-h-eyebrow]', { autoAlpha: 0, y: 14, duration: 0.6 }, 0.15)
           .from(
             '[data-h-line]',
@@ -72,8 +85,12 @@ export default function HeroHouse() {
             0.25,
           )
           .from('[data-h-sub]', { autoAlpha: 0, y: 18, duration: 0.7 }, '-=0.45')
-          .from('[data-h-cta] > *', { autoAlpha: 0, y: 16, duration: 0.55, stagger: 0.08 }, '-=0.4')
-          .from('[data-h-trust] > *', { autoAlpha: 0, y: 12, duration: 0.5, stagger: 0.06 }, '-=0.3')
+        if (isHero) {
+          intro
+            .from('[data-h-cta] > *', { autoAlpha: 0, y: 16, duration: 0.55, stagger: 0.08 }, '-=0.4')
+            .from('[data-h-trust] > *', { autoAlpha: 0, y: 12, duration: 0.5, stagger: 0.06 }, '-=0.3')
+        }
+        intro
           .from('[data-h-house]', { autoAlpha: 0, y: 40, duration: 1.1 }, 0.35)
           .from('[data-h-panel]', { autoAlpha: 0, x: 24, duration: 0.7 }, 0.7)
           .from('[data-h-cue]', { autoAlpha: 0, duration: 0.5 }, '-=0.4')
@@ -285,7 +302,7 @@ export default function HeroHouse() {
         mm.revert()
       }
     },
-    { scope, dependencies: [reduced] },
+    { scope, dependencies: [reduced, isHero] },
   )
 
   return (
@@ -294,8 +311,10 @@ export default function HeroHouse() {
       // Desktop is one centred, pinned screen. Below lg the copy and the house
       // are a full screen each and only the house block is pinned, so the
       // section itself must be free to grow.
-      className="relative isolate overflow-hidden bg-ink lg:flex lg:min-h-[100svh] lg:items-center lg:pb-4 lg:pt-[calc(var(--header-h)+1rem)]"
-      aria-label="Introduction"
+      className={`relative isolate overflow-hidden bg-ink lg:flex lg:min-h-[100svh] lg:items-center lg:pb-4 lg:pt-[calc(var(--header-h)+1rem)] ${
+        isHero ? '' : 'border-t border-line/6'
+      }`}
+      {...(isHero ? { 'aria-label': 'Introduction' } : { 'aria-labelledby': 'house-heading' })}
     >
       <div
         aria-hidden="true"
@@ -311,33 +330,50 @@ export default function HeroHouse() {
           squeezing the drawing into a narrow strip. */}
       <div className="shell grid w-full items-center gap-0 lg:grid-cols-12 lg:gap-10">
         {/* ---------------- Copy: its own screen on mobile ---------------- */}
-        <div className="flex flex-col justify-center pb-8 pt-[calc(var(--header-h)+1.5rem)] lg:col-span-4 lg:block lg:min-h-0 lg:py-0">
+        <div
+          className={`flex flex-col justify-center pb-8 lg:col-span-4 lg:block lg:min-h-0 lg:py-0 ${
+            isHero ? 'pt-[calc(var(--header-h)+1.5rem)]' : 'pt-16'
+          }`}
+        >
           {/* The search phrase sits where the eyebrow was, styled as one,
-              but inside the H1 so the heading starts with it. The spaces
+              but inside the heading so the heading starts with it. The spaces
               keep the lines apart for anything that reads the text. */}
-          <h1 className="text-h1 font-semibold text-bone">
+          <Heading
+            id={isHero ? undefined : 'house-heading'}
+            className={`${isHero ? 'text-h1' : 'text-h2'} font-semibold text-bone`}
+          >
             <span data-h-eyebrow className="eyebrow mb-5 flex !text-bone-200">
-              {heroHouse.keyword}
+              {heading.keyword}
             </span>{' '}
-            {heroHouse.headlineLines.map((line, i) => (
+            {heading.headlineLines.map((line, i) => (
               <span className="line-mask" key={line}>
                 <span
                   className={`line-inner ${
-                    i === heroHouse.accentLineIndex ? 'text-gradient-accent' : ''
+                    i === heading.accentLineIndex ? 'text-gradient-accent' : ''
                   }`}
                   data-h-line
                 >
                   {line}
-                  {i < heroHouse.headlineLines.length - 1 ? ' ' : ''}
+                  {i < heading.headlineLines.length - 1 ? ' ' : ''}
                 </span>
               </span>
             ))}
-          </h1>
+          </Heading>
 
           <p data-h-sub className="mt-6 max-w-measure text-lead text-bone-200/85">
             {heroHouse.subhead}
           </p>
 
+          {!isHero && (
+            <p className="mt-6">
+              <Link to={routes.residential} className="link-wipe inline-flex font-semibold text-accent">
+                Residential insulation, surface by surface
+                <ArrowUpRight className="size-4" aria-hidden="true" />
+              </Link>
+            </p>
+          )}
+
+          {isHero && (
           <div data-h-cta className="mt-8 flex flex-wrap items-center gap-3">
             <MagneticButton href={site.cta.primary.href} variant="primary" strength={0.34}>
               {site.cta.primary.label}
@@ -353,18 +389,22 @@ export default function HeroHouse() {
               {site.cta.secondary.label}
             </MagneticButton>
           </div>
+          )}
 
+          {isHero && (
           <div
             data-h-trust
             className="mt-7 flex flex-wrap items-center gap-x-5 gap-y-3 text-small text-bone-200/80"
           >
             <span className="inline-flex items-center gap-2">
-              <Stars label="Rated 5 stars by homeowners" />
+              <Stars tone="google" label="Rated 5.0 on Google by our customers" />
               <span className="font-semibold text-bone">5.0</span>
+              <span>on Google</span>
             </span>
             <span className="hidden h-4 w-px bg-line/20 sm:block" aria-hidden="true" />
             <span>Melbourne based · Australia-wide</span>
           </div>
+          )}
 
         </div>
 

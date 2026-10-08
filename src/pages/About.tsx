@@ -13,6 +13,7 @@ const Testimonials = lazy(() => import('@/components/Testimonials'))
    jobs, homes and commercial both, straight after the story it backs up. */
 const videoIntro = {
   eyebrow: 'On film',
+  keyword: 'Spray Foam Insulation Videos',
   headingLines: ['The team,', 'on the tools.'],
   accentWord: 'tools',
   lede: 'Filmed on our own jobs, from a stud wall in a suburban house to a potato store and an inflated dome. No stock footage.',

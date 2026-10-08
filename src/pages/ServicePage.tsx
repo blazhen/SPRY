@@ -5,6 +5,7 @@ import ProtectedImage from '@/components/ui/ProtectedImage'
 import SectionBackdrop from '@/components/ui/SectionBackdrop'
 import { PageCta, PageHero, ProseSection } from '@/components/PageParts'
 import MidCta from '@/components/MidCta'
+import StatBand from '@/components/StatBand'
 import FAQ from '@/components/FAQ'
 import { servicePages, serviceOrder, type ServiceId, type ServicePageData } from '@/data/servicePages'
 import { galleryProjects } from '@/data/gallery'
@@ -41,11 +42,11 @@ function JobsLikeThis({ page }: { page: ServicePageData }) {
     >
       <SectionBackdrop variant="orbs" tone="warm" />
       <div className="relative shell">
-        <p className="flex items-center gap-4 text-eyebrow font-bold uppercase tracking-[0.2em] text-accent">
-          <span className="h-px w-8 bg-accent" aria-hidden="true" />
-          From the gallery
-        </p>
-        <h2 id="jobs-heading" className="mt-6 font-display text-h2 font-semibold leading-tight text-bone">
+        <h2 id="jobs-heading" className="font-display text-h2 font-semibold leading-tight text-bone">
+          <span className="mb-6 flex items-center gap-4 font-body text-eyebrow font-bold uppercase tracking-[0.2em] text-accent">
+            <span className="h-px w-8 bg-accent" aria-hidden="true" />
+            {page.crumb} Projects
+          </span>{' '}
           Jobs <span className="text-accent">like this</span> one
         </h2>
 
@@ -93,7 +94,7 @@ function OtherServices({ current }: { current: ServiceId }) {
     <section className="relative border-t border-line/6 bg-surface py-16 sm:py-20" aria-labelledby="other-services-heading">
       <div className="relative shell">
         <h2 id="other-services-heading" className="font-display text-h3 font-semibold leading-tight text-bone">
-          Other residential services
+          Other residential insulation services
         </h2>
         <ul className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {others.map((other) => (
@@ -133,6 +134,9 @@ export default function ServicePage({ id }: { id: ServiceId }) {
 
       {first && <ProseSection section={first} />}
       {second && <ProseSection section={second} />}
+      {/* The trust numbers, repeated from home as the agency's guide suggests
+          for service pages (item 3), then the short call to action. */}
+      <StatBand />
       <MidCta heading="Sound like your house?" />
       {rest.map((section) => (
         <ProseSection key={section.id} section={section} />

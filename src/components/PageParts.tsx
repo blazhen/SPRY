@@ -99,19 +99,43 @@ export function PageHero({
 
 /* -------------------------------------------------------- Prose + bullets */
 
-/** Splits a heading so the accent word can be coloured independently. */
+/** The eyebrow line: a short rule and the label. */
+function EyebrowLine({ children }: { children: ReactNode }) {
+  return (
+    <span className="flex items-center gap-4 text-eyebrow font-bold uppercase tracking-[0.2em] text-accent">
+      <span className="h-px w-8 bg-accent" aria-hidden="true" />
+      {children}
+    </span>
+  )
+}
+
+/**
+ * Splits a heading so the accent word can be coloured independently. A
+ * section with a keyword carries it as the heading's first line, in the
+ * eyebrow's place and style.
+ */
 function Heading({ section, id }: { section: PageSection; id: string }) {
-  const { heading, accentWord } = section
+  const { heading, accentWord, keyword } = section
+  const lead = keyword ? (
+    <>
+      <span className="mb-6 block font-body">
+        <EyebrowLine>{keyword}</EyebrowLine>
+      </span>{' '}
+    </>
+  ) : null
+  const spacing = keyword ? '' : 'mt-6'
   if (!accentWord || !heading.includes(accentWord)) {
     return (
-      <h2 id={id} className="mt-6 font-display text-h2 font-semibold leading-tight text-bone">
+      <h2 id={id} className={`${spacing} font-display text-h2 font-semibold leading-tight text-bone`}>
+        {lead}
         {heading}
       </h2>
     )
   }
   const [before, ...rest] = heading.split(accentWord)
   return (
-    <h2 id={id} className="mt-6 font-display text-h2 font-semibold leading-tight text-bone">
+    <h2 id={id} className={`${spacing} font-display text-h2 font-semibold leading-tight text-bone`}>
+      {lead}
       {before}
       <span data-accent-word className="text-accent">
         {accentWord}
@@ -229,10 +253,9 @@ export function ProseSection({ section }: { section: PageSection }) {
 
       <div className="relative shell grid gap-12 lg:grid-cols-12 lg:gap-x-16">
         <div className="lg:col-span-5" data-reveal>
-          {section.eyebrow && (
-            <p className="flex items-center gap-4 text-eyebrow font-bold uppercase tracking-[0.2em] text-accent">
-              <span className="h-px w-8 bg-accent" aria-hidden="true" />
-              {section.eyebrow}
+          {section.eyebrow && !section.keyword && (
+            <p>
+              <EyebrowLine>{section.eyebrow}</EyebrowLine>
             </p>
           )}
           <Heading section={section} id={`${section.id}-heading`} />

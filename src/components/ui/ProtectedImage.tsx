@@ -13,6 +13,9 @@ interface ProtectedImageProps {
   loading?: 'lazy' | 'eager'
   /** 'high' for the one image that is the largest thing above the fold. */
   fetchPriority?: 'high' | 'low' | 'auto'
+  /** Responsive candidates, so a phone downloads the smaller file. */
+  srcSet?: string
+  sizes?: string
 }
 
 /**
@@ -46,8 +49,13 @@ export default function ProtectedImage({
   height,
   loading = 'lazy',
   fetchPriority,
+  srcSet,
+  sizes,
 }: ProtectedImageProps) {
   const [loaded, setLoaded] = useState(false)
+  // The largest image above the fold is shown as soon as it decodes, not
+  // faded in: a fade delays the moment the page counts as painted (LCP).
+  const shown = loaded || fetchPriority === 'high'
   const block = (event: React.SyntheticEvent) => event.preventDefault()
 
   return (
@@ -60,6 +68,8 @@ export default function ProtectedImage({
     >
       <img
         src={src}
+        srcSet={srcSet}
+        sizes={sizes}
         alt={alt}
         width={width}
         height={height}
@@ -73,7 +83,7 @@ export default function ProtectedImage({
         onContextMenu={block}
         onLoad={() => setLoaded(true)}
         className={`block size-full object-cover transition-opacity duration-700 ${
-          loaded ? 'opacity-100' : 'opacity-0'
+          shown ? 'opacity-100' : 'opacity-0'
         } ${className}`}
         style={{ WebkitUserDrag: 'none' } as React.CSSProperties}
       />
@@ -84,7 +94,7 @@ export default function ProtectedImage({
           className="pointer-events-none absolute inset-0 select-none opacity-[0.14] mix-blend-overlay"
           style={{
             backgroundImage:
-              "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='150'><text x='0' y='95' transform='rotate(-24 90 95)' font-family='Helvetica,Arial,sans-serif' font-size='22' font-weight='700' letter-spacing='2' fill='white'>SPRAY IT SOLUTIONS</text></svg>\")",
+              "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='150'><text x='0' y='95' transform='rotate(-24 90 95)' font-family='Helvetica,Arial,sans-serif' font-size='22' font-weight='700' letter-spacing='2' fill='white'>SPRAYIT SOLUTIONS</text></svg>\")",
             backgroundRepeat: 'repeat',
           }}
         />

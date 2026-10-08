@@ -56,6 +56,12 @@ export interface PageCard {
 export interface PageSection {
   id: string
   eyebrow?: string
+  /**
+   * The search phrase for this section. When set it replaces the eyebrow and
+   * becomes the first line inside the H2, the same way the page H1s carry
+   * theirs, so every heading the agency asked about leads with a keyword.
+   */
+  keyword?: string
   /** Empty for an unheaded run of copy straight after the page heading. */
   heading: string
   /** Word inside the heading rendered in the accent colour. */
@@ -150,6 +156,7 @@ export const aboutPage: SitePage = {
     {
       id: 'story',
       eyebrow: 'Who we are',
+      keyword: 'Melbourne Spray Foam Insulation Contractors',
       heading: 'Decades on the tools, not in an office.',
       accentWord: 'tools',
       body: [
@@ -190,6 +197,7 @@ export const sprayFoamPage: SitePage = {
     {
       id: 'how',
       eyebrow: 'How it works',
+      keyword: 'How Spray Foam Insulation Works',
       heading: 'It fills the shape the building actually is.',
       accentWord: 'actually',
       body: [
@@ -201,6 +209,7 @@ export const sprayFoamPage: SitePage = {
     {
       id: 'air',
       eyebrow: 'Why it performs',
+      keyword: 'Spray Foam Air Sealing',
       heading: 'Insulation slows heat. Air sealing stops it leaving.',
       accentWord: 'leaving',
       body: [
@@ -389,6 +398,7 @@ export const commercialPage: SitePage = {
     {
       id: 'scale',
       eyebrow: 'Scale',
+      keyword: 'Commercial Spray Foam Insulation at Scale',
       heading: 'Set up for jobs that do not fit in a van.',
       accentWord: 'not',
       body: [
@@ -404,6 +414,7 @@ export const commercialPage: SitePage = {
     {
       id: 'specify',
       eyebrow: 'Working with us',
+      keyword: 'Commercial Insulation, Specified and Applied',
       heading: 'Specified properly, then applied by us.',
       accentWord: 'properly',
       body: [

@@ -40,6 +40,7 @@ export const testimonialVideo = {
 
 export const workIntro: SectionIntro = {
   eyebrow: 'On the tools',
+  keyword: 'Spray Foam Insulation Videos',
   headingLines: ['See it', 'going in.'],
   accentWord: 'going',
   lede: 'Real jobs filmed on site: walls, roofs, subfloors and structures batts cannot follow. No stock footage.',

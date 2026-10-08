@@ -11,6 +11,7 @@ import { routes } from '@/data/routes'
 
 const workIntro = {
   eyebrow: 'Commercial work',
+  keyword: 'Commercial Spray Foam Projects',
   headingLines: ['Sheds, stores', 'and structures.'],
   accentWord: 'structures',
   lede: 'Industrial spans, controlled-temperature storage and shapes conventional insulation cannot follow.',

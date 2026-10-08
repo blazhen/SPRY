@@ -6,6 +6,7 @@ import { heroVariants, type HeroVariant } from '@/data/heroes'
 import { ACTIVE_HERO } from '@/config'
 
 import HeroHouse from '@/components/HeroHouse'
+import HeroPhotos from '@/components/HeroPhotos'
 import HeroSpray from '@/components/HeroSpray'
 import HeroFoam from '@/components/HeroFoam'
 import HeroEditorial from '@/components/HeroEditorial'
@@ -18,6 +19,7 @@ const HeroSeal = lazy(() => import('@/components/HeroSeal'))
 // ComponentType, not `() => JSX.Element`: the lazy-wrapped Seal is a
 // LazyExoticComponent and does not match a plain zero-argument function type.
 const COMPONENTS: Record<HeroVariant['id'], ComponentType> = {
+  photo: HeroPhotos,
   house: HeroHouse,
   spray: HeroSpray,
   foam: HeroFoam,
@@ -137,7 +139,7 @@ export function HeroesIndexPage() {
         <div className="shell">
           <span className="eyebrow">Internal</span>
           <h1 className="mt-6 max-w-[18ch] text-h1 font-semibold text-bone">
-            Seven heroes, one page each.
+            Eight heroes, one page each.
           </h1>
           <p className="mt-6 max-w-measure text-lead text-bone-400">
             Every hero built for this project, live and interactive. Open them one at a

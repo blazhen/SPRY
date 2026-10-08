@@ -6,7 +6,7 @@
  * `pages/HeroPreview.tsx` and nothing else.
  */
 export interface HeroVariant {
-  id: 'house' | 'spray' | 'foam' | 'editorial' | 'comfort' | 'thermal' | 'seal'
+  id: 'photo' | 'house' | 'spray' | 'foam' | 'editorial' | 'comfort' | 'thermal' | 'seal'
   name: string
   /** One line on what the idea is. */
   idea: string
@@ -19,6 +19,14 @@ export interface HeroVariant {
 
 export const heroVariants: HeroVariant[] = [
   {
+    id: 'photo',
+    name: 'The Crew',
+    idea: 'Real photographs of the crew spraying on four of the business’s own jobs, cross-fading beside the keyword headline and both calls to action.',
+    angle: 'Proof first. The SEO agency asked for a real technician photo, or a rotation of them, as the first thing on the page.',
+    note: 'Plain images, no WebGL. The first photograph is preloaded; the rotation pauses off screen, has a pause button, and never runs under reduced motion.',
+    usesWebGL: false,
+  },
+  {
     id: 'house',
     name: 'The House',
     idea: 'A whole house in cutaway, leaking from roof, walls and underfloor. Scroll seals each zone in turn while the meter counts down.',
@@ -28,7 +36,7 @@ export const heroVariants: HeroVariant[] = [
   },
   {
     id: 'spray',
-    name: 'Spray It',
+    name: 'The Cavity',
     idea: 'A pinned wall cavity that you fill by scrolling. Foam rises, the draft arrows die one by one, and the wall ends sealed and warm.',
     angle: 'Participation. The scroll applies the foam instead of moving a camera, and the headline and CTAs never move.',
     note: 'Drawn as SVG rather than WebGL: sharper than the procedural 3D version, and it weighs nothing. Falls back to a play-on-entry sequence where it cannot pin.',

@@ -24,6 +24,8 @@ const yt = (id: string) => `https://i.ytimg.com/vi/${id}/hqdefault.jpg`
 
 export const sectorCopy = {
   eyebrow: 'What we insulate',
+  /** First line of the H2, in the eyebrow's place: the agency's keyword request. */
+  keyword: 'Residential and Commercial Spray Foam Insulation',
   headingResidential: 'Homes.',
   headingCommercial: 'And buildings measured in hectares.',
   lede: 'The same crew and the same materials, at both ends of the scale. Use the controls to switch, or let it run.',

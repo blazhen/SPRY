@@ -8,6 +8,7 @@ import HeroEditorial from '@/components/HeroEditorial'
 import HeroFoam from '@/components/HeroFoam'
 import HeroSpray from '@/components/HeroSpray'
 import HeroHouse from '@/components/HeroHouse'
+import HeroPhotos from '@/components/HeroPhotos'
 import Marquee from '@/components/Marquee'
 import WhatIsSprayFoam from '@/components/WhatIsSprayFoam'
 import Benefits from '@/components/Benefits'
@@ -31,6 +32,7 @@ export default function Home() {
       <Seo structuredData />
 
       {/* Swap which hero renders from ACTIVE_HERO in src/config.ts. */}
+      {ACTIVE_HERO === 'photo' && <HeroPhotos />}
       {ACTIVE_HERO === 'house' && <HeroHouse />}
       {ACTIVE_HERO === 'spray' && <HeroSpray />}
       {ACTIVE_HERO === 'foam' && <HeroFoam />}
@@ -42,6 +44,11 @@ export default function Home() {
       {/* The numbers come first: the trust signals a first-time visitor wants
           before anything else, straight under the hero. */}
       <StatBand />
+
+      {/* The house was the hero until the agency asked for a photograph
+          first. It still tells the roof, walls and floor story best, so it
+          follows the numbers as a section of its own. */}
+      {ACTIVE_HERO === 'photo' && <HeroHouse as="section" />}
 
       {/* The brief is that the site must not read as residential-only, so
           this is the first full section after the numbers. */}

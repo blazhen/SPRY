@@ -81,7 +81,7 @@ export default function QuoteCTA() {
         aria-hidden="true"
         className="pointer-events-none absolute -bottom-[0.34em] left-0 select-none whitespace-nowrap font-display text-mega font-semibold leading-none text-ink/5"
       >
-        SPRAY IT SOLUTIONS
+        SPRAYIT SOLUTIONS
       </span>
 
       <div className="shell relative">
@@ -92,7 +92,7 @@ export default function QuoteCTA() {
             </span>
 
             <h2 id="quote-cta-heading" className="mt-6 text-h2 font-semibold">
-              {quoteCta.headingLines.map((line) => {
+              {quoteCta.headingLines.map((line, lineIndex) => {
                 const word = quoteCta.accentWord
                 const parts = word && line.includes(word) ? line.split(word) : null
                 return (
@@ -112,6 +112,8 @@ export default function QuoteCTA() {
                       ) : (
                         line
                       )}
+                      {/* Keeps the lines apart as words, not "yourfree". */}
+                      {lineIndex < quoteCta.headingLines.length - 1 ? ' ' : ''}
                     </span>
                   </span>
                 )

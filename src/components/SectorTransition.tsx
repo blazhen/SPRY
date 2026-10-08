@@ -150,15 +150,15 @@ export default function SectorTransition() {
       <div className="relative shell grid items-center gap-12 lg:grid-cols-12 lg:gap-x-16">
         {/* ---------------- Copy ---------------- */}
         <div className="lg:col-span-5">
-          <p className="flex items-center gap-4 text-eyebrow font-bold uppercase tracking-[0.2em] text-accent">
-            <span className="h-px w-8 bg-accent" aria-hidden="true" />
-            {sectorCopy.eyebrow}
-          </p>
-
           <h2
             id="sectors-heading"
-            className="mt-6 font-display text-h2 font-semibold leading-tight text-bone"
+            className="font-display text-h2 font-semibold leading-tight text-bone"
           >
+            {/* The keyword leads the heading, in the eyebrow's place and style. */}
+            <span className="mb-6 flex items-center gap-4 font-body text-eyebrow font-bold uppercase tracking-[0.2em] text-accent">
+              <span className="h-px w-8 bg-accent" aria-hidden="true" />
+              {sectorCopy.keyword}
+            </span>{' '}
             {sectorCopy.headingResidential}{' '}
             <span
               className={`transition-colors duration-700 ${

@@ -14,6 +14,7 @@ const Testimonials = lazy(() => import('@/components/Testimonials'))
 
 const workIntro = {
   eyebrow: 'Residential work',
+  keyword: 'Residential Spray Foam Projects',
   headingLines: ['Homes we have', 'already sealed.'],
   accentWord: 'already',
   lede: 'Filmed on site during real jobs. Walls, roof lines and the subfloor almost nobody insulates.',

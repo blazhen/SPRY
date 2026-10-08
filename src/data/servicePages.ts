@@ -57,6 +57,7 @@ export const servicePages: Record<ServiceId, ServicePageData> = {
       {
         id: 'cold-floors',
         eyebrow: 'The problem',
+        keyword: 'Why Underfloor Insulation Matters',
         heading: 'Why cold floors happen',
         accentWord: 'cold',
         blocks: [
@@ -68,6 +69,7 @@ export const servicePages: Record<ServiceId, ServicePageData> = {
       {
         id: 'method',
         eyebrow: 'How it works',
+        keyword: 'Underfloor Spray Foam Insulation',
         heading: 'Spray foam under the floor',
         accentWord: 'under',
         blocks: [
@@ -80,6 +82,7 @@ export const servicePages: Record<ServiceId, ServicePageData> = {
       {
         id: 'suitable',
         eyebrow: 'Before we start',
+        keyword: 'Subfloor Insulation Requirements',
         heading: 'Is your home suitable?',
         accentWord: 'suitable?',
         blocks: [
@@ -99,6 +102,7 @@ export const servicePages: Record<ServiceId, ServicePageData> = {
       {
         id: 'on-the-day',
         eyebrow: 'On the day',
+        keyword: 'Subfloor Insulation Installation',
         heading: 'What to expect',
         accentWord: 'expect',
         blocks: [
@@ -142,6 +146,7 @@ export const servicePages: Record<ServiceId, ServicePageData> = {
       {
         id: 'biggest-loss',
         eyebrow: 'Why the roof',
+        keyword: 'Why Roof Insulation Matters',
         heading: 'The biggest single loss in most homes',
         accentWord: 'biggest',
         blocks: [
@@ -153,6 +158,7 @@ export const servicePages: Record<ServiceId, ServicePageData> = {
       {
         id: 'approach',
         eyebrow: 'Where the foam goes',
+        keyword: 'Roof and Ceiling Spray Foam Insulation',
         heading: 'Under the roof, or at the ceiling',
         accentWord: 'roof,',
         blocks: [
@@ -165,6 +171,7 @@ export const servicePages: Record<ServiceId, ServicePageData> = {
       {
         id: 'product',
         eyebrow: 'Open or closed cell',
+        keyword: 'Open Cell vs Closed Cell Roof Insulation',
         heading: 'Choosing the foam',
         accentWord: 'foam',
         blocks: [
@@ -177,6 +184,7 @@ export const servicePages: Record<ServiceId, ServicePageData> = {
       {
         id: 'condensation',
         eyebrow: 'Condensation',
+        keyword: 'Roof Condensation Control',
         heading: 'A drier roof as well as a warmer one',
         accentWord: 'drier',
         blocks: [
@@ -212,6 +220,7 @@ export const servicePages: Record<ServiceId, ServicePageData> = {
       {
         id: 'two-ways',
         eyebrow: 'The options',
+        keyword: 'Wall Injection and Spray Foam Wall Insulation',
         heading: 'Two ways to insulate a wall',
         accentWord: 'Two',
         blocks: [
@@ -228,6 +237,7 @@ export const servicePages: Record<ServiceId, ServicePageData> = {
       {
         id: 'why-walls',
         eyebrow: 'Why walls',
+        keyword: 'Why Retrofit Wall Insulation',
         heading: 'The surface older homes leave empty',
         accentWord: 'empty',
         blocks: [
@@ -239,6 +249,7 @@ export const servicePages: Record<ServiceId, ServicePageData> = {
       {
         id: 'right-for-you',
         eyebrow: 'Is it right for you',
+        keyword: 'Is Retrofit Wall Insulation Right for You?',
         heading: 'Signs your walls need it',
         accentWord: 'walls',
         blocks: [
@@ -257,6 +268,7 @@ export const servicePages: Record<ServiceId, ServicePageData> = {
       {
         id: 'quieter',
         eyebrow: 'A side effect',
+        keyword: 'Acoustic Wall Insulation',
         heading: 'Quieter as well as warmer',
         accentWord: 'Quieter',
         blocks: [

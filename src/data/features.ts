@@ -19,6 +19,7 @@ export interface Capability {
 
 export const capabilityIntro: SectionIntro = {
   eyebrow: 'What we run',
+  keyword: 'Spray Foam Rigs and Equipment',
   headingLines: ['Five ways', 'to get foam.'],
   accentWord: 'Five',
   lede: 'Most of what we can take on comes down to the equipment. Between the vehicle rigs and the standalone reactors, there are very few sites we cannot reach.',
@@ -65,6 +66,7 @@ export interface FoamProperty {
 
 export const foamIntro: SectionIntro = {
   eyebrow: 'Open cell vs closed cell',
+  keyword: 'Open Cell vs Closed Cell Spray Foam',
   headingLines: ['Two foams.', 'Not interchangeable.'],
   accentWord: 'Not',
   lede: 'Anyone who only offers one will tell you theirs is right for everything. The honest answer is that they do different jobs, and picking wrong costs you either money or performance.',
@@ -154,6 +156,7 @@ export interface HouseSurface {
 
 export const surfacesIntro: SectionIntro = {
   eyebrow: 'Where the heat and cooling goes',
+  keyword: 'Home Insulation: Roof, Walls and Floor',
   headingLines: ['Three surfaces.', 'Seal all three.'],
   accentWord: 'Three',
   lede: 'Insulating one surface and leaving the others helps, but heating and cooling simply takes whichever path is still open. Select a surface to see what it costs you.',
@@ -195,6 +198,7 @@ export interface SectorCard {
 
 export const sectorsIntro: SectionIntro = {
   eyebrow: 'Sectors',
+  keyword: 'Shed, Warehouse and Farm Insulation',
   headingLines: ['Where the', 'work happens.'],
   accentWord: 'work',
   lede: 'Commercial insulation is rarely about comfort. It is about holding a temperature, protecting a product, or stopping condensation destroying a structure.',

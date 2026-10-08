@@ -67,6 +67,16 @@ export const heroHouse = {
   keyword: 'Spray Foam Insulation Melbourne',
   headlineLines: ['Stop paying to', 'heat the sky.'],
   accentLineIndex: 1,
+  /**
+   * Its heading when it runs as a section further down the home page, under
+   * the photo hero, rather than as the hero itself. An H2, so the keyword is
+   * one the page does not already lead with.
+   */
+  section: {
+    keyword: 'How Spray Foam Insulation Works',
+    headlineLines: ['One house, three leaks.', 'Seal all three.'],
+    accentLineIndex: 1,
+  },
   subhead:
     'A third of your heating leaves through the roof, more through the walls, the rest through the floor. Scroll to seal it and watch the difference.',
   scrollCue: 'Scroll to seal the house',
@@ -144,6 +154,54 @@ export const heroHouse = {
       zone: null,
       start: 0.88,
       end: 1,
+    },
+  ],
+}
+
+/**
+ * The home hero: a photograph of the crew at work, not a drawing.
+ *
+ * Asked for by the SEO agency on 29 September ("a real photo of a technician
+ * spraying as the hero, or an image rotation") and confirmed by Dan on
+ * 8 October. Four of the business's own jobs, from Glenn's media library at
+ * full resolution, rotating. The house moved down the page as a section.
+ *
+ * Captions describe only what each photograph shows; locations and foam types
+ * are left off because they were not supplied with these four.
+ */
+export const heroPhotos = {
+  keyword: heroHouse.keyword,
+  headlineLines: heroHouse.headlineLines,
+  accentLineIndex: heroHouse.accentLineIndex,
+  subhead:
+    'Spray foam insulation for homes, sheds and commercial buildings, applied by our own crews. One continuous seal across the roof, walls and floor, so the heat you pay for stays inside.',
+  crewLabel: 'Our crews, on real jobs',
+  /** Seconds each photograph holds. The agency's guide asks for 5 to 7. */
+  holdSeconds: 6,
+  photos: [
+    {
+      src: '/work/home-roof-1600.webp',
+      small: '/work/home-roof-800.webp',
+      alt: 'Applicator on a scaffold spraying foam onto the underside of a timber-framed house roof',
+      caption: 'A house roof, sprayed from the scaffold',
+    },
+    {
+      src: '/work/home-shed-roof-1600.webp',
+      small: '/work/home-shed-roof-800.webp',
+      alt: 'Applicator on a stand spraying foam onto the underside of a corrugated steel shed roof',
+      caption: 'A steel shed roof',
+    },
+    {
+      src: '/work/home-long-shed-1600.webp',
+      small: '/work/home-long-shed-800.webp',
+      alt: 'Applicator on a platform spraying foam along the top of the wall in a long shed, the hose running across the floor',
+      caption: 'A long shed, wall by wall',
+    },
+    {
+      src: '/work/home-shed-walls-1600.webp',
+      small: '/work/home-shed-walls-800.webp',
+      alt: 'Two applicators spraying foam onto the wall panels of a large storage shed',
+      caption: 'Storage shed walls',
     },
   ],
 }
@@ -373,6 +431,7 @@ export const heroSeal = {
 export const whatIsSprayFoam = {
   intro: {
     eyebrow: 'What is spray foam',
+    keyword: 'What Is Spray Foam Insulation?',
     headingLines: ['One seamless', 'seal, not a', 'stack of gaps.'],
     accentWord: 'seamless',
     lede: 'Applied as a liquid, it expands and cures into one continuous bonded layer. No cut edges, no joins, and no gap where a pipe or a downlight passes through.',
@@ -426,6 +485,7 @@ export const whatIsSprayFoam = {
 
 export const benefitsIntro: SectionIntro = {
   eyebrow: 'Why spray foam',
+  keyword: 'Benefits of Spray Foam Insulation',
   headingLines: ['Measured in', 'bills, not', 'brochures.'],
   accentWord: 'bills',
   lede: 'R-value is only one third of the story. Real performance is R-value plus air permeance plus vapour permeance, and foam wins on all three.',
@@ -433,6 +493,7 @@ export const benefitsIntro: SectionIntro = {
 
 export const sceneIntro: SectionIntro = {
   eyebrow: 'Batts vs foam',
+  keyword: 'Spray Foam vs Batts',
   headingLines: ['Watch the', 'heat escape.'],
   accentWord: 'heat',
   lede: 'The same wall, insulated two ways. Switch between them and watch what happens to the heat trying to get out.',
@@ -477,6 +538,7 @@ export const scene = {
 
 export const servicesIntro: SectionIntro = {
   eyebrow: 'What we insulate',
+  keyword: 'Spray Foam Insulation Services',
   headingLines: ['Two halves of', 'the same job.'],
   accentWord: 'halves',
   lede: 'A weatherboard cottage in Preston and a distribution warehouse in Dandenong need the same thing: a building envelope that actually seals.',
@@ -484,12 +546,14 @@ export const servicesIntro: SectionIntro = {
 
 export const statsIntro: SectionIntro = {
   eyebrow: 'The numbers',
+  keyword: 'Spray Foam Insulation Specialists',
   headingLines: ['What it adds', 'up to.'],
   accentWord: 'adds',
 }
 
 export const testimonialsIntro: SectionIntro = {
   eyebrow: 'Customer stories',
+  keyword: 'Customer Reviews',
   headingLines: ['Warmer houses,', 'smaller bills.'],
   accentWord: 'smaller',
   lede: 'Feedback from homeowners after their install, in their own words.',
@@ -509,6 +573,7 @@ export const testimonialsFootnote =
 
 export const faqIntro: SectionIntro = {
   eyebrow: 'Questions',
+  keyword: 'Spray Foam Insulation FAQs',
   headingLines: ['The technical', 'bit, plainly', 'explained.'],
   accentWord: 'plainly',
 }

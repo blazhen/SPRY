@@ -389,6 +389,7 @@ export const factSheets: FactSheet[] = [
 
 export const factSheetsIntro: SectionIntro = {
   eyebrow: 'Fact sheets',
+  keyword: 'Spray Foam Fact Sheets',
   headingLines: ['Documents for', 'your compliance file.'],
   accentWord: 'compliance',
   lede: 'Test reports, safety data sheets and product data. The paperwork a specifier, a builder or a certifier asks for before anything gets signed off.',
