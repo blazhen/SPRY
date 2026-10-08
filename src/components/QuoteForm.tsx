@@ -175,6 +175,8 @@ export default function QuoteForm() {
           <input
             id="firstName"
             name="firstName"
+            required
+            aria-required="true"
             type="text"
             autoComplete="given-name"
             className={`${FIELD} mt-2`}
@@ -190,6 +192,8 @@ export default function QuoteForm() {
           <input
             id="lastName"
             name="lastName"
+            required
+            aria-required="true"
             type="text"
             autoComplete="family-name"
             className={`${FIELD} mt-2`}
@@ -208,6 +212,8 @@ export default function QuoteForm() {
           <input
             id="phone"
             name="phone"
+            required
+            aria-required="true"
             type="tel"
             inputMode="tel"
             autoComplete="tel"
@@ -225,6 +231,8 @@ export default function QuoteForm() {
           <input
             id="email"
             name="email"
+            required
+            aria-required="true"
             type="email"
             autoComplete="email"
             className={`${FIELD} mt-2`}
@@ -240,6 +248,8 @@ export default function QuoteForm() {
           <input
             id="postcode"
             name="postcode"
+            required
+            aria-required="true"
             type="text"
             inputMode="numeric"
             maxLength={4}
@@ -290,6 +300,8 @@ export default function QuoteForm() {
         <select
           id="propertyType"
           name="propertyType"
+          required
+          aria-required="true"
           defaultValue=""
           className={`${FIELD} mt-2`}
           {...aria('propertyType')}
@@ -382,6 +394,8 @@ export default function QuoteForm() {
         <select
           id="heardFrom"
           name="heardFrom"
+          required
+          aria-required="true"
           defaultValue=""
           className={`${FIELD} mt-2`}
           {...aria('heardFrom')}

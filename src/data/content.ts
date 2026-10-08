@@ -475,11 +475,13 @@ export const whatIsSprayFoam = {
     // not being subcontracted, which was the wrong image for that sentence.
     id: '/site/truck-rig.webp',
     alt: 'A SprayIT Solutions truck loaded with its spray rig, parked in the workshop',
+    size: [1600, 900],
   } satisfies ImageAsset,
+  // The client's own job, replacing a stock photo of two site workers.
   imageSecondary: {
-    id: 'photo-1626885930974-4b69aa21bbf9',
-    alt: 'Two site workers in high-visibility vests reviewing a large building project',
-    clientSwap: true,
+    id: '/work/roof-finished.webp',
+    alt: 'Foam sprayed across the underside of a house roof behind green painted steel trusses',
+    size: [1400, 1050],
   } satisfies ImageAsset,
 }
 

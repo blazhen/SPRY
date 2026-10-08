@@ -16,6 +16,20 @@ export const unsplash = (id: string, w = 1600, q = 72): string =>
     ? id
     : `https://images.unsplash.com/${id}?auto=format&fit=crop&w=${w}&q=${q}`
 
+/**
+ * Width and height of a YouTube thumbnail, read from its file name, so a
+ * poster from i.ytimg.com carries its real size like every other image.
+ */
+const YOUTUBE_THUMBS: Record<string, [number, number]> = {
+  hqdefault: [480, 360],
+  sddefault: [640, 480],
+  maxresdefault: [1280, 720],
+}
+export const youtubeThumbSize = (src: string): [number, number] | undefined => {
+  const name = src.match(/ytimg\.com\/vi\/[^/]+\/(\w+)\.jpg/)?.[1]
+  return name ? YOUTUBE_THUMBS[name] : undefined
+}
+
 /** Responsive srcSet across the widths we actually render at. */
 export const unsplashSrcSet = (id: string, widths: number[] = [640, 960, 1280, 1920]): string =>
   // One local file cannot be served at four widths, so it gets no srcSet at
@@ -30,4 +44,6 @@ export interface ImageAsset {
   alt: string
   /** Set when this is stock standing in for real client work. */
   clientSwap?: boolean
+  /** Pixel size of the file, so the browser reserves the space before it loads. */
+  size?: [number, number]
 }

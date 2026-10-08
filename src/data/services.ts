@@ -24,10 +24,11 @@ export const services: Service[] = [
     title: 'Residential',
     lede: 'Homes that hold their temperature. We seal the three places a house leaks most: under the floor, through the roof, and out through the walls.',
     href: routes.residential,
+    // The client's own job, replacing the stock living room.
     image: {
-      id: 'photo-1590725140246-20acdee442be',
-      alt: 'Warm timber-lined A-frame living room with soft lamplight and a comfortable sofa',
-      clientSwap: true,
+      id: '/work/walls-finished.webp',
+      alt: 'Room with foam sprayed into every wall cavity and across the ceiling, before the linings go on',
+      size: [1400, 1050],
     },
     subServices: [
       {
@@ -50,10 +51,11 @@ export const services: Service[] = [
     title: 'Commercial',
     lede: 'Sheds, plants and remote sites. Our rigs travel to the job, whatever its size and wherever it is, and we work around your operation.',
     href: routes.commercial,
+    // The client's own job, replacing the stock warehouse aisle.
     image: {
-      id: 'photo-1553413077-190dd305871c',
-      alt: 'Long aisle of high racking inside a working distribution warehouse',
-      clientSwap: true,
+      id: '/gallery/img-2371.webp',
+      alt: 'Large indoor basketball hall with sprayed walls and roof, marked floor and a basketball ring',
+      size: [1100, 825],
     },
     subServices: [
       {

@@ -60,8 +60,8 @@ function JobsLikeThis({ page }: { page: ServicePageData }) {
                     <ProtectedImage
                       src={photo.file}
                       alt={photo.alt}
-                      width={photo.size?.[0]}
-                      height={photo.size?.[1]}
+                      width={photo.size?.[0] ?? 1100}
+                      height={photo.size?.[1] ?? 825}
                       frameClassName="size-full"
                       watermark
                     />

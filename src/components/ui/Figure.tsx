@@ -65,6 +65,8 @@ export default function Figure({
         srcSet={unsplashSrcSet(image.id, widths)}
         sizes={sizes}
         alt={image.alt}
+        width={image.size?.[0]}
+        height={image.size?.[1]}
         loading={priority ? 'eager' : 'lazy'}
         // React 18 does not map camelCase `fetchPriority` onto the DOM. It
         // warns and drops it. Spread the real lowercase attribute instead.

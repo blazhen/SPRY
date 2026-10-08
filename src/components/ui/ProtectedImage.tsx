@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { youtubeThumbSize } from '@/lib/images'
 
 interface ProtectedImageProps {
   src: string
@@ -71,8 +72,8 @@ export default function ProtectedImage({
         srcSet={srcSet}
         sizes={sizes}
         alt={alt}
-        width={width}
-        height={height}
+        width={width ?? youtubeThumbSize(src)?.[0]}
+        height={height ?? youtubeThumbSize(src)?.[1]}
         loading={loading}
         // Lower case on purpose: React 18 passes it through as the HTML
         // attribute, where the camel-case prop only exists from React 19.

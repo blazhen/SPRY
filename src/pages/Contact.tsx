@@ -72,7 +72,7 @@ export default function Contact() {
                       rel="noopener noreferrer"
                       className="link-wipe inline-block"
                     >
-                      {site.address.line1}
+                      {site.address.line1},
                       <br />
                       {site.address.suburb} {site.address.state} {site.address.postcode}
                       <span className="sr-only"> (opens Google Maps in a new tab)</span>

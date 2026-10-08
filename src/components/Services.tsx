@@ -96,7 +96,9 @@ export default function Services() {
                   className="absolute inset-0 origin-bottom scale-y-0 bg-gradient-to-t from-accent/70 via-accent/25 to-transparent transition-transform duration-700 ease-expo group-hover:scale-y-100"
                 />
 
-                <span className="absolute left-6 top-6 font-display text-h3 font-semibold leading-none text-bone/70">
+                {/* On a white chip: the cards now show real job photos, and a
+                    number set straight on a photograph has nothing to read against. */}
+                <span className="absolute left-6 top-6 rounded-pill bg-ink/90 px-3 py-1.5 font-display text-h4 font-semibold leading-none text-bone shadow-lift backdrop-blur-sm">
                   {service.index}
                 </span>
               </div>

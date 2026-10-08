@@ -2,6 +2,7 @@ import { useRef, useState } from 'react'
 import { Play } from 'lucide-react'
 
 import type { Video } from '@/data/videos'
+import { youtubeThumbSize } from '@/lib/images'
 
 interface VideoEmbedProps {
   id: string
@@ -123,6 +124,8 @@ export default function VideoEmbed({
           <img
             {...(posterAttr ? { [posterAttr]: '' } : {})}
             src={src}
+            width={youtubeThumbSize(src)?.[0]}
+            height={youtubeThumbSize(src)?.[1]}
             alt=""
             aria-hidden="true"
             draggable={false}

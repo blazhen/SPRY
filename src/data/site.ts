@@ -242,7 +242,7 @@ export const seo = {
     'Looking for spray foam insulation in Melbourne and across Australia? We deliver quality foam insulation for homes and businesses. Get your free quote today!',
   /** No www, matching the live site. */
   canonical: SITE_ORIGIN + '/',
-  ogImage:
-    'https://images.unsplash.com/photo-1568605114967-8130f3a36994?auto=format&fit=crop&w=1200&q=75',
+  /** The crew at work on a real job, the same photograph that opens the home page. */
+  ogImage: SITE_ORIGIN + '/work/home-roof-1600.webp',
   locale: 'en_AU',
 } as const

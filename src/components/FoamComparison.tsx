@@ -62,7 +62,9 @@ export default function FoamComparison() {
       >
         <span
           className={`inline-block rounded-pill px-3 py-1.5 text-eyebrow font-bold uppercase tracking-[0.14em] ${
-            isOpen ? 'bg-accent/15 text-accent' : 'bg-accent2/15 text-accent2-ink'
+            // The closed-cell tag is small text on a green tint: the brand's text
+            // green measures 3.4:1 there, so this one is a shade darker (5.1:1).
+            isOpen ? 'bg-accent/15 text-accent' : 'bg-accent2/15 text-[#427018]'
           }`}
         >
           {data.tag}
