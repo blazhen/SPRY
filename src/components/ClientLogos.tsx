@@ -33,9 +33,10 @@ export default function ClientLogos() {
           // facility manager recognises Coles, BHP and Woodside at a glance,
           // and a grey silhouette of a logo is not recognisable.
           'opacity-100',
-          // A reversed asset is white on transparency, so on the bone ground it
-          // needs its own dark chip to be visible at all.
-          client.reversed ? 'bg-ink px-4 py-2' : '',
+          // A reversed asset is white on transparency, so it needs its own dark
+          // chip to be visible at all. Navy (bone in the light theme): ink is
+          // white now, which left the Docklands logo white on white.
+          client.reversed ? 'bg-bone px-4 py-2' : '',
         ].join(' ')}
       >
         <img
