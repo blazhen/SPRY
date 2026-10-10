@@ -1,14 +1,14 @@
 import { useCallback, useEffect, useState } from 'react'
 import useEmblaCarousel from 'embla-carousel-react'
-import { ArrowLeft, ArrowRight, Quote, ArrowUpRight } from 'lucide-react'
+import { ArrowLeft, ArrowRight, Quote } from 'lucide-react'
 import { useCarouselWheel } from '@/hooks/useCarouselWheel'
 import { testimonials } from '@/data/testimonials'
 import { testimonialsFootnote, testimonialsIntro } from '@/data/content'
 import { testimonialVideo, workCopy } from '@/data/videos'
-import { site } from '@/data/site'
 import { integrations } from '@/config/integrations'
 import SectionHeading from '@/components/ui/SectionHeading'
 import VideoEmbed from '@/components/ui/VideoEmbed'
+import GoogleReviews from '@/components/ui/GoogleReviews'
 
 /**
  * Testimonial carousel, or the live Google reviews widget once it is set up.
@@ -117,11 +117,12 @@ export default function Testimonials() {
     <section className="relative border-t border-line/6 bg-surface py-section text-bone" aria-labelledby="testimonials-heading">
       <div className="shell">
         <div className="flex flex-wrap items-end justify-between gap-8">
-          <SectionHeading
-            intro={testimonialsIntro}
-            headingId="testimonials-heading"
-            className="max-w-2xl"
-          />
+          <div className="max-w-2xl">
+            <SectionHeading intro={testimonialsIntro} headingId="testimonials-heading" />
+            {/* Up top as well as under the cards, so the way to Google's own
+                reviews is visible before anyone scrolls the carousel. */}
+            <GoogleReviews className="mt-8" />
+          </div>
 
           {/* --- Controls --- */}
           {!widgetUrl && (
@@ -284,19 +285,9 @@ export default function Testimonials() {
 
       <div>
 
-        {site.reviewsUrl && (
-          <p className="shell mt-6">
-            <a
-              href={site.reviewsUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="link-wipe font-semibold text-bone"
-            >
-              Read all of our Google reviews
-              <ArrowUpRight className="size-4" aria-hidden="true" />
-            </a>
-          </p>
-        )}
+        <p className="shell mt-8">
+          <GoogleReviews />
+        </p>
 
         {/* --- Customer on camera ---
             There is exactly one testimonial video, so it is given its own

@@ -16,7 +16,7 @@ import SectionBackdrop from '@/components/ui/SectionBackdrop'
  * Residential and commercial showcase, on a timer.
  *
  * The brief: commercial credibility has to be obvious almost immediately,
- * because Glenn quotes jobs to $3.44M and 30,863 sqm and none of that is visible
+ * because Glenn delivers jobs of more than 30,000 square metres and none of that is visible
  * today. So this sits directly under the hero, alternates residential and
  * commercial without being touched, and swaps the headline and the stats along
  * with the picture.

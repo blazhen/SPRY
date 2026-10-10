@@ -14,6 +14,7 @@ import { footer } from '@/data/content'
 import { site, socialLinks, type SocialLink } from '@/data/site'
 import Logo from '@/components/ui/Logo'
 import { routes, samePath } from '@/data/routes'
+import GoogleReviews from '@/components/ui/GoogleReviews'
 
 const socialIcons: Record<SocialLink['icon'], LucideIcon> = {
   linkedin: Linkedin,
@@ -112,6 +113,9 @@ export default function Footer() {
                 )
               })}
             </ul>
+
+            {/* On every page: one more way into the Google reviews. */}
+            <GoogleReviews className="mt-6" />
           </div>
 
           {/* ---------------- Sitemap ---------------- */}

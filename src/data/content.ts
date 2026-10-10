@@ -163,11 +163,12 @@ export const heroHouse = {
  *
  * Asked for by the SEO agency on 29 September ("a real photo of a technician
  * spraying as the hero, or an image rotation") and confirmed by Dan on
- * 8 October. Four of the business's own jobs, from Glenn's media library at
- * full resolution, rotating. The house moved down the page as a section.
+ * 8 October. Three of the business's own jobs, from Glenn's media library at
+ * full resolution, rotating. A fourth, a steel shed roof, came out at
+ * Rachael's request on 10 October. The house moved down the page as a section.
  *
  * Captions describe only what each photograph shows; locations and foam types
- * are left off because they were not supplied with these four.
+ * are left off because they were not supplied with these three.
  */
 export const heroPhotos = {
   keyword: heroHouse.keyword,
@@ -184,12 +185,6 @@ export const heroPhotos = {
       small: '/work/home-roof-800.webp',
       alt: 'Applicator on a scaffold spraying foam onto the underside of a timber-framed house roof',
       caption: 'A house roof, sprayed from the scaffold',
-    },
-    {
-      src: '/work/home-shed-roof-1600.webp',
-      small: '/work/home-shed-roof-800.webp',
-      alt: 'Applicator on a stand spraying foam onto the underside of a corrugated steel shed roof',
-      caption: 'A steel shed roof',
     },
     {
       src: '/work/home-long-shed-1600.webp',

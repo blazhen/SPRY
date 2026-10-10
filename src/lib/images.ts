@@ -30,6 +30,15 @@ export const youtubeThumbSize = (src: string): [number, number] | undefined => {
   return name ? YOUTUBE_THUMBS[name] : undefined
 }
 
+/**
+ * A file from public/, by its path. On any normal host this returns the path
+ * unchanged. It goes through `unsplash` on purpose: the staging host serves
+ * photographs from its own file store rather than from their paths, and its
+ * build points `unsplash` at that store. An image path built any other way
+ * reaches staging as a dead link, which is how half the client logos broke.
+ */
+export const assetUrl = (path: string): string => unsplash(path)
+
 /** Responsive srcSet across the widths we actually render at. */
 export const unsplashSrcSet = (id: string, widths: number[] = [640, 960, 1280, 1920]): string =>
   // One local file cannot be served at four widths, so it gets no srcSet at

@@ -1,5 +1,6 @@
 import { clients, clientsHeading, type Client } from '@/data/clients'
 import Marquee from '@/components/Marquee'
+import { assetUrl } from '@/lib/images'
 
 const BRANDS = `${import.meta.env.BASE_URL}brands/`
 
@@ -38,7 +39,7 @@ export default function ClientLogos() {
         ].join(' ')}
       >
         <img
-          src={`${BRANDS}${client.file}`}
+          src={assetUrl(`${BRANDS}${client.file}`)}
           alt={`${client.name} logo`}
           width={Math.round(client.w * scale)}
           height={SLOT_H}

@@ -150,7 +150,7 @@ export const aboutPage: SitePage = {
     keyword: 'About SprayIT Solutions',
     headingLines: ['A specialist team,', 'at industrial scale.'],
     accentWord: 'specialist',
-    lede: 'SprayIT Solutions is based in Carrum Downs, Melbourne, and works Australia-wide. We insulate single rooms and we insulate 30,863 square metre facilities, with the same crew and the same standards.',
+    lede: 'SprayIT Solutions is based in Carrum Downs, Melbourne, and works Australia-wide. We insulate single rooms and we insulate facilities of more than 30,000 square metres, with the same crew and the same standards.',
   },
   sections: [
     {
@@ -391,7 +391,7 @@ export const commercialPage: SitePage = {
     keyword: 'Commercial Spray Foam Insulation',
     headingLines: ['Buildings measured', 'in hectares.'],
     accentWord: 'hectares',
-    lede: 'Factories, warehouses, cold storage, processing plants, agricultural facilities, data centres and mine sites. Our commercial work runs to 30,863 square metres and $3.44 million on a single project.',
+    lede: 'Factories, warehouses, cold storage, processing plants, agricultural facilities, data centres and mine sites. Our commercial work includes more than 30,000 square metres completed under a single contract.',
   },
   hero: photos.commercial,
   sections: [
@@ -405,9 +405,9 @@ export const commercialPage: SitePage = {
         'Three vehicle-based rigs and two standalone reactors mean we can put a full application setup anywhere, including sites with no power, no shelter and no road access for a standard truck. Large spans are sprayed continuously rather than in patches, which is what keeps the envelope intact across a roof the size of a paddock.',
       ],
       stats: [
-        { figure: '30,863', label: 'square metres on a single project' },
-        { figure: '$3.44M', label: 'largest single contract value' },
+        { figure: '30,000+ m²', label: 'completed under a single commercial contract' },
         { figure: '5', label: 'application rigs and reactors' },
+        { figure: '3+', label: 'decades of experience' },
       ],
       tone: 'base',
     },

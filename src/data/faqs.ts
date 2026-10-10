@@ -137,7 +137,7 @@ export const faqSets: Record<FaqSet['id'], FaqSet> = {
         id: 'com-scale',
         question: 'How big a job can you take on?',
         answer:
-          'Our largest single contract was $3.44 million, covering 30,863 square metres on one project. Three vehicle-based rigs and two standalone reactors mean we can put a full application setup on a site with no power, no shelter and no road access for a standard truck. Large spans are sprayed continuously rather than in patches.',
+          'We have completed more than 30,000 square metres under a single commercial contract. Three vehicle-based rigs and two standalone reactors mean we can put a full application setup on a site with no power, no shelter and no road access for a standard truck. Large spans are sprayed continuously rather than in patches.',
       },
       {
         id: 'com-spec',

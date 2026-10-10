@@ -11,6 +11,7 @@ import MagneticButton from '@/components/ui/MagneticButton'
 import { site } from '@/data/site'
 import { routes } from '@/data/routes'
 import type { CopyBlock, PagePhoto, PageSection, SitePage } from '@/data/pages'
+import GoogleReviews from '@/components/ui/GoogleReviews'
 
 /**
  * Shared building blocks for the interior pages.
@@ -400,6 +401,8 @@ export function PageCta({ heading, text }: { heading?: string; text?: string } =
             </a>
             , or complete our online form to request a free quote.
           </p>
+          {/* The reviews, at the point someone is deciding. */}
+          <GoogleReviews className="mt-6" />
         </div>
         <div className="flex flex-wrap gap-4">
           <MagneticButton href={site.cta.primary.href} variant="primary" strength={0.2}>

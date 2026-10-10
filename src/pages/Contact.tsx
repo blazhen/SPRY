@@ -6,6 +6,7 @@ import QuoteForm from '@/components/QuoteForm'
 import { contactIntro } from '@/data/forms'
 import { site } from '@/data/site'
 import { routes } from '@/data/routes'
+import GoogleReviews from '@/components/ui/GoogleReviews'
 
 /**
  * Quote enquiry page.
@@ -82,6 +83,8 @@ export default function Contact() {
                 </dd>
               </div>
             </dl>
+
+            <GoogleReviews className="mt-8" />
 
             {/* The listing on a map. Loaded lazily: it is below the form on a
                 phone and a Google frame is the heaviest thing on the page. */}

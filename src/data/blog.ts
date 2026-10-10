@@ -60,7 +60,7 @@ export interface BlogAuthor {
 export const blogAuthor: BlogAuthor = {
   name: 'Glenn Angus',
   role: 'Owner, SprayIT Solutions',
-  bio: 'Glenn owns and runs SprayIT Solutions, the spray foam contractor behind every job on this site. Decades on the tools, quoting and applying open and closed cell foam, polyurea and aliphatic coatings, on everything from a single subfloor to a 30,863 square metre plant.',
+  bio: 'Glenn owns and runs SprayIT Solutions, the spray foam contractor behind every job on this site. Decades on the tools, quoting and applying open and closed cell foam, polyurea and aliphatic coatings, on everything from a single subfloor to a plant of more than 30,000 square metres.',
   href: routes.about,
 }
 

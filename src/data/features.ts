@@ -41,7 +41,7 @@ export const capabilities: Capability[] = [
   {
     figure: 'Any',
     title: 'Size, any site',
-    text: 'A single underfloor in a weatherboard cottage and a 30,863 square metre facility are the same business to us, run by the same crew to the same standard.',
+    text: 'A single underfloor in a weatherboard cottage and a facility of more than 30,000 square metres are the same business to us, run by the same crew to the same standard.',
     icon: 'map',
   },
   {

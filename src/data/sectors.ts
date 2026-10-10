@@ -33,8 +33,9 @@ export const sectorCopy = {
   commercialLabel: 'Commercial & industrial',
   /** Shown while the commercial slide is active. Client-supplied figures. */
   commercialStats: [
-    { figure: '30,863', label: 'sqm, single project' },
-    { figure: '$3.44M', label: 'largest contract' },
+    // Rachael's wording (10 October 2026); the contract value is not published.
+    { figure: '30,000+ m²', label: 'proven large-scale delivery' },
+    { figure: '5', label: 'rigs and reactors' },
   ],
   residentialStats: [
     { figure: 'Up to 40%', label: 'of energy cost is air leakage' },

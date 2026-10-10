@@ -1,9 +1,17 @@
 import { useRef } from 'react'
 import { gsap, useGSAP } from '@/lib/gsap'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
-import { stats } from '@/data/stats'
+import { stats, type Stat } from '@/data/stats'
 import { statsIntro } from '@/data/content'
 import SectionHeading from '@/components/ui/SectionHeading'
+
+/** A figure with Australian thousands separators, held to its decimal places. */
+const formatStat = (value: number, decimals: number) =>
+  value.toLocaleString('en-AU', { minimumFractionDigits: decimals, maximumFractionDigits: decimals })
+
+/** Figures longer than five characters, prefix and suffix included, get the smaller size. */
+const isLong = (stat: Stat) =>
+  (stat.prefix ?? '').length + formatStat(stat.value, stat.decimals ?? 0).length + (stat.suffix ?? '').length > 5
 
 /**
  * Count-up stat band.
@@ -31,10 +39,10 @@ export default function StatBand() {
           ease: 'power2.out',
           scrollTrigger: { trigger: el, start: 'top 88%', once: true },
           onUpdate: () => {
-            el.textContent = counter.value.toFixed(decimals)
+            el.textContent = formatStat(counter.value, decimals)
           },
           onStart: () => {
-            el.textContent = (0).toFixed(decimals)
+            el.textContent = formatStat(0, decimals)
           },
         })
       })
@@ -87,7 +95,13 @@ export default function StatBand() {
               data-stat-item
               className="group flex flex-col gap-3 bg-bone p-5 transition-colors duration-500 hover:bg-bone-200 sm:p-8 lg:p-9"
             >
-              <p className="font-display text-[clamp(2rem,4vw,3.5rem)] font-semibold leading-none tracking-tight text-ink">
+              {/* A long figure (30,000+ m²) is set a size smaller so it fits a
+                  phone-width card, and its unit can drop to the next line. */}
+              <p
+                className={`font-display font-semibold leading-none tracking-tight text-ink ${
+                  isLong(stat) ? 'text-[clamp(1.5rem,3vw,2.75rem)]' : 'text-[clamp(2rem,4vw,3.5rem)]'
+                }`}
+              >
                 {stat.prefix}
                 <span
                   data-countup
@@ -95,9 +109,15 @@ export default function StatBand() {
                   data-decimals={stat.decimals ?? 0}
                   className="tabular-nums"
                 >
-                  {stat.value.toFixed(stat.decimals ?? 0)}
+                  {formatStat(stat.value, stat.decimals ?? 0)}
                 </span>
                 <span className="text-accent">{stat.suffix}</span>
+                {stat.unit && (
+                  <>
+                    {' '}
+                    <span className="inline-block text-[0.5em] text-accent">{stat.unit}</span>
+                  </>
+                )}
               </p>
 
               {/* Drawn in on enter. Under reduced motion no tween runs, so it

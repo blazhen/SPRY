@@ -6,7 +6,7 @@ import { useReducedMotion } from '@/hooks/useReducedMotion'
 import MagneticButton from '@/components/ui/MagneticButton'
 import ProtectedImage from '@/components/ui/ProtectedImage'
 import SectionBackdrop from '@/components/ui/SectionBackdrop'
-import Stars from '@/components/ui/Stars'
+import GoogleReviews from '@/components/ui/GoogleReviews'
 import { hero, heroPhotos } from '@/data/content'
 import { site } from '@/data/site'
 
@@ -18,7 +18,7 @@ const SIZES = '(min-width: 1024px) 58vw, 100vw'
  * The SEO agency asked for a real photograph of a technician spraying, or a
  * rotation of them, as the first thing on the home page. So: the keyword H1,
  * the offer and both calls to action on the left, and on the right the crew
- * at work on four of the business's own jobs, cross-fading every few seconds.
+ * at work on three of the business's own jobs, cross-fading every few seconds.
  *
  * The rotation follows the agency's own carousel rules: each photograph holds
  * six seconds, there is a pause button, the dots are full-size tap targets,
@@ -143,31 +143,13 @@ export default function HeroPhotos() {
             </MagneticButton>
           </div>
 
-          {/* The rating is Google's, so it is drawn in Google's gold and links
-              to the reviews, rather than sitting in the navy of the buttons. */}
+          {/* The Google reviews badge: Google's G and gold stars, linking to
+              the reviews, so it reads as Google's rating and not as a button. */}
           <div
             data-p-trust
             className="mt-7 flex flex-wrap items-center gap-x-5 gap-y-3 text-small text-bone-200/80"
           >
-            {site.reviewsUrl ? (
-              <a
-                href={site.reviewsUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 rounded-sm hover:text-bone"
-              >
-                <Stars tone="google" label={hero.trust.ratingLabel} />
-                <span className="font-semibold text-bone">5.0</span>
-                <span>on Google</span>
-              </a>
-            ) : (
-              <span className="inline-flex items-center gap-2">
-                <Stars tone="google" label={hero.trust.ratingLabel} />
-                <span className="font-semibold text-bone">5.0</span>
-                <span>on Google</span>
-              </span>
-            )}
-            <span className="hidden h-4 w-px bg-line/20 sm:block" aria-hidden="true" />
+            <GoogleReviews />
             <span>{hero.trust.provenance}</span>
           </div>
         </div>

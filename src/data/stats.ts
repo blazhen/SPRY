@@ -6,6 +6,8 @@ export interface Stat {
   prefix?: string
   /** Rendered after the number, e.g. % or +. */
   suffix?: string
+  /** A unit set smaller after the suffix, e.g. m². */
+  unit?: string
   /** Decimal places to hold during and after the count-up. */
   decimals?: number
   label: string
@@ -33,13 +35,14 @@ export const stats: Stat[] = [
     detail: 'Air leakage can account for as much as this. US Department of Energy, Building America Program.',
   },
   {
+    // Rachael's wording (10 October 2026): the area, rounded, and no dollar
+    // value. The contract value is not published anywhere on the site.
     id: 'contract',
-    value: 3.44,
-    prefix: '$',
-    suffix: 'M',
-    decimals: 2,
-    label: 'Largest single contract',
-    detail: 'One project, 30,863 square metres under a single contract.',
+    value: 30000,
+    suffix: '+',
+    unit: 'm²',
+    label: 'Proven large-scale delivery',
+    detail: 'Successfully completed under a single commercial contract.',
   },
   {
     id: 'experience',

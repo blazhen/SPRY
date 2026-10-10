@@ -21,7 +21,7 @@ export const heroVariants: HeroVariant[] = [
   {
     id: 'photo',
     name: 'The Crew',
-    idea: 'Real photographs of the crew spraying on four of the business’s own jobs, cross-fading beside the keyword headline and both calls to action.',
+    idea: 'Real photographs of the crew spraying on three of the business’s own jobs, cross-fading beside the keyword headline and both calls to action.',
     angle: 'Proof first. The SEO agency asked for a real technician photo, or a rotation of them, as the first thing on the page.',
     note: 'Plain images, no WebGL. The first photograph is preloaded; the rotation pauses off screen, has a pause button, and never runs under reduced motion.',
     usesWebGL: false,
