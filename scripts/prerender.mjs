@@ -174,6 +174,14 @@ for (const route of routes) {
     if (rendered.root.includes('pin-spacer')) problems.push('animation pin captured')
     if (errors.length) problems.push(`page errors: ${errors.join(' | ')}`)
 
+    // The one-switch guarantee: a staging build is noindex on every page, a
+    // live build is noindex only on the pages that are meant to be.
+    const robotsTag = rendered.head.match(/<meta\b[^>]*name="robots"[^>]*>/i)?.[0] ?? ''
+    const hasNoindex = /noindex/i.test(robotsTag)
+    const mayNoindex = NOINDEX.has(route) || route === NOT_FOUND || route.startsWith('/heroes')
+    if (LIVE && hasNoindex && !mayNoindex) problems.push('noindex tag in a LIVE build')
+    if (!LIVE && !hasNoindex) problems.push('staging build is missing its noindex tag')
+
     let html = shell.replace(
       /<title>[^<]*<\/title>/,
       `<title>${escapeHtml(rendered.title)}</title>\n    ${rendered.head}`,
@@ -201,6 +209,15 @@ for (const route of routes) {
 await browser.close()
 if (typeof server.close === 'function') await server.close()
 else server.httpServer.close()
+
+/* robots.txt and config.js must agree with the build mode too. */
+const robotsTxt = fs.readFileSync(path.join(DIST, 'robots.txt'), 'utf8')
+const blocksAll = /^Disallow:\s*\/\s*$/m.test(robotsTxt)
+const configJs = fs.readFileSync(path.join(DIST, 'config.js'), 'utf8')
+const configStaging = /staging:\s*true/.test(configJs)
+if (LIVE && blocksAll) { failed += 1; console.error('FAIL  dist/robots.txt still blocks everything in a LIVE build') }
+if (LIVE && configStaging) { failed += 1; console.error('FAIL  dist/config.js still says staging: true in a LIVE build') }
+if (!LIVE && !blocksAll) { failed += 1; console.error('FAIL  dist/robots.txt does not block crawlers in a staging build') }
 
 /* The sitemap follows the same route list, so it can never drift from it. */
 const today = new Date().toISOString().slice(0, 10)

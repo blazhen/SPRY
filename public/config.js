@@ -30,8 +30,13 @@
  * router               "history" for clean URLs like /contact. If /contact
  *                      404s on the host, switch to "hash" and links become
  *                      /#/contact, which works anywhere.
- * staging              true keeps every page out of search results. Set to
- *                      false at go-live, together with `npm run build:live`.
+ * staging              true keeps every page out of search results. The
+ *                      single go-live switch is `npm run build:live`: it
+ *                      ships this file with staging: false, writes the pages
+ *                      without the noindex tag and leaves robots.txt open.
+ *                      Do not flip this value by hand on a staging build:
+ *                      the pre-rendered pages and robots.txt would still say
+ *                      noindex.
  */
 window.SPRAYIT_CONFIG = {
   leadWebhook: '__LEAD_WEBHOOK__',

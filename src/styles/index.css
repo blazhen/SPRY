@@ -18,6 +18,16 @@
     /* Lenis drives scrolling; native smooth would fight it. */
     scroll-behavior: auto;
     -webkit-text-size-adjust: 100%;
+    /* Keyboard focus and in-page links scroll the target clear of the sticky
+       header, and (on phones) clear of the call bar pinned to the bottom, so
+       a focused control is never hidden behind either (WCAG 2.4.11). */
+    scroll-padding-top: calc(var(--header-h) + 1rem);
+    scroll-padding-bottom: 1.5rem;
+  }
+  @media (max-width: 767px) {
+    html {
+      scroll-padding-bottom: 6rem;
+    }
   }
 
   body {

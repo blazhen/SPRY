@@ -11,6 +11,8 @@
  * to change. Keep roughly a 4:3 or wider crop.
  */
 
+import { posterUrl } from '@/lib/images'
+
 export interface SectorSlide {
   id: string
   /** Residential or commercial. Drives which stat block shows. */
@@ -20,7 +22,7 @@ export interface SectorSlide {
   image: string
 }
 
-const yt = (id: string) => `https://i.ytimg.com/vi/${id}/hqdefault.jpg`
+const yt = posterUrl
 
 export const sectorCopy = {
   eyebrow: 'What we insulate',

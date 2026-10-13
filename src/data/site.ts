@@ -40,6 +40,9 @@ export interface SocialLink {
 export const site = {
   name: 'SprayIT Solutions',
   shortName: 'SprayIT',
+  /** The registered entity, as supplied by the client (12 October 2026). */
+  legalName: 'SprayIT Solutions (Vic) Pty Ltd',
+  abn: '40 602 502 607',
   tagline: 'A premium and highly effective insulation solution.',
 
   /** Positioning / capability line, used as the hero subhead. */

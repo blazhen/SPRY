@@ -2,7 +2,7 @@ import { useRef, useState } from 'react'
 import { Play } from 'lucide-react'
 
 import type { Video } from '@/data/videos'
-import { youtubeThumbSize } from '@/lib/images'
+import { POSTER_FALLBACK, posterUrl } from '@/lib/images'
 
 interface VideoEmbedProps {
   id: string
@@ -32,17 +32,12 @@ interface VideoEmbedProps {
  * renders the poster frame as a button and only creates the iframe on click,
  * with `autoplay` so the click that loads it is also the click that starts it.
  *
- * Posters come from `i.ytimg.com` at the resolution each upload actually has,
- * recorded per video rather than guessed. `hqdefault` and `sddefault` are 4:3
- * with the 16:9 frame letterboxed inside, so the image is cropped with
- * `object-cover`, which recovers exactly the video area.
- *
- * Two traps live here, both handled by the guard below. A missing
- * `maxresdefault` is not a 404: YouTube answers 200 with a 120x90 grey
- * placeholder, so `onError` never fires and the card would silently render a
- * grey box. And `sddefault` is sometimes a different frame from the chosen
- * thumbnail. So any poster that arrives suspiciously small is swapped for
- * `hqdefault`, which is always present and always the real thumbnail.
+ * Posters are local files (public/posters/<id>.jpg, saved by
+ * `node scripts/fetch-posters.mjs`), so no request goes to i.ytimg.com and a
+ * flaky third party can never leave a grey box. `hqdefault` and `sddefault` are
+ * 4:3 with the 16:9 frame letterboxed inside, so the image is cropped with
+ * `object-cover`, which recovers exactly the video area. The `poster` field on
+ * each video says which rendition the fetch script saves.
  *
  * `youtube-nocookie.com` keeps the request out of the visitor's ad profile
  * until they actually choose to watch.
@@ -50,13 +45,11 @@ interface VideoEmbedProps {
 export default function VideoEmbed({
   id,
   title,
-  poster,
   className = '',
   featured = false,
   posterAttr,
   onRequestPlay,
 }: VideoEmbedProps) {
-  const HQ = `https://i.ytimg.com/vi/${id}/hqdefault.jpg`
   const [playing, setPlaying] = useState(false)
 
   /**
@@ -78,7 +71,7 @@ export default function VideoEmbed({
     if (onRequestPlay && !onRequestPlay()) return
     setPlaying(true)
   }
-  const [src, setSrc] = useState(`https://i.ytimg.com/vi/${id}/${poster}.jpg`)
+  const [src, setSrc] = useState(posterUrl(id))
 
   return (
     <div
@@ -124,19 +117,13 @@ export default function VideoEmbed({
           <img
             {...(posterAttr ? { [posterAttr]: '' } : {})}
             src={src}
-            width={youtubeThumbSize(src)?.[0]}
-            height={youtubeThumbSize(src)?.[1]}
             alt=""
             aria-hidden="true"
             draggable={false}
             onDragStart={(e) => e.preventDefault()}
             onContextMenu={(e) => e.preventDefault()}
-            onError={() => setSrc(HQ)}
-            onLoad={(e) => {
-              // A real poster is at least 320px wide. Anything smaller is
-              // YouTube's grey "no rendition" placeholder, served as a 200.
-              if (e.currentTarget.naturalWidth <= 120 && src !== HQ) setSrc(HQ)
-            }}
+            // A missing local file shows the plain brand poster, not a broken image.
+            onError={() => setSrc(POSTER_FALLBACK)}
             className="absolute inset-0 size-full object-cover transition-transform duration-700 ease-expo group-hover:scale-[1.04]"
             loading="lazy"
             decoding="async"

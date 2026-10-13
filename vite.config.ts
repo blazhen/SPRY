@@ -62,13 +62,25 @@ function staticHostFallbacks(isLive: boolean) {
       // crawl competes with the live domain for the same content, and an
       // unfinished page in the results is hard to undo. `npm run build:live`
       // is the deliberate act that opens it up.
+      // The live build also flips the runtime flag in dist/config.js, so
+      // `npm run build:live` is the one switch: robots.txt, the pre-rendered
+      // tags and config.js can never disagree. (config.js is still editable on
+      // the server; this only sets what it ships with.)
+      const configJs = path.join(out, 'config.js')
+      if (isLive && fs.existsSync(configJs)) {
+        const text = fs.readFileSync(configJs, 'utf8')
+        const next = text.replace(/staging:\s*true/, 'staging: false')
+        if (next === text && /staging:\s*true/.test(text)) throw new Error('Could not set staging: false in config.js')
+        fs.writeFileSync(configJs, next)
+      }
+
       if (!isLive) {
         fs.writeFileSync(
           path.join(out, 'robots.txt'),
           [
             '# STAGING BUILD. Nothing here should be indexed.',
             '# Produced by `npm run build`. For the real site use `npm run build:live`,',
-            '# and set `staging: false` in the index.html config block.',
+            '# which also sets `staging: false` in config.js.',
             'User-agent: *',
             'Disallow: /',
             '',

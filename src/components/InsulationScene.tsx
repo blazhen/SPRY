@@ -1,7 +1,10 @@
-import { Suspense, lazy, useEffect, useRef, useState } from 'react'
+import { Suspense, lazy, useEffect, useMemo, useRef, useState } from 'react'
 import { Loader2, Flame, ShieldCheck } from 'lucide-react'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
 import { sceneIntro, scene as sceneCopy } from '@/data/content'
+import { hasWebGL } from '@/lib/webgl'
+import ErrorBoundary from '@/components/ui/ErrorBoundary'
+import SceneFallback from '@/components/SceneFallback'
 import SectionHeading from '@/components/ui/SectionHeading'
 import SectionBackdrop from '@/components/ui/SectionBackdrop'
 
@@ -30,6 +33,21 @@ export default function InsulationScene() {
   const [inView, setInView] = useState(false)
   const [mode, setMode] = useState<ModeId>('batts')
   const reduced = useReducedMotion()
+  // Only asked once the section is near, and only then is the 3D chunk requested.
+  const [lost, setLost] = useState(false)
+  const webgl = useMemo(() => inView && hasWebGL(), [inView])
+  const stage = useRef<HTMLDivElement>(null)
+
+  // The graphics driver can drop the context mid-visit (a GPU reset, memory
+  // pressure from other tabs). The canvas then goes blank, so swap to the 2D
+  // version. The event does not bubble, hence the capture listener.
+  useEffect(() => {
+    const el = stage.current
+    if (!el) return
+    const onLost = () => setLost(true)
+    el.addEventListener('webglcontextlost', onLost, true)
+    return () => el.removeEventListener('webglcontextlost', onLost, true)
+  }, [])
 
   const active = sceneCopy.modes.find((m) => m.id === mode) ?? sceneCopy.modes[0]
 
@@ -98,11 +116,18 @@ export default function InsulationScene() {
 
         {/* ---------------- Canvas ---------------- */}
         <div className="lg:col-span-7 lg:col-start-6 lg:row-span-3 lg:row-start-1">
-          <div className="relative aspect-square w-full overflow-hidden rounded-xl border border-line/10 bg-ink-800 sm:aspect-[4/3]">
-            {inView ? (
-              <Suspense fallback={<CanvasFallback message={sceneCopy.loading} />}>
-                <Scene mode={mode} reducedMotion={reduced} />
-              </Suspense>
+          <div
+            ref={stage}
+            className="relative aspect-square w-full overflow-hidden rounded-xl border border-line/10 bg-ink-800 sm:aspect-[4/3]"
+          >
+            {inView && (!webgl || lost) ? (
+              <SceneFallback mode={mode} />
+            ) : inView ? (
+              <ErrorBoundary fallback={<SceneFallback mode={mode} />}>
+                <Suspense fallback={<CanvasFallback message={sceneCopy.loading} />}>
+                  <Scene mode={mode} reducedMotion={reduced} />
+                </Suspense>
+              </ErrorBoundary>
             ) : (
               <CanvasFallback message={sceneCopy.loading} />
             )}

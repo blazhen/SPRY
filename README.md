@@ -477,7 +477,8 @@ place. What is still outstanding, as of September 2026:
    CRM-MESSAGING.md §2. The quote form now also sends `heard_from`, which needs a
    matching dropdown field in the CRM.
 6. **`noindex, nofollow`** is on while the site sits on the staging domain. It comes off
-   at go-live with `npm run build:live` and `staging: false` in `config.js`.
+   at go-live with one switch, `npm run build:live`, which also sets `staging: false` in
+   `config.js` and checks its own output (see DEPLOY.md, "The go-live switch").
 7. **Google Business Profile.** The footer address links to the listing and the contact
    page embeds a map by address. The listing's own embed URL (Maps → Share → Embed a
    map) goes in `site.mapEmbedUrl`, and the address text should be checked against the

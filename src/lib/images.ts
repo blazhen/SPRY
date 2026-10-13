@@ -17,20 +17,6 @@ export const unsplash = (id: string, w = 1600, q = 72): string =>
     : `https://images.unsplash.com/${id}?auto=format&fit=crop&w=${w}&q=${q}`
 
 /**
- * Width and height of a YouTube thumbnail, read from its file name, so a
- * poster from i.ytimg.com carries its real size like every other image.
- */
-const YOUTUBE_THUMBS: Record<string, [number, number]> = {
-  hqdefault: [480, 360],
-  sddefault: [640, 480],
-  maxresdefault: [1280, 720],
-}
-export const youtubeThumbSize = (src: string): [number, number] | undefined => {
-  const name = src.match(/ytimg\.com\/vi\/[^/]+\/(\w+)\.jpg/)?.[1]
-  return name ? YOUTUBE_THUMBS[name] : undefined
-}
-
-/**
  * A file from public/, by its path. On any normal host this returns the path
  * unchanged. It goes through `unsplash` on purpose: the staging host serves
  * photographs from its own file store rather than from their paths, and its
@@ -38,6 +24,19 @@ export const youtubeThumbSize = (src: string): [number, number] | undefined => {
  * reaches staging as a dead link, which is how half the client logos broke.
  */
 export const assetUrl = (path: string): string => unsplash(path)
+
+/**
+ * Poster frame for a YouTube video, served from this site.
+ *
+ * The files live in public/posters/<id>.jpg and are saved by
+ * `node scripts/fetch-posters.mjs`. Nothing is requested from i.ytimg.com at
+ * runtime: that host failed intermittently and left grey boxes. The video
+ * itself still loads from YouTube, but only when someone presses play.
+ */
+export const posterUrl = (videoId: string): string => assetUrl(`/posters/${videoId}.jpg`)
+
+/** Shown if a poster file is ever missing, so a card is never a broken image. */
+export const POSTER_FALLBACK = assetUrl('/posters/fallback.svg')
 
 /** Responsive srcSet across the widths we actually render at. */
 export const unsplashSrcSet = (id: string, widths: number[] = [640, 960, 1280, 1920]): string =>

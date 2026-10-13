@@ -294,7 +294,7 @@ export default function VideoCarousel({ videos, label }: VideoCarouselProps) {
 
         <p className="shrink-0 text-small font-bold tabular-nums text-bone-400">
           {String(selected + 1).padStart(2, '0')}
-          <span className="text-bone-400/60"> / {String(videos.length).padStart(2, '0')}</span>
+          <span className="text-bone-400"> / {String(videos.length).padStart(2, '0')}</span>
         </p>
       </div>
 

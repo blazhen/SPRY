@@ -158,7 +158,7 @@ export default function Footer() {
         {/* ---------------- Base line ---------------- */}
         <div className="mt-16 flex flex-col gap-4 border-t border-line/10 py-8 text-small text-bone-400 sm:flex-row sm:items-center sm:justify-between">
           <p className="flex flex-wrap items-center gap-x-2 gap-y-1">
-            <span>© {year} {site.name}. ABN and licensing details on request.</span>
+            <span>© {year} {site.legalName} - ABN {site.abn}</span>
             <span aria-hidden="true">·</span>
             <Link to={routes.privacy} className="link-wipe text-bone">
               Privacy policy

@@ -1,6 +1,8 @@
 import { Suspense, lazy, useEffect, useRef, useState } from 'react'
 import { Droplet, ShieldCheck, Snowflake, Sun, type LucideIcon } from 'lucide-react'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
+import { hasWebGL } from '@/lib/webgl'
+import ErrorBoundary from '@/components/ui/ErrorBoundary'
 import type { HeroObjectKind, Season } from '@/three/HeroObject'
 
 const HeroObject = lazy(() => import('@/three/HeroObject'))
@@ -104,10 +106,12 @@ export default function HeroObject3D({
           sits under the scene rather than over it, because overlaying text on
           a lit 3D ground plane is unreadable in half the frames. */}
       <div aria-hidden="true" className="pointer-events-none min-h-0 flex-1 select-none">
-        {inView && (
-          <Suspense fallback={null}>
-            <HeroObject kind={kind} season={season} reducedMotion={reduced} />
-          </Suspense>
+        {inView && hasWebGL() && (
+          <ErrorBoundary fallback={null}>
+            <Suspense fallback={null}>
+              <HeroObject kind={kind} season={season} reducedMotion={reduced} />
+            </Suspense>
+          </ErrorBoundary>
         )}
       </div>
 

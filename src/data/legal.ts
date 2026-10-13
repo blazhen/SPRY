@@ -7,7 +7,7 @@
  *
  * STILL TO CONFIRM BEFORE LAUNCH. These now read as settled statements on the
  * page, so if any of them is wrong the policy is wrong:
- *  - the ABN, and whether an ACN also applies
+ *  - whether an ACN also applies (the ABN is confirmed: 40 602 502 607)
  *  - who the privacy contact is, if not the general info address
  *  - whether calls are in fact recorded, and from which number
  *    ("Phone calls, SMS and email", third paragraph)
@@ -34,7 +34,7 @@ export const policySections: PolicySection[] = [
   {
     heading: 'Who we are',
     paragraphs: [
-      'SprayIT Solutions is a spray foam insulation contractor based at Factory 4/114 Colemans Rd, Carrum Downs VIC 3201, operating Australia-wide.',
+      'SprayIT Solutions (SprayIT Solutions (Vic) Pty Ltd, ABN 40 602 502 607) is a spray foam insulation contractor based at Factory 4/114 Colemans Rd, Carrum Downs VIC 3201, operating Australia-wide.',
       'We handle personal information in line with the Privacy Act 1988 (Cth) and the Australian Privacy Principles. This policy explains what we collect, why, and what you can ask us to do about it.',
     ],
   },

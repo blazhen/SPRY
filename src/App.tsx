@@ -10,6 +10,8 @@ import { captureAttribution } from '@/lib/attribution'
 import { startAnalytics, trackPageView } from '@/lib/analytics'
 import { integrations } from '@/config/integrations'
 
+import ErrorBoundary from '@/components/ui/ErrorBoundary'
+import PageCrashed from '@/components/PageCrashed'
 import Layout from '@/components/Layout'
 import Home from '@/pages/Home'
 import About from '@/pages/About'
@@ -177,6 +179,9 @@ export default function App() {
           <RouteScrollReset />
           <HashScroll />
           <RouteAnalytics />
+          {/* Last line of defence: if any part of a page throws, the visitor
+              gets a plain message and the phone number, never a blank window. */}
+          <ErrorBoundary fallback={<PageCrashed />}>
           <Routes>
             <Route element={<Layout />}>
               <Route path={at(routes.home)} element={<Home />} />
@@ -216,6 +221,7 @@ export default function App() {
               <Route path="*" element={<NotFound />} />
             </Route>
           </Routes>
+          </ErrorBoundary>
         </ReactLenis>
       </Router>
     </HelmetProvider>

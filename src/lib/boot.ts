@@ -17,7 +17,7 @@ declare global {
  * the pins are measured against the wrong heights. Worth a short wait, not an
  * unbounded one.
  */
-const FONT_WAIT_MS = 2500
+const FONT_WAIT_MS = 1000
 
 function waitForFonts(): Promise<void> {
   const fonts = document.fonts

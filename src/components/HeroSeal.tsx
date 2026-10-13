@@ -5,6 +5,8 @@ import { useReducedMotion } from '@/hooks/useReducedMotion'
 import { useIsCompact } from '@/hooks/useMediaQuery'
 import { heroSeal } from '@/data/content'
 import { site } from '@/data/site'
+import { hasWebGL } from '@/lib/webgl'
+import ErrorBoundary from '@/components/ui/ErrorBoundary'
 import MagneticButton from '@/components/ui/MagneticButton'
 import SealCrossSection from '@/components/SealCrossSection'
 
@@ -236,15 +238,22 @@ export default function HeroSeal() {
     >
       {/* --- 3D --- */}
       <div data-seal-canvas className="absolute inset-0">
-        <Suspense
-          fallback={
+        {(() => {
+          const still = (
             <div className="grid size-full place-items-center bg-ink px-gutter">
               <SealCrossSection className="w-full max-w-3xl opacity-60" />
             </div>
-          }
-        >
-          <SealScene progressRef={progress} reducedMotion={reduced} />
-        </Suspense>
+          )
+          return hasWebGL() ? (
+            <ErrorBoundary fallback={still}>
+              <Suspense fallback={still}>
+                <SealScene progressRef={progress} reducedMotion={reduced} />
+              </Suspense>
+            </ErrorBoundary>
+          ) : (
+            still
+          )
+        })()}
       </div>
 
       {/* Covers the moment the camera crosses through the wall itself. */}

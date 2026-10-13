@@ -50,7 +50,7 @@ value. Every page loads this one file, so one edit reaches the whole site.
 | `googleAdsBookingLabel` | Same, for the booking conversion. |
 | `metaPixelId` | Meta pixel ID. |
 | `router` | Leave as `'history'` unless step 3 says otherwise. |
-| `staging` | `true` on the staging domain. `false` at go-live, together with `npm run build:live`. |
+| `staging` | `true` on the staging domain. `npm run build:live` ships it as `false`. Do not change it by hand: see "The go-live switch" below. |
 
 Leave anything you are not using as its placeholder. Unset values are handled
 deliberately rather than ignored:
@@ -89,13 +89,43 @@ with zero server configuration, at a real cost: hash URLs are not separate
 pages to a search engine, which throws away the pre-rendering. Prefer fixing
 the host.
 
-## 4. Go-live checklist
+## 4. The go-live switch (noindex, nofollow)
 
-1. `npm run build:live` (not `npm run build`).
-2. In `config.js` on the server, set `staging: false`.
-3. Confirm `robots.txt` no longer says `Disallow: /`.
-4. View the source of the home page: the `<meta name="robots">` tag must be
-   absent, and the title, description and body copy must all be there.
+Staging is private on purpose: every page carries
+`<meta name="robots" content="noindex, nofollow">` and `robots.txt` says
+`Disallow: /`. **There is one switch to make the site indexable:
+`npm run build:live`** (instead of `npm run build`). It does three things
+together, so they cannot disagree:
+
+1. Pre-renders every page **without** the noindex tag. The tag is never typed
+   into a page by hand; it is only added when the build is a staging build.
+   The only pages that keep it are the ones that should: the thank-you pages,
+   the 404 page and the internal `/heroes` pages.
+2. Leaves `robots.txt` open (the staging build overwrites it with a block).
+3. Ships `config.js` with `staging: false`.
+
+The build then checks its own output and **fails** if any page other than
+those still has a noindex tag, if `robots.txt` still blocks everything, or if
+`config.js` still says `staging: true`. A staging build is checked the other
+way round (every page must be noindex).
+
+Why `config.js` alone is not the switch: it is read in the browser, but the
+pre-rendered HTML is what crawlers read first, and that is fixed at build time.
+Flipping only `config.js` on a staging build would leave noindex in every
+page's source.
+
+### Go-live checklist
+
+1. `npm run build:live` (not `npm run build`). It must finish with
+   `Pre-rendered 20 of 20 routes (live)` and no `FAIL` lines.
+2. Upload `dist/`, then fill in the placeholders in the server's `config.js`
+   (step 2). Leave `staging: false`.
+3. Open `https://yourdomain.com/robots.txt`: it must not say `Disallow: /`.
+4. View the source of the home page: no `<meta name="robots">` tag, and the
+   title, description and body copy are all there.
+
+To take a copy back to private (a new staging site), build with
+`npm run build` and upload that.
 
 ## Local development
 

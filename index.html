@@ -20,7 +20,6 @@
 
     <!-- Warm the image CDN before the hero background is requested. -->
     <link rel="preconnect" href="https://images.unsplash.com" crossorigin />
-
     <!-- The boot screen's only image. Preloaded so the mark paints with it. -->
     <link rel="preload" as="image" href="/logo/SS-Logo-White.webp" />
 
@@ -56,7 +55,7 @@
         place-items: center;
         background: #002396;
         transform: translateY(0);
-        transition: transform 0.8s cubic-bezier(0.76, 0, 0.24, 1) 0.2s;
+        transition: transform 0.5s cubic-bezier(0.76, 0, 0.24, 1);
       }
       /* Warm halo behind the mark, so the panel is not a flat black rectangle.
          Centred on the logo rather than anchored to an edge, where it reads as
@@ -261,12 +260,12 @@
           // If everything was cached this can be reached in ~100ms, and a panel
           // that flashes past is worse than no panel. Hold just long enough to
           // read as deliberate, never long enough to be a tax.
-          var hold = Math.max(0, 400 - (Date.now() - startedAt))
+          var hold = Math.max(0, 150 - (Date.now() - startedAt))
           setTimeout(function () {
             panel.setAttribute('data-boot-exit', '')
             setTimeout(function () {
               if (panel.parentNode) panel.parentNode.removeChild(panel)
-            }, 1100)
+            }, 650)
           }, hold)
         }
 
@@ -286,7 +285,7 @@
         })
 
         // Last resort. A missing signal must never hold the page hostage.
-        setTimeout(finish, 7000)
+        setTimeout(finish, 3500)
 
         // Restoring from the back/forward cache re-shows the old DOM, which can
         // include this panel. Clear it immediately: nothing is loading.

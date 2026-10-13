@@ -1,4 +1,5 @@
 import type { SectionIntro } from '@/data/content'
+import { posterUrl } from '@/lib/images'
 
 /**
  * Content for the interior pages' visual sections.
@@ -204,7 +205,7 @@ export const sectorsIntro: SectionIntro = {
   lede: 'Commercial insulation is rarely about comfort. It is about holding a temperature, protecting a product, or stopping condensation destroying a structure.',
 }
 
-const yt = (id: string) => `https://i.ytimg.com/vi/${id}/hqdefault.jpg`
+const yt = posterUrl
 
 /** Imagery is placeholder, from Glenn's channel. See sectors.ts for the swap note. */
 export const commercialSectors: SectorCard[] = [

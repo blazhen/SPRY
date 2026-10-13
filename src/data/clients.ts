@@ -78,4 +78,4 @@ export const clients: Client[] = [
   },
 ]
 
-export const clientsHeading = 'Trusted by leading brands internationally.'
+export const clientsHeading = 'Selected organisations we have worked with.'

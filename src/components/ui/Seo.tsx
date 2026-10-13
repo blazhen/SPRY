@@ -36,6 +36,9 @@ export default function Seo({
     '@context': 'https://schema.org',
     '@type': 'HomeAndConstructionBusiness',
     name: site.name,
+    legalName: site.legalName,
+    // schema.org has no ABN property; taxID is the closest match for a tax number.
+    taxID: site.abn,
     description: seo.description,
     url: seo.canonical,
     // E.164 rather than the display form: search engines parse this field.

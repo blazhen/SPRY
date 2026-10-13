@@ -538,7 +538,7 @@ export const servicesIntro: SectionIntro = {
   keyword: 'Spray Foam Insulation Services',
   headingLines: ['Two halves of', 'the same job.'],
   accentWord: 'halves',
-  lede: 'A weatherboard cottage in Preston and a distribution warehouse in Dandenong need the same thing: a building envelope that actually seals.',
+  lede: 'A home sprayed wall to ceiling and a sports hall sprayed wall to roof need the same thing: a building envelope that actually seals.',
 }
 
 export const statsIntro: SectionIntro = {
