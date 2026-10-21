@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en-AU">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Quote Builder | SprayIT Solutions</title>
+    <meta name="description" content="Create, send and track quotes for SprayIT Solutions." />
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#F3F6FB" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0A1020" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+    <script>
+      // Set the theme before first paint so there is no flash. Storage can be
+      // blocked inside an iframe, so every read is guarded.
+      (function () {
+        var t = null
+        try { t = localStorage.getItem('sq.theme') } catch (e) {}
+        if (t !== 'light' && t !== 'dark') {
+          t = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+        }
+        document.documentElement.setAttribute('data-theme', t)
+      })()
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <noscript>This page needs JavaScript to build and show quotes.</noscript>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
