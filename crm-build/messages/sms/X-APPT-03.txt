@@ -1,0 +1,1 @@
+Reminder: your call with {{custom_values.business_short_name}} is tomorrow, {{appointment.start_time}}. Need to move it? {{appointment.reschedule_link}} {{custom_values.sms_signoff}}

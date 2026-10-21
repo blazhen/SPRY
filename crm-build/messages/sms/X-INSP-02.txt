@@ -1,0 +1,1 @@
+Morning {{contact.first_name}}, we are coming to you today for the {{custom_values.inspection_noun}}. Any change, ring {{custom_values.contact_mobile}}. {{custom_values.sms_signoff}}

@@ -1,0 +1,1 @@
+Morning {{contact.first_name}}, our crew is on site at {{opportunity.site_address}} today, led by {{opportunity.crew_assigned}}. Any issue, ring {{custom_values.contact_mobile}}. {{custom_values.sms_signoff}}

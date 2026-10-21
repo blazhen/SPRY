@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Invoice {{opportunity.invoice_number}}</title></head>
+<body style="margin:0;padding:24px 12px;background:#f4f4f2;font-family:Arial,Helvetica,sans-serif;">
+<span style="display:none;max-height:0;overflow:hidden;opacity:0;">Invoice {{opportunity.invoice_number}} attached, with your accepted quote. Due dates are on it.</span>
+<table role="presentation" width="100%" style="max-width:600px;margin:0 auto;background:#ffffff;border-collapse:collapse;"><tr><td style="padding:28px 28px 24px 28px;">
+<p style="margin:0 0 16px 0;font-size:16px;line-height:1.5;color:#1a1a1a;">Hi {{contact.first_name}},</p>
+<p style="margin:0 0 16px 0;font-size:16px;line-height:1.5;color:#1a1a1a;">Invoice {{opportunity.invoice_number}} is attached for the work at {{opportunity.site_address}}.</p>
+<p style="margin:0 0 16px 0;font-size:16px;line-height:1.5;color:#1a1a1a;">Also attached:</p>
+<ul style="margin:0 0 16px 0;font-size:16px;line-height:1.5;color:#1a1a1a;padding-left:22px;"><li style="margin-bottom:6px;">Your accepted quote, which carries the terms and conditions</li><li style="margin-bottom:6px;">Your purchase order, where there is one</li></ul>
+<p style="margin:0 0 16px 0;font-size:16px;line-height:1.5;color:#1a1a1a;">Payment details are on the invoice. If it is paid in stages, each amount is listed with its own due date.</p>
+<p style="margin:0 0 16px 0;font-size:16px;line-height:1.5;color:#1a1a1a;">Any questions about it, ring {{custom_values.contact_mobile}}.</p>
+<p style="margin:0 0 16px 0;font-size:16px;line-height:1.5;color:#1a1a1a;margin-top:24px;">{{custom_values.business_name}}<br>{{custom_values.business_phone}}</p>
+</td></tr></table>
+</body></html>

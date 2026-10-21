@@ -1,0 +1,1 @@
+Hi {{contact.first_name}}, your {{custom_values.trade_verb}} job is booked for {{opportunity.job_date}}. Prep notes are in your email. {{custom_values.sms_signoff}}

@@ -1,0 +1,1 @@
+Sorry we missed your call. Reply here and we will get straight back to you, or we will ring you shortly. {{custom_values.sms_signoff}}

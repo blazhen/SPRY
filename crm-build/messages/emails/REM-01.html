@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Your job is a week away. Does the date still work?</title></head>
+<body style="margin:0;padding:24px 12px;background:#f4f4f2;font-family:Arial,Helvetica,sans-serif;">
+<span style="display:none;max-height:0;overflow:hidden;opacity:0;">{{opportunity.job_date}} at {{opportunity.site_address}}. One tap to confirm, or to tell us it does not work.</span>
+<table role="presentation" width="100%" style="max-width:600px;margin:0 auto;background:#ffffff;border-collapse:collapse;"><tr><td style="padding:28px 28px 24px 28px;">
+<p style="margin:0 0 16px 0;font-size:16px;line-height:1.5;color:#1a1a1a;">Hi {{contact.first_name}},</p>
+<p style="margin:0 0 16px 0;font-size:16px;line-height:1.5;color:#1a1a1a;">A reminder that we are booked to do the work at {{opportunity.site_address}} on {{opportunity.job_date}}.</p>
+<p style="margin:0 0 16px 0;font-size:16px;line-height:1.5;color:#1a1a1a;">Does that date still work?</p>
+<ul style="margin:0 0 16px 0;font-size:16px;line-height:1.5;color:#1a1a1a;padding-left:22px;"><li style="margin-bottom:6px;">Yes, see you then: {{trigger_link.confirm_yes}}</li><li style="margin-bottom:6px;">No, I need to change it: {{trigger_link.confirm_no}}</li></ul>
+<p style="margin:0 0 16px 0;font-size:16px;line-height:1.5;color:#1a1a1a;">If it no longer works, a week of notice means we can move the crew and the rig to another job and find you a new date. If you tap No, we will ring you to rearrange.</p>
+<p style="margin:0 0 16px 0;font-size:16px;line-height:1.5;color:#1a1a1a;margin-top:24px;">{{custom_values.business_name}}<br>{{custom_values.business_phone}}</p>
+</td></tr></table>
+</body></html>

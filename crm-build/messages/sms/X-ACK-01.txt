@@ -1,0 +1,1 @@
+Hi {{contact.first_name}}, thanks for your enquiry. We will ring you shortly to talk it through. Need us sooner? Ring {{custom_values.contact_mobile}}. {{custom_values.sms_signoff}}

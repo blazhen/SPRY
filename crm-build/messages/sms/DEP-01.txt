@@ -1,0 +1,1 @@
+Deposit received, thanks {{contact.first_name}}. You are all set for {{opportunity.job_date}}. {{custom_values.sms_signoff}}

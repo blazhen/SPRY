@@ -1,0 +1,1 @@
+Your call with {{custom_values.business_short_name}} is at {{appointment.start_time}}, about 2 hours away. Talk soon. {{custom_values.sms_signoff}}

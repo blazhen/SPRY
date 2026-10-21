@@ -1,0 +1,1 @@
+Hi {{contact.first_name}}, your {{custom_values.inspection_noun}} is booked for {{opportunity.inspection_date}} at {{opportunity.site_address}}. {{custom_values.sms_signoff}}

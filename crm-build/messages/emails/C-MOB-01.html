@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Works booked: {{opportunity.site_address}}</title></head>
+<body style="margin:0;padding:24px 12px;background:#f4f4f2;font-family:Arial,Helvetica,sans-serif;">
+<span style="display:none;max-height:0;overflow:hidden;opacity:0;">Start {{opportunity.job_date}}. SWMS, insurances and crew list attached. Four things we need from you.</span>
+<table role="presentation" width="100%" style="max-width:600px;margin:0 auto;background:#ffffff;border-collapse:collapse;"><tr><td style="padding:28px 28px 24px 28px;">
+<p style="margin:0 0 16px 0;font-size:16px;line-height:1.5;color:#1a1a1a;">Hi {{contact.first_name}},</p>
+<p style="margin:0 0 16px 0;font-size:16px;line-height:1.5;color:#1a1a1a;">The works at {{opportunity.site_address}} are booked.</p>
+<table role="presentation" style="margin:0 0 16px 0;font-size:16px;line-height:1.5;color:#1a1a1a;border-collapse:collapse;"><tr><td style="padding:2px 18px 2px 0;color:#555;">Start</td><td style="padding:2px 0;">{{opportunity.job_date}}</td></tr><tr><td style="padding:2px 18px 2px 0;color:#555;">Completion</td><td style="padding:2px 0;">{{opportunity.job_end_date}}</td></tr><tr><td style="padding:2px 18px 2px 0;color:#555;">Crew</td><td style="padding:2px 0;">{{opportunity.crew_assigned}}</td></tr><tr><td style="padding:2px 18px 2px 0;color:#555;">Reference</td><td style="padding:2px 0;">{{opportunity.po_number}}</td></tr></table>
+<p style="margin:0 0 16px 0;font-size:16px;line-height:1.5;color:#1a1a1a;">Attached: SWMS, insurances, and the crew list for induction.</p>
+<p style="margin:0 0 16px 0;font-size:16px;line-height:1.5;color:#1a1a1a;">We need from you:</p>
+<ul style="margin:0 0 16px 0;font-size:16px;line-height:1.5;color:#1a1a1a;padding-left:22px;"><li style="margin-bottom:6px;">Induction booked for the crew before the start date</li><li style="margin-bottom:6px;">Confirmed access and any permits</li><li style="margin-bottom:6px;">Power and water availability on site</li><li style="margin-bottom:6px;">Confirmation the area will be clear of other trades while we spray</li></ul>
+<p style="margin:0 0 16px 0;font-size:16px;line-height:1.5;color:#1a1a1a;">That last one matters more than it sounds. The area has to be free of other trades during application and cure.</p>
+<p style="margin:0 0 16px 0;font-size:16px;line-height:1.5;color:#1a1a1a;">You will get a reminder 7 days and 48 hours before the start, with a one-tap way to confirm the date still works.</p>
+<p style="margin:0 0 16px 0;font-size:16px;line-height:1.5;color:#1a1a1a;margin-top:24px;">{{custom_values.business_name}}<br>{{custom_values.business_phone}}</p>
+</td></tr></table>
+</body></html>

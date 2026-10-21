@@ -1,0 +1,1 @@
+Your call with {{custom_values.business_short_name}} on {{appointment.start_time}} is cancelled. Want a new time? {{custom_values.booking_url}} {{custom_values.sms_signoff}}

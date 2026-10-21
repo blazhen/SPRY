@@ -1,0 +1,1 @@
+Morning {{contact.first_name}}, {{opportunity.crew_assigned}} and the crew are on the way to you now. {{custom_values.sms_signoff}}

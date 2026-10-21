@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>We have your enquiry, {{contact.first_name}}</title></head>
+<body style="margin:0;padding:24px 12px;background:#f4f4f2;font-family:Arial,Helvetica,sans-serif;">
+<span style="display:none;max-height:0;overflow:hidden;opacity:0;">We will ring you to talk it through, then send a written quote. Here is what you told us.</span>
+<table role="presentation" width="100%" style="max-width:600px;margin:0 auto;background:#ffffff;border-collapse:collapse;"><tr><td style="padding:28px 28px 24px 28px;">
+<p style="margin:0 0 16px 0;font-size:16px;line-height:1.5;color:#1a1a1a;">Hi {{contact.first_name}},</p>
+<p style="margin:0 0 16px 0;font-size:16px;line-height:1.5;color:#1a1a1a;">Thanks for getting in touch with {{custom_values.business_name}}. We have your enquiry and we will ring you shortly. During business hours that is usually within the hour.</p>
+<p style="margin:0 0 16px 0;font-size:16px;line-height:1.5;color:#1a1a1a;">Here is what you told us:</p>
+<table role="presentation" style="margin:0 0 16px 0;font-size:16px;line-height:1.5;color:#1a1a1a;border-collapse:collapse;"><tr><td style="padding:2px 18px 2px 0;color:#555;">Property</td><td style="padding:2px 0;">{{contact.property_type}}</td></tr><tr><td style="padding:2px 18px 2px 0;color:#555;">Needs doing</td><td style="padding:2px 0;">{{contact.areas}}</td></tr><tr><td style="padding:2px 18px 2px 0;color:#555;">Building stage</td><td style="padding:2px 0;">{{contact.building_stage}}</td></tr><tr><td style="padding:2px 18px 2px 0;color:#555;">Timeframe</td><td style="padding:2px 0;">{{contact.timeframe}}</td></tr><tr><td style="padding:2px 18px 2px 0;color:#555;">Postcode</td><td style="padding:2px 0;">{{contact.postcode}}</td></tr></table>
+<p style="margin:0 0 16px 0;font-size:16px;line-height:1.5;color:#1a1a1a;">If any of that is wrong, reply to this email and we will fix it.</p>
+<p style="margin:0 0 16px 0;font-size:16px;line-height:1.5;color:#1a1a1a;">What happens next:</p>
+<ol style="margin:0 0 16px 0;font-size:16px;line-height:1.5;color:#1a1a1a;padding-left:22px;"><li style="margin-bottom:6px;">We ring you for a short chat about the building and what you want from it.</li><li style="margin-bottom:6px;">We send you a written quote, usually within {{custom_values.quote_turnaround}} of the call. There is no obligation.</li><li style="margin-bottom:6px;">Once you are happy with the quote, we book the install date.</li></ol>
+<p style="margin:0 0 16px 0;font-size:16px;line-height:1.5;color:#1a1a1a;">We quote from the call. If a job needs a look in person, we quote it first so you know the price, and visit once you are happy with it, before the install is booked.</p>
+<p style="margin:0 0 16px 0;font-size:16px;line-height:1.5;color:#1a1a1a;margin-top:24px;">{{custom_values.contact_name}}<br>{{custom_values.business_name}}<br>{{custom_values.contact_mobile}}</p>
+</td></tr></table>
+</body></html>

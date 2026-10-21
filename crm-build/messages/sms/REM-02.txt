@@ -1,0 +1,1 @@
+Hi {{contact.first_name}}, we are with you on {{opportunity.job_date}}. Still OK? Yes: {{trigger_link.confirm_yes}} No: {{trigger_link.confirm_no}} {{custom_values.sms_signoff}}

@@ -1,0 +1,1 @@
+Hi {{contact.first_name}}, see you in 2 days, {{opportunity.job_date}}. Still on? Yes: {{trigger_link.confirm_yes}} No: {{trigger_link.confirm_no}} {{custom_values.sms_signoff}}

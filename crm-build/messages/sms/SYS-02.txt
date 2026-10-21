@@ -1,0 +1,1 @@
+Thanks for your message. We are back {{custom_values.office_hours}} and will reply first thing. Urgent? Ring {{custom_values.contact_mobile}}. {{custom_values.sms_signoff}}

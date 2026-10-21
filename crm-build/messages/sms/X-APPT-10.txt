@@ -1,0 +1,1 @@
+We tried to call you at {{appointment.start_time}} but could not get through. Pick a new time: {{custom_values.booking_url}} or reply here. {{custom_values.sms_signoff}}

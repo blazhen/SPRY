@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Your job is in 2 days. Please confirm.</title></head>
+<body style="margin:0;padding:24px 12px;background:#f4f4f2;font-family:Arial,Helvetica,sans-serif;">
+<span style="display:none;max-height:0;overflow:hidden;opacity:0;">{{opportunity.job_date}} at {{opportunity.site_address}}. One tap to confirm the job is still on.</span>
+<table role="presentation" width="100%" style="max-width:600px;margin:0 auto;background:#ffffff;border-collapse:collapse;"><tr><td style="padding:28px 28px 24px 28px;">
+<p style="margin:0 0 16px 0;font-size:16px;line-height:1.5;color:#1a1a1a;">Hi {{contact.first_name}},</p>
+<p style="margin:0 0 16px 0;font-size:16px;line-height:1.5;color:#1a1a1a;">We are with you in two days, on {{opportunity.job_date}} at {{opportunity.site_address}}.</p>
+<p style="margin:0 0 16px 0;font-size:16px;line-height:1.5;color:#1a1a1a;">Is everything still on?</p>
+<ul style="margin:0 0 16px 0;font-size:16px;line-height:1.5;color:#1a1a1a;padding-left:22px;"><li style="margin-bottom:6px;">Yes, see you then: {{trigger_link.confirm_yes}}</li><li style="margin-bottom:6px;">No, I need to change it: {{trigger_link.confirm_no}}</li></ul>
+<p style="margin:0 0 16px 0;font-size:16px;line-height:1.5;color:#1a1a1a;">A quick check of the preparation list before we arrive: clear access to {{contact.areas}}, parking close for the truck, pets somewhere else for the day, and somebody over 18 home to let us in.</p>
+<p style="margin:0 0 16px 0;font-size:16px;line-height:1.5;color:#1a1a1a;margin-top:24px;">{{custom_values.business_name}}<br>{{custom_values.business_phone}}</p>
+</td></tr></table>
+</body></html>

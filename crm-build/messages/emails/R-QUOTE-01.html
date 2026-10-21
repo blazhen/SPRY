@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Your quote from {{custom_values.business_name}}</title></head>
+<body style="margin:0;padding:24px 12px;background:#f4f4f2;font-family:Arial,Helvetica,sans-serif;">
+<span style="display:none;max-height:0;overflow:hidden;opacity:0;">Quote {{opportunity.quote_number}}. View it online and accept it with one click. Questions welcome.</span>
+<table role="presentation" width="100%" style="max-width:600px;margin:0 auto;background:#ffffff;border-collapse:collapse;"><tr><td style="padding:28px 28px 24px 28px;">
+<p style="margin:0 0 16px 0;font-size:16px;line-height:1.5;color:#1a1a1a;">Hi {{contact.first_name}},</p>
+<p style="margin:0 0 16px 0;font-size:16px;line-height:1.5;color:#1a1a1a;">Your quote is ready. Quote number {{opportunity.quote_number}}.</p>
+<p style="margin:0 0 16px 0;font-size:16px;line-height:1.5;color:#1a1a1a;">View it, and accept or decline it online, here: {{opportunity.quote_link}}</p>
+<p style="margin:0 0 16px 0;font-size:16px;line-height:1.5;color:#1a1a1a;">It covers {{contact.areas}} at {{opportunity.site_address}}. If we have quoted more than one option, for example open cell or closed cell, or two different thicknesses, each option has its own accept button. Accept the one you want.</p>
+<p style="margin:0 0 16px 0;font-size:16px;line-height:1.5;color:#1a1a1a;">A few things worth saying plainly:</p>
+<ul style="margin:0 0 16px 0;font-size:16px;line-height:1.5;color:#1a1a1a;padding-left:22px;"><li style="margin-bottom:6px;">The price includes everything. No separate charge for access, setup or clean-up.</li><li style="margin-bottom:6px;">It is valid for 30 days, mostly because material costs move.</li><li style="margin-bottom:6px;">Accepting online is all it takes. A yes on the phone works too.</li><li style="margin-bottom:6px;">If anything in it does not make sense, ring us. We would rather explain it than have you accept something you are unsure about.</li></ul>
+<p style="margin:0 0 16px 0;font-size:16px;line-height:1.5;color:#1a1a1a;">Any questions at all, {{custom_values.contact_mobile}}.</p>
+<p style="margin:0 0 16px 0;font-size:16px;line-height:1.5;color:#1a1a1a;margin-top:24px;">{{custom_values.contact_name}}<br>{{custom_values.business_name}}<br>{{custom_values.contact_mobile}}</p>
+</td></tr></table>
+</body></html>

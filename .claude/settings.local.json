@@ -1,0 +1,8 @@
+{
+  "claudeMdExcludes": [
+    "C:/Users/baksl/.claude/CLAUDE.md",
+    "C:\\Users\\baksl\\.claude\\CLAUDE.md",
+    "**/Users/baksl/.claude/CLAUDE.md"
+  ],
+  "enabledMcpjsonServers": ["spray-crm"]
+}

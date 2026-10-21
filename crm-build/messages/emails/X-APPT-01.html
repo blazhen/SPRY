@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Confirmed: {{appointment.start_time}}</title></head>
+<body style="margin:0;padding:24px 12px;background:#f4f4f2;font-family:Arial,Helvetica,sans-serif;">
+<span style="display:none;max-height:0;overflow:hidden;opacity:0;">We will call you on {{contact.phone}}. Reschedule or cancel with one click.</span>
+<table role="presentation" width="100%" style="max-width:600px;margin:0 auto;background:#ffffff;border-collapse:collapse;"><tr><td style="padding:28px 28px 24px 28px;">
+<p style="margin:0 0 16px 0;font-size:16px;line-height:1.5;color:#1a1a1a;">Hi {{contact.first_name}},</p>
+<p style="margin:0 0 16px 0;font-size:16px;line-height:1.5;color:#1a1a1a;">You are booked in.</p>
+<table role="presentation" style="margin:0 0 16px 0;font-size:16px;line-height:1.5;color:#1a1a1a;border-collapse:collapse;"><tr><td style="padding:2px 18px 2px 0;color:#555;">When</td><td style="padding:2px 0;">{{appointment.start_time}}</td></tr><tr><td style="padding:2px 18px 2px 0;color:#555;">What</td><td style="padding:2px 0;">{{appointment.title}}</td></tr><tr><td style="padding:2px 18px 2px 0;color:#555;">Where</td><td style="padding:2px 0;">We call you on {{contact.phone}}</td></tr></table>
+<p style="margin:0 0 16px 0;font-size:16px;line-height:1.5;color:#1a1a1a;">There is nothing to prepare. If it is handy, have a rough idea of what needs doing and when, but the call is mostly us listening.</p>
+<p style="margin:0 0 16px 0;font-size:16px;line-height:1.5;color:#1a1a1a;">Need to change it?</p>
+<ul style="margin:0 0 16px 0;font-size:16px;line-height:1.5;color:#1a1a1a;padding-left:22px;"><li style="margin-bottom:6px;">Reschedule: {{appointment.reschedule_link}}</li><li style="margin-bottom:6px;">Cancel: {{appointment.cancellation_link}}</li></ul>
+<p style="margin:0 0 16px 0;font-size:16px;line-height:1.5;color:#1a1a1a;margin-top:24px;">{{custom_values.business_name}}<br>{{custom_values.business_phone}}</p>
+</td></tr></table>
+</body></html>

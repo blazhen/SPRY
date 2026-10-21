@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Your job is booked for {{opportunity.job_date}}</title></head>
+<body style="margin:0;padding:24px 12px;background:#f4f4f2;font-family:Arial,Helvetica,sans-serif;">
+<span style="display:none;max-height:0;overflow:hidden;opacity:0;">Booked for {{opportunity.job_date}}. Five things to do before we arrive.</span>
+<table role="presentation" width="100%" style="max-width:600px;margin:0 auto;background:#ffffff;border-collapse:collapse;"><tr><td style="padding:28px 28px 24px 28px;">
+<p style="margin:0 0 16px 0;font-size:16px;line-height:1.5;color:#1a1a1a;">Hi {{contact.first_name}},</p>
+<p style="margin:0 0 16px 0;font-size:16px;line-height:1.5;color:#1a1a1a;">You are in the diary.</p>
+<table role="presentation" style="margin:0 0 16px 0;font-size:16px;line-height:1.5;color:#1a1a1a;border-collapse:collapse;"><tr><td style="padding:2px 18px 2px 0;color:#555;">Date</td><td style="padding:2px 0;">{{opportunity.job_date}}</td></tr><tr><td style="padding:2px 18px 2px 0;color:#555;">Where</td><td style="padding:2px 0;">{{opportunity.site_address}}</td></tr><tr><td style="padding:2px 18px 2px 0;color:#555;">Crew</td><td style="padding:2px 0;">{{opportunity.crew_assigned}}</td></tr></table>
+<p style="margin:0 0 16px 0;font-size:16px;line-height:1.5;color:#1a1a1a;">We will check in before the job, and ask you to confirm the date still works.</p>
+<p style="margin:0 0 16px 0;font-size:16px;line-height:1.5;color:#1a1a1a;">To help us get in and out cleanly, before we arrive:</p>
+<ul style="margin:0 0 16px 0;font-size:16px;line-height:1.5;color:#1a1a1a;padding-left:22px;"><li style="margin-bottom:6px;">Clear access to {{contact.areas}}. We need room to work and to get the hose through.</li><li style="margin-bottom:6px;">Move anything you would rather not have dust near.</li><li style="margin-bottom:6px;">Make sure we can park close. The rig runs off the truck.</li><li style="margin-bottom:6px;">Pets somewhere else for the day, please.</li><li style="margin-bottom:6px;">Somebody over 18 on site to let us in.</li></ul>
+<p style="margin:0 0 16px 0;font-size:16px;line-height:1.5;color:#1a1a1a;">While we are spraying, the area needs to be empty of people and pets. Afterwards the space needs time before you use it again. That is anywhere from about an hour to a full day depending on which foam the job calls for, and the crew will tell you which applies to yours before they leave.</p>
+<p style="margin:0 0 16px 0;font-size:16px;line-height:1.5;color:#1a1a1a;">Anything you are unsure about, ring {{custom_values.contact_mobile}}.</p>
+<p style="margin:0 0 16px 0;font-size:16px;line-height:1.5;color:#1a1a1a;margin-top:24px;">{{custom_values.business_name}}<br>{{custom_values.business_phone}}</p>
+</td></tr></table>
+</body></html>
