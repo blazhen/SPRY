@@ -8,6 +8,7 @@ export interface ContactJobValue {
   contactId: string
   jobId: string
   isAddOn: boolean
+  isOption: boolean
 }
 
 const NEW_JOB = '__new__'
@@ -28,6 +29,7 @@ export function ContactJobPicker({
   onChange,
   disabled,
   defaultAddOn = false,
+  defaultOption = false,
 }: {
   quoteId: string
   value: ContactJobValue
@@ -35,6 +37,8 @@ export function ContactJobPicker({
   disabled?: boolean
   /** Pre-tick the add-on box when a job with other quotes is first chosen. */
   defaultAddOn?: boolean
+  /** Pre-select "alternative option" when a job with other quotes is first chosen. */
+  defaultOption?: boolean
 }) {
   const { jobs, quotes } = useStore()
   const contact = contacts.find((c) => c.id === value.contactId)
@@ -63,13 +67,14 @@ export function ContactJobPicker({
     setQuery('')
     setNewJob(false)
     // Changing contact clears a job that belongs to someone else.
-    onChange({ contactId: c.id, jobId: job && job.contactId === c.id ? job.id : '', isAddOn: job && job.contactId === c.id ? value.isAddOn : false })
+    const keep = !!job && job.contactId === c.id
+    onChange({ contactId: c.id, jobId: keep ? job.id : '', isAddOn: keep ? value.isAddOn : false, isOption: keep ? value.isOption : false })
   }
 
   function clearContact() {
     setQuery('')
     setNewJob(false)
-    onChange({ contactId: '', jobId: '', isAddOn: false })
+    onChange({ contactId: '', jobId: '', isAddOn: false, isOption: false })
     requestAnimationFrame(() => inputRef.current?.focus())
   }
 
@@ -119,12 +124,13 @@ export function ContactJobPicker({
   function onJobSelect(v: string) {
     if (v === NEW_JOB) {
       setNewJob(true)
-      onChange({ jobId: '', isAddOn: false })
+      onChange({ jobId: '', isAddOn: false, isOption: false })
       return
     }
     setNewJob(false)
     const others = quotes.filter((q) => q.jobId === v && q.id !== quoteId).length
-    onChange({ jobId: v, isAddOn: others > 0 ? defaultAddOn || value.isAddOn : false })
+    const option = others > 0 && (defaultOption || value.isOption)
+    onChange({ jobId: v, isOption: option, isAddOn: others > 0 && !option ? defaultAddOn || value.isAddOn : false })
   }
 
   function makeJob() {
@@ -137,7 +143,7 @@ export function ContactJobPicker({
     setJobAddress('')
     setJobErr('')
     setNewJob(false)
-    onChange({ jobId: j.id, isAddOn: false })
+    onChange({ jobId: j.id, isAddOn: false, isOption: false })
   }
 
   const selectValue = newJob ? NEW_JOB : value.jobId
@@ -330,23 +336,39 @@ export function ContactJobPicker({
                 {otherQuotes === 0 ? 'No other quotes on this job yet.' : `${otherQuotes} other ${otherQuotes === 1 ? 'quote' : 'quotes'} on this job.`}
               </p>
               {otherQuotes > 0 && (
-                <div className="mt-3">
-                  <label className="flex min-h-[44px] cursor-pointer items-start gap-3 py-1" htmlFor={`${uid}-addon`}>
-                    <input
-                      id={`${uid}-addon`}
-                      type="checkbox"
-                      className="check mt-0.5"
-                      checked={value.isAddOn}
-                      disabled={disabled}
-                      aria-describedby={`${uid}-addon-h`}
-                      onChange={(e) => onChange({ isAddOn: e.target.checked })}
-                    />
-                    <span className="font-bold">This is an add-on quote</span>
-                  </label>
-                  <p id={`${uid}-addon-h`} className="hint ml-9 mt-0">
-                    Add-on quotes do not restart the welcome messages.
-                  </p>
-                </div>
+                <fieldset className="mt-3 min-w-0 border-0 p-0" disabled={disabled}>
+                  <legend className="label">How does this quote relate to the other quotes on this job?</legend>
+                  <div className="space-y-1">
+                    {(
+                      [
+                        { id: 'main', label: 'A separate quote', hint: 'Stands on its own.' },
+                        { id: 'option', label: 'An alternative option', hint: 'The customer accepts only one option. Accepting one closes the other sent options on this job.' },
+                        { id: 'addon', label: 'An add-on quote', hint: 'Extra work on a job that is already accepted. Add-on quotes do not restart the welcome messages.' },
+                      ] as const
+                    ).map((o) => {
+                      const current = value.isOption ? 'option' : value.isAddOn ? 'addon' : 'main'
+                      return (
+                        <label key={o.id} className="flex min-h-[44px] cursor-pointer items-start gap-3 py-1" htmlFor={`${uid}-kind-${o.id}`}>
+                          <input
+                            id={`${uid}-kind-${o.id}`}
+                            type="radio"
+                            name={`${uid}-kind`}
+                            className="mt-1.5 h-5 w-5 shrink-0 accent-[rgb(var(--c-navy))]"
+                            checked={current === o.id}
+                            onChange={() => onChange({ isOption: o.id === 'option', isAddOn: o.id === 'addon' })}
+                            aria-describedby={`${uid}-kind-${o.id}-h`}
+                          />
+                          <span>
+                            <span className="block font-bold">{o.label}</span>
+                            <span id={`${uid}-kind-${o.id}-h`} className="hint !mt-0 block">
+                              {o.hint}
+                            </span>
+                          </span>
+                        </label>
+                      )
+                    })}
+                  </div>
+                </fieldset>
               )}
             </div>
           )}

@@ -36,7 +36,8 @@ export default function CustomerView({ id }: { id: string }) {
 }
 
 function Loaded({ quote }: { quote: Quote }) {
-  const { jobs } = useStore()
+  const { jobs, quotes } = useStore()
+  const otherOptions = quote.isOption ? quotes.filter((x) => x.id !== quote.id && x.jobId === quote.jobId && x.isOption && x.status === 'sent').length : 0
   const contact = contacts.find((c) => c.id === quote.contactId)
   const job = jobs.find((j) => j.id === quote.jobId)
   const status = effectiveStatus(quote)
@@ -84,6 +85,11 @@ function Loaded({ quote }: { quote: Quote }) {
       <p className="mt-1 text-[0.9375rem] text-muted">
         {chosen.length > 0 ? `Includes ${chosen.length} chosen upgrade${chosen.length === 1 ? '' : 's'}.` : 'No optional upgrades chosen.'}
       </p>
+      {otherOptions > 0 && (
+        <p className="mt-1 text-[0.9375rem] text-muted">
+          This is one of {otherOptions + 1} options for your job. Accepting this option closes the {otherOptions === 1 ? 'other' : 'others'}.
+        </p>
+      )}
       <p className="num mt-3 font-display text-[2.25rem] leading-none text-navy">
         {fmtMoney(totals.total)} <span className="font-body text-sm font-normal text-muted">inc GST</span>
       </p>
@@ -159,6 +165,11 @@ function Loaded({ quote }: { quote: Quote }) {
                   {fmtDate(quote.acceptedAt)} at {fmtTime(quote.acceptedAt)}
                 </p>
                 <p className="num mt-1 font-bold">Accepted total: {fmtMoney(quote.acceptedTotal ?? totals.total)} inc GST</p>
+                {quote.acceptedVia && quote.acceptedVia !== 'email' && (
+                  <p className="mt-1">
+                    Recorded by our team {quote.acceptedVia === 'phone' ? 'following your phone call' : `from your purchase order${quote.poNumber ? ` ${quote.poNumber}` : ''}`}.
+                  </p>
+                )}
                 {quote.isAddOn && <p className="mt-2 font-bold">This is an add-on to your existing job. Your booking is not affected.</p>}
               </div>
             </div>

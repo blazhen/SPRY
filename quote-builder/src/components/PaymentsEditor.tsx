@@ -1,26 +1,29 @@
 import { useEffect, useId, useRef, useState } from 'react'
 import { AlertCircle, CheckCircle2, Plus, Trash2 } from 'lucide-react'
-import type { PaymentStage } from '../types'
+import type { DueRule, PaymentStage } from '../types'
+import { DUE_OPTIONS } from '../lib/due'
 import { fmtMoney, uid } from '../lib/format'
 import { paymentAmounts, paymentPercentTotal, round2 } from '../lib/calc'
 
-const PRESETS: { label: string; stages: { label: string; percent: number }[] }[] = [
+type PresetStage = { label: string; percent: number; due: DueRule }
+
+const PRESETS: { label: string; stages: PresetStage[] }[] = [
   {
     label: '30 / 70',
     stages: [
-      { label: 'Deposit, due before the job date', percent: 30 },
-      { label: 'Final payment, on completion', percent: 70 },
+      { label: 'Deposit', percent: 30, due: 'before-1bd' },
+      { label: 'Final payment', percent: 70, due: 'on-completion' },
     ],
   },
   {
     label: '40 / 40 / 20',
     stages: [
-      { label: 'Deposit, due before the job date', percent: 40 },
-      { label: 'Progress payment, on completion of spraying', percent: 40 },
-      { label: 'Final payment, after the job report', percent: 20 },
+      { label: 'Deposit', percent: 40, due: 'before-1bd' },
+      { label: 'Progress payment, on completion of spraying', percent: 40, due: 'on-completion' },
+      { label: 'Final payment, before the job report is sent', percent: 20, due: 'custom' },
     ],
   },
-  { label: 'Full payment on completion', stages: [{ label: 'Full payment, on completion', percent: 100 }] },
+  { label: 'Full payment on completion', stages: [{ label: 'Full payment', percent: 100, due: 'on-completion' }] },
 ]
 
 export function PaymentsEditor({
@@ -52,7 +55,7 @@ export function PaymentsEditor({
   const update = (id: string, patch: Partial<PaymentStage>) => onChange(payments.map((p) => (p.id === id ? { ...p, ...patch } : p)))
 
   const add = () => {
-    const p: PaymentStage = { id: uid('pay'), label: '', percent: Math.max(0, round2(100 - pct)) }
+    const p: PaymentStage = { id: uid('pay'), label: '', percent: Math.max(0, round2(100 - pct)), due: 'on-completion' }
     onChange([...payments, p])
     setAnnounce('Payment stage added')
     setFocusReq(`${p.id}-label`)
@@ -78,7 +81,7 @@ export function PaymentsEditor({
     setAnnounce(`Split evenly across ${n} ${n === 1 ? 'stage' : 'stages'}`)
   }
 
-  const applyPreset = (stages: { label: string; percent: number }[]) => {
+  const applyPreset = (stages: PresetStage[]) => {
     onChange(stages.map((s) => ({ id: uid('pay'), ...s })))
     setAnnounce('Payment schedule replaced')
   }
@@ -145,6 +148,17 @@ export function PaymentsEditor({
                   <button type="button" className="btn btn-ghost btn-icon text-hot-ink hover:bg-hot-wash" onClick={() => remove(index)} disabled={disabled} aria-label={`Remove ${label}`}>
                     <Trash2 size={18} aria-hidden="true" />
                   </button>
+                </div>
+                <div className="col-span-2 sm:col-span-4">
+                  <label className="label" htmlFor={fid('due')}>Due</label>
+                  <select id={fid('due')} className="field" value={p.due ?? 'custom'} onChange={(e) => update(p.id, { due: e.target.value as DueRule })} disabled={disabled}>
+                    {DUE_OPTIONS.map((o) => (
+                      <option key={o.id} value={o.id}>{o.label}</option>
+                    ))}
+                  </select>
+                  {p.due === 'before-1bd' || p.due === 'before-7d' ? (
+                    <p className="hint">Open-cell foam: 1 business day before the job. Special-order foam: 7 days before.</p>
+                  ) : null}
                 </div>
               </div>
             </li>

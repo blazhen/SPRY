@@ -1,0 +1,470 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quote Hub: layout mockup v2 (fake data)</title>
+<style>
+:root{--ground:#f3f6fb;--surface:#fff;--raise:#f8fafd;--ink:#0b1b3a;--muted:#4b5873;--line:#d6dfec;--navy:#002396;--navy-wash:#e7ecfa;--green:#8dc63f;--green-ink:#2f5d0e;--green-wash:#eef6e2;--amber:#85540c;--amber-wash:#fbf1dd;--hot:#a33118;--hot-wash:#fbebe6}
+*{box-sizing:border-box}
+body{margin:0;font:15px/1.5 Satoshi,"Segoe UI",system-ui,sans-serif;color:var(--ink);background:#dfe5f0}
+button{font:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--navy);outline-offset:2px}
+.mock{display:flex;gap:16px;align-items:center;flex-wrap:wrap;background:#0b1b3a;color:#dfe6f6;padding:8px 16px;font-size:13px}
+.mock b{color:#fff}.mock label{display:flex;gap:6px;align-items:center}
+.mock select,.mock input{width:auto;padding:3px 6px;background:#fff}
+.frame{container-type:inline-size;margin:0 auto;background:var(--ground);width:100%;min-height:calc(100vh - 44px)}
+.frame.m{width:390px;max-width:100%;border:10px solid #0b1b3a;border-radius:30px;overflow:hidden;margin:14px auto;min-height:760px}
+.app{display:grid;grid-template-columns:200px 1fr;min-height:inherit}
+.side{background:#0b1b3a;color:#dfe6f6;padding:20px 12px}
+.side b{display:block;font-size:17px;padding:0 10px 18px;color:#fff}
+.side button{display:block;width:100%;text-align:left;background:none;border:0;padding:9px 10px;border-radius:6px;color:#dfe6f6;margin-bottom:2px}
+.side button.on{background:#002396;color:#fff}
+.mtop{display:none;background:#0b1b3a;color:#fff;padding:10px 14px;font-weight:700}
+.main{padding:20px 28px;min-width:0}
+h1{font-size:22px;margin:0}
+h2{font-size:18px;margin:0 0 4px}
+h3{margin:10px 0 0;font-size:17px}
+.hrow{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;gap:8px}
+.help{width:30px;height:30px;border-radius:50%;border:1px solid #707e9a;background:#fff;color:var(--navy);font-weight:700}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin-bottom:18px;flex-wrap:wrap}
+.tab{background:none;border:0;padding:9px 14px;color:var(--muted);border-bottom:3px solid transparent;font-weight:600}
+.tab[aria-current=page]{color:var(--navy);border-color:var(--navy)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px;margin-bottom:14px;min-width:0}
+.card2{border:1px solid var(--line);border-radius:8px;padding:10px;margin-bottom:10px;background:var(--raise)}
+.lbl{display:block;font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin:0 0 4px}
+.row{display:flex;justify-content:space-between;gap:10px;padding:9px 0;border-top:1px solid var(--line);align-items:center;flex-wrap:wrap}
+.row:first-of-type{border-top:0}
+.pill{font-size:12px;padding:2px 9px;border-radius:99px;font-weight:600;white-space:nowrap;display:inline-block}
+.draft{background:var(--navy-wash);color:var(--navy)}.sent{background:var(--amber-wash);color:var(--amber)}
+.acc{background:var(--green-wash);color:var(--green-ink)}.old{background:#eceff5;color:var(--muted)}
+.bad{background:var(--hot-wash);color:var(--hot)}
+.btn{background:var(--navy);color:#fff;border:0;border-radius:6px;padding:8px 14px;font-weight:600}
+.btn.ghost{background:var(--navy-wash);color:var(--navy)}
+.btn.warn{background:var(--hot);color:#fff}
+.btn[disabled]{opacity:.55;cursor:not-allowed}
+.lnk{background:none;border:0;padding:0;color:var(--navy);font-weight:600;text-decoration:underline;cursor:pointer}
+.x{border:1px solid #707e9a;background:#fff;border-radius:6px;width:34px;color:var(--ink)}
+.muted{color:var(--muted)}.sm{font-size:13px}
+.acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.jobrow{display:flex;justify-content:space-between;gap:10px;width:100%;text-align:left;padding:10px 12px;border:1px solid var(--line);border-radius:8px;margin-bottom:8px;background:var(--surface);color:var(--ink);flex-wrap:wrap}
+.jobrow:hover{border-color:var(--navy)}
+.jobrow .t{display:block;font-weight:700}
+.filters{display:grid;grid-template-columns:2fr 1fr 1fr;gap:10px;margin-bottom:12px}
+.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.trio{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;align-items:end}
+.e3{display:grid;grid-template-columns:260px minmax(0,1fr) minmax(0,1fr);gap:16px;align-items:start}
+.e3.shut{grid-template-columns:auto minmax(0,1fr) minmax(0,1fr)}
+.det .body dt{font-size:12px;color:var(--muted);text-transform:uppercase;margin-top:8px}.det .body dd{margin:0}
+input,select,textarea{font:inherit;width:100%;border:1px solid #707e9a;border-radius:6px;padding:7px 9px;background:var(--raise);color:var(--ink)}
+input[type=checkbox],input[type=radio]{width:auto}
+.f{margin-bottom:12px}
+.sheet{background:#fff;border:1px solid var(--line);border-radius:6px;padding:26px;box-shadow:0 6px 24px rgba(11,27,58,.08);min-width:0}
+.logo{font-weight:800;font-size:20px;color:var(--navy)}.logo span{color:var(--green)}
+.notes{background:var(--amber-wash);border-left:4px solid #d9a441;padding:10px 12px;margin:12px 0;border-radius:4px;white-space:pre-wrap}
+.tw{overflow-x:auto}
+.sheet table{width:100%;border-collapse:collapse;margin:8px 0}
+.sheet td,.sheet th{padding:7px 4px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+.sheet td.r,.sheet th.r{text-align:right;font-variant-numeric:tabular-nums}
+.upg{color:var(--green-ink);background:var(--green-wash);font-size:13px;padding:3px 8px;border-radius:4px;margin-top:4px}
+.upg label{white-space:nowrap;font-weight:600}
+.terms{line-height:1.35;color:var(--muted);margin-top:14px;border-top:1px solid var(--line);padding-top:8px}
+.tot{text-align:right;font-weight:800;font-size:18px;color:var(--navy)}
+.tag{display:inline-block;background:var(--raise);border:1px solid var(--line);border-radius:6px;padding:1px 8px;font-size:12px;margin-left:6px;font-weight:600}
+.chip{display:inline-block;background:var(--amber-wash);color:var(--amber);border-radius:6px;padding:1px 8px;font-size:12px}
+.banner{background:var(--amber-wash);color:var(--amber);padding:8px 12px;border-radius:8px;margin-bottom:14px;font-size:13px}
+.okb{background:var(--green-wash);color:var(--green-ink);padding:10px 12px;border-radius:8px;margin-bottom:14px}
+.badb{background:var(--hot-wash);color:var(--hot);padding:10px 12px;border-radius:8px;margin-bottom:14px}
+.grp{margin-top:12px}.grp h4{margin:0 0 4px;font-size:14px}
+.cust{max-width:760px;margin:0 auto;padding:18px}
+.cbar{background:#fff;border:1px dashed #707e9a;border-radius:8px;padding:8px 12px;margin-bottom:14px;font-size:13px;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.scroll{max-height:150px;overflow:auto;border:1px solid var(--line);border-radius:6px;background:#fff;margin-top:6px}
+.scroll button{display:flex;justify-content:space-between;width:100%;text-align:left;background:none;border:0;border-bottom:1px solid var(--line);padding:6px 9px;color:var(--ink)}
+#modal{position:fixed;inset:0;background:rgba(11,27,58,.5);display:flex;align-items:center;justify-content:center;z-index:50;padding:12px}
+#modal[hidden]{display:none}
+.mbox{background:#fff;border-radius:10px;padding:18px;width:min(460px,100%);max-height:90vh;overflow:auto}
+.mbox h2{margin-bottom:10px}
+#toast{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);background:#0b1b3a;color:#fff;padding:9px 16px;border-radius:8px;z-index:60;max-width:92vw}
+#toast:empty{display:none}
+@container (max-width:900px){.app{grid-template-columns:1fr}.side{display:none}.mtop{display:block}.main{padding:14px 12px}.filters,.fgrid{grid-template-columns:1fr}}
+@container (max-width:1150px){.e3,.e3.shut{grid-template-columns:1fr}}
+@container (max-width:500px){.trio{grid-template-columns:1fr 1fr}.sheet{padding:14px}}
+@media print{.mock,.side,.mtop,.noprint,.hrow,.tabs{display:none!important}body{background:#fff}.frame{border:0!important}}
+</style>
+</head>
+<body>
+<header class="mock" aria-label="Mockup controls">
+  <b>Version 2 mockup</b>
+  <label for="word">Word for jobs
+    <select id="word" data-in="word"><option>Jobs</option><option>Projects</option><option>Deals</option></select></label>
+  <label for="mob"><input type="checkbox" id="mob" data-in="mobile"> Mobile (390 px)</label>
+  <span>Fake data. Nothing is saved or sent.</span>
+</header>
+<div id="frame" class="frame"></div>
+<div id="modal" hidden></div>
+<div id="toast" role="status" aria-live="polite"></div>
+<script>
+'use strict';
+const $=(s,r=document)=>r.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const money=n=>'$'+Number(n).toLocaleString('en-AU',{minimumFractionDigits:2,maximumFractionDigits:2});
+const WORDS={Jobs:{s:'Job',p:'Jobs'},Projects:{s:'Project',p:'Projects'},Deals:{s:'Deal',p:'Deals'}};
+const S={word:'Jobs',mobile:false,tab:'To do',view:'tab',jobId:null,quoteId:null,contactId:null,q:'',fStage:'',fOwner:'',cq:'',qStatus:'',
+  detailsOpen:true,custTick:false,forceExpired:false,plq:'',newTerms:false,sentBanner:false,editTerm:null,newTermOpen:false};
+const T=h=>{const w=WORDS[S.word];return h.replace(/%Js/g,w.p).replace(/%js/g,w.p.toLowerCase()).replace(/%J/g,w.s).replace(/%j/g,w.s.toLowerCase())};
+
+/* ---------- fake data ---------- */
+const BASE=new Date(2026,9,30);
+const CON=[
+ {id:'c1',name:'Travis Gillespie',co:'Quadricon',email:'travis@example.com',phone:'0400 000 001'},
+ {id:'c2',name:'Lachlan Hart',co:'Forsyth Projects',email:'lachlan@example.com',phone:'0400 000 002'},
+ {id:'c3',name:'Nick Iverson',co:'MCR Constructions',email:'nick@example.com',phone:'0400 000 003'},
+ {id:'c4',name:'Dana Whitfield',co:'Whitfield Homes',email:'dana@example.com',phone:'0400 000 004'},
+ {id:'c5',name:'Priya Shah',co:'Shah Property Group',email:'priya@example.com',phone:'0400 000 005'},
+ {id:'c6',name:'Tom Carter',co:'Private',email:'tom@example.com',phone:'0400 000 006'}];
+const COS=[{id:'k1',name:'Forsyth Projects',contact:'c2'},{id:'k2',name:'MCR Constructions',contact:'c3'}];
+const STAGES=['New lead','Site visit','Quoting','Quote sent','Won','Lost'];
+const OWNERS=['Glenn','Office'];
+const PRICES=[
+ {n:'Wall insulation, open cell',u:'m²',p:38,up:{n:'Upgrade to R4.0',p:12}},
+ {n:'Roof insulation, closed cell',u:'m²',p:52,up:{n:'Upgrade to R6.0',p:14}},
+ {n:'Sub-floor insulation',u:'m²',p:44,up:null},
+ {n:'Ceiling cavity top-up',u:'m²',p:31,up:null},
+ {n:'Removal of old batts',u:'m²',p:9,up:null},
+ {n:'Site setup and masking',u:'item',p:450,up:null}];
+const RULES=['On acceptance','7 days before start','On starting the job','When materials arrive on site','On completion','7 days after invoice','Custom date'];
+const PRESETS={dep:{n:'20% deposit, balance on completion',r:[['Deposit',20,'On acceptance'],['Balance',80,'On completion']]},
+ three:{n:'20% deposit, 50% progress, balance on completion',r:[['Deposit',20,'On acceptance'],['Progress payment',50,'When materials arrive on site'],['Balance',30,'On completion']]},
+ full:{n:'Full payment on completion',r:[['Full payment',100,'On completion']]},custom:{n:'Custom (edit the rows)',r:null}};
+const CL=['1. Acceptance. This quote becomes a contract when the customer accepts it in writing, online or by purchase order.',
+'2. Price. Prices are in Australian dollars and exclude GST unless stated. Prices are fixed for the validity period shown.',
+'3. Scope. Work is limited to the areas and products listed. Anything else is a variation and is quoted and agreed before it starts.',
+'4. Access. The customer provides safe, clear access to all areas, power and water. Delays caused by poor access may be charged.',
+'5. Preparation. Areas must be free of stored goods. We mask and protect surfaces, but cannot guarantee against overspray on unmasked items.',
+'6. Weather. Exterior work depends on suitable conditions. We will rebook at no cost if weather stops the job.',
+'7. Payment. Invoices are payable by the due rule on each payment row. Late payments may attract interest at a reasonable commercial rate.',
+'8. Ownership. Materials remain the property of SprayIT Solutions until paid for in full.',
+'9. Warranty. Workmanship is warranted for the period stated in the product documentation. Warranty does not cover damage by others.',
+'10. Cancellation. If the customer cancels after materials are ordered, the cost of those materials and work done is payable.',
+'11. Variations. A written variation is needed for changes to scope, price or timing. Verbal changes are not binding.',
+'12. Disputes. Both parties will try to resolve a dispute in good faith before taking any formal step.',
+'13. Privacy. Customer details are used only to deliver and support this work.',
+'14. Governing law. This agreement is governed by the law of Victoria, Australia.'];
+const TERMS={'SprayIT standard':CL.join(' ')+' [Placeholder text for the layout only. Long on purpose, to show the auto-shrink.]',
+ 'InjectaCore':'InjectaCore terms of business. Different conditions apply to injected core installations, including drilling of wall cavities and making good. [Placeholder text for the layout only.]'};
+const L=(i,qty)=>{const p=PRICES[i];return {n:p.n,u:p.u,qty,p:p.p,up:p.up?{...p.up}:null,on:false}};
+const dpay=()=>PRESETS.dep.r.map(r=>({label:r[0],pct:r[1],rule:r[2]}));
+let uid=20;
+const jobs=[
+ {id:'j1',name:'Bupa aged care installation',addr:'12 Example St, Dandenong VIC',src:'Referral',value:18400,owner:'Glenn',stage:'Quoting',biz:'Quadricon Pty Ltd',days:12,
+  main:'c1',extra:['c5'],companies:['k1','k2'],notes:'Roof and walls only. Access via the north gate. Works must finish before the 14th.',
+  tasks:['Call Travis about access (due tomorrow)','Send photos of roof to office'],appts:['Site visit done 18 Oct','Re-measure Tue 3 Nov, 9:00']},
+ {id:'j2',name:'Whitfield new build, Lot 14',addr:'Lot 14 Sample Rd, Pakenham VIC',src:'Website',value:9250,owner:'Glenn',stage:'Quoting',biz:'Whitfield Homes',days:7,
+  main:'c4',extra:[],companies:[],notes:'',tasks:['Confirm wall frame stage'],appts:['Site visit done 22 Oct']},
+ {id:'j3',name:'Carter shed insulation',addr:'5 Placeholder Ct, Cranbourne VIC',src:'Google',value:4100,owner:'Glenn',stage:'Quoting',biz:'',days:3,
+  main:'c6',extra:[],companies:[],notes:'Colourbond shed, roof only.',tasks:[],appts:[]},
+ {id:'j4',name:'Richmond office fitout',addr:'88 Sample Lane, Richmond VIC',src:'Referral',value:12800,owner:'Office',stage:'Quoting',biz:'MCR Constructions',days:5,
+  main:'c3',extra:[],companies:[],notes:'',tasks:[],appts:[]},
+ {id:'j5',name:'Harper extension',addr:'3 Test Ave, Berwick VIC',src:'Facebook',value:7600,owner:'Glenn',stage:'Quote sent',biz:'Shah Property Group',days:4,
+  main:'c5',extra:[],companies:[],notes:'',tasks:['Follow up in 3 days'],appts:[]},
+ {id:'j6',name:'Ng warehouse',addr:'200 Fake Rd, Dandenong South VIC',src:'Repeat client',value:31200,owner:'Glenn',stage:'Won',biz:'Forsyth Projects',days:20,
+  main:'c2',extra:[],companies:[],notes:'',tasks:[],appts:['Install starts 9 Nov']}];
+const mkq=(id,jobId,pid,rev,st,lines,extra)=>Object.assign({id,jobId,pid,rev,st,title:jobs.find(j=>j.id===jobId).name,notes:jobs.find(j=>j.id===jobId).notes,
+  lines,pay:dpay(),preset:'dep',terms:'SprayIT standard',termsCustom:'',valid:60,sentAgo:0},extra||{});
+const L1=()=>[{...L(0,120)},{...L(1,80)},L(5,1)];
+const quotes=[
+ mkq('q1','j1','c1',1,'Superseded',L1(),{sentAgo:20}),
+ mkq('q2','j1','c1',2,'Draft',L1()),
+ mkq('q3','j1','k1',1,'Draft',L1()),
+ mkq('q4','j1','k2',1,'Draft',L1()),
+ mkq('q5','j3','c6',1,'Expired',[L(1,60)],{sentAgo:70}),
+ mkq('q6','j5','c5',1,'Sent',[L(0,90),L(4,90)],{sentAgo:4}),
+ mkq('q7','j6','c2',1,'Accepted',[L(1,300)],{sentAgo:25})];
+
+/* ---------- helpers ---------- */
+const job=id=>jobs.find(j=>j.id===id);
+const C=id=>CON.find(c=>c.id===id);
+const isCo=id=>id[0]==='k';
+const P=id=>isCo(id)?COS.find(c=>c.id===id):C(id);
+const pname=id=>isCo(id)?`${P(id).name} (attn ${C(P(id).contact).name})`:`${P(id).name}, ${P(id).co}`;
+const pshort=id=>P(id).name;
+const pemail=id=>isCo(id)?C(P(id).contact).email:P(id).email;
+const parties=j=>[j.main,...j.extra,...j.companies];
+const role=(j,id)=>id===j.main?'Main contact':isCo(id)?'Company':'Extra contact';
+const qs=jid=>quotes.filter(q=>q.jobId===jid);
+const qt=q=>q.lines.reduce((a,l)=>a+l.qty*l.p+(l.up&&l.on?l.qty*l.up.p:0),0);
+const curQ=()=>quotes.find(q=>q.id===S.quoteId);
+const cls=s=>({Draft:'draft',Sent:'sent',Accepted:'acc',Declined:'bad',Expired:'bad',Superseded:'old',Lost:'old'}[s]||'old');
+const pill=q=>`<span class="pill ${cls(q.st)}">${q.st}</span>`+(q.reason?`<br><span class="muted sm">${esc(q.reason)}</span>`:'');
+const queue=()=>jobs.filter(j=>j.stage==='Quoting'&&j.owner==='Glenn').sort((a,b)=>b.days-a.days);
+const fmtD=d=>d.toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'});
+const validUntil=q=>{const d=new Date(BASE);d.setDate(d.getDate()-q.sentAgo+(+q.valid||0));return d};
+const termsText=q=>q.terms==='custom'?q.termsCustom:(TERMS[q.terms]||'');
+const termFs=n=>n>2400?5:n>1500?5.5:n>900?6.5:n>400?7.5:8.5;
+const nameOpts=(ids,sel)=>ids.map(id=>`<option value="${id}" ${id===sel?'selected':''}>${esc(pname(id))}</option>`).join('');
+function newQuote(jid,pid,from){const j=job(jid);const rev=Math.max(0,...qs(jid).filter(x=>x.pid===pid).map(x=>x.rev))+1;
+ const q={id:'q'+(++uid),jobId:jid,pid,rev,st:'Draft',title:from?from.title:j.name,notes:from?from.notes:j.notes,
+  lines:from?from.lines.map(l=>({...l,on:false,up:l.up?{...l.up}:null})):[],pay:from?from.pay.map(r=>({...r})):dpay(),preset:from?from.preset:'dep',
+  terms:from?from.terms:'SprayIT standard',termsCustom:from?from.termsCustom:'',valid:from?from.valid:60,sentAgo:0};
+ quotes.push(q);return q}
+function openQuote(id){const q=quotes.find(x=>x.id===id);Object.assign(S,{quoteId:id,jobId:q.jobId,view:'editor',sentBanner:false,plq:'',newTerms:false});render('#qtitle')}
+function openJobQuote(jid){const j=job(jid);let q=qs(jid).find(x=>x.st==='Draft');if(!q){q=newQuote(jid,j.main);toast('New quote saved as a draft (no lines yet).')}openQuote(q.id)}
+
+/* ---------- ui helpers ---------- */
+let toastT=null;
+function toast(m){const t=$('#toast');t.textContent=T(m);clearTimeout(toastT);toastT=setTimeout(()=>{t.textContent=''},3200)}
+let MA=[],opener=null;
+function modal(title,body,actions){MA=actions;opener=document.activeElement;const m=$('#modal');
+ m.innerHTML=T(`<div class="mbox" role="dialog" aria-modal="true" aria-labelledby="mt"><h2 id="mt">${title}</h2><div>${body}</div><div class="acts">${actions.map((a,i)=>`<button class="btn ${a.cls||'ghost'}" data-m="${i}">${a.label}</button>`).join('')}</div></div>`);
+ m.hidden=false;const f=m.querySelector('input,select,textarea,button');if(f)f.focus()}
+function closeModal(){const m=$('#modal');m.hidden=true;m.innerHTML='';MA=[];if(opener&&document.contains(opener))opener.focus()}
+function go(p,focus){Object.assign(S,p);render(focus);window.scrollTo(0,0)}
+
+/* ---------- views ---------- */
+function render(focus){const f=$('#frame');f.className='frame'+(S.mobile?' m':'');
+ let h;
+ if(S.view==='customer')h=customerPage();else if(S.view==='print')h=printPage();else h=shell(content());
+ f.innerHTML=T(h);
+ if(focus){const e=$(focus);if(e)e.focus()}}
+const TABS=['To do','Jobs','Quotes','Contacts','Templates','Terms'];
+function shell(inner){
+ return `<div class="mtop">SprayIT (platform menu, mock)</div><div class="app"><nav class="side" aria-label="Platform menu (mock)"><b>SprayIT</b>
+ ${['Dashboard','%Js (board)','Conversations'].map(n=>`<button data-act="menu">${n}</button>`).join('')}<button class="on" aria-current="page" data-act="home">Quote Hub</button><button data-act="menu">Tutorials</button></nav>
+ <main class="main"><div class="banner">Layout mockup only. All names, prices and addresses are made up. Nothing is saved or sent.</div>
+ <div class="hrow"><h1>Quote Hub</h1><button class="help" data-act="help" aria-label="What is a placeholder on this screen">?</button></div>
+ <nav class="tabs" aria-label="Quote Hub sections">${TABS.map(n=>`<button class="tab" data-act="tab" data-id="${n}" ${n===S.tab?'aria-current="page"':''}>${n==='Jobs'?'%Js':n}${n==='To do'?` (${queue().length})`:''}</button>`).join('')}</nav>
+ ${inner}</main></div>`}
+function content(){
+ if(S.view==='job')return jobScreen(job(S.jobId));
+ if(S.view==='editor')return editor();
+ if(S.view==='contact')return contactScreen(C(S.contactId));
+ return ({'To do':todoView,Jobs:jobsView,Quotes:quotesView,Contacts:contactsView,Templates:templatesView,Terms:termsView}[S.tab])()}
+
+function todoView(){const q=queue();
+ return `<div class="card"><div class="hrow"><div><h2>Waiting for a quote</h2><span class="muted sm">%Js in the Quoting stage, assigned to Glenn, oldest first.</span></div>
+ <button class="btn" data-act="openNext" ${q.length?'':'disabled'}>Open next</button></div>
+ ${q.length?q.map((j,i)=>`<div class="row"><span><b>${i+1}. ${esc(j.name)}</b><br><span class="muted sm">${esc(j.addr)} | ${esc(pshort(j.main))}</span></span>
+  <span><span class="pill ${j.days>=10?'sent':'draft'}">${j.days} days waiting</span> <button class="btn ghost" data-act="openJob" data-id="${j.id}">Open %j</button></span></div>`).join(''):'<p class="muted">Nothing waiting. Well done.</p>'}</div>
+ <p class="muted sm">After a quote is sent, the editor offers "Next quote" to jump straight to the next one in this list.</p>`}
+
+function jobMatches(j){const s=S.q.trim().toLowerCase();
+ if(S.fStage&&j.stage!==S.fStage)return false;if(S.fOwner&&j.owner!==S.fOwner)return false;if(!s)return true;
+ return [j.name,j.addr,j.biz,j.src,...parties(j).map(pname)].some(x=>x.toLowerCase().includes(s))}
+function jobList(){const s=S.q.trim().toLowerCase();const r=jobs.filter(jobMatches);
+ if(!r.length)return '<p class="muted">No %js match. Try a street, suburb or name.</p>';
+ return r.map(j=>`<button class="jobrow" data-act="openJob" data-id="${j.id}"><span><span class="t">${esc(j.name)}</span><span class="muted sm">${esc(j.addr)}${s&&j.addr.toLowerCase().includes(s)?' <span class="chip">address match</span>':''}</span></span>
+  <span class="sm"><span class="pill draft">${j.stage}</span> ${j.owner} | ${money(j.value)}</span></button>`).join('')}
+function jobsView(){
+ return `<div class="filters"><div><label class="lbl" for="jq">Search %js (name, address, contact)</label><input id="jq" type="search" data-in="jq" value="${esc(S.q)}" placeholder="e.g. Dandenong or Travis"></div>
+ <div><label class="lbl" for="js">Stage</label><select id="js" data-in="fstage"><option value="">All stages</option>${STAGES.map(s=>`<option ${S.fStage===s?'selected':''}>${s}</option>`).join('')}</select></div>
+ <div><label class="lbl" for="jo">Owner</label><select id="jo" data-in="fowner"><option value="">All owners</option>${OWNERS.map(s=>`<option ${S.fOwner===s?'selected':''}>${s}</option>`).join('')}</select></div></div>
+ <div id="joblist">${jobList()}</div>`}
+
+function fld(label,id,key,j,type){return `<div class="f"><label class="lbl" for="${id}">${label}</label><input id="${id}" ${type||''} data-in="jf" data-k="${key}" value="${esc(j[key])}"></div>`}
+function jobScreen(j){const ps=parties(j);const qq=qs(j.id);const acc=qq.find(q=>q.st==='Accepted');
+ const others=qq.filter(q=>OPEN_ST(q)&&(!acc||q.pid!==acc.pid));const nco=new Set(qq.map(q=>q.pid)).size;
+ return `<p><button class="lnk" data-act="backTab">← Back to %js</button></p>
+ <div class="card"><div class="hrow"><div><h2>${esc(j.name)}</h2><span class="muted sm">${esc(j.addr)} | Source: ${esc(j.src)}</span></div>
+ <div class="acts" style="margin:0"><button class="btn" data-act="newQuoteMain">+ New quote</button><button class="btn ghost" data-act="dupOther">Duplicate for another company</button>
+ <button class="btn ghost" data-act="closeOthers" ${acc&&others.length?'':'disabled'}>Close other options</button></div></div>
+ ${acc?'':'<span class="muted sm">"Close other options" turns on once one company accepts.</span>'}
+ <div class="fgrid" style="margin-top:12px">${fld('%J name','jn','name',j)}${fld('Address','ja','addr',j)}${fld('Source','jsr','src',j)}${fld('Value (AUD)','jv','value',j,'inputmode="numeric"')}
+ <div class="f"><label class="lbl" for="jow">Owner</label><select id="jow" data-in="jf" data-k="owner">${OWNERS.map(o=>`<option ${j.owner===o?'selected':''}>${o}</option>`).join('')}</select></div>
+ <div class="f"><label class="lbl" for="jst">Stage</label><select id="jst" data-in="jf" data-k="stage">${STAGES.map(o=>`<option ${j.stage===o?'selected':''}>${o}</option>`).join('')}</select></div>
+ ${fld('Business name','jb','biz',j)}</div></div>
+ <div class="card"><h2>Contacts and companies</h2><span class="muted sm">${j.companies.length} of 10 companies on this %j. Each company gets its own copy of the quote.</span>
+ ${ps.map(id=>`<div class="row"><span><button class="lnk" data-act="openContact" data-id="${isCo(id)?P(id).contact:id}">${esc(pshort(id))}</button> <span class="tag">${role(j,id)}</span>${isCo(id)?`<br><span class="muted sm">Attn ${esc(C(P(id).contact).name)}</span>`:`<br><span class="muted sm">${esc(P(id).co)}</span>`}</span><span class="muted sm">${esc(pemail(id))}</span></div>`).join('')}
+ <div class="acts"><button class="btn ghost" data-act="addContact">Add contact</button><button class="btn ghost" data-act="addCompany" ${j.companies.length>=10?'disabled':''}>Add company</button></div></div>
+ <div class="card"><label class="lbl" for="jnotes">%J notes</label><textarea id="jnotes" rows="3" data-in="jf" data-k="notes">${esc(j.notes)}</textarea><span class="muted sm">New quotes start with these notes.</span></div>
+ <div class="card"><h2>Quotes</h2><span class="muted sm">${nco} of 10 recipients quoted. Grouped by contact or company.</span>
+ ${ps.map(id=>{const g=qq.filter(q=>q.pid===id).sort((a,b)=>b.rev-a.rev);
+  return `<div class="grp"><h4>${esc(pname(id))}</h4>${g.length?g.map(q=>`<div class="row"><span>${esc(q.title)}<span class="tag">Rev ${q.rev}</span></span><span>${pill(q)} ${money(qt(q))} <button class="btn ghost" data-act="openQuote" data-id="${q.id}">Open</button></span></div>`).join(''):`<div class="row"><span class="muted">No quote yet</span><button class="btn ghost" data-act="startQuote" data-id="${id}">Start quote</button></div>`}</div>`}).join('')}
+ <p class="muted sm">Duplicating a quote makes the next revision (Rev 2, Rev 3) and keeps the old one in the list.</p></div>`}
+const OPEN_ST=q=>q.st==='Draft'||q.st==='Sent';
+
+function quoteRow(q){const j=job(q.jobId);return `<div class="row"><span><button class="lnk" data-act="openQuote" data-id="${q.id}">${esc(q.title)}</button><span class="tag">Rev ${q.rev}</span><br><span class="muted sm">${esc(pname(q.pid))}</span></span><span>${pill(q)}<br>${money(qt(q))}</span></div>`}
+function quoteList(){const r=quotes.filter(q=>!S.qStatus||q.st===S.qStatus);return r.length?r.map(quoteRow).join(''):'<p class="muted">No quotes with that status.</p>'}
+function quotesView(){return `<div class="card"><div class="f"><label class="lbl" for="qf">Status</label><select id="qf" data-in="qstatus"><option value="">All</option>${['Draft','Sent','Accepted','Declined','Expired','Superseded','Lost'].map(s=>`<option ${S.qStatus===s?'selected':''}>${s}</option>`).join('')}</select></div><div id="qlist">${quoteList()}</div></div>`}
+
+function contactList(){const s=S.cq.trim().toLowerCase();return CON.filter(c=>!s||(c.name+c.co+c.email).toLowerCase().includes(s)).map(c=>`<div class="row"><span><button class="lnk" data-act="openContact" data-id="${c.id}">${esc(c.name)}</button> <span class="muted">${esc(c.co)}</span><br><span class="muted sm">${esc(c.email)}</span></span>
+ <span class="sm">${jobs.filter(j=>parties(j).some(p=>(isCo(p)?P(p).contact:p)===c.id)).map(j=>`<button class="lnk" data-act="openJob" data-id="${j.id}">${esc(j.name)}</button>`).join('<br>')}</span></div>`).join('')}
+function contactsView(){return `<div class="card"><div class="f"><label class="lbl" for="cqi">Search contacts</label><input id="cqi" type="search" data-in="cq" value="${esc(S.cq)}"></div><div id="clist">${contactList()}</div></div>`}
+function contactScreen(c){const js=jobs.filter(j=>parties(j).some(p=>(isCo(p)?P(p).contact:p)===c.id));
+ return `<p><button class="lnk" data-act="backTab">← Back</button></p><div class="card"><h2>${esc(c.name)}</h2><span class="muted">${esc(c.co)} | ${esc(c.email)} | ${esc(c.phone)}</span>
+ <div class="lbl" style="margin-top:14px">%Js</div>${js.map(j=>`<div class="row"><button class="lnk" data-act="openJob" data-id="${j.id}">${esc(j.name)}</button><span class="pill draft">${j.stage}</span></div>`).join('')||'<p class="muted">None</p>'}
+ <div class="lbl" style="margin-top:14px">Quotes</div>${quotes.filter(q=>q.pid===c.id||(isCo(q.pid)&&P(q.pid).contact===c.id)).map(quoteRow).join('')||'<p class="muted">None</p>'}</div>`}
+function templatesView(){return `<div class="card"><p class="muted">Saved quote structures with no customer and no prices.</p>${['Full house, walls and roof','Shed or garage, roof only','Commercial fitout, per area'].map(n=>`<div class="row"><span>${n}</span><button class="btn ghost" data-act="useTemplate">Use for a new quote</button></div>`).join('')}</div>`}
+
+function termsView(){const keys=Object.keys(TERMS);
+ return `<div class="card"><div class="okb sm" style="background:var(--navy-wash);color:var(--navy)">You can change the words only. Size, position and colour are fixed, so every quote looks the same. Long terms shrink to fit by themselves.</div>
+ ${keys.map(k=>`<div class="row"><span><b>${esc(k)}</b><br><span class="muted sm">${esc(TERMS[k].slice(0,100))}... (${TERMS[k].length} characters)</span></span><button class="btn ghost" data-act="editTerm" data-id="${esc(k)}">Edit text</button></div>`).join('')}
+ ${S.editTerm!==null&&TERMS[S.editTerm]!==undefined?`<div class="card2"><label class="lbl" for="tt">Text of "${esc(S.editTerm)}"</label><textarea id="tt" rows="8" data-in="termtext">${esc(TERMS[S.editTerm])}</textarea>
+  <div class="lbl" style="margin-top:8px">How it prints</div><div class="terms" id="tprev" style="font-size:${termFs(TERMS[S.editTerm].length)}px">${esc(TERMS[S.editTerm])}</div><div class="acts"><button class="btn" data-act="saveTerm">Save (mock)</button><button class="btn ghost" data-act="cancelTerm">Cancel</button></div></div>`:''}
+ ${S.newTermOpen?`<div class="card2"><div class="f"><label class="lbl" for="nn">Name</label><input id="nn" placeholder="e.g. Commercial terms"></div><div class="f"><label class="lbl" for="nt">Text</label><textarea id="nt" rows="6"></textarea></div><div class="acts"><button class="btn" data-act="saveNewTerm">Save new terms</button><button class="btn ghost" data-act="cancelNew">Cancel</button></div></div>`:`<div class="acts"><button class="btn" data-act="newTerm">+ New terms</button></div>`}</div>`}
+
+/* ---------- quote sheet (preview + customer) ---------- */
+function sheet(q,o){o=o||{};const j=job(q.jobId);const exp=q.st==='Expired'||o.forceExpired;const tot=qt(q);const tx=termsText(q);
+ const vtxt=q.st==='Draft'?`Valid for ${q.valid} days from the day it is sent`:`${exp?'Expired on':'Valid until'} ${fmtD(validUntil(q))}`;
+ return `<div class="logo">Spray<span>IT</span> Solutions</div><div class="muted">Quote for ${esc(pname(q.pid))}<br>${esc(j.addr)}</div><div class="muted sm">${vtxt}</div>
+ <h3>${esc(q.title)}<span class="tag">Rev ${q.rev}</span></h3>
+ ${q.notes.trim()?`<div class="notes">${esc(q.notes)}</div>`:''}
+ <div class="tw"><table><tr><th>Item</th><th class="r">Qty</th><th class="r">Rate</th><th class="r">Amount</th></tr>
+ ${q.lines.length?q.lines.map((l,i)=>`<tr><td>${esc(l.n)}${l.up?`<div class="upg">Option: ${esc(l.up.n)}, +${money(l.up.p)}/${esc(l.u)} x ${l.qty} ${esc(l.u)} = ${money(l.up.p*l.qty)} ${o.interactive?`<label><input type="checkbox" data-in="upgtick" data-i="${i}" ${l.on?'checked':''} ${exp?'disabled':''}> Add this option</label>`:`<span>(customer can tick "Add this option")</span>`}</div>`:''}</td>
+  <td class="r">${l.qty} ${esc(l.u)}</td><td class="r">${money(l.p)}</td><td class="r">${money(l.qty*l.p+(l.up&&l.on?l.qty*l.up.p:0))}</td></tr>`).join(''):'<tr><td colspan="4" class="muted">No lines yet.</td></tr>'}</table></div>
+ <div class="tot">Total ${money(tot)} <span class="muted" style="font-size:12px;font-weight:400">ex GST</span></div><div class="muted sm" style="text-align:right">GST ${money(tot*.1)} | Total inc GST ${money(tot*1.1)}</div>
+ <span class="lbl" style="margin-top:12px">Payments</span><div class="sm">${q.pay.map(r=>`${esc(r.label)} ${r.pct}% = ${money(tot*r.pct/100)}, due: ${esc(r.rule)}`).join('<br>')}</div>
+ <div class="terms" style="font-size:${termFs(tx.length)}px">${esc(tx)}</div>`}
+
+/* ---------- editor ---------- */
+function paySum(q){const s=q.pay.reduce((a,r)=>a+(+r.pct||0),0);return s===100?`<span class="muted sm">Rows add up to 100%.</span>`:`<span class="chip">Rows add up to ${s}%, not 100%</span>`}
+function details(j){return `<aside class="det card" aria-label="Job details"><button class="btn ghost" data-act="toggleDetails" aria-expanded="${S.detailsOpen}">${S.detailsOpen?'Hide':'Show'} %j details</button>
+ ${S.detailsOpen?`<dl class="body"><dt>Address</dt><dd>${esc(j.addr)}</dd><dt>Source</dt><dd>${esc(j.src)}</dd><dt>Value</dt><dd>${money(j.value)}</dd><dt>Owner</dt><dd>${j.owner}</dd><dt>Stage</dt><dd>${j.stage}</dd>
+ <dt>Tasks</dt><dd>${j.tasks.length?j.tasks.map(esc).join('<br>'):'<span class="muted">None</span>'}</dd><dt>Appointments</dt><dd>${j.appts.length?j.appts.map(esc).join('<br>'):'<span class="muted">None</span>'}</dd></dl><span class="muted sm">Read from the CRM (mock).</span>`:''}</aside>`}
+function plResults(){const s=S.plq.trim().toLowerCase();const r=PRICES.map((p,i)=>({p,i})).filter(x=>!s||x.p.n.toLowerCase().includes(s));
+ return r.length?r.map(x=>`<button data-act="addPrice" data-id="${x.i}"><span>${esc(x.p.n)}</span><span>${money(x.p.p)}/${x.p.u}${x.p.up?' + option':''}</span></button>`).join(''):'<div style="padding:8px" class="muted">No match</div>'}
+function editor(){const q=curQ();const j=job(q.jobId);const tx=termsText(q);const nxt=queue().length;
+ return `<p><button class="lnk" data-act="openJob" data-id="${j.id}">← Back to ${esc(j.name)}</button></p>
+ ${S.sentBanner&&q.st==='Sent'?`<div class="okb">Quote sent to ${esc(pname(q.pid))}. <div class="acts"><button class="btn" data-act="nextQuote">Next quote${nxt?` (${nxt} waiting)`:''}</button><button class="btn ghost" data-act="home">Back to To do</button></div></div>`:''}
+ ${q.st==='Accepted'?`<div class="okb">This quote is accepted${q.via?` (${esc(q.via)})`:''}.</div>`:''}
+ <div class="e3 ${S.detailsOpen?'':'shut'}">${details(j)}
+ <section class="card" aria-label="Quote form"><div class="f"><span class="lbl">Status</span>${pill(q)}</div>
+ <div class="f"><label class="lbl" for="qtitle">Quote title (starts as the %j name)</label><input id="qtitle" data-in="qf" data-k="title" value="${esc(q.title)}"></div>
+ <div class="f"><span class="lbl">Quote for</span>${esc(pname(q.pid))}<br><span class="muted sm">${esc(pemail(q.pid))}</span></div>
+ <div class="f"><label class="lbl" for="qnotes">%J notes (shown on the quote above the line items, hidden when empty)</label><textarea id="qnotes" rows="3" data-in="qf" data-k="notes">${esc(q.notes)}</textarea></div>
+ <div class="f" id="f-lines"><span class="lbl">Line items</span>${q.lines.map((l,i)=>`<div class="ln card2" role="group" aria-label="Line ${i+1}"><div class="f"><label class="lbl" for="ln-n-${i}">Item</label><input id="ln-n-${i}" data-in="ln" data-i="${i}" data-k="n" value="${esc(l.n)}"></div>
+  <div class="trio"><div><label class="lbl" for="ln-q-${i}">Quantity (${esc(l.u)})</label><input id="ln-q-${i}" inputmode="decimal" data-in="ln" data-i="${i}" data-k="qty" value="${l.qty}"></div>
+  <div><label class="lbl" for="ln-p-${i}">Price per ${esc(l.u)}</label><input id="ln-p-${i}" inputmode="decimal" data-in="ln" data-i="${i}" data-k="p" value="${l.p}"></div><div><span class="lbl">Line total</span><b id="lt-${i}">${money(l.qty*l.p)}</b></div></div>
+  ${l.up?`<div class="trio" style="margin-top:8px"><div><label class="lbl" for="up-n-${i}">Upgrade name</label><input id="up-n-${i}" data-in="up" data-i="${i}" data-k="n" value="${esc(l.up.n)}"></div>
+   <div><label class="lbl" for="up-p-${i}">Extra per ${esc(l.u)}</label><input id="up-p-${i}" inputmode="decimal" data-in="up" data-i="${i}" data-k="p" value="${l.up.p}"></div><div><button class="btn ghost" data-act="rmUpg" data-id="${i}">Remove upgrade</button></div></div>
+   <span class="muted sm">Shown as one coloured line under the item and follows the quantity.</span>`:`<button class="btn ghost" style="margin-top:8px" data-act="addUpg" data-id="${i}">Add upgrade option</button>`}
+  <div class="acts"><button class="btn ghost" data-act="rmLine" data-id="${i}">Remove line</button></div></div>`).join('')}
+  <label class="lbl" for="plq">Add from price list</label><div style="display:flex;gap:6px"><input id="plq" type="search" data-in="plq" value="${esc(S.plq)}" placeholder="Search the price list"><button class="x" data-act="plclear" aria-label="Clear price list search">✕</button></div>
+  <div class="scroll" id="plres">${plResults()}</div><div class="acts"><button class="btn ghost" data-act="addCustom">+ Custom line</button></div></div>
+ <div class="f"><label class="lbl" for="preset">Payment schedule</label><select id="preset" data-in="preset">${Object.keys(PRESETS).map(k=>`<option value="${k}" ${q.preset===k?'selected':''}>${PRESETS[k].n}</option>`).join('')}</select>
+  ${q.pay.map((r,i)=>`<div class="trio card2" style="margin-top:8px" role="group" aria-label="Payment ${i+1}"><div><label class="lbl" for="pl-${i}">Label</label><input id="pl-${i}" data-in="pay" data-i="${i}" data-k="label" value="${esc(r.label)}"></div>
+   <div><label class="lbl" for="pp-${i}">Percent</label><input id="pp-${i}" inputmode="numeric" data-in="pay" data-i="${i}" data-k="pct" value="${r.pct}"></div>
+   <div><label class="lbl" for="pr-${i}">Due rule</label><select id="pr-${i}" data-in="pay" data-i="${i}" data-k="rule">${RULES.map(x=>`<option ${r.rule===x?'selected':''}>${x}</option>`).join('')}</select></div>
+   <button class="btn ghost" data-act="rmPay" data-id="${i}">Remove row</button></div>`).join('')}
+  <div class="acts"><button class="btn ghost" data-act="addPay">+ Payment row</button></div><div id="paysum">${paySum(q)}</div></div>
+ <div class="f"><label class="lbl" for="tm">Terms (print small, below notes and payments)</label><select id="tm" data-in="termsel">${Object.keys(TERMS).map(k=>`<option ${q.terms===k&&!S.newTerms?'selected':''}>${esc(k)}</option>`).join('')}${q.terms==='custom'?`<option value="custom" ${!S.newTerms?'selected':''}>This quote only</option>`:''}<option value="__new" ${S.newTerms?'selected':''}>Write new...</option></select>
+  <span class="muted sm" id="tfs">Auto-shrunk to ${termFs(tx.length)} px for ${tx.length} characters.</span>
+  ${S.newTerms?`<label class="lbl" for="nt2" style="margin-top:8px">New terms text</label><textarea id="nt2" rows="5"></textarea><div class="acts"><button class="btn" data-act="useNewTerms">Use these terms</button></div>`:''}</div>
+ <div class="f"><label class="lbl" for="valid">Valid for (days)</label><input id="valid" inputmode="numeric" data-in="qf" data-k="valid" value="${q.valid}"> <span class="chip">Default 60, to confirm with Glenn</span></div>
+ <div class="acts"><button class="btn" data-act="saveDraft">Save draft</button><button class="btn ghost" data-act="preview">Preview and print</button><button class="btn ghost" data-act="customer">Customer view</button>
+ <button class="btn" data-act="send">Send...</button></div>
+ <div class="acts"><button class="btn ghost" data-act="dupRev" data-id="${q.id}">Duplicate as next revision</button><button class="btn ghost" data-act="record">Sent by phone / purchase order: record acceptance</button></div></section>
+ <section aria-label="Live preview"><label class="sm" style="display:flex;gap:6px;margin-bottom:8px"><input type="checkbox" data-in="custTick" ${S.custTick?'checked':''}> Customer view: let me tick options and watch the total</label>
+ <div class="sheet" id="pv">${sheet(q,{interactive:S.custTick})}</div></section></div>`}
+
+/* ---------- customer + print ---------- */
+function customerPage(){const q=curQ();const exp=q.st==='Expired'||S.forceExpired;
+ return `<div class="cust"><div class="cbar noprint"><b>Mockup:</b> this is the private page the customer sees.<label>Show as <select data-in="forceExp"><option value="0">Open</option><option value="1" ${S.forceExpired?'selected':''}>Expired</option></select></label><button class="btn ghost" data-act="backEditor">Back to editor</button></div>
+ ${q.st==='Draft'?'<div class="banner">This quote is still a draft. The customer cannot see it yet.</div>':''}
+ <p class="muted sm">Private link for ${esc(pshort(q.pid))}. Not shown in search engines.</p>
+ ${q.st==='Accepted'?'<div class="okb"><b>Thank you.</b> You accepted this quote. SprayIT will be in touch to book your install.</div>':''}
+ ${q.st==='Declined'?'<div class="badb">You declined this quote. If that was a mistake, please call SprayIT.</div>':''}
+ ${exp&&q.st!=='Accepted'?'<div class="badb"><b>This quote has expired.</b> Please contact SprayIT to ask for a fresh one.</div>':''}
+ <div class="sheet">${sheet(q,{interactive:true,forceExpired:S.forceExpired})}</div>
+ ${q.st==='Accepted'||q.st==='Declined'||exp?'':`<div class="acts"><button class="btn" data-act="custAccept">Accept this quote</button><button class="btn warn" data-act="custDecline">Decline</button></div>`}</div>`}
+function printPage(){const q=curQ();return `<div class="cust"><div class="cbar noprint"><button class="btn ghost" data-act="backEditor">Back to editor</button><button class="btn" data-act="doPrint">Print</button><span>Print layout, one page, logo only.</span></div><div class="sheet">${sheet(q,{})}</div></div>`}
+
+/* ---------- help ---------- */
+const HELP={'To do':'The queue rules (Quoting stage, owner Glenn, oldest first) and the day counts are examples. Real days come from the stage change date.',
+ Jobs:'Names, addresses, values and sources are made up. Stage and owner lists are examples and will match the real pipeline.',
+ job:'The 10 company limit is as agreed on the call. The quotes of the other companies become Superseded when one is accepted. All people and prices are made up.',
+ editor:'Price list, upgrade prices, payment presets and due rules are examples. Valid for 60 days is to be confirmed with Glenn. Terms text is placeholder. Job details here are a mock of what is read from the CRM.',
+ customer:'Wording on this page is a first draft. The expired state is shown with the switch above the quote.',
+ Terms:'Both terms texts are placeholder. Formatting is fixed on purpose.',other:'All data on this screen is made up.'};
+function helpKey(){return S.view==='tab'?(HELP[S.tab]?S.tab:'other'):(HELP[S.view]?S.view:'other')}
+
+/* ---------- actions ---------- */
+function moveFocus(sel){return sel}
+const ACT={
+ menu(){toast('Other menu items are not part of this mockup.')},
+ home(){go({view:'tab',tab:'To do'})},
+ help(){modal('Placeholders on this screen',`<p>${esc(HELP[helpKey()])}</p>`,[{label:'Close',cls:'',fn(){}}])},
+ tab(e){go({tab:e.dataset.id,view:'tab',editTerm:null,newTermOpen:false})},
+ backTab(){go({view:'tab'})},
+ openJob(e){go({jobId:e.dataset.id,view:'job'})},
+ openContact(e){go({contactId:e.dataset.id,view:'contact'})},
+ openQuote(e){openQuote(e.dataset.id)},
+ openNext(){const j=queue()[0];if(j)openJobQuote(j.id)},
+ newQuoteMain(){const j=job(S.jobId);const q=newQuote(j.id,j.main);toast('New quote saved as a draft (no lines yet).');openQuote(q.id)},
+ startQuote(e){const q=newQuote(S.jobId,e.dataset.id);toast('Quote saved as a draft.');openQuote(q.id)},
+ addContact(){const j=job(S.jobId);const free=CON.filter(c=>!parties(j).includes(c.id));
+  modal('Add contact',`<label class="lbl" for="dc">Contact</label><select id="dc">${free.map(c=>`<option value="${c.id}">${esc(c.name)}, ${esc(c.co)}</option>`).join('')}<option value="__new">New contact (made-up)</option></select>`,
+  [{label:'Add contact',cls:'',fn(){const v=$('#dc').value;let id=v;if(v==='__new'){id='c'+(++uid);CON.push({id,name:'New Contact '+uid,co:'Example Co',email:'new'+uid+'@example.com',phone:'0400 000 0'+uid})}j.extra.push(id);toast('Contact added to the %j.');render()}},{label:'Cancel',fn(){}}])},
+ addCompany(){const j=job(S.jobId);
+  modal('Add company',`<div class="f"><label class="lbl" for="cn">Company name</label><input id="cn" value="Example Builders"></div><div class="f"><label class="lbl" for="cc">Person to address the quote to</label><select id="cc">${CON.map(c=>`<option value="${c.id}">${esc(c.name)}</option>`).join('')}</select></div>`,
+  [{label:'Add company',cls:'',fn(){const n=$('#cn').value.trim();if(!n){toast('Please type a company name.');return false}COS.push({id:'k'+(++uid),name:n,contact:$('#cc').value});j.companies.push('k'+uid);toast('Company added.');render()}},{label:'Cancel',fn(){}}])},
+ dupOther(){const j=job(S.jobId);const src=qs(j.id).filter(q=>q.st!=='Superseded').sort((a,b)=>b.rev-a.rev)[0];
+  if(!src){toast('Make a quote first, then copy it.');return}
+  if(new Set(qs(j.id).map(q=>q.pid)).size>=10){toast('Up to 10 companies can quote one %j.');return}
+  modal('Duplicate for another company',`<p class="sm">Copies "${esc(src.title)}" (Rev ${src.rev}). Who is the copy for?</p><label class="lbl" for="dp">Contact or company</label><select id="dp">${nameOpts(parties(j))}</select>`,
+  [{label:'Create copy',cls:'',fn(){const q=newQuote(j.id,$('#dp').value,src);toast('Copy saved as Rev '+q.rev+' for '+pshort(q.pid)+'.');render()}},{label:'Cancel',fn(){}}])},
+ closeOthers(){const j=job(S.jobId);const qq=qs(j.id);const acc=qq.find(q=>q.st==='Accepted');if(!acc){toast('Waiting for one company to accept first.');return}const others=qq.filter(q=>OPEN_ST(q)&&q.pid!==acc.pid);
+  modal('Close other options',`<p>${esc(pshort(acc.pid))} accepted. Mark these quotes as Superseded? The job itself is not marked Lost.</p><ul>${others.map(q=>`<li>${esc(pname(q.pid))}, Rev ${q.rev}</li>`).join('')}</ul>`,
+  [{label:'Close other options',cls:'',fn(){others.forEach(q=>{q.st='Superseded'});toast(others.length+' quotes marked Superseded.');render()}},{label:'Cancel',fn(){}}])},
+ toggleDetails(){S.detailsOpen=!S.detailsOpen;render('[data-act=toggleDetails]')},
+ addPrice(e){const p=PRICES[+e.dataset.id];curQ().lines.push({n:p.n,u:p.u,qty:1,p:p.p,up:p.up?{...p.up}:null,on:false});render('#ln-q-'+(curQ().lines.length-1))},
+ addCustom(){curQ().lines.push({n:'Custom item',u:'item',qty:1,p:0,up:null,on:false});render('#ln-n-'+(curQ().lines.length-1))},
+ rmLine(e){curQ().lines.splice(+e.dataset.id,1);render('#plq')},
+ addUpg(e){const l=curQ().lines[+e.dataset.id];l.up={n:'Upgrade option',p:10};render('#up-n-'+e.dataset.id)},
+ rmUpg(e){const l=curQ().lines[+e.dataset.id];l.up=null;l.on=false;render('#ln-n-'+e.dataset.id)},
+ plclear(){S.plq='';render('#plq')},
+ addPay(){const q=curQ();q.pay.push({label:'Payment',pct:0,rule:'On completion'});q.preset='custom';render('#pl-'+(q.pay.length-1))},
+ rmPay(e){const q=curQ();q.pay.splice(+e.dataset.id,1);q.preset='custom';render('#preset')},
+ saveDraft(){toast('Draft saved (mock). A new quote is saved straight away, even with no lines.')},
+ preview(){go({view:'print'})},
+ customer(){go({view:'customer'})},
+ backEditor(){go({view:'editor'})},
+ doPrint(){window.print()},
+ send(){const q=curQ();modal('Send this quote?',`<p>This quote goes to <b>${esc(pname(q.pid))}</b> at ${esc(pemail(q.pid))}.</p><p class="sm">Total ${money(qt(q))} ex GST, valid for ${q.valid} days. (Mockup: nothing is really sent.)</p>`,
+  [{label:'Send quote',cls:'',fn(){q.st='Sent';q.sentAgo=0;q.lines.forEach(l=>{l.on=false});const j=job(q.jobId);if(j.stage==='Quoting')j.stage='Quote sent';S.sentBanner=true;render('[data-act=nextQuote]')}},{label:'Cancel',fn(){}}])},
+ nextQuote(){const j=queue()[0];if(j)openJobQuote(j.id);else{toast('No more quotes waiting.');go({view:'tab',tab:'To do'})}},
+ record(){const q=curQ();modal('Record acceptance',`<p class="sm">For quotes accepted by phone or purchase order.</p><div class="f"><label class="lbl" for="rv">How was it accepted?</label><select id="rv"><option>By phone</option><option>Purchase order</option></select></div><div class="f"><label class="lbl" for="rr">Reference (optional)</label><input id="rr" placeholder="e.g. PO 12345"></div>`,
+  [{label:'Record acceptance',cls:'',fn(){q.st='Accepted';q.via=$('#rv').value+($('#rr').value?', '+$('#rr').value:'');job(q.jobId).stage='Won';toast('Acceptance recorded.');render()}},{label:'Cancel',fn(){}}])},
+ dupRev(e){const q=quotes.find(x=>x.id===e.dataset.id);const n=newQuote(q.jobId,q.pid,q);if(q.st==='Sent')q.st='Superseded';toast('Created Rev '+n.rev+'. The earlier one is kept in the %j.');openQuote(n.id)},
+ useNewTerms(){const t=$('#nt2').value.trim();if(!t){toast('Please type the terms first.');return}const q=curQ();
+  modal('Save as a template for next time?',`<p class="sm">Yes keeps these terms in the Terms tab. No uses them on this quote only.</p><label class="lbl" for="tn">Name (if saving)</label><input id="tn" value="My terms ${uid}">`,
+  [{label:'Yes, save as template',cls:'',fn(){const n=$('#tn').value.trim()||('My terms '+uid);TERMS[n]=t;q.terms=n;S.newTerms=false;toast('Saved as a template and applied.');render()}},
+   {label:'No, this quote only',fn(){q.terms='custom';q.termsCustom=t;S.newTerms=false;render()}}])},
+ custAccept(){const q=curQ();modal('Accept this quote?',`<p>You are accepting <b>${esc(q.title)}</b> for ${money(qt(q))} ex GST, including the options you ticked.</p>`,[{label:'Yes, accept',cls:'',fn(){q.st='Accepted';q.via='online';job(q.jobId).stage='Won';render()}},{label:'Go back',fn(){}}])},
+ custDecline(){const q=curQ();modal('Decline this quote?',`<p>SprayIT will be told you do not want to go ahead.</p><label class="lbl" for="dr">Reason (optional)</label><input id="dr">`,[{label:'Yes, decline',cls:'warn',fn(){q.st='Declined';render()}},{label:'Go back',fn(){}}])},
+ useTemplate(){toast('Would start a new quote from this template (mock).')},
+ editTerm(e){S.editTerm=e.dataset.id;render('#tt')},cancelTerm(){S.editTerm=null;render()},saveTerm(){toast('Terms text saved (mock).');S.editTerm=null;render()},
+ newTerm(){S.newTermOpen=true;render('#nn')},cancelNew(){S.newTermOpen=false;render()},
+ saveNewTerm(){const n=$('#nn').value.trim(),t=$('#nt').value.trim();if(!n||!t){toast('Please add a name and some text.');return}TERMS[n]=t;S.newTermOpen=false;toast('New terms saved.');render()}};
+document.addEventListener('click',e=>{
+ const mb=e.target.closest('[data-m]');
+ if(mb){const a=MA[+mb.dataset.m];const r=a.fn();if(r!==false)closeModal();return}
+ const el=e.target.closest('[data-act]');if(el&&ACT[el.dataset.act])ACT[el.dataset.act](el)});
+const num=v=>{const n=parseFloat(String(v).replace(/[^0-9.]/g,''));return isNaN(n)?0:n};
+function live(){const q=curQ();$('#pv').innerHTML=T(sheet(q,{interactive:S.custTick}));
+ q.lines.forEach((l,i)=>{const e=$('#lt-'+i);if(e)e.textContent=money(l.qty*l.p)});const s=$('#paysum');if(s)s.innerHTML=paySum(q);
+ const tf=$('#tfs'),tx=termsText(q);if(tf)tf.textContent=`Auto-shrunk to ${termFs(tx.length)} px for ${tx.length} characters.`}
+const IN={
+ word(e){S.word=e.value;render()},mobile(e){S.mobile=e.checked;render()},
+ jq(e){S.q=e.value;$('#joblist').innerHTML=T(jobList())},fstage(e){S.fStage=e.value;$('#joblist').innerHTML=T(jobList())},fowner(e){S.fOwner=e.value;$('#joblist').innerHTML=T(jobList())},
+ cq(e){S.cq=e.value;$('#clist').innerHTML=contactList()},qstatus(e){S.qStatus=e.value;$('#qlist').innerHTML=quoteList()},
+ jf(e){const j=job(S.jobId);j[e.dataset.k]=e.dataset.k==='value'?num(e.value):e.value;if(e.tagName==='SELECT')render()},
+ qf(e){const q=curQ(),k=e.dataset.k;q[k]=k==='valid'?num(e.value):e.value;live()},
+ ln(e){const l=curQ().lines[+e.dataset.i],k=e.dataset.k;l[k]=k==='n'?e.value:num(e.value);live()},
+ up(e){const l=curQ().lines[+e.dataset.i],k=e.dataset.k;l.up[k]=k==='n'?e.value:num(e.value);live()},
+ upgtick(e){curQ().lines[+e.dataset.i].on=e.checked;live()},
+ pay(e){const q=curQ(),r=q.pay[+e.dataset.i],k=e.dataset.k;r[k]=k==='pct'?num(e.value):e.value;q.preset='custom';
+  const sel=$('#preset');if(sel)sel.value='custom';live();if(k==='rule')render()},
+ preset(e){const q=curQ();q.preset=e.value;if(PRESETS[e.value].r)q.pay=PRESETS[e.value].r.map(r=>({label:r[0],pct:r[1],rule:r[2]}));render('#preset')},
+ plq(e){S.plq=e.value;$('#plres').innerHTML=plResults()},
+ termsel(e){const q=curQ();if(e.value==='__new'){S.newTerms=true;render('#nt2')}else{S.newTerms=false;q.terms=e.value;render('#tm')}},
+ custTick(e){S.custTick=e.checked;live()},forceExp(e){S.forceExpired=e.value==='1';render()},
+ termtext(e){TERMS[S.editTerm]=e.value;const p=$('#tprev');p.textContent=e.value;p.style.fontSize=termFs(e.value.length)+'px'}};
+document.addEventListener('input',e=>{const n=e.target.dataset&&e.target.dataset.in;if(n&&IN[n])IN[n](e.target)});
+document.addEventListener('keydown',e=>{const m=$('#modal');if(m.hidden)return;
+ if(e.key==='Escape'){closeModal();return}
+ if(e.key==='Tab'){const f=[...m.querySelectorAll('input,select,textarea,button')];if(!f.length)return;const a=f.indexOf(document.activeElement);
+  if(e.shiftKey&&a<=0){e.preventDefault();f[f.length-1].focus()}else if(!e.shiftKey&&a===f.length-1){e.preventDefault();f[0].focus()}}});
+render();
+</script>
+</body>
+</html>

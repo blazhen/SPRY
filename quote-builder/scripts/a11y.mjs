@@ -1,15 +1,14 @@
-// Accessibility checks from a hidden browser: names, labels, headings, target size,
+﻿// Accessibility checks from a hidden browser: names, labels, headings, target size,
 // computed text contrast, keyboard reach and focus visibility, 320px reflow, print.
 // Run after `npm run build`. Not a replacement for a screen reader pass.
-import { spawn } from 'node:child_process'
+import { startPreview } from './_server.mjs'
 import { mkdirSync } from 'node:fs'
 import { chromium } from 'playwright'
 
 const PORT = 4181
 const BASE = `http://localhost:${PORT}/`
 mkdirSync('shots', { recursive: true })
-const server = spawn(process.execPath, ['node_modules/vite/bin/vite.js', 'preview', '--port', String(PORT), '--strictPort'], { stdio: 'ignore' })
-await new Promise((r) => setTimeout(r, 2500))
+const server = await startPreview(PORT)
 const browser = await chromium.launch({ channel: 'msedge' })
 const out = []
 
@@ -210,3 +209,4 @@ for (const w of [320, 640]) {
 await browser.close()
 server.kill()
 console.log(out.join('\n'))
+

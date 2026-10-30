@@ -1,6 +1,7 @@
 import { useId, type ReactNode } from 'react'
 import { BUSINESS, GST_RATE } from '../config'
 import logo from '../assets/logo.png'
+import { dueShort } from '../lib/due'
 import { lineTotal, paymentAmounts, quoteTotals } from '../lib/calc'
 import { fmtDate, fmtMoney, fmtQty } from '../lib/format'
 import type { Contact, Job, LineItem, Quote } from '../types'
@@ -60,6 +61,9 @@ export function QuoteSheet({
             </dl>
             {quote.isAddOn && (
               <p className="mt-2 inline-block rounded-full bg-amber-wash px-2.5 py-1 text-[0.8125rem] font-bold text-amber-ink">Add-on quote</p>
+            )}
+            {quote.isOption && (
+              <p className="mt-2 inline-block rounded-full bg-navy-wash px-2.5 py-1 text-[0.8125rem] font-bold text-navy">Option: accept one</p>
             )}
           </div>
         </header>
@@ -202,7 +206,10 @@ export function QuoteSheet({
             <ul>
               {quote.payments.map((p, idx) => (
                 <li key={p.id} className="flex items-baseline justify-between gap-4 border-b rule py-2.5 text-[0.9375rem]">
-                  <span className="min-w-0 break-words">{p.label || 'Payment'}</span>
+                  <span className="min-w-0 break-words">
+                    {p.label || 'Payment'}
+                    {dueShort(p.due) && <span className="block text-sm text-muted">Due {dueShort(p.due)}</span>}
+                  </span>
                   <span className="num shrink-0 text-right">
                     <span className="text-muted">{p.percent}%</span> <span className="ml-2 font-bold">{fmtMoney(amounts[idx] ?? 0)}</span>
                   </span>

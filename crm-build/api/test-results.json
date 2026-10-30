@@ -1,0 +1,1282 @@
+[
+ {
+  "group": "H",
+  "method": "GET",
+  "path": "/users/?locationId={locationId}",
+  "status": 200,
+  "ok": true,
+  "note": "users: Glenn Angus, test 1, test 2"
+ },
+ {
+  "group": "A",
+  "method": "POST",
+  "path": "/contacts/",
+  "status": 201,
+  "ok": true,
+  "note": "keys: contact,traceId"
+ },
+ {
+  "group": "A",
+  "method": "GET",
+  "path": "/contacts/{id}",
+  "status": 200,
+  "ok": true,
+  "note": "keys: contact,traceId"
+ },
+ {
+  "group": "A",
+  "method": "PUT",
+  "path": "/contacts/{id}",
+  "status": 200,
+  "ok": true,
+  "note": "tags back: [\"zz-test-tag\"]"
+ },
+ {
+  "group": "A",
+  "method": "POST",
+  "path": "/contacts/upsert",
+  "status": 201,
+  "ok": true,
+  "note": "new=false sameId=true"
+ },
+ {
+  "group": "A",
+  "method": "POST",
+  "path": "/contacts/search",
+  "status": 200,
+  "ok": true,
+  "note": "by name: total=0 hits=0 | 320 ms"
+ },
+ {
+  "group": "A",
+  "method": "POST",
+  "path": "POST /contacts/search (filter by email)",
+  "status": 200,
+  "ok": true,
+  "note": "by email: total=1 hits=1 | 251 ms"
+ },
+ {
+  "group": "A",
+  "method": "GET",
+  "path": "/contacts/?query=",
+  "status": 200,
+  "ok": true,
+  "note": "legacy list search: hits=1 | 327 ms"
+ },
+ {
+  "group": "A",
+  "method": "POST",
+  "path": "/contacts/{id}/followers",
+  "status": 201,
+  "ok": true,
+  "note": "keys: followers,followersAdded,traceId"
+ },
+ {
+  "group": "A",
+  "method": "DELETE",
+  "path": "/contacts/{id}/followers",
+  "status": 200,
+  "ok": true,
+  "note": "keys: followers,followersRemoved,traceId"
+ },
+ {
+  "group": "A",
+  "method": "POST",
+  "path": "/contacts/{id}/tags",
+  "status": 201,
+  "ok": true,
+  "note": "keys: tags,tagsAdded,traceId"
+ },
+ {
+  "group": "A",
+  "method": "DELETE",
+  "path": "/contacts/{id}/tags",
+  "status": 200,
+  "ok": true,
+  "note": "keys: tags,tagsRemoved,traceId"
+ },
+ {
+  "group": "A",
+  "method": "POST",
+  "path": "/contacts/{id}/notes",
+  "status": 201,
+  "ok": true,
+  "note": "keys: id,body,bodyText,userId,dateAdded,contactId,pinned,relations"
+ },
+ {
+  "group": "A",
+  "method": "GET",
+  "path": "/contacts/{id}/notes",
+  "status": 200,
+  "ok": true,
+  "note": "count=1 fields: id,body,bodyText,userId,dateAdded,contactId,pinned,relations"
+ },
+ {
+  "group": "A",
+  "method": "GET",
+  "path": "/contacts/{id}/notes/{id}",
+  "status": 200,
+  "ok": true,
+  "note": "keys: note,traceId"
+ },
+ {
+  "group": "A",
+  "method": "PUT",
+  "path": "/contacts/{id}/notes/{id}",
+  "status": 200,
+  "ok": true,
+  "note": "keys: note,traceId"
+ },
+ {
+  "group": "A",
+  "method": "DELETE",
+  "path": "/contacts/{id}/notes/{id}",
+  "status": 200,
+  "ok": true,
+  "note": "keys: succeded,succeeded,traceId"
+ },
+ {
+  "group": "A",
+  "method": "POST",
+  "path": "/contacts/{id}/tasks",
+  "status": 201,
+  "ok": true,
+  "note": "keys: id,title,body,assignedTo,dueDate,completed,contactId,status,statusGroup,taskType,primaryListId,listPositions,graph,graphVersion"
+ },
+ {
+  "group": "A",
+  "method": "GET",
+  "path": "/contacts/{id}/tasks",
+  "status": 200,
+  "ok": true,
+  "note": "count=1 fields: id,title,body,assignedTo,dueDate,completed,contactId,status,statusGroup,taskType,primaryListId,listPositions,graph,graphVersion"
+ },
+ {
+  "group": "A",
+  "method": "GET",
+  "path": "/contacts/{id}/tasks/{id}",
+  "status": 200,
+  "ok": true,
+  "note": "keys: task,traceId"
+ },
+ {
+  "group": "A",
+  "method": "PUT",
+  "path": "/contacts/{id}/tasks/{id}",
+  "status": 200,
+  "ok": true,
+  "note": "keys: task,traceId"
+ },
+ {
+  "group": "A",
+  "method": "PUT",
+  "path": "/contacts/{id}/tasks/{id}/completed",
+  "status": 200,
+  "ok": true,
+  "note": "keys: task,traceId"
+ },
+ {
+  "group": "A",
+  "method": "DELETE",
+  "path": "/contacts/{id}/tasks/{id}",
+  "status": 200,
+  "ok": true,
+  "note": "keys: succeded,succeeded,traceId"
+ },
+ {
+  "group": "A",
+  "method": "GET",
+  "path": "/contacts/{id}/appointments",
+  "status": 200,
+  "ok": true,
+  "note": "keys: events,traceId"
+ },
+ {
+  "group": "A",
+  "method": "DELETE",
+  "path": "/contacts/{id}",
+  "status": 200,
+  "ok": true,
+  "note": "keys: succeded,succeeded,traceId"
+ },
+ {
+  "group": "A",
+  "method": "GET",
+  "path": "/contacts/{id} (after delete)",
+  "status": 400,
+  "ok": true,
+  "note": "deleted contact reads back as 400"
+ },
+ {
+  "group": "B",
+  "method": "POST",
+  "path": "/businesses/",
+  "status": 201,
+  "ok": true,
+  "note": "keys: success,business,traceId"
+ },
+ {
+  "group": "B",
+  "method": "GET",
+  "path": "/businesses/{id}",
+  "status": 200,
+  "ok": true,
+  "note": "keys: success,business,traceId"
+ },
+ {
+  "group": "B",
+  "method": "PUT",
+  "path": "/businesses/{id}",
+  "status": 200,
+  "ok": true,
+  "note": "keys: success,business,traceId"
+ },
+ {
+  "group": "B",
+  "method": "PUT",
+  "path": "PUT /contacts/{id} (companyId link)",
+  "status": 422,
+  "ok": false,
+  "note": "companyId back: false | property companyId should not exist"
+ },
+ {
+  "group": "B",
+  "method": "GET",
+  "path": "/contacts/{id} (companyId read back)",
+  "status": 200,
+  "ok": false,
+  "note": "companyId=undefined"
+ },
+ {
+  "group": "B",
+  "method": "GET",
+  "path": "/businesses/location/{locationId}",
+  "status": 404,
+  "ok": false,
+  "note": "count=0 | Cannot GET /businesses/location/5M1zrDbimF17cM16mtmR"
+ },
+ {
+  "group": "C",
+  "method": "GET",
+  "path": "/opportunities/pipelines?locationId={locationId}",
+  "status": 200,
+  "ok": true,
+  "note": "Residential [XaNxcqLLqf4l5LV1ozKs]: New Lead=9c93083c-cf13-46f8-8602-7ed20c4bcdb2 | Dial 1=dbc73582-b2f6-4d38-abfb-1126e99889ff | Dial 2=789e1c12-f661-4456-a7c9-562eece8f722 | Quoting=6974f4c9-87da-48c2-9bdc-80726164bab5 | Quote Sent=9c65e773-ea6f-419f-b041-2993e88eedf3 | Follow-Up=f2ba33dd-ce08-457f-9b9b-5515b94757aa | Nurture=4c81a5f8-77eb-4de5-9643-052e506af691 | Quote Accepted=424b179f-c138-467e-94fe-0def7709cdeb | Inspection Required=c7635e3b-4d46-40f6-8a95-593480aba364 | Booking Required=519aece3-bc7e-47a1-96f2-627a885e609e | Job Booked=365634a5-32e3-4b51-a243-c764c6e42b15 | Deposit Requested=2096de78-d142-47dd-bddf-8c4861bba5d4 | Job Completed=cc6a49fd-aa54-432f-ba11-a5a4a703ab5d | Retention Claim=bb663089-0b12-4de1-a890-158825acf092 ## Commercial & Industrial [rjyVbfxOUv62f8PGcJWV]: New Lead=1be47c74-fded-4e3e-99f4-eb6c32b36a9e | Dial 1=88a8bd00-6b84-43ee-8c41-e3b0ee9eab15 | Dial 2=3a9071c3-5e85-48db-b66a-e65b6c26d0d0 | Quoting=c8ddc0e6-ecda-4140-b466-274bb6b0139c | Quote Sent=48464dd7-4e22-4f54-bff4-98e0187370cc | Follow-Up=f3698853-78e3-4d65-b046-bb2c1abd0d42 | Nurture=4670f1fa-598c-4ea7-b43b-cfccbeb704c3 | Quote Accepted=1d0a766e-2bee-4acc-9883-0ade42f95c45 | Inspection Required=d3ad2298-ab90-4413-a525-316a10fe3906 | Booking Required=220fd441-2599-4839-993d-da81dd2b943f | Job Booked=5ff08c2c-bb2e-4b76-9ccf-2df6cfb6da5d | Deposit Requested=8f3882c2-48a9-4112-8226-85342c30c4fd | Job Completed=3fe9e46c-cacb-4e25-b85d-06f965656b25 | Retention Claim=da23a577-1e7f-4eb4-8f4b-a2ffcb0e7191"
+ },
+ {
+  "group": "C",
+  "method": "POST",
+  "path": "POST /opportunities/search",
+  "status": 201,
+  "ok": true,
+  "note": "keys: opportunities,total,traceId | 361 ms"
+ },
+ {
+  "group": "C",
+  "method": "GET",
+  "path": "GET /opportunities/search?q=",
+  "status": 200,
+  "ok": true,
+  "note": "hits=0 meta: total,nextPageUrl,startAfterId,startAfter,currentPage,nextPage,prevPage | 254 ms"
+ },
+ {
+  "group": "C",
+  "method": "POST",
+  "path": "/opportunities/",
+  "status": 201,
+  "ok": true,
+  "note": "keys: opportunity,traceId"
+ },
+ {
+  "group": "C",
+  "method": "GET",
+  "path": "/opportunities/{id}",
+  "status": 200,
+  "ok": true,
+  "note": "keys: id,name,monetaryValue,pipelineId,pipelineStageId,status,lastStatusChangeAt,lastStageChangeAt,createdAt,updatedAt,contactId,isAttribute,internalSource,locationId"
+ },
+ {
+  "group": "C",
+  "method": "INFO",
+  "path": "opportunity stage history fields",
+  "status": 200,
+  "ok": true,
+  "note": "timestamps present: pipelineStageId,status,lastStatusChangeAt,lastStageChangeAt,createdAt,updatedAt,lastActionDate"
+ },
+ {
+  "group": "C",
+  "method": "PUT",
+  "path": "/opportunities/{id}",
+  "status": 200,
+  "ok": true,
+  "note": "stage/value/custom field update"
+ },
+ {
+  "group": "C",
+  "method": "GET",
+  "path": "/opportunities/{id} (read back)",
+  "status": 200,
+  "ok": true,
+  "note": "stage=true value=250 stageChangedField=2026-10-30T05:47:16.707Z"
+ },
+ {
+  "group": "C",
+  "method": "POST",
+  "path": "/opportunities/upsert",
+  "status": 201,
+  "ok": true,
+  "note": "new=false sameId=true"
+ },
+ {
+  "group": "C",
+  "method": "PUT",
+  "path": "/opportunities/{id}/status",
+  "status": 200,
+  "ok": true,
+  "note": "keys: success,traceId"
+ },
+ {
+  "group": "C",
+  "method": "PUT",
+  "path": "PUT /opportunities/{id}/status (reopen)",
+  "status": 200,
+  "ok": true,
+  "note": "keys: success,traceId"
+ },
+ {
+  "group": "C",
+  "method": "POST",
+  "path": "/opportunities/{id}/followers",
+  "status": 201,
+  "ok": true,
+  "note": "keys: followers,followersAdded,traceId"
+ },
+ {
+  "group": "C",
+  "method": "DELETE",
+  "path": "/opportunities/{id}/followers",
+  "status": 200,
+  "ok": true,
+  "note": "keys: followers,followersRemoved,traceId"
+ },
+ {
+  "group": "C",
+  "method": "GET",
+  "path": "/opportunities/{id}/notes",
+  "status": 404,
+  "ok": false,
+  "note": "probe: opportunity notes endpoint | Cannot GET /opportunities/UGAaGpkgfWBcHl5oUuaC/notes"
+ },
+ {
+  "group": "C",
+  "method": "GET",
+  "path": "/opportunities/{id}/tasks",
+  "status": 404,
+  "ok": false,
+  "note": "probe: opportunity tasks endpoint | Cannot GET /opportunities/UGAaGpkgfWBcHl5oUuaC/tasks"
+ },
+ {
+  "group": "C",
+  "method": "INFO",
+  "path": "job notes via contact notes",
+  "status": 200,
+  "ok": false,
+  "note": "contact note fields: id,body,bodyText,userId,dateAdded,contactId,pinned,relations; any job link field: false"
+ },
+ {
+  "group": "D",
+  "method": "GET",
+  "path": "/associations/?locationId={locationId}",
+  "status": 200,
+  "ok": true,
+  "note": "defs: BUSINESSES_OPPORTUNITIES_ASSOCIATION, OPPORTUNITIES_CONTACTS_ADDITIONAL_ASSOCIATION, OPPORTUNITIES_CONTACTS_ASSOCIATION, BUSINESSES_CONTACTS_ASSOCIATION"
+ },
+ {
+  "group": "D",
+  "method": "POST",
+  "path": "POST /associations/relations (contact-job)",
+  "status": 201,
+  "ok": true,
+  "note": "keys: id,firstObjectKey,firstRecordId,secondObjectKey,secondRecordId,associationId,primary,pipelineId,locationId,traceId"
+ },
+ {
+  "group": "D",
+  "method": "POST",
+  "path": "POST /associations/relations (company-job)",
+  "status": 201,
+  "ok": true,
+  "note": "keys: id,firstObjectKey,firstRecordId,secondObjectKey,secondRecordId,associationId,primary,locationId,traceId"
+ },
+ {
+  "group": "D",
+  "method": "GET",
+  "path": "/associations/relations/{id}?locationId={locationId}",
+  "status": 200,
+  "ok": true,
+  "note": "relations=3"
+ },
+ {
+  "group": "D",
+  "method": "DELETE",
+  "path": "DELETE /associations/relations/{id}",
+  "status": 200,
+  "ok": true,
+  "note": "keys: deleted,message,traceId"
+ },
+ {
+  "group": "D",
+  "method": "DELETE",
+  "path": "DELETE /associations/relations/{id}",
+  "status": 200,
+  "ok": true,
+  "note": "keys: deleted,message,traceId"
+ },
+ {
+  "group": "D",
+  "method": "POST",
+  "path": "POST /associations/ (custom definition)",
+  "status": 201,
+  "ok": true,
+  "note": "keys: id,associationType,firstObjectLabel,firstObjectKey,secondObjectLabel,secondObjectKey,key,locationId,traceId"
+ },
+ {
+  "group": "D",
+  "method": "DELETE",
+  "path": "DELETE /associations/{id}",
+  "status": 200,
+  "ok": true,
+  "note": "keys: deleted,id,message,traceId"
+ },
+ {
+  "group": "D",
+  "method": "GET",
+  "path": "/objects/?locationId={locationId}",
+  "status": 200,
+  "ok": true,
+  "note": "objects: business, opportunity, contact"
+ },
+ {
+  "group": "E",
+  "method": "GET",
+  "path": "/conversations/search?locationId={locationId}&limit=3",
+  "status": 200,
+  "ok": true,
+  "note": "existing conversations: 3 fields: id,locationId,dateAdded,dateUpdated,lastMessageDate,lastMessageType,unreadCount,followers,mentions,isLastMessageInternalComment,contactId,fullName,contactName,companyName"
+ },
+ {
+  "group": "E",
+  "method": "POST",
+  "path": "/conversations/",
+  "status": 400,
+  "ok": false,
+  "note": "Conversation already exists"
+ },
+ {
+  "group": "E",
+  "method": "INFO",
+  "path": "conversation auto-created with contact",
+  "status": 200,
+  "ok": true,
+  "note": "create said already exists; found by contactId search"
+ },
+ {
+  "group": "E",
+  "method": "GET",
+  "path": "/conversations/{id}",
+  "status": 200,
+  "ok": true,
+  "note": "keys: locationId,contactId,type,deleted,id,isLastMessageInternalComment,lastMessageType,lastMessageDate,messageTypes,traceId"
+ },
+ {
+  "group": "E",
+  "method": "PUT",
+  "path": "/conversations/{id}",
+  "status": 200,
+  "ok": true,
+  "note": "keys: success,conversation,traceId"
+ },
+ {
+  "group": "E",
+  "method": "GET",
+  "path": "/conversations/search?contactId=",
+  "status": 200,
+  "ok": true,
+  "note": "for contact: 1"
+ },
+ {
+  "group": "E",
+  "method": "POST",
+  "path": "/conversations/messages/inbound",
+  "status": 201,
+  "ok": true,
+  "note": "inbound record, does not send"
+ },
+ {
+  "group": "E",
+  "method": "GET",
+  "path": "/conversations/{id}/messages",
+  "status": 200,
+  "ok": true,
+  "note": "count=5 message fields: id,direction,status,type,locationId,body,contactId,contentType,conversationId,dateAdded,dateUpdated,from,to,meta"
+ },
+ {
+  "group": "E",
+  "method": "GET",
+  "path": "/conversations/messages/{id}",
+  "status": 401,
+  "ok": false,
+  "note": "fields:  | Token source/channel mismatch with request source/channel"
+ },
+ {
+  "group": "E",
+  "method": "POST",
+  "path": "/conversations/messages",
+  "status": 0,
+  "ok": false,
+  "note": "NOT TESTED: would send a real SMS or email"
+ },
+ {
+  "group": "E",
+  "method": "GET",
+  "path": "/conversations/{id}/messages (existing, read only)",
+  "status": 200,
+  "ok": true,
+  "note": "fields: id,direction,status,type,locationId,body,contactId,contentType,conversationId,dateAdded,dateUpdated,from,to,meta | types: TYPE_SMS,TYPE_ACTIVITY_OPPORTUNITY | direction: inbound,outbound | status: delivered,"
+ },
+ {
+  "group": "E",
+  "method": "INFO",
+  "path": "call recording/transcript",
+  "status": 0,
+  "ok": false,
+  "note": "NOT TESTED: no call message in Dev to read"
+ },
+ {
+  "group": "F",
+  "method": "GET",
+  "path": "/calendars/?locationId={locationId}",
+  "status": 200,
+  "ok": true,
+  "note": "calendars: Install: Mercedes rig, Site inspection, Install: Van, Install: Fuso truck, Phone call, Install: InjectaCore rig"
+ },
+ {
+  "group": "F",
+  "method": "GET",
+  "path": "/calendars/groups?locationId={locationId}",
+  "status": 200,
+  "ok": true,
+  "note": "keys: groups,traceId"
+ },
+ {
+  "group": "F",
+  "method": "GET",
+  "path": "/calendars/{id}",
+  "status": 200,
+  "ok": true,
+  "note": "fields: id,notifications,locationId,groupId,teamMembers,name,description,widgetSlug,calendarType,widgetType,eventTitle,eventColor,meetingLocation,slotDuration"
+ },
+ {
+  "group": "F",
+  "method": "GET",
+  "path": "/calendars/{id}/free-slots?startDate=1793944055004&endDate=1794203255004",
+  "status": 200,
+  "ok": true,
+  "note": "keys: 2026-11-09,traceId"
+ },
+ {
+  "group": "F",
+  "method": "GET",
+  "path": "/calendars/events?calendarId&startTime&endTime",
+  "status": 200,
+  "ok": true,
+  "note": "events=0"
+ },
+ {
+  "group": "F",
+  "method": "POST",
+  "path": "/calendars/events/appointments",
+  "status": 201,
+  "ok": true,
+  "note": "toNotify=false; fields: id,calendarId,locationId,contactId,title,status,appointmentStatus,appoinmentStatus,statusId,state,address,dateAdded,dateUpdated,isRecurring"
+ },
+ {
+  "group": "F",
+  "method": "GET",
+  "path": "/calendars/events/appointments/{id}",
+  "status": 200,
+  "ok": true,
+  "note": "keys: appointment,traceId"
+ },
+ {
+  "group": "F",
+  "method": "PUT",
+  "path": "/calendars/events/appointments/{id}",
+  "status": 200,
+  "ok": true,
+  "note": "keys: id,calendarId,locationId,contactId,title,status,appointmentStatus,appoinmentStatus,statusId,state,address,dateAdded,dateUpdated,isRecurring"
+ },
+ {
+  "group": "F",
+  "method": "GET",
+  "path": "GET /contacts/{id}/appointments (after create)",
+  "status": 200,
+  "ok": true,
+  "note": "count=1"
+ },
+ {
+  "group": "F",
+  "method": "DELETE",
+  "path": "/calendars/events/{id}",
+  "status": 200,
+  "ok": true,
+  "note": "keys: succeeded,traceId"
+ },
+ {
+  "group": "G",
+  "method": "GET",
+  "path": "/invoices/?altId={locationId}&altType=location&limit=5&offset=0",
+  "status": 200,
+  "ok": true,
+  "note": "total=0 fields: "
+ },
+ {
+  "group": "G",
+  "method": "GET",
+  "path": "/invoices/estimate/list?altId={locationId}&altType=location&limit=5&offset=0",
+  "status": 200,
+  "ok": true,
+  "note": "fields: estimates,total,traceId"
+ },
+ {
+  "group": "G",
+  "method": "POST",
+  "path": "POST /invoices/ (draft, not sent)",
+  "status": 201,
+  "ok": true,
+  "note": "status=draft fields: altId,altType,companyId,name,businessDetails,status,invoiceNumber,currency,contactDetails,issueDate,dueDate,termsNotes,discount,invoiceItems"
+ },
+ {
+  "group": "G",
+  "method": "GET",
+  "path": "/invoices/{id}?altId={locationId}&altType=location",
+  "status": 200,
+  "ok": true,
+  "note": "status=draft amountDue=200 total=200 dueDate=2026-11-30T13:59:59.999Z items=1 fields: _id,altId,altType,companyId,name,businessDetails,status,invoiceNumber,currency,contactDetails,issueDate,dueDate,termsNotes,discount"
+ },
+ {
+  "group": "G",
+  "method": "PUT",
+  "path": "/invoices/{id}",
+  "status": 200,
+  "ok": true,
+  "note": "keys: _id,altId,altType,companyId,name,businessDetails,status,invoiceNumber,currency,contactDetails,issueDate,dueDate,termsNotes,discount"
+ },
+ {
+  "group": "G",
+  "method": "DELETE",
+  "path": "/invoices/{id}?altId={locationId}&altType=location",
+  "status": 200,
+  "ok": true,
+  "note": "keys: _id,altId,altType,companyId,name,businessDetails,status,invoiceNumber,currency,contactDetails,issueDate,dueDate,termsNotes,discount"
+ },
+ {
+  "group": "G",
+  "method": "POST",
+  "path": "/invoices/{id}/record-payment",
+  "status": 0,
+  "ok": false,
+  "note": "NOT TESTED: could mark paid and trigger receipt; left untested"
+ },
+ {
+  "group": "G",
+  "method": "POST",
+  "path": "/invoices/{id}/send",
+  "status": 0,
+  "ok": false,
+  "note": "NOT TESTED: would send a real email or SMS"
+ },
+ {
+  "group": "G",
+  "method": "POST",
+  "path": "/invoices/text2pay",
+  "status": 0,
+  "ok": false,
+  "note": "NOT TESTED: would send a real SMS"
+ },
+ {
+  "group": "G",
+  "method": "POST",
+  "path": "POST /invoices/estimate (draft, not sent)",
+  "status": 201,
+  "ok": true,
+  "note": "status=undefined fields: altType,altId,companyId,name,businessDetails,estimateStatus,estimateNumber,currency,contactDetails,issueDate,expiryDate,discount,items,deleted"
+ },
+ {
+  "group": "G",
+  "method": "GET",
+  "path": "/invoices/estimate/{id}?altId={locationId}&altType=location",
+  "status": 404,
+  "ok": false,
+  "note": "Cannot GET /invoices/estimate/6ae42f7dd76e356182fbd06f?altId=5M1zrDbimF17cM16mtmR&altType=location"
+ },
+ {
+  "group": "G",
+  "method": "DELETE",
+  "path": "/invoices/estimate/{id}",
+  "status": 200,
+  "ok": true,
+  "note": "keys: _id,altType,altId,companyId,name,businessDetails,estimateStatus,estimateNumber,currency,contactDetails,issueDate,expiryDate,discount,items"
+ },
+ {
+  "group": "G",
+  "method": "POST",
+  "path": "/invoices/estimate/{id}/send",
+  "status": 0,
+  "ok": false,
+  "note": "NOT TESTED: would send a real email or SMS"
+ },
+ {
+  "group": "H",
+  "method": "GET",
+  "path": "/users/{id}",
+  "status": 200,
+  "ok": true,
+  "note": "keys: id,name,firstName,lastName,email,deleted,roles,totpEnabled,platformLanguage,permissions,scopes,scopesAssignedToOnly,lcPhone,traceId"
+ },
+ {
+  "group": "H",
+  "method": "POST",
+  "path": "/locations/{locationId}/tags",
+  "status": 201,
+  "ok": true,
+  "note": "keys: tag,traceId"
+ },
+ {
+  "group": "H",
+  "method": "GET",
+  "path": "/locations/{locationId}/tags",
+  "status": 200,
+  "ok": true,
+  "note": "count=63"
+ },
+ {
+  "group": "H",
+  "method": "DELETE",
+  "path": "/locations/{locationId}/tags/{id}",
+  "status": 200,
+  "ok": true,
+  "note": "keys: succeded,succeeded,traceId"
+ },
+ {
+  "group": "H",
+  "method": "GET",
+  "path": "/locations/{locationId}/customFields?model=contact",
+  "status": 200,
+  "ok": true,
+  "note": "contact fields: 47"
+ },
+ {
+  "group": "H",
+  "method": "GET",
+  "path": "/locations/{locationId}/customFields?model=opportunity",
+  "status": 200,
+  "ok": true,
+  "note": "opportunity fields: 40"
+ },
+ {
+  "group": "H",
+  "method": "POST",
+  "path": "/locations/{locationId}/customFields",
+  "status": 201,
+  "ok": true,
+  "note": "keys: customField,backfillTriggered,traceId"
+ },
+ {
+  "group": "H",
+  "method": "DELETE",
+  "path": "/locations/{locationId}/customFields/{id}",
+  "status": 200,
+  "ok": true,
+  "note": "keys: succeded,traceId"
+ },
+ {
+  "group": "H",
+  "method": "GET",
+  "path": "/locations/{locationId}/customValues",
+  "status": 200,
+  "ok": true,
+  "note": "count=37"
+ },
+ {
+  "group": "H",
+  "method": "POST",
+  "path": "/locations/{locationId}/customValues",
+  "status": 201,
+  "ok": true,
+  "note": "keys: customValue,traceId"
+ },
+ {
+  "group": "H",
+  "method": "DELETE",
+  "path": "/locations/{locationId}/customValues/{id}",
+  "status": 200,
+  "ok": true,
+  "note": "keys: succeeded,traceId"
+ },
+ {
+  "group": "H",
+  "method": "GET",
+  "path": "/products/?locationId={locationId}&limit=5",
+  "status": 200,
+  "ok": true,
+  "note": "products=0"
+ },
+ {
+  "group": "H",
+  "method": "GET",
+  "path": "/forms/?locationId={locationId}",
+  "status": 200,
+  "ok": true,
+  "note": "keys: forms,total,traceId"
+ },
+ {
+  "group": "H",
+  "method": "GET",
+  "path": "/forms/submissions?locationId={locationId}&limit=5",
+  "status": 200,
+  "ok": true,
+  "note": "keys: submissions,meta,traceId"
+ },
+ {
+  "group": "H",
+  "method": "GET",
+  "path": "/surveys/?locationId={locationId}",
+  "status": 200,
+  "ok": true,
+  "note": "keys: surveys,total,traceId"
+ },
+ {
+  "group": "H",
+  "method": "GET",
+  "path": "/surveys/submissions?locationId={locationId}&limit=5",
+  "status": 200,
+  "ok": true,
+  "note": "keys: submissions,meta,traceId"
+ },
+ {
+  "group": "H",
+  "method": "GET",
+  "path": "/workflows/?locationId={locationId}",
+  "status": 200,
+  "ok": true,
+  "note": "workflows=43"
+ },
+ {
+  "group": "H",
+  "method": "GET",
+  "path": "/medias/files",
+  "status": 200,
+  "ok": true,
+  "note": "keys: files,count,traceId"
+ },
+ {
+  "group": "H",
+  "method": "GET",
+  "path": "/links/?locationId={locationId}",
+  "status": 200,
+  "ok": true,
+  "note": "links=3"
+ },
+ {
+  "group": "H",
+  "method": "GET",
+  "path": "/locations/{locationId}",
+  "status": 200,
+  "ok": true,
+  "note": "business name present: true"
+ },
+ {
+  "group": "I",
+  "method": "GET",
+  "path": "/webhooks/",
+  "status": 404,
+  "ok": false,
+  "note": "probe: webhook subscription endpoint | "
+ },
+ {
+  "group": "I",
+  "method": "GET",
+  "path": "/locations/{locationId}/webhooks",
+  "status": 404,
+  "ok": false,
+  "note": "probe: webhook subscription endpoint | Cannot GET /locations/5M1zrDbimF17cM16mtmR/webhooks"
+ },
+ {
+  "group": "I",
+  "method": "GET",
+  "path": "/hooks/?locationId={locationId}",
+  "status": 404,
+  "ok": false,
+  "note": "probe: webhook subscription endpoint | Cannot GET /hooks/?locationId=5M1zrDbimF17cM16mtmR"
+ },
+ {
+  "group": "I",
+  "method": "GET",
+  "path": "/marketplace/app/webhooks?locationId={locationId}",
+  "status": 404,
+  "ok": false,
+  "note": "probe: webhook subscription endpoint | Cannot GET /marketplace/app/webhooks?locationId=5M1zrDbimF17cM16mtmR"
+ },
+ {
+  "group": "cleanup",
+  "method": "-",
+  "path": "-",
+  "status": 0,
+  "ok": true,
+  "note": "all created records deleted and verified"
+ },
+ {
+  "group": "I",
+  "method": "INFO",
+  "path": "rate limit headers",
+  "status": 0,
+  "ok": true,
+  "note": "{\"x-ratelimit-daily-remaining\":\"199157\",\"x-ratelimit-daily-reset\":\"56179000\",\"x-ratelimit-interval-milliseconds\":\"10000\",\"x-ratelimit-limit-daily\":\"200000\",\"x-ratelimit-max\":\"100\",\"x-ratelimit-remaining\":\"88\"}"
+ },
+ {
+  "group": "S22",
+  "method": "POST",
+  "path": "/contacts/",
+  "status": 201,
+  "ok": true,
+  "note": "ZZ-TEST contact, email only, no phone | 317 ms"
+ },
+ {
+  "group": "S22",
+  "method": "GET",
+  "path": "/invoices/generate-invoice-number?altId={locationId}&altType=location",
+  "status": 200,
+  "ok": true,
+  "note": "response: {\"invoiceNumber\":\"000013\",\"traceId\":\"68f9eee0-19a7-963c-a69b-95270f772d70\"} | 183 ms"
+ },
+ {
+  "group": "S22",
+  "method": "GET",
+  "path": "/invoices/estimate/number/generate?altId={locationId}&altType=location",
+  "status": 200,
+  "ok": true,
+  "note": "response: {\"estimateNumber\":7,\"traceId\":\"baa3307d-601a-4693-9c19-2ffdbd19013a\"} | 238 ms"
+ },
+ {
+  "group": "S22",
+  "method": "GET",
+  "path": "/invoices/settings?altId={locationId}&altType=location",
+  "status": 200,
+  "ok": true,
+  "note": "fields: _id,altId,altType,__v,createdAt,customFields,deleted,reminderSettings,updatedAt,productSettings,customNotification,invoiceNumberPrefix,estimateNumberPrefix,traceId | {\"_id\":\"6ae4496266f80d0ff1830618\",\"altId\":\"5M1zrDbimF17cM16mtmR\",\"altType\":\"location\",\"__v\":0,\"createdAt\":\"2026-10-30T07:38:10.102Z\",\"customFields\":[],\"deleted\":false,\"reminderSettings\":{\"defaultEmailTemplateId\":\"\",\"reminders\":[{\"reminderName\":\"Reminder 1\",\"enabled\":true,\"maxReminders\":1,\"intervalType\":\"daily\",\"reminderTime\":\"before\",\"reminderInvoiceCondition\":\"invoice_overdue\",\"reminderNumber\":3,\"emailTemplate\":\"default\",\"smsTemplate\":\"default\",\"emailSubject\":\"[{{ invoice.company.name }}] Friendly Reminder: Payment Due Soon for Invoice #[{{ invoice.number }}]\",\"reminderId\":\"2a4b7c5b-5ef0-40e2-922e-1b26980778ce\",\"startTime\":\"8:00 AM\",\"endTime\":\"6:00 PM\",\"timezone\":\"contactTZ\"},{\"reminderName | 173 ms"
+ },
+ {
+  "group": "S22",
+  "method": "GET",
+  "path": "/invoices/estimate/template?altId={locationId}&altType=location&limit=5&offset=0",
+  "status": 200,
+  "ok": true,
+  "note": "fields: data,traceId count=0 | 173 ms"
+ },
+ {
+  "group": "S22",
+  "method": "GET",
+  "path": "/invoices/template?altId={locationId}&altType=location&limit=5&offset=0",
+  "status": 200,
+  "ok": true,
+  "note": "list keys: data,traceId | first template fields:  | businessDetails:  | 173 ms"
+ },
+ {
+  "group": "S22",
+  "method": "POST",
+  "path": "/invoices/template",
+  "status": 201,
+  "ok": true,
+  "note": "fields: altId,altType,name,businessDetails,currency,items,automaticTaxesCalculated,discount,total,termsNotes,internal,deleted,title,invoiceNumberPrefix,paymentMethods,attachments,configuration,documentLayout,_id,createdAt,updatedAt,__v,traceId | 188 ms"
+ },
+ {
+  "group": "S22",
+  "method": "GET",
+  "path": "/invoices/template/{id}?altId={locationId}&altType=location",
+  "status": 200,
+  "ok": true,
+  "note": "fields: _id,altId,altType,name,businessDetails,currency,items,automaticTaxesCalculated,discount,total,termsNotes,internal,deleted,title,invoiceNumberPrefix,paymentMethods,attachments,configuration,documentLayout,createdAt,updatedAt,__v,traceId | businessDetails: logoUrl,name,phoneNo,address,website,customValues | logoUrl kept: true | prefix: ZZT- | terms kept: true | 175 ms"
+ },
+ {
+  "group": "S22",
+  "method": "PUT",
+  "path": "/invoices/template/{id}",
+  "status": 200,
+  "ok": true,
+  "note": "title back: ZZ-TEST EDITED | 188 ms"
+ },
+ {
+  "group": "S22",
+  "method": "PATCH",
+  "path": "PATCH /invoices/template/{id}/late-fees-configuration",
+  "status": 422,
+  "ok": false,
+  "note": "lateFeesConfiguration.value must be a positive number; lateFeesConfiguration.value must be a number conforming to the specified constraints; lateFeesConfiguration.type must be a valid enum value | 175 ms"
+ },
+ {
+  "group": "S22",
+  "method": "PATCH",
+  "path": "PATCH /invoices/template/{id}/payment-methods-configuration",
+  "status": 200,
+  "ok": true,
+  "note": "keys: _id,altId,altType,name,businessDetails,currency,items,automaticTaxesCalculated,discount,total,termsNotes,internal,deleted,title,invoiceNumberPrefix,paymentMethods,attachments,configuration,documentLayout,createdAt,updatedAt,__v,automaticTaxesEnabled,miscellaneousCharges,tipsConfiguration,updatedBy,traceId | 189 ms"
+ },
+ {
+  "group": "S22",
+  "method": "INFO",
+  "path": "template create body probe",
+  "status": 0,
+  "ok": true,
+  "note": "top-level accepted: logoUrl,logo,primaryColor,color,brandColor,accentColor,headerText,header,footerText,footer,message,notes,paymentMethods(kept),attachments(kept),customFields,dueDateOffset,paymentTerms,theme,language,tipsConfiguration(kept),automaticTaxesEnabled(kept),internal(kept),sentFrom,liveMode | rejected: lateFeesConfiguration: lateFeesConfiguration.value must be a positive number; lateFeesConfigu ; miscellaneousCharges: miscellaneousCharges.charges must be an array"
+ },
+ {
+  "group": "S22",
+  "method": "INFO",
+  "path": "template businessDetails probe",
+  "status": 0,
+  "ok": true,
+  "note": "accepted: logoUrl,phoneNo,website,address,customValues,email,taxNumber,abn,colour | rejected: "
+ },
+ {
+  "group": "S22",
+  "method": "DELETE",
+  "path": "/invoices/template/{id}?altId={locationId}&altType=location",
+  "status": 200,
+  "ok": true,
+  "note": "keys: success,traceId | 171 ms"
+ },
+ {
+  "group": "S22",
+  "method": "GET",
+  "path": "/invoices/template/{id} (after delete)",
+  "status": 404,
+  "ok": true,
+  "note": "reads back as 404"
+ },
+ {
+  "group": "S22",
+  "method": "POST",
+  "path": "POST /invoices/ (draft A)",
+  "status": 201,
+  "ok": true,
+  "note": "status=draft num=000015 total=20 | 196 ms"
+ },
+ {
+  "group": "S22",
+  "method": "POST",
+  "path": "/invoices/{id}/send",
+  "status": 201,
+  "ok": true,
+  "note": "send response: {\"emailData\":{\"threadId\":\"xSTR68spnxv0RlmrqzJ2\",\"messageId\":\"Q4jv3yKSzialEncQc1qX\",\"emailMessageId\":\"Q4jv3yKSzialEncQc1qX\",\"msg\":\"Email queued successfully.\",\"conversationId\":\"PtkTVRvRAsrwHwTKdRru\",\"message\":{\"id\":\"xSTR68spnxv0RlmrqzJ2\",\"dateUpdated\":\"2026-10-30T07:39:57.982Z\",\"dateAdded\":\"2026-10-30T07:39:57.600Z\",\"deleted\":false,\"contentType\":\"text/html\",\"type\":3,\"contactId\":\"A4TEbKcwZQNjgqC6OTTI\",\"locationId\":\"5M1zrDbimF17cM16mtmR\",\"companyId\":\"qNEBbbu140HzgR5QPwLm\",\"userId\":\"lCO5VrlTWWwB368p | 2745 ms"
+ },
+ {
+  "group": "S22",
+  "method": "GET",
+  "path": "GET /invoices/{id} (after send)",
+  "status": 200,
+  "ok": true,
+  "note": "status=sent amountDue=20 sentTo={\"phoneNo\":[],\"email\":[\"<email>\"],\"emailBcc\":[],\"emailCc\":[]} timestamps: issueDate,dueDate,amountPaid,createdAt,updatedAt,sentAt,sentBy,sentFrom,sentTo,updatedBy | all fields: _id,altId,altType,companyId,name,businessDetails,status,invoiceNumber,currency,contactDetails,issueDate,dueDate,termsNotes,discount,invoiceItems,total,invoiceTotal,liveMode,amountPaid,amountDue,automaticTaxesCalculated,invoiceNumberPrefix,paymentMethods,attachments,configuration,showPaymentBanner,syncDetails,tipsReceived,externalTransactions,createdAt,updatedAt,manualStatusTransitions,sentAt,sentBy,sentFrom,sentTo,updatedBy,remindersConfiguration,meta,totalSummary | 182 ms"
+ },
+ {
+  "group": "S22",
+  "method": "INFO",
+  "path": "invoice after send: timestamps",
+  "status": 0,
+  "ok": true,
+  "note": "{\"status\":\"sent\",\"total\":20,\"invoiceTotal\":20,\"amountPaid\":0,\"amountDue\":20,\"sentAt\":\"2026-10-30T07:39:58.307Z\",\"sentBy\":\"lCO5VrlTWWwB368pLUDC\"}"
+ },
+ {
+  "group": "S22",
+  "method": "POST",
+  "path": "POST /invoices/{id}/record-payment (partial 5)",
+  "status": 201,
+  "ok": true,
+  "note": "response: {\"success\":true,\"invoice\":{\"_id\":\"6ae449cc4b9ec4e2c6e0e79d\",\"altId\":\"5M1zrDbimF17cM16mtmR\",\"altType\":\"location\",\"companyId\":\"qNEBbbu140HzgR5QPwLm\",\"name\":\"ZZ-TEST invoice A\",\"businessDetails\":{\"name\":\"ZZ-TEST Business\"},\"status\":\"partially_paid\",\"invoiceNumber\":\"000015\",\"currency\":\"AUD\",\"contactDeta | 1606 ms"
+ },
+ {
+  "group": "S22",
+  "method": "INFO",
+  "path": "after partial payment",
+  "status": 200,
+  "ok": true,
+  "note": "status=partially_paid amountDue=15 amountPaid=5 total=20"
+ },
+ {
+  "group": "S22",
+  "method": "POST",
+  "path": "POST /invoices/{id}/record-payment (full balance, cash)",
+  "status": 201,
+  "ok": true,
+  "note": "response: {\"success\":true,\"invoice\":{\"_id\":\"6ae449cc4b9ec4e2c6e0e79d\",\"altId\":\"5M1zrDbimF17cM16mtmR\",\"altType\":\"location\",\"companyId\":\"qNEBbbu140HzgR5QPwLm\",\"name\":\"ZZ-TEST invoice A\",\"businessDetails\":{\"name\":\"ZZ-TEST Business\"},\"status\":\"paid\",\"invoiceNumber\":\"000015\",\"currency\":\"AUD\",\"contactDetails\":{\"id\" | 1951 ms"
+ },
+ {
+  "group": "S22",
+  "method": "INFO",
+  "path": "after full payment",
+  "status": 200,
+  "ok": true,
+  "note": "status=paid amountDue=0 amountPaid=20"
+ },
+ {
+  "group": "S22",
+  "method": "POST",
+  "path": "POST /invoices/{id}/void (on a PAID invoice)",
+  "status": 400,
+  "ok": false,
+  "note": "response: {\"status\":400,\"message\":\"To void an invoice which has received payment through the payment provider, the corresponding transactions needs to be refunded first\",\"name\":\"HttpException\",\"traceId\":\"f6ae0a | To void an invoice which has received payment through the payment provider, the corresponding transactions needs to be refunded first | 192 ms"
+ },
+ {
+  "group": "S22",
+  "method": "POST",
+  "path": "POST /invoices/ (draft B)",
+  "status": 201,
+  "ok": true,
+  "note": "keys: altId,altType,companyId,name,businessDetails,status,invoiceNumber,currency,contactDetails,issueDate,dueDate,termsNotes,discount,invoiceItems,total,invoiceTotal,liveMode,amountPaid,amountDue,automaticTaxesCalculated,invoiceNumberPrefix,paymentMethods,attachments,configuration,showPaymentBanner,_id,syncDetails,tipsReceived,externalTransactions,createdAt,updatedAt,traceId | 220 ms"
+ },
+ {
+  "group": "S22",
+  "method": "POST",
+  "path": "POST /invoices/{id}/void (draft B, expected refusal)",
+  "status": 400,
+  "ok": false,
+  "note": "response: {\"status\":400,\"message\":\"Can not void draft invoice. You can delete draft invoice!\",\"name\":\"HttpException\",\"traceId\":\"05e9e775-0e65-478e-b8f5-f7d4c44db83c\"} | Can not void draft invoice. You can delete draft invoice! | 180 ms"
+ },
+ {
+  "group": "S22",
+  "method": "POST",
+  "path": "POST /invoices/{id}/send (B)",
+  "status": 201,
+  "ok": true,
+  "note": "keys: emailData,invoice,traceId | 2972 ms"
+ },
+ {
+  "group": "S22",
+  "method": "POST",
+  "path": "POST /invoices/{id}/void (sent B)",
+  "status": 201,
+  "ok": true,
+  "note": "response: {\"_id\":\"6ae449db6726cc757b0140e1\",\"altId\":\"5M1zrDbimF17cM16mtmR\",\"altType\":\"location\",\"companyId\":\"qNEBbbu140HzgR5QPwLm\",\"name\":\"ZZ-TEST invoice B void\",\"businessDetails\":{\"name\":\"ZZ-TEST Business\"},\" | 1073 ms"
+ },
+ {
+  "group": "S22",
+  "method": "INFO",
+  "path": "invoice B after void",
+  "status": 404,
+  "ok": false,
+  "note": "status=404 amountDue=undefined"
+ },
+ {
+  "group": "S22",
+  "method": "POST",
+  "path": "/invoices/text2pay",
+  "status": 201,
+  "ok": true,
+  "note": "response keys: invoice,invoiceUrl,traceId {\"invoice\":{\"altId\":\"5M1zrDbimF17cM16mtmR\",\"altType\":\"location\",\"companyId\":\"qNEBbbu140HzgR5QPwLm\",\"name\":\"ZZ-TEST text2pay\",\"businessDetails\":{\"name\":\"ZZ-TEST Business\",\"phoneNo\":\"<biz phone>\",\"address\":{\"addressLine1\":\"1512\",\"countryCode\":\"AU\",\"state\":\"\",\"city\":\"Brisbane\",\"postalCode\":\"1000\"}},\"s | 1293 ms"
+ },
+ {
+  "group": "S22",
+  "method": "POST",
+  "path": "POST /invoices/estimate (E1)",
+  "status": 201,
+  "ok": true,
+  "note": "estimateStatus=draft num=8 | 197 ms"
+ },
+ {
+  "group": "S22",
+  "method": "PUT",
+  "path": "/invoices/estimate/{id}",
+  "status": 200,
+  "ok": true,
+  "note": "name back: ZZ-TEST estimate edited | 339 ms"
+ },
+ {
+  "group": "S22",
+  "method": "POST",
+  "path": "/invoices/estimate/{id}/send",
+  "status": 201,
+  "ok": true,
+  "note": "send response: {\"_id\":\"6ae449e36726cc757b0142be\",\"altType\":\"location\",\"altId\":\"5M1zrDbimF17cM16mtmR\",\"companyId\":\"qNEBbbu140HzgR5QPwLm\",\"name\":\"ZZ-TEST estimate\",\"businessDetails\":{\"name\":\"ZZ-TEST Business\"},\"estimateStatus\":\"sent\",\"estimateNumber\":8,\"currency\":\"AUD\",\"contactDetails\":{\"id\":\"A4TEbKcwZQNjgqC6OTTI\",\"name\":\"ZZ-TEST S22\",\"email\":\"<email>\"},\"issueDate\":\"2026-10-29T14:00:00.000Z\",\"expiryDate\":\"2026-12- | 1722 ms"
+ },
+ {
+  "group": "S22",
+  "method": "INFO",
+  "path": "estimate after send",
+  "status": 404,
+  "ok": false,
+  "note": "http=404 estimateStatus=undefined sentTo={} fields: message,error,statusCode msg=Cannot GET /invoices/estimate/6ae449e36726cc757b0142be?altId=5M1zrDbimF17cM16mtmR&altType=location"
+ },
+ {
+  "group": "S22",
+  "method": "POST",
+  "path": "/invoices/estimate/{id}/invoice",
+  "status": 400,
+  "ok": false,
+  "note": "response keys: status,message,name,code,traceId {\"status\":400,\"message\":\"Estimate is not accepted\",\"name\":\"HttpException\",\"code\":\"estimate_not_accepted\",\"traceId\":\"06394e4c-033b-4a8d-92e1-b81685033aab\"} | Estimate is not accepted | 184 ms"
+ },
+ {
+  "group": "S22",
+  "method": "INFO",
+  "path": "estimate after convert",
+  "status": 404,
+  "ok": false,
+  "note": "estimateStatus=undefined invoice link fields: "
+ },
+ {
+  "group": "S22",
+  "method": "GET",
+  "path": "GET /conversations/search?contactId (after sends)",
+  "status": 200,
+  "ok": true,
+  "note": "conversations=1 | 216 ms"
+ },
+ {
+  "group": "S22",
+  "method": "GET",
+  "path": "GET /conversations/{id}/messages (after sends)",
+  "status": 200,
+  "ok": true,
+  "note": "count=9 | TYPE_EMAIL/outbound/undefined/text/html ; TYPE_ACTIVITY_INVOICE/outbound/undefined/ ; TYPE_ACTIVITY_INVOICE/outbound/undefined/ ; TYPE_EMAIL/outbound/undefined/text/html ; TYPE_EMAIL/outbound/undefined/text/html ; TYPE_ACTIVITY_PAYMENT/outbound/undefined/ ; TYPE_EMAIL/outbound/undefined/text/html ; TYPE_ACTIVITY_INVOICE/outbound/undefined/ ; TYPE_EMAIL/outbound/undefined/text/html | fields: id,direction,type,locationId,body,contactId,contentType,conversationId,dateAdded,dateUpdated,userId,meta,source,messageType | 242 ms"
+ },
+ {
+  "group": "S22",
+  "method": "INFO",
+  "path": "sends created a conversation message",
+  "status": 200,
+  "ok": true,
+  "note": "9 messages on the contact conversation after 2 invoice sends, 1 estimate send, 1 text2pay"
+ },
+ {
+  "group": "S22",
+  "method": "INFO",
+  "path": "sweep of leftover ZZ-TEST invoices",
+  "status": 0,
+  "ok": true,
+  "note": "sweep invoice 6ae449e1d76e356182017054 (sent): delete 400 Invoice status need to be draft to delete an invoice | void 201  | after: gone || sweep invoice 6ae449cc4b9ec4e2c6e0e79d (paid): delete 400 Invoice status need to be draft to delete an invoice | void 400 To void an invoice which has received payment through the payment provider, the corresponding transa | after: paid || sweep invoice 6ae4495f4b9ec4e2c6e0d9db (partially_paid): delete 400 Invoice status need to be draft to delete an invoice | void 400 To void an invoice which has received payment through the payment provider, the corresponding transa | after: partially_paid"
+ },
+ {
+  "group": "S22",
+  "method": "-",
+  "path": "cleanup",
+  "status": 0,
+  "ok": false,
+  "note": "not cleaned: invoice A"
+ },
+ {
+  "group": "S22",
+  "method": "INFO",
+  "path": "rate limit headers",
+  "status": 0,
+  "ok": true,
+  "note": "{\"x-ratelimit-daily-remaining\":\"198883\",\"x-ratelimit-daily-reset\":\"49390000\",\"x-ratelimit-interval-milliseconds\":\"10000\",\"x-ratelimit-limit-daily\":\"200000\",\"x-ratelimit-max\":\"100\",\"x-ratelimit-remaining\":\"96\"}"
+ }
+]

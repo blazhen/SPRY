@@ -57,8 +57,8 @@ export const builtInTemplates: Template[] = [
       { name: 'Fire retardant coating', description: 'Applied over exposed foam where required.' },
     ],
     payments: [
-      { label: 'Deposit, due before the job date', percent: 30 },
-      { label: 'Final payment, on completion', percent: 70 },
+      { label: 'Deposit', percent: 30, due: 'before-1bd' },
+      { label: 'Final payment', percent: 70, due: 'on-completion' },
     ],
     notes: 'Thanks for the opportunity to quote. Rachael and the team are happy to answer any questions before you accept.',
     terms: STD_TERMS,
@@ -75,9 +75,9 @@ export const builtInTemplates: Template[] = [
     ],
     upgrades: [{ name: 'Roof upgrade to R4.0', description: 'A thicker application for higher thermal performance.' }],
     payments: [
-      { label: 'Deposit, due before the job date', percent: 40 },
-      { label: 'Progress payment, on completion of spraying', percent: 40 },
-      { label: 'Final payment, after the job report', percent: 20 },
+      { label: 'Deposit', percent: 40, due: 'before-1bd' },
+      { label: 'Progress payment, on completion of spraying', percent: 40, due: 'on-completion' },
+      { label: 'Final payment, before the job report is sent', percent: 20, due: 'custom' },
     ],
     notes: '',
     terms: STD_TERMS,
@@ -90,7 +90,7 @@ export const builtInTemplates: Template[] = [
     builtIn: true,
     items: [{ section: 'Extras', name: 'Additional work', description: 'Describe the extra work here.', qty: 1, unit: 'lot' }],
     upgrades: [],
-    payments: [{ label: 'Full payment, on completion', percent: 100 }],
+    payments: [{ label: 'Full payment', percent: 100, due: 'on-completion' }],
     notes: 'This is an add-on to your existing job. Your booking and the original quote are not affected.',
     terms: STD_TERMS,
     validDays: 14,
@@ -105,8 +105,8 @@ function mk(partial: Partial<Quote> & Pick<Quote, 'id' | 'number' | 'status' | '
     upgrades: [],
     selectedUpgradeIds: [],
     payments: [
-      { id: partial.id + '-pay1', label: 'Deposit, due before the job date', percent: 30 },
-      { id: partial.id + '-pay2', label: 'Final payment, on completion', percent: 70 },
+      { id: partial.id + '-pay1', label: 'Deposit', percent: 30, due: 'before-1bd' },
+      { id: partial.id + '-pay2', label: 'Final payment', percent: 70, due: 'on-completion' },
     ],
     notes: 'Thanks for the opportunity to quote. Rachael and the team are happy to answer any questions before you accept.',
     terms: STD_TERMS,
@@ -142,12 +142,12 @@ export function seedQuotes(): Quote[] {
     id: 'q2', number: 'Q-1002', status: 'accepted', jobId: 'j1', contactId: 'c1', title: 'Add-on: extra insulation for the studio',
     isAddOn: true, issuedOn: addDaysISO(today, -4), validUntil: addDaysISO(today, 10),
     items: [{ id: 'q2i1', section: 'Extras', name: 'Open-cell spray foam, R2.5', description: 'Studio walls.', qty: 18, unit: 'm²', unitPrice: 38 }],
-    payments: [{ id: 'q2p1', label: 'Full payment, on completion', percent: 100 }],
+    payments: [{ id: 'q2p1', label: 'Full payment', percent: 100, due: 'on-completion' }],
     sentAt: addDaysISO(today, -4) + 'T11:00:00', acceptedAt: addDaysISO(today, -3) + 'T08:20:00',
   })
   q2.acceptedTotal = 752.4
   const q3: Quote = mk({
-    id: 'q3', number: 'Q-1003', status: 'sent', jobId: 'j2', contactId: 'c2', title: 'Shed roof spray, 48 Sample Road',
+    id: 'q3', number: 'Q-1003', status: 'sent', jobId: 'j2', contactId: 'c2', title: 'Shed roof spray, 48 Sample Road, option A: closed-cell R3.0', isOption: true,
     issuedOn: addDaysISO(today, -3), validUntil: addDaysISO(today, 27),
     items: [
       { id: 'q3i1', section: 'Preparation', name: 'Site preparation and masking', description: 'Protecting surfaces and equipment.', qty: 1, unit: 'lot', unitPrice: 350, catalogId: 'p6' },
@@ -183,5 +183,15 @@ export function seedQuotes(): Quote[] {
     id: 'q7', number: 'Q-1007', status: 'draft', jobId: 'j5', contactId: 'c5', title: 'Extension roof, 21 Mock Avenue',
     items: [{ id: 'q7i1', section: 'Roof', name: 'Closed-cell spray foam, R3.0', description: 'Extension roof.', qty: 38, unit: 'm²', unitPrice: null, catalogId: 'p1' }],
   })
-  return [q7, q6, q5, q4, q3, q2, q1]
+  const q8: Quote = mk({
+    id: 'q8', number: 'Q-1008', status: 'sent', jobId: 'j2', contactId: 'c2', isOption: true,
+    title: 'Shed roof spray, 48 Sample Road, option B: open-cell R2.5',
+    issuedOn: addDaysISO(today, -3), validUntil: addDaysISO(today, 27),
+    items: [
+      { id: 'q8i1', section: 'Preparation', name: 'Site preparation and masking', description: 'Protecting surfaces and equipment.', qty: 1, unit: 'lot', unitPrice: 350, catalogId: 'p6' },
+      { id: 'q8i2', section: 'Roof', name: 'Open-cell spray foam, R2.5', description: 'Sprayed to the underside of the roof sheeting.', qty: 140, unit: 'm²', unitPrice: 38, catalogId: 'p3' },
+    ],
+    sentAt: addDaysISO(today, -3) + 'T10:15:00',
+  })
+  return [q8, q7, q6, q5, q4, q3, q2, q1]
 }

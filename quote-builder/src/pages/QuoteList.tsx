@@ -2,6 +2,7 @@ import { memo, useMemo, useState } from 'react'
 import { Copy, Eye, FilePlus2, Pencil, Plus, Search, Trash2 } from 'lucide-react'
 import { Dialog, EmptyState, StatusBadge, toast } from '../components/ui'
 import { effectiveStatus, quoteTotals } from '../lib/calc'
+import { VIA_LABEL } from '../lib/due'
 import { addDaysISO, fmtDate, fmtMoney, fmtMoneyWhole, todayISO } from '../lib/format'
 import { go, href } from '../lib/router'
 import { deleteQuote, duplicateQuote, resetDemoData, useStore } from '../lib/store'
@@ -31,7 +32,9 @@ const rowValue = (q: Quote) => (q.status === 'accepted' ? q.acceptedTotal ?? row
 
 function dateNote(r: Row): string {
   const { q, status } = r
-  if (status === 'accepted' && q.acceptedAt) return `Accepted ${fmtDate(q.acceptedAt)}`
+  if (status === 'accepted' && q.acceptedAt) {
+    return `Accepted ${fmtDate(q.acceptedAt)}${q.acceptedVia && q.acceptedVia !== 'email' ? ` ${VIA_LABEL[q.acceptedVia]}` : ''}${q.poNumber ? `, PO ${q.poNumber}` : ''}`
+  }
   if (status === 'declined' && q.declinedAt) return `Declined ${fmtDate(q.declinedAt)}`
   if (status === 'sent' && q.sentAt) return `Sent ${fmtDate(q.sentAt)}, valid to ${fmtDate(q.validUntil)}`
   if (status === 'draft') return `Edited ${fmtDate(q.updatedAt)}`
@@ -55,6 +58,7 @@ const QuoteRow = memo(function QuoteRow({ r, onDelete, onDuplicate }: { r: Row; 
           {q.title || 'Untitled quote'}
         </a>
         {q.isAddOn && <span className="ml-2 inline-block rounded-full bg-amber-wash px-2 py-0.5 text-xs font-bold text-amber-ink">Add-on</span>}
+        {q.isOption && <span className="ml-2 inline-block rounded-full bg-navy-wash px-2 py-0.5 text-xs font-bold text-navy">Option</span>}
         <p className="mt-0.5 text-sm text-muted">{dateNote(r)}</p>
       </div>
       <span className="hidden lg:block">
@@ -301,10 +305,16 @@ export default function QuoteList() {
                       )}
                     </div>
                     {g.job && (
-                      <a href={href.new({ jobId: g.job.id, addOn: true })} className="btn btn-quiet btn-sm no-print" aria-label={`Add-on quote for ${g.job.title}`}>
-                        <Plus size={16} aria-hidden="true" />
-                        Add-on quote
-                      </a>
+                      <div className="flex flex-wrap gap-2 no-print">
+                        <a href={href.new({ jobId: g.job.id, option: true })} className="btn btn-quiet btn-sm" aria-label={`Alternative option for ${g.job.title}`}>
+                          <Plus size={16} aria-hidden="true" />
+                          Option
+                        </a>
+                        <a href={href.new({ jobId: g.job.id, addOn: true })} className="btn btn-quiet btn-sm" aria-label={`Add-on quote for ${g.job.title}`}>
+                          <Plus size={16} aria-hidden="true" />
+                          Add-on quote
+                        </a>
+                      </div>
                     )}
                   </header>
                   <ul className="border-t rule">

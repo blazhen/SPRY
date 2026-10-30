@@ -1,6 +1,6 @@
 import { useSyncExternalStore } from 'react'
 import { builtInTemplates, seedJobs, seedQuotes } from '../data/mock'
-import type { Job, LineItem, Quote, Template } from '../types'
+import type { AcceptedVia, Job, LineItem, Quote, Template } from '../types'
 import { quoteTotals } from './calc'
 import { addDaysISO, todayISO, uid } from './format'
 
@@ -90,7 +90,7 @@ function nextNumber(): string {
   return `Q-${max + 1}`
 }
 
-export function blankQuote(opts: { jobId?: string; contactId?: string; isAddOn?: boolean } = {}): Quote {
+export function blankQuote(opts: { jobId?: string; contactId?: string; isAddOn?: boolean; isOption?: boolean } = {}): Quote {
   const today = todayISO()
   const now = new Date().toISOString()
   const job = opts.jobId ? state.jobs.find((j) => j.id === opts.jobId) : undefined
@@ -99,15 +99,16 @@ export function blankQuote(opts: { jobId?: string; contactId?: string; isAddOn?:
     number: nextNumber(),
     status: 'draft',
     jobId: job?.id ?? '',
-    isAddOn: !!opts.isAddOn,
+    isAddOn: !!opts.isAddOn && !opts.isOption,
+    isOption: !!opts.isOption,
     contactId: job?.contactId ?? opts.contactId ?? '',
     title: '',
     items: [],
     upgrades: [],
     selectedUpgradeIds: [],
     payments: [
-      { id: uid('pay'), label: 'Deposit, due before the job date', percent: 30 },
-      { id: uid('pay'), label: 'Final payment, on completion', percent: 70 },
+      { id: uid('pay'), label: 'Deposit', percent: 30, due: 'before-1bd' },
+      { id: uid('pay'), label: 'Final payment', percent: 70, due: 'on-completion' },
     ],
     notes: '',
     terms: builtInTemplates[0].terms,
@@ -150,6 +151,8 @@ export function duplicateQuote(id: string): Quote | undefined {
     sentAt: undefined,
     acceptedAt: undefined,
     acceptedTotal: undefined,
+    acceptedVia: undefined,
+    poNumber: undefined,
     declinedAt: undefined,
     declineReason: undefined,
   }
@@ -166,21 +169,57 @@ const patch = (id: string, p: Partial<Quote>) => {
 export const markSent = (id: string) => patch(id, { status: 'sent', sentAt: new Date().toISOString(), selectedUpgradeIds: [], declinedAt: undefined, declineReason: undefined })
 export const withdrawToDraft = (id: string) => patch(id, { status: 'draft', sentAt: undefined })
 export const setSelectedUpgrades = (id: string, ids: string[]) => patch(id, { selectedUpgradeIds: ids })
-export function markAccepted(id: string, selectedIds: string[]) {
+/** Other alternative options on the same job that are still waiting for an answer. */
+export function openSiblingOptions(id: string): Quote[] {
+  const q = state.quotes.find((x) => x.id === id)
+  if (!q || !q.isOption || !q.jobId) return []
+  return state.quotes.filter((x) => x.id !== id && x.jobId === q.jobId && x.isOption && x.status === 'sent')
+}
+
+export interface AcceptMeta {
+  via?: AcceptedVia
+  poNumber?: string
+  /** Close the other open alternative options on the job. Default: yes. */
+  closeOptions?: boolean
+}
+
+/**
+ * Accept a quote. The customer's click in the email records "email"; staff
+ * recording a phone call or a purchase order pass the source here. Accepting an
+ * alternative option closes the other open options on the job, because only one
+ * can be accepted. Add-on quotes never close anything.
+ */
+export function markAccepted(id: string, selectedIds: string[], meta: AcceptMeta = {}) {
   const q = state.quotes.find((x) => x.id === id)
   if (!q) return
-  patch(id, {
-    status: 'accepted',
-    selectedUpgradeIds: selectedIds,
-    acceptedAt: new Date().toISOString(),
-    acceptedTotal: quoteTotals(q, selectedIds).total,
+  const siblings = meta.closeOptions === false ? [] : openSiblingOptions(id)
+  const now = new Date().toISOString()
+  commit({
+    quotes: state.quotes.map((x) => {
+      if (x.id === id) {
+        return {
+          ...x,
+          status: 'accepted' as const,
+          selectedUpgradeIds: selectedIds,
+          acceptedAt: now,
+          acceptedTotal: quoteTotals(q, selectedIds).total,
+          acceptedVia: meta.via ?? 'email',
+          poNumber: meta.poNumber?.trim() || undefined,
+          updatedAt: now,
+        }
+      }
+      if (siblings.some((s) => s.id === x.id)) {
+        return { ...x, status: 'declined' as const, declinedAt: now, declineReason: `Another option on this job (${q.number}) was accepted.`, updatedAt: now }
+      }
+      return x
+    }),
   })
 }
 export const markDeclined = (id: string, reason: string) =>
   patch(id, { status: 'declined', declinedAt: new Date().toISOString(), declineReason: reason.trim() || undefined })
 /** Demo helper: put a quote back to Sent so the customer view can be tried again. */
 export const reopenAsSent = (id: string) =>
-  patch(id, { status: 'sent', selectedUpgradeIds: [], acceptedAt: undefined, acceptedTotal: undefined, declinedAt: undefined, declineReason: undefined })
+  patch(id, { status: 'sent', selectedUpgradeIds: [], acceptedAt: undefined, acceptedTotal: undefined, acceptedVia: undefined, poNumber: undefined, declinedAt: undefined, declineReason: undefined })
 
 // ---- Jobs ------------------------------------------------------------------
 

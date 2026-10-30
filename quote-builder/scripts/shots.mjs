@@ -1,7 +1,7 @@
 ﻿// Screenshots and basic checks of the built quote builder, from a hidden browser.
 // Usage: node scripts/shots.mjs   (run `npm run build` first)
 // Uses the playwright already installed for the main site (found by Node in a parent folder).
-import { spawn } from 'node:child_process'
+import { startPreview } from './_server.mjs'
 import { mkdirSync } from 'node:fs'
 import { chromium } from 'playwright'
 
@@ -9,8 +9,7 @@ const PORT = 4179
 const BASE = `http://localhost:${PORT}/`
 mkdirSync('shots', { recursive: true })
 
-const server = spawn(process.execPath, ['node_modules/vite/bin/vite.js', 'preview', '--port', String(PORT), '--strictPort'], { stdio: 'ignore' })
-await new Promise((r) => setTimeout(r, 2500))
+const server = await startPreview(PORT)
 
 const browser = await chromium.launch({ channel: 'msedge' })
 const problems = []
@@ -60,4 +59,5 @@ for (const theme of ['light', 'dark']) {
 await browser.close()
 server.kill()
 console.log(problems.length ? 'PROBLEMS:\n' + problems.join('\n') : 'No console errors or overflow found.')
+
 

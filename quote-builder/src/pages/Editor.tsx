@@ -1,15 +1,17 @@
 import { useEffect, useId, useRef, useState, type ReactNode } from 'react'
-import { ArrowLeft, Copy, Eye, LayoutTemplate, Pencil, Printer, Save, Send, Undo2 } from 'lucide-react'
+import { ArrowLeft, Check, Copy, Eye, LayoutTemplate, Pencil, Printer, Save, Send, Undo2 } from 'lucide-react'
 import { ContactJobPicker } from '../components/ContactJobPicker'
 import { LineItemsEditor } from '../components/LineItemsEditor'
 import { PaymentsEditor } from '../components/PaymentsEditor'
 import { QuoteSheet } from '../components/QuoteSheet'
+import { ManualAcceptDialog } from '../components/ManualAcceptDialog'
 import { LoadTemplateDialog, SaveTemplateDialog } from '../components/TemplateDialogs'
 import { UpgradesEditor } from '../components/UpgradesEditor'
 import { Dialog, Notice, StatusBadge, toast } from '../components/ui'
 import { DEMO } from '../config'
 import { contacts } from '../data/mock'
 import { effectiveStatus, quoteTotals, sendProblems } from '../lib/calc'
+import { VIA_LABEL } from '../lib/due'
 import { fmtDate, fmtMoney, todayISO } from '../lib/format'
 import { go, href, type Route } from '../lib/router'
 import {
@@ -47,7 +49,11 @@ export default function EditorPage({ route }: { route: EditorRoute }) {
 
 function initialQuote(route: EditorRoute, existing?: Quote): Quote {
   if (existing) return existing
-  const base = blankQuote({ jobId: route.name === 'new' ? route.jobId : undefined, isAddOn: route.name === 'new' ? route.addOn : false })
+  const base = blankQuote({
+    jobId: route.name === 'new' ? route.jobId : undefined,
+    isAddOn: route.name === 'new' ? route.addOn : false,
+    isOption: route.name === 'new' ? route.option : false,
+  })
   if (route.name === 'new' && route.templateId) {
     const t = allTemplates().find((x) => x.id === route.templateId)
     if (t) return applyTemplate(base, t)
@@ -70,6 +76,7 @@ function Editor({ route, initial }: { route: EditorRoute; initial?: Quote }) {
   const [tab, setTab] = useState<'form' | 'preview'>('form')
   const [sendOpen, setSendOpen] = useState(false)
   const [withdrawOpen, setWithdrawOpen] = useState(false)
+  const [acceptOpen, setAcceptOpen] = useState(false)
   const [saveTplOpen, setSaveTplOpen] = useState(false)
   const [loadTplOpen, setLoadTplOpen] = useState(false)
   const ids = useId()
@@ -253,6 +260,7 @@ function Editor({ route, initial }: { route: EditorRoute; initial?: Quote }) {
             expired={shownStatus === 'expired'}
             onWithdraw={() => setWithdrawOpen(true)}
             onDuplicate={duplicate}
+            onAccept={() => setAcceptOpen(true)}
           />
 
           <fieldset disabled={!isDraft} className="min-w-0 space-y-5 border-0 p-0">
@@ -262,8 +270,9 @@ function Editor({ route, initial }: { route: EditorRoute; initial?: Quote }) {
               <div className="space-y-5">
                 <ContactJobPicker
                   quoteId={quote.id}
-                  value={{ contactId: quote.contactId, jobId: quote.jobId, isAddOn: quote.isAddOn }}
+                  value={{ contactId: quote.contactId, jobId: quote.jobId, isAddOn: quote.isAddOn, isOption: !!quote.isOption }}
                   defaultAddOn={route.name === 'new' && route.addOn}
+                  defaultOption={route.name === 'new' && route.option}
                   disabled={!isDraft}
                   onChange={(p) => edit(p)}
                 />
@@ -456,6 +465,18 @@ function Editor({ route, initial }: { route: EditorRoute; initial?: Quote }) {
         </p>
       </Dialog>
 
+      {acceptOpen && (
+        <ManualAcceptDialog
+          open
+          quote={quote}
+          onClose={() => setAcceptOpen(false)}
+          onDone={() => {
+            setAcceptOpen(false)
+            reload(quote.id)
+          }}
+        />
+      )}
+
       <SaveTemplateDialog open={saveTplOpen} onClose={() => setSaveTplOpen(false)} quote={quote} />
       <LoadTemplateDialog
         open={loadTplOpen}
@@ -504,11 +525,13 @@ function StatusNotice({
   expired,
   onWithdraw,
   onDuplicate,
+  onAccept,
 }: {
   quote: Quote
   expired: boolean
   onWithdraw: () => void
   onDuplicate: () => void
+  onAccept: () => void
 }) {
   if (quote.status === 'draft') return null
   const dup = (
@@ -517,14 +540,24 @@ function StatusNotice({
       Duplicate as new draft
     </button>
   )
+  const accept = (
+    <button type="button" className="btn btn-primary mt-3" onClick={onAccept}>
+      <Check size={18} aria-hidden="true" />
+      Mark as accepted
+    </button>
+  )
   if (quote.status === 'sent' && !expired) {
     return (
       <Notice tone="info">
         <p className="font-bold">This quote has been sent. Withdraw it to edit.</p>
-        <button type="button" className="btn btn-quiet mt-3" onClick={onWithdraw}>
-          <Undo2 size={18} aria-hidden="true" />
-          Withdraw to draft
-        </button>
+        <p className="mt-1 text-muted">If the customer accepted by phone or sent a purchase order, record it here.</p>
+        <div className="flex flex-wrap gap-2">
+          {accept}
+          <button type="button" className="btn btn-quiet mt-3" onClick={onWithdraw}>
+            <Undo2 size={18} aria-hidden="true" />
+            Withdraw to draft
+          </button>
+        </div>
       </Notice>
     )
   }
@@ -532,8 +565,10 @@ function StatusNotice({
     return (
       <Notice tone="warn">
         <p className="font-bold">This quote has expired. Duplicate it to send a fresh one, or withdraw it to edit.</p>
+        <p className="mt-1 text-muted">If the customer has accepted anyway, record it here.</p>
         <div className="flex flex-wrap gap-2">
           {dup}
+          {accept}
           <button type="button" className="btn btn-quiet mt-3" onClick={onWithdraw}>
             <Undo2 size={18} aria-hidden="true" />
             Withdraw to draft
@@ -545,7 +580,11 @@ function StatusNotice({
   if (quote.status === 'accepted') {
     return (
       <Notice tone="ok">
-        <p className="font-bold">Accepted on {fmtDate(quote.acceptedAt)}. Accepted quotes cannot be edited.</p>
+        <p className="font-bold">
+          Accepted on {fmtDate(quote.acceptedAt)}
+          {quote.acceptedVia ? ` ${VIA_LABEL[quote.acceptedVia]}` : ''}
+          {quote.poNumber ? `, purchase order ${quote.poNumber}` : ''}. Accepted quotes cannot be edited.
+        </p>
         {dup}
       </Notice>
     )

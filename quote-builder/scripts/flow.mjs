@@ -1,11 +1,10 @@
 ﻿// Click-through checks of the main flows in a hidden browser. Run after `npm run build`.
-import { spawn } from 'node:child_process'
+import { startPreview } from './_server.mjs'
 import { chromium } from 'playwright'
 
 const PORT = 4180
 const BASE = `http://localhost:${PORT}/`
-const server = spawn(process.execPath, ['node_modules/vite/bin/vite.js', 'preview', '--port', String(PORT), '--strictPort'], { stdio: 'ignore' })
-await new Promise((r) => setTimeout(r, 2500))
+const server = await startPreview(PORT)
 const browser = await chromium.launch({ channel: 'msedge' })
 const results = []
 const check = (name, ok, extra = '') => results.push(`${ok ? 'PASS' : 'FAIL'}  ${name}${extra ? ' (' + extra + ')' : ''}`)
@@ -31,6 +30,45 @@ check('accepted confirmation shown', await page.getByRole('heading', { name: /Qu
 await page.goto(BASE + '#/')
 await page.waitForTimeout(300)
 check('list shows Accepted for Q-1003', (await page.locator('li', { hasText: 'Q-1003' }).first().innerText()).includes('Accepted'))
+
+check('accepting option A closed sent option B (Q-1008 Declined)', (await page.locator('li', { hasText: 'Q-1008' }).first().innerText()).includes('Declined'))
+
+// 1b. Manual accept by purchase order (expired quote Q-1004)
+await page.goto(BASE + '#/quote/q4')
+await page.waitForTimeout(400)
+await page.getByRole('button', { name: /Mark as accepted/ }).first().click()
+await page.getByLabel('By purchase order').check()
+await page.getByRole('button', { name: 'Mark as accepted' }).last().click()
+check('purchase order number is required', await page.getByText('Enter the purchase order number.').isVisible())
+await page.getByLabel('Purchase order number').fill('PO-123')
+await page.getByRole('button', { name: 'Mark as accepted' }).last().click()
+await page.waitForTimeout(400)
+check('editor shows accepted by purchase order', await page.getByText(/purchase order PO-123/).first().isVisible())
+await page.goto(BASE + '#/')
+await page.waitForTimeout(300)
+check('list shows PO on accepted quote', (await page.locator('li', { hasText: 'Q-1004' }).first().innerText()).includes('PO PO-123'))
+
+// 1c. Manual accept by phone closes the other option (fresh browser storage)
+{
+  const c3 = await browser.newContext({ viewport: { width: 1280, height: 900 } })
+  const p3 = await c3.newPage()
+  await p3.goto(BASE + '#/quote/q8')
+  await p3.waitForTimeout(400)
+  await p3.getByRole('button', { name: /Mark as accepted/ }).first().click()
+  check('dialog offers to close the other option', await p3.getByText(/Close the other option on this job/).isVisible())
+  await p3.getByRole('button', { name: 'Mark as accepted' }).last().click()
+  await p3.waitForTimeout(400)
+  await p3.goto(BASE + '#/')
+  await p3.waitForTimeout(300)
+  const q8 = await p3.locator('li', { hasText: 'Q-1008' }).first().innerText()
+  const q3 = await p3.locator('li', { hasText: 'Q-1003' }).first().innerText()
+  check('phone acceptance recorded and sibling option declined', q8.includes('Accepted') && q8.includes('by phone') && q3.includes('Declined'))
+  check('list offers an alternative option link per job', (await p3.getByRole('link', { name: /Alternative option for/ }).count()) > 0)
+  await p3.goto(BASE + '#/quote/q5')
+  await p3.waitForTimeout(400)
+  check('payment stages have a due rule', (await p3.getByLabel('Due', { exact: true }).count()) >= 2)
+  await c3.close()
+}
 
 // 2. Editor: draft with missing price cannot be sent
 await page.goto(BASE + '#/quote/q7')
@@ -89,5 +127,6 @@ await browser.close()
 server.kill()
 console.log(results.join('\n'))
 console.log(errors.length ? 'Console errors:\n' + errors.join('\n') : 'No console errors.')
+
 
 

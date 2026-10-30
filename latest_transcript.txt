@@ -1,0 +1,1025 @@
+1:16 - Dan O Sullivan
+Aloha.
+
+1:17 - Rachael Angus
+Hi, how are you?
+
+1:18 - Dan O Sullivan
+Not too bad. Where's the boss?
+
+1:22 - Rachael Angus
+He's having technical issues.
+
+1:27 - Rachael Angus
+It's the colour of my hair that's doing it.
+
+1:32 - Dan O Sullivan
+What does he say?
+
+1:33 - Rachael Angus
+He said it's the colour of his hair.
+
+1:35 - Dan O Sullivan
+At least he has hair. I don't have any hair.
+
+1:37 - Rachael Angus
+Yeah. He's still blonde.
+
+1:41 - Unidentified Speaker
+Ah.
+
+1:41 - Rachael Angus
+When he's not grey or bald.
+
+1:44 - Dan O Sullivan
+it's like my stepdad. My stepdad got a full head of hair, and my dad actually gives me shit because he's like, Mine might be gray, but at least it grows.
+
+1:56 - Dan O Sullivan
+Yeah, I've given up a long time ago. It was thoughts of going to Turkey, and then You know what?
+
+2:02 - Rachael Angus
+Oh, yeah, no, you don't want to look like a Barbie doll. No, I'm just using my child's microphone.
+
+2:09 - Dan O Sullivan
+Yeah, I can hear you. Yeah, okay. Um All right, so just a few things. Irena emailed just in relation to her advice that they wanted to just give a quick one-last look over before we push the website live, which kind of suits us just in the context of making sure that the number is set up. So we've applied for the number now and we're just waiting on that to be approved. So we'll give them what they need to review.
+
+ And then when they say, Yeah, we're good, then we'll push that website live for you guys, right? The thing is, you can still use like what we were yesterday, right? But that was just one thing I wanted to mention. On top of that, then I don't know if you've logged in today, but we have pushed the just the first kind of idea of the quote builder now as well. So, if you are on the desktop, you'll see it on the left-hand side.
+
+ Yeah, there's a tab. I mentioned it yesterday that the idea would be to try and make things as easy as possible in terms of navigating through this. So, the quote builder will now sit on the left-hand side, so you'll be able to just select that tab.
+
+3:29 - Rachael Angus
+Which I've got two logins now.
+
+3:34 - Dan O Sullivan
+the main one for the moment.
+
+3:35 - Rachael Angus
+Yeah, okay. So on the left-hand side, where are you saying?
+
+3:38 - Dan O Sullivan
+You'll see quote builder written. Down the bottom.
+
+3:41 - Rachael Angus
+I'll come and sit next to you.
+
+3:43 - Dan O Sullivan
+And then I will let you.
+
+3:51 - Dan O Sullivan
+Don't get too cursy. Oh, God.
+
+3:53 - Rachael Angus
+It doesn't take a lot, does it? Oh, you do. This is why I don't sit near him on the couch.
+
+3:59 - Dan O Sullivan
+That's why Amy's in the back office about 30 meters away. Yeah.
+
+4:05 - Rachael Angus
+All right. So I can see that.
+
+4:10 - Rachael Angus
+How do I get that rid of Just get rid of it because you can. Well, there goes. But won't that kick me off? Well, it doesn't matter because you can. I think it's kicked me off now. That's You just. Oh, no, I'm still there. That's all right.
+
+4:21 - Dan O Sullivan
+We can still see your beautiful face. Yes.
+
+4:23 - Rachael Angus
+All right. So, okay, the quote builder up.
+
+4:26 - Dan O Sullivan
+I'll let Blazhen explain a little bit 'cause he's the amazing human being who made it. Sure.
+
+4:32 - Blazhen Brangjolica
+Yeah, I I mean I'm still working around it. There is still test data. Um I mean you can use it. Um you just can't send the quote yet. I'm still working on that part. I had a few issues. That's why all the hold up. I mean when you think nothing goes right, um, I heard you blew your computer up. Yeah, my computer blew up two days. I had travels, like, it was a nightmare the last four days. It was my birthday, too.
+
+ So, it, yeah, it was a bit troublesome few days.
+
+5:14 - Blazhen Brangjolica
+I did write in the chat, but I think you didn't see.
+
+5:19 - Rachael Angus
+He was waiting for a present and a happy birthday.
+
+5:21 - Dan O Sullivan
+That's terrible. Yeah, I know. I would have totally. I gave his daughter a happy birthday if you ever told me.
+
+5:27 - Blazhen Brangjolica
+Yeah, we are 10 days apart from my daughter. She's on the 8th of October, I'm 1911, actually.
+
+5:34 - Rachael Angus
+So just back to this. So the quote builder, is that going to be, you know, is that going to be linked to the contact? So if I'm in the, you know, one of the contacts that we created.
+
+5:46 - Blazhen Brangjolica
+yeah if you now just if you just click on new quote word now for example on your computer you can see on the right there is contact yeah and if you click on on the contact you can see all the contacts that you have inside here I mean they are the same con uh contacts the contacts on the yeah so you just select a contact let let's say yeah the opportunity part I have renamed to jobs now so I think it's better suit uh suiting because it's actually jobs in a way way.
+
+ So now they're called jobs. So job in, I mean, there is still opportunity here, just so it's clear at the start. So you can select a job, let's say, open an existing opportunity he has, or you can create a new job for him if it's if it's a new job, let's say. So whatever you click, it's going to show below it like all the opportunity fields.
+
+6:41 - Rachael Angus
+If you click on the sorry, hang on. So, under the I'm in the contact, we've got the three tabs up, which is contacted.
+
+6:48 - Blazhen Brangjolica
+Can you share your screen maybe?
+
+6:51 - Unidentified Speaker
+Yeah, I can walk you through. Yeah, I mean, that would do this.
+
+6:54 - Dan O Sullivan
+I'm going to record this as well if you guys are okay with that. Just in case, yeah, in case there's anything that you need to just revisit, yeah, just second, you'll hear a beep.
+
+7:11 - Rachael Angus
+Why is my why is this? Oh, there it is, that one. I'm just there. Here with audio.
+
+7:29 - Unidentified Speaker
+All right, so over here, for example, is Travis Gillespie guy.
+
+7:34 - Blazhen Brangjolica
+So now you can go back to the builder on the left, just open the builder, the opportunity builder.
+
+7:40 - Rachael Angus
+Oh, so I don't do it from within the contact.
+
+7:42 - Blazhen Brangjolica
+No, you don't need to do it here now.
+
+7:45 - Rachael Angus
+I mean, you're just always in the one spot, not jumping around everywhere.
+
+7:52 - Blazhen Brangjolica
+I kind of compiled everything there. So you can see the fields as well, and mostly everything that you have here, in a way. But I mean, you can. Put a job from here as well, but you don't create That's how I'm going to use it.
+
+8:07 - Rachael Angus
+I'm going to use, you know, basically I'm going to work in a contact for argument's sake. So can you add a job? Yeah, can we go add? Well, I've already got one, you see. Yeah. Yeah. Okay. What are you trying to do then? How, what would I do from here?
+
+8:24 - Blazhen Brangjolica
+You can add a job here. It's not the problem for you to add a job here. But to create a quoting, like the one that we built now, you need to do it from the new tab. So the one that the last step on the on the left sidebar.
+
+8:44 - Rachael Angus
+Down here. Down here. Yeah, the quote builder. Yeah, so I can't do it from in the context is what you're telling me.
+
+8:54 - Blazhen Brangjolica
+I can do it.
+
+8:57 - Unidentified Speaker
+I mean.
+
+8:58 - Blazhen Brangjolica
+now that I think about it, probably I can find a way to implement it here somewhere.
+
+9:06 - Rachael Angus
+Because the way we do things at the moment is it's all done within the deal, everything. So if we've got the, you know, in HubSpot, if we've got a deal open for someone, we create the quote within that deal. So we don't jump out and have to keep jumping back for information and it's all in the one spot. Does that make sense?
+
+9:25 - Dan O Sullivan
+Why don't we just do this first?
+
+9:27 - Rachael Angus
+We have to keep going back to the tabs on the left to do something. We're going to get lost very quickly, I would have thought.
+
+9:33 - Dan O Sullivan
+Why don't we let Blazhen just show you the quote builder and how it's built? And then, in terms of where you want that to sit, then we can look at that more so that you, in case there's something in the way we've built this, that you're like, actually, yeah, that makes lots of sense. Or actually, could we do X, Y, and Z? And then we can look that if you want to keep it in a unified area, then for sure we can look at how we could potentially do that for you.
+
+
+
+9:57 - Blazhen Brangjolica
+I mean, you know what? I have custom built this. So, I mean, I can basically what I can do is I can make it look however you like, and however you want to use it in one page let's say in the call we'll uh build a a builder here but it that's going to take me at least a day or two more just so I mean just so you know but I can make it work inside of one panel here so you never need to go inside the contacts maybe I can put the contacts here on the on the top bar I can put everything inside this one view That's Let me just explain, Blazhen.
+
+
+
+10:37 - Dan O Sullivan
+So, when I spoke to Glenn yesterday, I was just showing him mainly around how we keep this really seamless for him and clicking on the jobs or opportunities and working through that kind of from an eagle-eyed perspective where we could see where everything is. He can quickly jump in either by just pressing the white card and then seeing a quick view of whether he needs to allocate something versus.
+
+ Actually selecting the client and going into the client's profile. So that way, I guess what Glenn is saying is like if he has to go into the quote builder then separate, it can get a bit convoluted because he wants to be able to just go, okay, here's five quotes that need to be done. I'll just jump into this one person, get it done, then move on to the next one, get it done, then move on to the next one, get it done.
+
+ That's what I'm assuming, Glenn.
+
+11:25 - Rachael Angus
+Yeah.
+
+11:26 - Blazhen Brangjolica
+Yeah, I mean, I'm. Saying the same more or less, but I'm I'm saying that I can put the contacts here basically in the same view that he's seen now. Let's say as you can see now quotes and templates on uh on now on the top.
+
+11:42 - Dan O Sullivan
+I can import the contacts here too.
+
+11:45 - Blazhen Brangjolica
+So that way we we remove the contacts from the left of the sideware and he can view them here inside everything and we can maybe rename the quote build uh builder to contacts. And it will have everything together compiled. That's an option, or I can just import the cloud builder somehow. I can look into it to import it into the contacts section itself. But if I see that it's take me a lot of time to do that, maybe what I'm proposing is better because if we do it my way, then we can.
+
+ Easily change however we like in the future to work or look or whatever. Because it's with, I mean, we compiled it.
+
+12:35 - Dan O Sullivan
+So to reiterate, Glenn, what he's saying is where you have quotes and templates there as tabs at the top on the he's saying he would have context sit there as opposed to on the left. So there's units there too. So then, when you so when you select on your quote builder and we can rename it whatever you want, essentially that becomes your central hub, then so you can jump between what you need to.
+
+13:00 - Rachael Angus
+My understanding from our discussion yesterday is we start on the dashboard. Did the dashboard? Was the where you said jobs because that's the most important, right?
+
+13:12 - Dan O Sullivan
+Business is okay.
+
+13:13 - Rachael Angus
+So, in here, so. Trevor, I say, oh, okay, new leader needs to do all that. I'd click in Trevor, or sorry, click name, is what we decided.
+
+13:21 - Dan O Sullivan
+Yeah.
+
+13:22 - Rachael Angus
+And then in here, I go, okay, here's all the details about the job. Now I want to just write the quote while I'm in this screen. That's what I'm sort of thinking is the way you would do it. So then you've got all the information here in front of you as you write the quote, as you do the, you know, write the quote for the job. You don't want to be going and then going back to here and then going back to here and then going back to there and you know you don't want to be doing sorry when I would uh when you say all the uh all the in all the information what the what what do you mean the are the notes and everything or just for example in here we would we would I'm assuming you understand this this is where we would have where I'm where the details of what the job's about It's essentially a central hub, yes.
+
+ It's essentially a central hub. So you would create the quote from the central hub. You wouldn't go out of that to do a because then you've got all the information here and you're in this little tab over here.
+
+14:21 - Dan O Sullivan
+So let me let me just jump in, sorry, just because I know about Yep. So essentially, Blazhen, what he's saying is when he's here, this is easier for him to decipher because he knows the notes are on the right, the payments are on the right, documents are on the right, tasks. You know, appointments. So when he clicks add job here, so if you select add job and then create new job, no, sorry, it should be estimate.
+
+ So if you go on the right-hand side, go to payments, I think is what you're actually trying to, yeah, payments. So then when you're creating a new estimate, you click actions and then you go to create estimate. That's essentially how you create your estimates, right?
+
+15:03 - Rachael Angus
+Pretty much, yeah. But we would normally have reference to the information as we create it, not all our notes and stuff.
+
+15:12 - Dan O Sullivan
+Yeah, but what I guess I can't see my notes.
+
+15:20 - Dan O Sullivan
+Are you able to see estimate at the moment? Are you able to see estimate at the moment?
+
+15:25 - Rachael Angus
+Sorry, just because what we're seeing Oh, sorry, it's dropped off to another screen. Yeah, okay.
+
+15:30 - Dan O Sullivan
+Yeah, so. I guess what I'm trying to show you is that that jumps to another screen. So, yeah, so in theory, if you were back on the tab, so that's what I've got up at the moment. Yeah, jump to that screen. Yeah, so what I'm saying is if we select back for a second, or if we just jump back into the other tab for a second, essentially, what has happened there is it's jumped to a new screen, right? Yeah, that way you could.
+
+
+
+16:00 - Rachael Angus
+just jump between tabs to if we need to right.
+
+16:03 - Dan O Sullivan
+What I'm saying to you is on the left-hand side, if we were to right-click on quote builder, it should say open a new tab.
+
+16:14 - Rachael Angus
+Yeah.
+
+16:15 - Dan O Sullivan
+And then you would just like look out, like have one on the left, one on the right, and that would be the because it's going to do it either way. Anyway, it's jump into a new tab either way. That's what I'm trying to say.
+
+16:25 - Rachael Angus
+In HubSpot, we can't say all the we've got to go back to the we can do everything on one screen if you guys want.
+
+16:36 - Dan O Sullivan
+But yeah, so I know where you're going, Blazhen, so I'm going to lead into that now. So, let's say, for example, if we were just on the quote builder page now at the moment, right? So, if you click quote builder down the left. So what Blazhen is saying is now you can obviously see your quote builder, but at the top, we could have contacts and jobs sit there to the right of templates as an example.
+
+ So, if you did want to quickly jump in and out of something, you could, but essentially, you're going to have two tabs regardless. Like, you're have it like your estimate, and then you'll have all the notes section where you see it. Okay, yeah. It's only going to be one of those things that after doing two or three quotes, then you're going to be like, all right, sweet. Like, I've got three screens here in front of me, and I'll have to, like, if I'm doing something, I'll always have the information on the left, and then I can do what I need to do on the right.
+
+ Yeah. Screen's not big enough if we were to try and have all the information and allow you to create an estimate, basically, right? Yeah, that makes sense.
+
+17:39 - Rachael Angus
+That's fine. Oh, I don't know that I'm just looking at this here.
+
+17:43 - Blazhen Brangjolica
+So that's the idea here is as you fill this out, it's actually giving you a view of the quote and how it's going to look on the right. Um that I mean if we were going to put this into the contacts, then we are losing the preview screen in a way because you can be able to see everything. As Danny's saying, you will need new tab again.
+
+18:08 - Dan O Sullivan
+I'm I'm a I'm I'm not visualizing all this at the moment okay so see on the left hand side every time you add a piece of information to that it will show on the right hand side the right hand side is a preview job side so let's say if you had specific things going into it and these can be changed is what I'm saying but the idea then is is that any information you put on the left hand side will automatically this so this is in effect our our quote Yeah, our quote.
+
+
+
+18:36 - Rachael Angus
+So we don't know the time frame. We don't know the time frames, we don't know any of that information at this point.
+
+18:45 - Blazhen Brangjolica
+Yeah, you don't need to fill this information. This just exists in case it already exists for another job, so you can quickly check. What you do here is if you scroll a bit up, a bit up to up, up. On the line items yeah you have like pre-made I already made like pre-made one if you click on add from price list let's say yeah you have like pre-made ones we can change this is just I I just did them so if you click on any of them and you put let's say quantity however it is yeah it already shows you see on the preview on the right and you can just add more and more and you can add a custom line if if you like if it doesn't exist let's say from the price list you can just add a custom line and then you can change obviously all the informations from um the one that you have clicked if you want to change some or something then you can just scroll down now and you can just click on the close six here on I mean or you leave it it doesn't matter you click on the what sorry you could have closed like the this like little box, if you don't need it anymore, so it's not like you use the what you're saying.
+
+
+
+20:05 - Rachael Angus
+Sorry, I'm totally lost what you're saying.
+
+20:06 - Dan O Sullivan
+That's scroll down slightly, and then you'll see the little X. So go back up. All he's saying is if you wanted to minimize it, so when you're not using it, you're not getting convoluted by information. So where it says search the price list on the right-hand side, if you exit, yeah, yeah, okay.
+
+20:22 - Blazhen Brangjolica
+So now below, you see like optional upgrades. Yeah, that's like if you want to put an upgrade or yeah the the thing that we have talked um I think I have not missed anything I said that I'm still build now building it so it's not 100 done but I'm getting there so twelve dollars for argument's sake um and I just and do I just click add then or yeah you just click add upgrade one's got nothing at the moment so add upgrade Yeah, for a new one if you like,
+
+20:57 - Rachael Angus
+Yeah.
+
+21:00 - Rachael Angus
+Oh yeah, so this isn't tied to the quantity though.
+
+21:03 - Blazhen Brangjolica
+That's like optional. It shows on the client side. So they can just check this when they receive the quote if they like to include it as well.
+
+21:12 - Rachael Angus
+And then it will calculate the upgrade.
+
+21:14 - Blazhen Brangjolica
+Yeah, and then it will calculate the upgrade. And when they accept the quote, it will show with the upgrades they have checked. So, this is just like optional upgrades they might turn, might not do. You have the payment schedule below where you schedule what it sends, percentage, full payment. I can make this to be custom so you can put numbers yourself. Right now, it's just like generally only have that.
+
+
+
+21:47 - Rachael Angus
+I normally just have that written in the the T's and C's, in all honesty, but I understand why you're doing this because you're automating the payments as well.
+
+21:55 - Blazhen Brangjolica
+Yeah.
+
+21:56 - Rachael Angus
+Yeah, okay. Because probably better to do it as custom. We can have a default maybe and then do it as custom. Like you've got a couple of presets there, which we can set up. And then we can just get in there.
+
+22:08 - Blazhen Brangjolica
+Yeah. Yeah, it can be 20%.
+
+22:11 - Rachael Angus
+And, you know, 50%.
+
+22:16 - Rachael Angus
+Oops. Split even in the head stage. So we have 20 FD and completion.
+
+22:31 - Rachael Angus
+Okay, then oh, you got the good check there, which is nice. No, that'll obviously mention it down here. Yeah.
+
+22:39 - Unidentified Speaker
+Yep.
+
+22:39 - Rachael Angus
+Oh, yeah, we'll have to change that.
+
+22:41 - Blazhen Brangjolica
+Then you have the notes if you like the nodes.
+
+22:44 - Rachael Angus
+Yep.
+
+22:46 - Rachael Angus
+Terms, so we can set that as a default, can we?
+
+22:50 - Blazhen Brangjolica
+Yeah, this is like default. We can change this, but you can edit if this.
+
+22:56 - Rachael Angus
+So when we when we quote inject a core through spray as a job, a different set of terms. So is there a if we had a quote template, would that allow us to change the have a default set of terms for each one?
+
+23:13 - Dan O Sullivan
+We could have a checkbox on an eater if and that way you could just select the checkbox if it was to be a specific. Just explain that just for the benefit of
+
+23:21 - Blazhen Brangjolica
+I can create a drop-down button here that you can select whatever term you want to show on this.
+
+23:27 - Rachael Angus
+Um, so with it would be easier because it will be here. Yeah, because with inject a core quotes, it has a completely different set of terms to all of our other product installations. Yeah.
+
+23:40 - Blazhen Brangjolica
+I mean, we can either have like we can do it both ways. You can have a template with the different terms, or I mean, we can have the button here just in case it will be always default to whatever which is default, but you can change it with a button, so you don't need to write it.
+
+23:57 - Rachael Angus
+Yeah, and I'm assuming we can change font sizes.
+
+24:01 - Blazhen Brangjolica
+Yeah, I can change that. I'm SSC.
+
+24:03 - Dan O Sullivan
+You can do anything, colours, whatever you want.
+
+24:05 - Rachael Angus
+Yeah, yeah, I'll. I'm assuming that's something we can do. So I don't have to bug you every time we want to do something like that. Is that something we can do?
+
+24:16 - Blazhen Brangjolica
+I mean, I can, but that just takes time. I mean, we can probably after we finish this, I can customize those little things for you. So you can go live as soon as possible. Then we can just improve it and make it better. Just it's up to you, guys.
+
+24:37 - Rachael Angus
+Oh, because the terms are quite long and arduous, and it's going to be you know like pages and pages and pages of terms. That's why I was saying you make them like an eight-point or something like that, or sort of you know, six-point or just something so as they're there. That's all. That's what I want. They need the magnifying glass to read them. That's what we want. Just because of the length of the you know, the terms in conditions are quite lengthy.
+
+ Yeah, so you don't want to be having pages and pages of that.
+
+25:00 - Dan O Sullivan
+So So, just what I would say is, in that scenario, if you just wrote it on a Word document as an example and showed us what you would ideally like it to look visually, then we would just replicate rather than you jump. I'll tell you why we're sometimes apprehensive to give that kind of change to the client. I said to you, yes, they sometimes people can F it up. So, in that scenario, if you show me what you want, then we could just do it.
+
+ And then if it's a case of, look, it's not always that way, then we could have it that. If there's a certain amount of characters, it could probably resize it. Um, but I guess our goal here at the moment is try and get it as live as possible to use ASAP. So, yeah, if you if you wanted to put a document, like and say, or even show us, yeah, show us like another another example.
+
+25:47 - Rachael Angus
+So, here's a there's an injected quote for that guy for that guy, Travis. So, we've got special comments on this particular job, it's specific comments related to that job.
+
+25:59 - Rachael Angus
+Then we got what we're actually doing. And then we got our purchase terms down the bottom in a smaller font basically.
+
+26:05 - Dan O Sullivan
+You devil fucking need a magnifying glass to read that. I'm like,
+
+26:12 - Rachael Angus
+Does that help?
+
+26:13 - Dan O Sullivan
+Yeah. So, so Blazhen, would it be just better if he sent us a copy of a make? He could just make one up like with those, like exactly the way they have it. And if you want it to be replicated like that, then we could just do that. What do Pleasant?
+
+26:27 - Blazhen Brangjolica
+I mean, yeah, if you like how this looks, I can change it to look exactly.
+
+26:32 - Dan O Sullivan
+I think share that in our chat session somehow.
+
+26:37 - Rachael Angus
+Sorry, can you just download that file? Can I share that to you somewhere?
+
+26:42 - Dan O Sullivan
+If you just drop Slack, it's probably on the computer. You can probably drop it in the chat.
+
+26:46 - Rachael Angus
+Yeah, well, I'm trying to figure out where the chat's gone.
+
+26:49 - Dan O Sullivan
+Just on the bottom right-hand corner, there's three icons. It's the first one. Bottom right-hand corner, there should be the chat, a little like looks like a little question box.
+
+27:02 - Rachael Angus
+Oh, yeah, there Yeah, yeah, okay. I was trying to find the right thing.
+
+27:05 - Dan O Sullivan
+So that's all right.
+
+27:09 - Dan O Sullivan
+So I guess what Blazhen could show you is how it looks when you're about to attend it. Yeah, a full view of the estimate?
+
+27:17 - Blazhen Brangjolica
+Yeah, if you scroll above, you have like preview and print and everything.
+
+27:23 - Rachael Angus
+But yeah, this is the injected ones. I don't know how to add that. It's not. No, it's not working. I can't just drop a file in. So I'm in the chat, but I can't see how to add a file to it.
+
+27:34 - Dan O Sullivan
+That's all right. You can just send it in an email if you want, and we'll just grab it. But what I recommend is having a preview of what ours looks like, and then you can make the judgment. We can add the text in the font size that you want, anyway. That's not a problem. I guess more so, are you happy with the layout that it comes up and looks like for when you're sending it?
+
+27:56 - Blazhen Brangjolica
+If you scroll up here, you can preview the one on the right, like on big screen, because it's going to look a bit different when you just scroll on the top here. Where, sorry? At the top here, just scroll at the top here, on the preview at the top. Just keep scrolling up and it's going to show. I mean, I need to change that bit of that a bit.
+
+28:18 - Rachael Angus
+Yeah, okay. Yeah. Yeah.
+
+28:21 - Dan O Sullivan
+Go to customer view. If you select customer view, yeah. It'll show you what it would look like when you go to send it. So I guess what I'm saying to you is, um, because I know you had like, was it comments or special things?
+
+28:34 - Rachael Angus
+Yeah, we had a special comment. I've seen that to you on Slack already.
+
+28:37 - Dan O Sullivan
+Yeah, yeah, I've got it. I'm just forwarding it to Blessing now.
+
+28:41 - Rachael Angus
+That's just the quotes we use from Jeticore, we have different T's and C's for spray, spray it ones. So, so you would need to have those as well. Yeah, yes. I'll do you one of those. There we are. Yeah, so they're the two. There's only the two types, two terms of business options. It's injectore well, of course, it is.
+
+29:00 - Dan O Sullivan
+I guess what I'm trying to say to you is: are you happy with the layout of it?
+
+29:04 - Rachael Angus
+Yeah.
+
+29:04 - Dan O Sullivan
+Or do you want the comment? Like, do you want it to be able to have the comment thing?
+
+29:08 - Rachael Angus
+Yeah, because that needs to, we do need to write specific things for jobs at some point.
+
+29:16 - Rachael Angus
+So a comment section we do need to have for sure. This upgrade thing, if this is what they're seeing, I think that probably needs to be, I think that, because that's specific to that line, isn't it? It? So, if there's multiple line items and we've got upgrades on all of them, it's going to be quite a lengthy quote, then, isn't it?
+
+29:35 - Dan O Sullivan
+We don't really, we're not we can make them smaller, though. You could have it more that optional. You could even have it just as a little text line in there, you know, just to yeah, and we could have it in a colour, like as in not rather than have the checkbox white, like where it says roof upgrade to R4, you could just have that as a one-line in a colour. And that way it would be differentiating that it's not actually a part of it, and they would need to select it to make it a part of it, right?
+
+
+
+30:01 - Rachael Angus
+Yeah, because if they select that because you might have 10 items that have 10 upgrades, it hasn't linked it to the quantity.
+
+30:10 - Rachael Angus
+So that means that instead of paying $12 per square meter, they're only paying $12.
+
+30:16 - Unidentified Speaker
+Yeah.
+
+30:16 - Dan O Sullivan
+So what I'm saying to you is it's that the variables are just the final things that we're getting finished.
+
+30:23 - Rachael Angus
+Yeah, yeah, yeah. Yeah.
+
+30:27 - Dan O Sullivan
+But in terms of the layout, I guess is the most important aspect, right? So that you are.
+
+30:31 - Rachael Angus
+Yeah, look, the layouts, the layout's fine. I think, as I said, the upgrade's probably too way too fed.
+
+30:39 - Rachael Angus
+That other app I spoke to it was literally a text line below that's you know, the item saying you can change this to such and such at X lot, X dollars per you know, unit.
+
+30:51 - Dan O Sullivan
+You know, yeah, but we just have a one-line, right?
+
+30:53 - Rachael Angus
+We just have a little one-line thing, and they can click on that, and you know, that, and so they've got that option to change things around. So, um, you're sort of loads here.
+
+31:05 - Rachael Angus
+You guys have mentioned about notes.
+
+31:08 - Blazhen Brangjolica
+You also have notes here. Maybe you didn't notice them on the left. If you scroll to the bottom on the left sidebar, yeah. You have notes here. Yeah. So they show.
+
+31:21 - Rachael Angus
+Let me just copy this, see how it looks.
+
+31:27 - Blazhen Brangjolica
+They will be left from the terms. The terms are going to go on the right and notes on the left, but we can change that layout a bit.
+
+31:36 - Blazhen Brangjolica
+And it looks weird.
+
+31:41 - Rachael Angus
+We go back up to So that's how. Note. That's fine. That works there, but then you'd probably want the terms below it.
+
+31:55 - Dan O Sullivan
+Yeah, terms below it, because if you're going to have 20, 30 lines of terms, and then the terms would be a smaller font, the notes would be very easy readable.
+
+32:04 - Rachael Angus
+Yeah. Yeah, so that's it. Yeah, so that notes thing will work, but that's for, you know, I'm happy with that notes. You don't have to worry about anything else for the, you know, the comments. Just because it's a note about the whole job. It's not a note about a specific item.
+
+32:21 - Rachael Angus
+So that'll work. And the payment schedule, you'd probably put that, you know, I don't think we generally don't put that on the quotes, do we? What the payment schedules? That's normally not part of our quote, is it? I think it's good to have it though. Yeah. It's actually, it actually is good for customers to know. Yeah, true. Yeah. All right. But with this. Notes, would that need to be before the bottom line?
+
+ It wouldn't need to the bottom line, would it? Oh, go up.
+
+32:59 - Rachael Angus
+Yeah, I mean, it's hidden right at the bottom. Yeah, I'm a bit concerned about that too, to be honest. So if you look at our current line, if you look at our current line. I think that could get lost. A lot of what we put in those notes is very specific to this one here. The line item: it's basically okay, these are comments about this job straight up. Yeah, and here's the details about the job. Yeah, so yeah, in our current ones, it's like the first thing they read.
+
+
+
+33:26 - Dan O Sullivan
+So, we can put it up there, yeah, yeah.
+
+33:29 - Rachael Angus
+Points the note, basically, point, it's comments about the job. So, that's very specific. That'd be really good if we could move that. You move the notes at the top. If there's nothing there, don't put it there. If it's there, put it there, and then you've got down to your. Price and your and your payments. See, I've got my payments in here, the payment terms I've had hidden in the T's and C's. Yeah, but I think it's better to have I'm happy to take that out and you know I can be in there as well, Blanche.
+
+ Yeah, I suppose I can. But it's just your T's and C's, yeah.
+
+33:53 - Dan O Sullivan
+It's like a T's and C's.
+
+33:58 - Rachael Angus
+Yeah, so I think if you get the notes up there, it's a battery on it, a battery.
+
+34:03 - Dan O Sullivan
+Just so just so we're clear, would you prefer it? It above where it says untitled quote and below that line? So, like in between them, so that way it's prepared for you know, it's because the same as the way you have it is you've got this green box with all the details, and then below it, you have the comments section.
+
+34:20 - Rachael Angus
+So, yeah, well, this is the name of the that's the deal's name. What's the client? The client, sorry, that's the quote name. Sorry, we can edit that when we edit our quote. But it defaults to the name of the deal within HubSpot. So, whatever the, you know, where you want that.
+
+34:34 - Unidentified Speaker
+Sorry, you're talking about something else. Yeah, I'm just asking where would you the comments box itself.
+
+34:39 - Dan O Sullivan
+If you jump back into the other page, I'm just asking, um, right above where it says untitled quote and just below the line, do you want it there, which would kind of reflect the way the other one is? Yeah, okay. So, right above untitled quote, right. The quote is have a name. So if we say right above walls, right?
+
+34:58 - Rachael Angus
+Yeah, that's true. Yeah, so between these two, basically, if you put it in between the two, yeah. Yeah.
+
+35:04 - Dan O Sullivan
+So it makes sense. I get it.
+
+35:08 - Rachael Angus
+Yeah. And where's the oh, there's the quote title there. Okay. So yeah, okay. It just comes up there like that. Yep. That's fine.
+
+35:20 - Dan O Sullivan
+A question then, would you prefer? The notes to be underneath that quote? Sorry, just above the quote title on the left. So, when you're populating it, or are you happy with where notes is at the moment for filling?
+
+35:32 - Blazhen Brangjolica
+They will be up there anyway. So, I will put them up there.
+
+35:34 - Dan O Sullivan
+Yeah, yeah, it does make sense.
+
+35:36 - Rachael Angus
+Yeah, it will. It's more like below the line items, you know, that'll be fine. So, payment schedule would come down, that'll be one of the last things. So, yeah, if you put notes. I'll put it in a line of the way you would read the yeah, okay, so it would come up in here, yeah.
+
+35:58 - Dan O Sullivan
+Yeah, it would go just yeah, just below the quote title. So you would put in the quote title, then you would put in your special comments, and then you move down to the products itself. Okay, yeah, okay, sweet. Okay, and that'll make likes just so much easier for you guys, right? It's just one travel.
+
+36:15 - Rachael Angus
+That's right, and um. Default turns we use is 60 days.
+
+36:21 - Dan O Sullivan
+Okay, so let's see.
+
+36:22 - Unidentified Speaker
+Yeah.
+
+36:28 - Blazhen Brangjolica
+16 or 60, you said?
+
+36:30 - Rachael Angus
+60, 60. Yeah, 60.
+
+36:32 - Unidentified Speaker
+Yeah.
+
+36:37 - Dan O Sullivan
+Is there anything else we're missing before we?
+
+36:39 - Rachael Angus
+No, this kind of thing. Our logo is wrong.
+
+36:41 - Dan O Sullivan
+Yeah, yeah, that's all right.
+
+36:43 - Rachael Angus
+And that'll be again. As you can see on the injector core, we use the injector core logo if it's all, and we've done that only because we have the different terms and conditions. So I suppose we can leave it as spray at solutions there, can't we? Just yeah, if we just use our spray at solutions logo on there instead, that'll be fine.
+
+36:59 - Dan O Sullivan
+Okay. So the main thing that will change on the dropdown is that if it's an injector core client, let's say, it's going to have a different T's and C's for it.
+
+37:08 - Rachael Angus
+Correct. Yeah. What we have been doing. We are starting to get mixed quotes now, too, so we need to figure out how we maybe just rewrite our terms.
+
+37:19 - Dan O Sullivan
+Well, whatever you call up with, we would just have another drop-down item for you, right? I just want to understand the layout so that way, then once we have the layout, then we can add like other T's and C's that you have saved. It's not an issue. The foundation is usually the hardest part. So that way, it's all doing what it says it should do, right?
+
+37:37 - Rachael Angus
+Yep.
+
+37:38 - Dan O Sullivan
+Um, so if we go onto the left-hand side where it says quote title and you scroll down a little bit, yeah, just keep scrolling down.
+
+37:46 - Unidentified Speaker
+Uh, sorry, and then, yeah, yeah.
+
+37:49 - Dan O Sullivan
+So, it's, I guess, what I'm trying to understand is when you go down to T's and C's terms, so just here. Is where we would put a drop-down. Is that right, Blazhen? And then they could select which one they want to install.
+
+38:01 - Rachael Angus
+Yeah, select which change. And then we can have a third one. And can Sorry.
+
+38:09 - Blazhen Brangjolica
+It was But I will also have a page for you guys to create your own terms and condition if you like to create new services.
+
+38:20 - Rachael Angus
+Perfect. Yeah, things like that. I don't really want to be having to bug you guys to do if possible. You know, that's just silly.
+
+38:27 - Dan O Sullivan
+it's yeah, for things like that, it could just be just you can. So the way I would do it is you would have your drop downs, and then you will have a space where you could fill in one, and then it could ask you, do you want to save this as a template for the next time?
+
+38:41 - Rachael Angus
+Yeah. Yeah. All right.
+
+38:43 - Dan O Sullivan
+Awesome. So, um, This is obviously going to have a little bit of like play around with. Maybe after you've played around with it, you might say, Hey, actually, we've had another think about this. Could we change this and this? That's okay to do for the moment, anyway, right? Like, as we said, we've got about eight weeks to really get rid of it to be really confident with this. So, the more that we can communicate and obviously try and make this as seamless for you, the better.
+
+ I will also push the tutorial videos live as the left-hand side. But as I mentioned to you, to be honest, like once we connect your AI softwares, which I'll do before we get off this call, then you'll be able to also That'll be able to search things in here and whatnot. So that'll also be super powerful for both of you, right? So, like, if you use ChatGPT as an example, or if you use Claude, you can just ask it things and it will be able to help as well.
+
+ It'll also have right access for certain things as well. So it can actually change things for you if you wanted to.
+
+39:47 - Rachael Angus
+Yep. Now there's something else that just popped into my head about the quoting. Very often where you send the quote out and the client comes back and says, I want to, you know, revise the quote. So if I save that, so to save this, how do I actually just save the template?
+
+40:05 - Blazhen Brangjolica
+Can I save the content?
+
+40:08 - Rachael Angus
+yeah, but if I want to save this quote, how do I do it without sending it?
+
+40:14 - Blazhen Brangjolica
+You can save as template right now, right now, and currently is saved by default draft. So if you just go back to all quotes, you will be able to see it as draft.
+
+40:26 - Dan O Sullivan
+Sorry, so click, click, click all quotes there on the left-hand side, just below quote builder, the little arrow beside, yeah.
+
+40:32 - Rachael Angus
+Yeah. And then it's a little bit safe. Okay. So what often happens is, you know, let's say I'm back in the contacts and Travis is here. So I'm assuming here we'd have the quote's be here somewhere, is it?
+
+40:53 - Dan O Sullivan
+Not at the moment of the way we built it, is what we're saying.
+
+40:57 - Rachael Angus
+Okay, so that will end up in there. Okay. So let's say they come back and we're revising the quote. So what I would do is go back to this quote, but I don't I wanna have I need to have a history of how we quoted it, so I don't just wanna go and edit the current quote. I would in effect duplicate it and make a change and call it revision one for argument's sake. So that I have a history of what we've actually done whenever I need to look back.
+
+ Does that make sense?
+
+41:33 - Dan O Sullivan
+Yeah, so for example, example, you'd have a version one, and then if you want to, if they want to make amends, then you would duplicate. So they have version two, and then you would edit on that one. And that way, if you ever wanted to see what was the original version one, that would show up, right? Yeah.
+
+41:48 - Rachael Angus
+So on this here, for example, where I am, oh, you've got to duplicate. There, you know, look at that. Right quite free. So, there we are. I wanted to say that, but you're I have everything. If you go back to all quotes, there is a lot of things here.
+
+42:06 - Blazhen Brangjolica
+You have duplicate, you have you, you can you can add on quote. You see, yeah, on the top right on the there is add on quote. For the Maya Fletcher. Yeah, that's like demo contact at the moment. But if you click add-on quote, you can add into the quote. So it basically connects the quotes with the quotes. It's like add-on on the quote, I guess.
+
+42:35 - Rachael Angus
+Oh, yeah. So this is in effect what I was just talking about doing. But does it save the copy of the quote that I added onto? Is it duplicating that? So yeah, it probably is because it's just giving me the quote, it was coming up with quote four then. So if I go to add-on quote, which is quite one, this is now calling the quote four. So how do I save that?
+
+43:02 - Blazhen Brangjolica
+If you just go back, it's safe to already have draft.
+
+43:06 - Rachael Angus
+Yeah, but I did that before and it wasn't in the list.
+
+43:08 - Blazhen Brangjolica
+See? Oh, it's because you have.
+
+43:15 - Blazhen Brangjolica
+Let me just add something.
+
+43:16 - Dan O Sullivan
+Just put something in there for a second. Yeah, add a product there or add something to it.
+
+43:20 - Rachael Angus
+Yeah.
+
+43:28 - Rachael Angus
+Okay. So now that's saved. So I should be able to go back and it's probably, hopefully it's there. No, it's not. Oh, yeah, there it is. Yeah, update drive. Okay. So any change I make by doing that add-on quote. Is actually save it as an update anyway. So, what we need to be careful of here is that the quite the quote title changes to reflect that, or we need to have it noticing a revision number somewhere.
+
+ Does that make sense?
+
+43:59 - Dan O Sullivan
+So, that's what Rev1 stands for in your injector core invoice.
+
+44:03 - Rachael Angus
+Yeah, revision one, correct?
+
+44:05 - Dan O Sullivan
+Okay.
+
+44:07 - Rachael Angus
+I manually write that at the moment.
+
+44:10 - Dan O Sullivan
+Okay, so I guess the question, the question being now.
+
+44:15 - Rachael Angus
+So when I duplicate it, it defaults and puts copy in brackets.
+
+44:19 - Dan O Sullivan
+Yeah, so I guess what the job data remember to rename the quote. Yeah, so what I'm saying is that what you're ideally looking for is if you duplicate or you do add-on. To the same client quote you've already sent, then we want it to be like rev2. We want it to auto-save.
+
+44:36 - Rachael Angus
+Revision one, revision two, that sort of thing. Yeah, so that they're and so we've always got the history. So if I go to Mark Fletcher's, oh, I can't click on that. So if I go to, so I have to go back to contacts to go to Mayo, do I?
+
+44:48 - Dan O Sullivan
+So I can't just click on that.
+
+44:49 - Blazhen Brangjolica
+Hang on, I always think.
+
+44:53 - Dan O Sullivan
+Just hang on, sec. Sorry, say that again before you click anything, Glenn.
+
+44:57 - Rachael Angus
+Yeah, so. If I wanted to jump to the contact here to go look at the history.
+
+45:03 - Dan O Sullivan
+We can make that clickable if you want.
+
+45:05 - Rachael Angus
+Yeah, make that clickable there and that will go to the contact. But if I go to May as contact here, which is oh, she's not in here. It's not Yeah, that's a common contact, that's why.
+
+45:16 - Blazhen Brangjolica
+She doesn't exist as contacts.
+
+45:18 - Rachael Angus
+So how can she have a quiet?
+
+45:20 - Dan O Sullivan
+It only because it was for a show to show you how to use it. If you use Travis as an example. If you went to the Travis quote, it would it would you would see it.
+
+45:28 - Rachael Angus
+Yeah, so in here, where would I see the list of all the quotes that we've done?
+
+45:32 - Blazhen Brangjolica
+Uh, it's not here yet. Uh, it doesn't exist here yet, yeah.
+
+45:37 - Blazhen Brangjolica
+I just figured it out how to work and connect all like four four hours ago. Uh, travel for two days. I expect that it will be done in three hours, and it was done in 23 hours for some reason.
+
+45:51 - Rachael Angus
+So, realistically, this will become like anything I do in that quotes for Traverse. For example, there'll be a thing so estimates are on the right hand side.
+
+46:02 - Rachael Angus
+And what estimates are opportunities. Yeah. So, in the opportunity jobs, we've got okay, so in under. Jobs, that's still the contact, isn't it?
+
+46:23 - Blazhen Brangjolica
+What do you mean the contact?
+
+46:25 - Rachael Angus
+Yeah, I'm just thinking that's older. Yeah, okay, so contacts is the contacts.
+
+46:34 - Dan O Sullivan
+Jobs is we've got loud so we can help.
+
+46:38 - Rachael Angus
+think out loud. I'm always telling him to stop thinking out loud, Dan. Seriously, the stuff that he mumbles, I'm just like, can you stop thinking out loud?
+
+46:48 - Dan O Sullivan
+Well, he's saying something, but he's not saying something. So I'm not sure.
+
+46:50 - Rachael Angus
+Yeah, no, what I'm saying is, is we're looking at opportunities here. Yeah. And still listing them by person's name.
+
+46:59 - Dan O Sullivan
+It always will. But if you go to Travis, if you click the white card on Travis, and if you put in his business name down. If you scroll down on the right, it'll have business name or yeah, there's no on the right hand side. On the right-hand side, if you scroll down, it'll say business name.
+
+47:15 - Rachael Angus
+Go down just there. Oh, yeah. So if you put in his business name per second, quad or whatever it is, I can't remember what it was called. So it's actually the opportunity where on the opportunity name, I've got him.
+
+47:28 - Dan O Sullivan
+So that's where the era is.
+
+47:30 - Rachael Angus
+So they've got the contact, but that should be Booper.
+
+47:35 - Dan O Sullivan
+So now and then just click out then just refresh.
+
+47:41 - Rachael Angus
+Yeah, I changed it. That's what I was expecting to see. That's fine. It's just I had the card filled out wrong.
+
+47:45 - Dan O Sullivan
+That's right. Yeah. And what I was just saying to you is: you see the way now you've selected business name, it shows. So when you populate those things on the white card, they will show. Likewise, when we see where the lead has come from
+
+47:56 - Rachael Angus
+So let's if you select name's not on there as well, but yeah, okay.
+
+48:00 - Dan O Sullivan
+So if you, if you can.
+
+48:04 - Dan O Sullivan
+If you select the white card and then you scroll down on the right-hand side, so let's say you assign it to you, so owner assign it to you, and then let's say source on the right-hand side. If you just say referral, just for argument's sake, and then just say update, you start to see more.
+
+48:30 - Unidentified Speaker
+on the card.
+
+48:31 - Dan O Sullivan
+So then, when you've got 100 contacts in there, then you can start to see it's a referral. You could see what you can put a value to it. So, once you've invoiced or sent a proposal, you could say this one's worth 50 grand. And then you'll see on the top right-hand corner of that card, it's assigned to you.
+
+48:47 - Rachael Angus
+Yeah, to the GI, yeah.
+
+48:49 - Dan O Sullivan
+Just more so when there's 100 sitting, the more details you give it, the better it is from a global perspective. Now, when something comes, in from an ad, that'll auto-populate to say that it came from, let's say, Facebook as an example.
+
+49:03 - Rachael Angus
+Yeah. So one thing I noticed it's not doing is it's not showing, it's showing the opportunity name, which is ideally what I want, but it'd be nice to have a opportunity name contact. So opportunity name there and then contact name there or something. Is there a way to show that?
+
+49:25 - Dan O Sullivan
+When you write Boopa, you would put Boopa either like dash the the person's name if you want but you've already got the person's name.
+
+49:34 - Blazhen Brangjolica
+Can I s suggest something? Um c can you close this window for a bit? Sure. So what's how I do things is instead of boopa, I actually show them the person's name. Name and the job name is say like let's say the like the business name, the source and the value below. So that way it's like, I don't know, b better to view I guess because you know the client's name and you know the job name, it's like below there.
+
+
+
+50:12 - Blazhen Brangjolica
+But I mean, that's an option. But what we can do is also, as Dan said, just put the first name, last name, and the job name next to the first name and the last name.
+
+50:25 - Dan O Sullivan
+So, Glenn, what's happening here? Are you still there, Glenn?
+
+50:29 - Unidentified Speaker
+Yeah, yeah.
+
+50:31 - Dan O Sullivan
+So in most cases, people have a name and people have a business name. In your situation, from the looks of it, you've got a facility company like Bupa, but then you also have Quadracon. Is that correct?
+
+50:47 - Rachael Angus
+So there's like Buper is the job. So it's a Buper, it's oh, hang on, I click the wrong one. Shit, and I go back.
+
+50:58 - Dan O Sullivan
+Just the little, where it says contact details, there's a little arrow there beside it.
+
+51:01 - Rachael Angus
+Yeah. So, oops, jobs. So in here, it's actually, I just did the same thing again, didn't I?
+
+51:16 - Rachael Angus
+It's here I want to click. Yeah. So it's actually VUPA aged care installation. That's what the opportunity is. So that makes it clearer what I'm trying to sort of get at. So now I look at this and I can see what the opportunity is straight away. I'll remember the opportunity, not the contact, more so.
+
+51:40 - Dan O Sullivan
+Yeah, but I guess what I'm trying to say to you is you could still do the same thing, click the Y card, and then after it says insulation, you just put Dash and Travis Gillespie.
+
+51:50 - Rachael Angus
+But that's double entry because I've already got Travis Gillespie as a contract.
+
+51:54 - Dan O Sullivan
+in the nicest way possible. When someone comes through from Facebook, they're going to come through the details that they've given you, what Irene has set up as an example. So, yes, it is double writing it in, but if when we think of most businesses, most businesses would have a business name and then they would have a contact. In your scenario, there's two, right? Because as I said, Quadricon are the ones that are looking for the thing, but they're going to be the duper aged care is where it's getting done, right?
+
+
+
+52:24 - Rachael Angus
+Okay, let me give you another challenge here, then. This is, and see where I'm coming from with this. Um, sorry, I won't be saying okay, so in HubSwap, this is the project, the deal, Woolworth Greenfield slab installation. We have Forsyth Projects Proprietary Limited quoting on it. We have MCR constructions quotient on it. I've got Nick I and I've got Lachlan I deal with two different companies. One project.
+
+
+
+53:04 - Dan O Sullivan
+So help me understand here: what is Lachlan and Nick's role here?
+
+53:10 - Rachael Angus
+Are they both estimators for different companies? They're both estimators for different companies. Yeah, so two different companies. Tendering for the same job and getting us to quote for the same job. So I quote, I create one quote for the deal or the project, and I duplicate that quote and send one to Nick and one to Lachlan and anyone else who will contact me. I can have up to 10 people quoting on one job.
+
+
+
+53:37 - Unidentified Speaker
+Sorry, let me. I just want to play, to play idiot for a second. What is your involvement in this?
+
+53:44 - Dan O Sullivan
+Like, are you the people who supply the product and they're the ones that insulate? Okay, I'm just trying to get them on.
+
+53:50 - Rachael Angus
+We're supplying a product for a certain part of this major project.
+
+53:55 - Dan O Sullivan
+Yeah. So it's a major innovation at Woolworths.
+
+53:58 - Rachael Angus
+We're insulating underneath one of the call rooms. And that's being listed in a Tinder document.
+
+54:03 - Dan O Sullivan
+Yeah. And then there's optical companies.
+
+54:05 - Rachael Angus
+And there's multiple companies wanting a price for that same component. So we do the takeoff, work out the price, generate the quote, and then we duplicate that quote and send it to multiple people. So we track, this is what I'm trying to say, we track a deal as a deal, and then we have a contact with that deal. Yeah, I One contact, or we might have like three or four people we deal with within the one job.
+
+ So it's not always just one person. And in this instance, it's one company, it's multiple companies.
+
+54:41 - Dan O Sullivan
+Yeah, I guess that's what I was trying to understand because when I was seeing the three different things, so it's making more sense now. You are supplying the product, and you might have multiple businesses who want that product for the same job because they're also quoting to be the people who are going to do the job, right?
+
+54:57 - Rachael Angus
+To oversee the whole project. Yeah, correct. We're one component of a big job. Yeah.
+
+55:01 - Dan O Sullivan
+Okay. That makes a lot more sense.
+
+55:04 - Rachael Angus
+Which is why I was trying to say I need to kind of track the jobs as, you know, I need to track them as a job and then have the contacts linked to that job. So I might have, you know, Travis linked to this one, I might have Lachlan linked to this one, and I might have someone else linked, but all to the same spoon for aged care installation job. Make sense?
+
+55:28 - Dan O Sullivan
+It does, yeah. I'm just trying to. My brain's trying to work out if we can do it that way.
+
+55:34 - Rachael Angus
+Otherwise, we'd have to have Booker Age Care with that company. Yeah, which gets very messy.
+
+55:42 - Dan O Sullivan
+It gets very messy.
+
+55:44 - Rachael Angus
+Look at the car sticker place we did. Well, I had eight companies quoting on that.
+
+55:51 - Rachael Angus
+and each of those companies had more than one contact. So it gets very, it can get very complex.
+
+56:00 - Dan O Sullivan
+Lazan, any ideas on that and how we could.
+
+56:04 - Unidentified Speaker
+Yeah, yeah. I mean, I have a few ideas. I need to test, but I have a few ideas.
+
+56:09 - Blazhen Brangjolica
+It's possible. Yeah, it works in HubSpot.
+
+56:14 - Rachael Angus
+There's a contact as one card and it gets associated to the deal.
+
+56:22 - Rachael Angus
+If that makes sense, that's how they do it. It.
+
+56:24 - Dan O Sullivan
+Yeah, I think what we'll probably do is we'll click into HubSpot and have a look at that and then see how we can replicate in some form. Because I get what you're saying now, working.
+
+56:36 - Unidentified Speaker
+Can I have a word?
+
+56:37 - Blazhen Brangjolica
+So, what you're saying is you want to create a proposal, let's say, and multiple people can apply for that proposal, right?
+
+56:48 - Unidentified Speaker
+Correct. Okay.
+
+56:51 - Blazhen Brangjolica
+That the challenge.
+
+56:53 - Rachael Angus
+Yeah.
+
+56:54 - Blazhen Brangjolica
+So, in the wording, you've got a nice challenge to be honest.
+
+56:56 - Rachael Angus
+We'd have one job, we'd have one job, and then we could get multiple people asking for it. Like, you know, I got a quote the other day: a request for an NDIS house. You know, I've issued that quote to three different companies for a certain address. So that's why it's handy to have the deal here because then I can just search. That address. I go okay, here's the job for that address. I'll link another contact to it, duplicate the quotes for them, send them out.
+
+
+
+57:26 - Dan O Sullivan
+Yeah, makes sense.
+
+57:28 - Rachael Angus
+Yeah.
+
+57:29 - Dan O Sullivan
+Yeah, I'll just need to wrap my head around it, um, as in the solution. Like, I like anyway, it makes sense. I know what you're talking about.
+
+57:39 - Blazhen Brangjolica
+I have a few ideas. I mean, I have a few ideas. I assess I'm a but I need to wrap my hair around as well.
+
+57:47 - Unidentified Speaker
+Uh but it's possible for sure.
+
+57:49 - Blazhen Brangjolica
+I just need to I just need to see how. Let's see.

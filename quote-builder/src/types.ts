@@ -42,10 +42,17 @@ export interface Upgrade {
   price: number | null
 }
 
+/** When a payment stage falls due. Foam type drives the deposit rule (call of 2 Oct 2026). */
+export type DueRule = 'before-1bd' | 'before-7d' | 'on-acceptance' | 'on-completion' | 'custom'
+
+export type AcceptedVia = 'email' | 'phone' | 'purchase-order'
+
 export interface PaymentStage {
   id: string
   label: string
   percent: number
+  /** Missing on older saved drafts: shown as no rule. */
+  due?: DueRule
 }
 
 export interface Quote {
@@ -55,6 +62,8 @@ export interface Quote {
   jobId: string
   /** An extra quote on a job that already has one. Must not restart the welcome messages. */
   isAddOn: boolean
+  /** One of several alternative quotes for the same job (e.g. open-cell or closed-cell). The customer accepts only one. */
+  isOption?: boolean
   contactId: string
   title: string
   items: LineItem[]
@@ -72,6 +81,9 @@ export interface Quote {
   sentAt?: string
   acceptedAt?: string
   acceptedTotal?: number
+  /** How it was accepted: the customer clicked in the email, or staff recorded a phone call or a purchase order. */
+  acceptedVia?: AcceptedVia
+  poNumber?: string
   declinedAt?: string
   declineReason?: string
   fromTemplate?: string

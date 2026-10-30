@@ -12,7 +12,7 @@ import { useEffect, useState } from 'react'
  */
 export type Route =
   | { name: 'list' }
-  | { name: 'new'; jobId?: string; addOn: boolean; templateId?: string; nonce: number }
+  | { name: 'new'; jobId?: string; addOn: boolean; option: boolean; templateId?: string; nonce: number }
   | { name: 'edit'; id: string }
   | { name: 'view'; id: string }
   | { name: 'templates' }
@@ -23,7 +23,7 @@ export function parseHash(hash: string): Route {
   const q = new URLSearchParams(query)
   const parts = path.split('/').filter(Boolean)
   if (parts[0] === 'new') {
-    return { name: 'new', jobId: q.get('job') || undefined, addOn: q.get('addon') === '1', templateId: q.get('template') || undefined, nonce: Math.random() }
+    return { name: 'new', jobId: q.get('job') || undefined, addOn: q.get('addon') === '1', option: q.get('option') === '1', templateId: q.get('template') || undefined, nonce: Math.random() }
   }
   if (parts[0] === 'quote' && parts[1]) return { name: 'edit', id: decodeURIComponent(parts[1]) }
   if (parts[0] === 'view' && parts[1]) return { name: 'view', id: decodeURIComponent(parts[1]) }
@@ -33,10 +33,11 @@ export function parseHash(hash: string): Route {
 
 export const href = {
   list: () => '#/',
-  new: (opts?: { jobId?: string; addOn?: boolean; templateId?: string }) => {
+  new: (opts?: { jobId?: string; addOn?: boolean; option?: boolean; templateId?: string }) => {
     const q = new URLSearchParams()
     if (opts?.jobId) q.set('job', opts.jobId)
     if (opts?.addOn) q.set('addon', '1')
+    if (opts?.option) q.set('option', '1')
     if (opts?.templateId) q.set('template', opts.templateId)
     const s = q.toString()
     return '#/new' + (s ? '?' + s : '')
