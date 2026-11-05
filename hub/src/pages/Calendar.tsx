@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from 'react'
 import { CalendarPlus, Check, ChevronLeft, ChevronRight, RefreshCw } from 'lucide-react'
 import '../components/calendar/calendar.css'
-import { BookVisitDialog, CancelVisitDialog, MoveVisitDialog } from '../components/calendar/VisitDialogs'
+import { BookFlow } from '../components/calendar/BookFlow'
+import { CancelVisitDialog, MoveVisitDialog } from '../components/calendar/VisitDialogs'
 import { Dialog, EmptyState, Notice, PageHead } from '../components/ui'
 import {
   addDaysISO, dayDiff, ensureCalendarRange, eventDay, eventEndTime, eventTime, isCancelled, refreshCalendar, syncedText, useCalendar, useCalendarSync,
@@ -9,15 +10,30 @@ import {
 } from '../lib/calendar'
 import { CalendarError } from '../components/calendar/CalendarError'
 import { todayISO } from '../lib/format'
-import { href } from '../lib/router'
+import { go, href } from '../lib/router'
 import { getContact, getJob, useStore } from '../lib/store'
 
-type View = 'week' | 'day' | 'list'
+type View = 'week' | 'month' | 'day' | 'list'
 const VIEWS: { id: View; label: string }[] = [
   { id: 'week', label: 'Week' },
+  { id: 'month', label: 'Month' },
   { id: 'day', label: 'Day' },
   { id: 'list', label: 'List' },
 ]
+const MONTH_SHOWN = 3
+const WEEKDAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+const monthStart = (day: string) => day.slice(0, 7) + '-01'
+const monthEnd = (day: string) => {
+  const d = new Date(monthStart(day) + 'T12:00:00Z')
+  d.setUTCMonth(d.getUTCMonth() + 1, 0)
+  return d.toISOString().slice(0, 10)
+}
+/** The first day of the month n months from the one holding `day`. */
+const addMonthsISO = (day: string, n: number) => {
+  const d = new Date(monthStart(day) + 'T12:00:00Z')
+  d.setUTCMonth(d.getUTCMonth() + n, 1)
+  return d.toISOString().slice(0, 10)
+}
 const DAY_MS = 86400000
 const LIST_DAYS = 14
 
@@ -29,6 +45,11 @@ const statusText = (e: CalendarEvent) => (isCancelled(e) ? 'Cancelled' : cap(e.s
 
 function rangeOf(view: View, anchor: string): { from: string; to: string } {
   if (view === 'day') return { from: anchor, to: anchor }
+  if (view === 'month') {
+    // Whole weeks, Monday to Sunday, covering the month.
+    const first = mondayOf(monthStart(anchor))
+    return { from: first, to: addDaysISO(mondayOf(monthEnd(anchor)), 6) }
+  }
   const from = mondayOf(anchor)
   return { from, to: addDaysISO(from, view === 'week' ? 6 : LIST_DAYS - 1) }
 }
@@ -50,59 +71,6 @@ function EventButton({ ev, onOpen, showDay }: { ev: CalendarEvent; onOpen: (e: C
   )
 }
 
-function ContactPicker({ onClose, onPick }: { onClose: () => void; onPick: (contactId: string, jobId: string, address: string) => void }) {
-  const s = useStore()
-  const [q, setQ] = useState('')
-  const [contactId, setContactId] = useState('')
-  const [jobId, setJobId] = useState('')
-  const needle = q.trim().toLowerCase()
-  const matches = s.contacts
-    .filter((c) => !needle || `${c.name} ${c.email} ${c.phone}`.toLowerCase().includes(needle))
-    .slice(0, 8)
-  const jobs = contactId ? s.jobs.filter((j) => j.participants.some((p) => p.kind === 'contact' && p.id === contactId)) : []
-  const job = jobs.find((j) => j.id === jobId)
-  return (
-    <Dialog
-      open
-      onClose={onClose}
-      title="Book a visit: who is it for?"
-      footer={
-        <>
-          <button type="button" className="btn btn-neutral" onClick={onClose}>Cancel</button>
-          <button type="button" className="btn btn-primary" disabled={!contactId} onClick={() => onPick(contactId, jobId, job?.address ?? '')}>Next</button>
-        </>
-      }
-    >
-      <div className="stack">
-        <label htmlFor="cal-contact-search" className="t-small font-bold">Find a contact</label>
-        <input id="cal-contact-search" type="search" className="field" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Name, email or phone" />
-        {matches.length === 0 ? (
-          <p className="t-small">No contact matches. Add them on the Contacts page first.</p>
-        ) : (
-          <ul className="cal-people" aria-label="Contacts">
-            {matches.map((c) => (
-              <li key={c.id}>
-                <button type="button" className="cal-person" aria-pressed={c.id === contactId} onClick={() => { setContactId(c.id); setJobId('') }}>
-                  {c.name || 'No name'}{c.phone ? `, ${c.phone}` : ''}{c.id === contactId ? ' (chosen)' : ''}
-                </button>
-              </li>
-            ))}
-          </ul>
-        )}
-        {contactId && (
-          <>
-            <label htmlFor="cal-job-pick" className="t-small font-bold">Which job is it for?</label>
-            <select id="cal-job-pick" className="field" value={jobId} onChange={(e) => setJobId(e.target.value)}>
-              <option value="">No job yet</option>
-              {jobs.map((j) => <option key={j.id} value={j.id}>{j.name}</option>)}
-            </select>
-          </>
-        )}
-      </div>
-    </Dialog>
-  )
-}
-
 export default function Calendar() {
   useCalendarSync()
   const cal = useCalendar()
@@ -114,7 +82,6 @@ export default function Calendar() {
   const [moving, setMoving] = useState<CalendarEvent | null>(null)
   const [cancelling, setCancelling] = useState<CalendarEvent | null>(null)
   const [picking, setPicking] = useState(false)
-  const [booking, setBooking] = useState<{ contactId: string; jobId: string; address: string } | null>(null)
   const [, tick] = useState(0)
   const [rangeError, setRangeError] = useState('')
 
@@ -140,9 +107,11 @@ export default function Calendar() {
   const days = Array.from({ length: dayDiff(from, to) + 1 }, (_, i) => addDaysISO(from, i))
 
   const step = view === 'day' ? 1 : view === 'week' ? 7 : LIST_DAYS
-  const move = (n: number) => setAnchor((a) => addDaysISO(a, n * step))
+  const move = (n: number) => setAnchor((a) => (view === 'month' ? addMonthsISO(a, n) : addDaysISO(a, n * step)))
   const open = (e: CalendarEvent) => setSelected(e)
-  const title = view === 'day' ? dayLabel(anchor, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }) : `${dayLabel(from, { day: 'numeric', month: 'short' })} to ${dayLabel(to, { day: 'numeric', month: 'short', year: 'numeric' })}`
+  const unit = view === 'day' ? 'day' : view === 'week' ? 'week' : view === 'month' ? 'month' : 'fortnight'
+  const monthOf = monthStart(anchor)
+  const title = view === 'month' ? dayLabel(anchor, { month: 'long', year: 'numeric' }) : view === 'day' ? dayLabel(anchor, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }) : `${dayLabel(from, { day: 'numeric', month: 'short' })} to ${dayLabel(to, { day: 'numeric', month: 'short', year: 'numeric' })}`
   const toggle = (id: string) => setOff((o) => { const n = new Set(o); if (n.has(id)) n.delete(id); else n.add(id); return n })
 
   const hours = useMemo(() => {
@@ -155,6 +124,13 @@ export default function Calendar() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [view, anchor, inRange])
 
+  // Close the dialog first, then go to the page (a plain click only; Ctrl or Shift click keeps the browser's own behaviour).
+  const openLink = (e: React.MouseEvent, to: string) => {
+    if (e.ctrlKey || e.metaKey || e.shiftKey || e.button !== 0) return
+    e.preventDefault()
+    setSelected(null)
+    go(to)
+  }
   const sel = selected
   const selJob = sel?.jobId ? getJob(sel.jobId, s) : undefined
   const selContact = sel?.contactId ? getContact(sel.contactId, s) : undefined
@@ -180,11 +156,11 @@ export default function Calendar() {
             ))}
           </div>
           <div className="cal-nav">
-            <button type="button" className="btn btn-neutral btn-icon" aria-label={`Previous ${view === 'day' ? 'day' : view === 'week' ? 'week' : 'fortnight'}`} onClick={() => move(-1)} data-cal-prev>
+            <button type="button" className="btn btn-neutral btn-icon" aria-label={`Previous ${unit}`} onClick={() => move(-1)} data-cal-prev>
               <ChevronLeft size={20} aria-hidden="true" />
             </button>
             <button type="button" className="btn btn-neutral" onClick={() => setAnchor(todayISO())} data-cal-today>Today</button>
-            <button type="button" className="btn btn-neutral btn-icon" aria-label={`Next ${view === 'day' ? 'day' : view === 'week' ? 'week' : 'fortnight'}`} onClick={() => move(1)} data-cal-next>
+            <button type="button" className="btn btn-neutral btn-icon" aria-label={`Next ${unit}`} onClick={() => move(1)} data-cal-next>
               <ChevronRight size={20} aria-hidden="true" />
             </button>
           </div>
@@ -250,6 +226,35 @@ export default function Calendar() {
             </section>
           ))}
         </div>
+      ) : view === 'month' ? (
+        <div className="cal-month" data-cal-grid="month">
+          {WEEKDAYS.map((w) => <span key={w} className="cal-month-wd" aria-hidden="true">{w}</span>)}
+          {days.map((d) => {
+            const evs = byDay(d)
+            const inMonth = d.slice(0, 7) === monthOf.slice(0, 7)
+            const full = dayLabel(d, { weekday: 'long', day: 'numeric', month: 'long' })
+            return (
+              <button
+                key={d}
+                type="button"
+                className={`cal-mday${d === today ? ' is-today' : ''}${inMonth ? '' : ' is-out'}`}
+                data-cal-day={d}
+                data-cal-count={evs.length}
+                aria-label={`${full}, ${evs.length === 0 ? 'nothing booked' : evs.length === 1 ? '1 visit' : `${evs.length} visits`}. Open the day view.`}
+                onClick={() => { setAnchor(d); setView('day') }}
+              >
+                <span className="cal-mnum">{Number(d.slice(8))}{d === today ? <span className="cal-mtoday"> Today</span> : null}</span>
+                {evs.length > 0 && <span className="cal-mcount" aria-hidden="true">{evs.length}</span>}
+                <span className="cal-mevs" aria-hidden="true">
+                  {evs.slice(0, MONTH_SHOWN).map((e) => (
+                    <span key={e.id} className={`cal-mev${isCancelled(e) ? ' is-cancelled' : ''}`} style={{ borderLeftColor: e.color }} data-cal-mev={e.id}>{eventTime(e)} {e.title || 'Visit'}</span>
+                  ))}
+                  {evs.length > MONTH_SHOWN && <span className="cal-mmore">+{evs.length - MONTH_SHOWN} more</span>}
+                </span>
+              </button>
+            )
+          })}
+        </div>
       ) : view === 'day' ? (
         <div className="cal-hours" data-cal-grid="day">
           {hours.map((h) => {
@@ -309,17 +314,16 @@ export default function Calendar() {
               <dd>{statusText(sel)}</dd>
               {sel.address && (<><dt>Address</dt><dd>{sel.address}</dd></>)}
               <dt>Job</dt>
-              <dd>{sel.jobId ? <a className="row-link" href={href.job(sel.jobId)}>{selJob?.name ?? 'Open the job'}</a> : 'No job linked'}</dd>
+              <dd>{sel.jobId ? <a className="cell-link" href={href.job(sel.jobId)} data-cal-job-link onClick={(e) => openLink(e, href.job(sel.jobId!))}>{selJob?.name ?? 'Open the job'}</a> : 'No job linked'}</dd>
               <dt>Contact</dt>
-              <dd>{sel.contactId ? <a className="row-link" href={href.contact(sel.contactId)}>{selContact?.name ?? 'Open the contact'}</a> : 'No contact linked'}</dd>
+              <dd>{sel.contactId ? <a className="cell-link" href={href.contact(sel.contactId)} data-cal-contact-link onClick={(e) => openLink(e, href.contact(sel.contactId!))}>{selContact?.name ?? 'Open the contact'}</a> : 'No contact linked'}</dd>
             </dl>
           </div>
         </Dialog>
       )}
       {moving && <MoveVisitDialog event={moving} onClose={() => setMoving(null)} />}
       {cancelling && <CancelVisitDialog event={cancelling} onClose={() => setCancelling(null)} />}
-      {picking && <ContactPicker onClose={() => setPicking(false)} onPick={(contactId, jobId, address) => { setPicking(false); setBooking({ contactId, jobId, address }) }} />}
-      {booking && <BookVisitDialog open onClose={() => setBooking(null)} contactId={booking.contactId} jobId={booking.jobId} address={booking.address} />}
+      {picking && <BookFlow onClose={() => setPicking(false)} />}
     </div>
   )
 }

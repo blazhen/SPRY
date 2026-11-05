@@ -39,7 +39,7 @@ function fromServer(j: unknown): SendState {
 export async function refreshSendState(): Promise<void> {
   if (DATA_SOURCE === 'mock') return
   try {
-    set(fromServer(await apiFetch('/send')))
+    set(fromServer(await apiFetch('/api/send')))
   } catch (e) {
     // A server without the route (404) simply cannot send: say so, never pretend.
     set({ ...OFF, loaded: true, error: e instanceof ApiError && e.status === 404 ? 'This Hub server has no sending route yet.' : e instanceof Error ? e.message : 'Could not read the sending setting.' })
@@ -58,7 +58,7 @@ export function useSendState(): SendState {
 export async function setSendEnabled(enabled: boolean, by: string): Promise<string> {
   if (DATA_SOURCE === 'mock') return 'Demo data: nothing can be switched on here.'
   try {
-    set(fromServer(await apiFetch('/send', { method: 'PUT', body: { enabled, by } })))
+    set(fromServer(await apiFetch('/api/send', { method: 'PUT', body: { enabled, by } })))
     return ''
   } catch (e) {
     return e instanceof Error ? e.message : 'Could not save the setting.'
@@ -83,7 +83,7 @@ export async function sendMessage(req: SendRequest): Promise<SendResult> {
   }
   if (!state.canSend) return { ok: false, reason: 'Sending is switched off.' }
   try {
-    await apiFetch('/send', { method: 'POST', body: req })
+    await apiFetch('/api/send', { method: 'POST', body: req })
   } catch (e) {
     if (e instanceof NetworkError) return { ok: false, reason: 'The Hub server could not be reached. Nothing was sent.' }
     if (e instanceof AuthError) return { ok: false, reason: 'Your Hub sign-in has run out. Open the Hub again from the CRM. Nothing was sent.' }

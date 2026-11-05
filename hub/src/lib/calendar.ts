@@ -171,7 +171,7 @@ const asCalendar = (r: Row): CalendarInfo => ({
 
 async function readCalendars(): Promise<CalendarInfo[]> {
   if (DATA_SOURCE === 'mock') return MOCK_CALS
-  const j = (await apiFetch('/calendar', { query: { view: 'calendars' } })) as { calendars?: Row[] } | null
+  const j = (await apiFetch('/api/calendar', { query: { view: 'calendars' } })) as { calendars?: Row[] } | null
   const list = (j?.calendars ?? []).map(asCalendar)
   if (list.length === 0) throw new Error(NOT_SET_UP + 'the CRM has no active calendars for this location')
   return list
@@ -192,7 +192,7 @@ export function calendarErrorText(e: unknown): string {
 export const isCalendarSetupProblem = (msg: string): boolean => msg.startsWith(NOT_SET_UP)
 async function readEvents(from: number, to: number): Promise<CalendarEvent[]> {
   if (DATA_SOURCE === 'mock') return mockAll().filter((e) => { const t = Date.parse(e.start); return t >= from && t < to && !isCancelled(e) })
-  const j = (await apiFetch('/calendar', { query: { view: 'events', from: new Date(from).toISOString(), to: new Date(to).toISOString() } })) as { events?: Row[] } | null
+  const j = (await apiFetch('/api/calendar', { query: { view: 'events', from: new Date(from).toISOString(), to: new Date(to).toISOString() } })) as { events?: Row[] } | null
   return (j?.events ?? []).map(asEvent)
 }
 
@@ -247,7 +247,7 @@ export async function loadSlots(calendarId: string, from: number, to: number): P
     const cal = MOCK_CALS.find((c) => c.id === calendarId)
     return cal ? mockSlots(cal, from, to) : {}
   }
-  const j = (await apiFetch('/calendar', { query: { view: 'slots', calendarId, from: new Date(from).toISOString(), to: new Date(to).toISOString() } })) as { days?: Record<string, string[]> } | null
+  const j = (await apiFetch('/api/calendar', { query: { view: 'slots', calendarId, from: new Date(from).toISOString(), to: new Date(to).toISOString() } })) as { days?: Record<string, string[]> } | null
   return j?.days ?? {}
 }
 
@@ -264,7 +264,7 @@ export async function bookVisit(b: BookInput): Promise<CalendarEvent> {
     ev = { id: `ev-${Math.random().toString(36).slice(2, 10)}`, calendarId: cal.id, calendarName: cal.name, kind: cal.kind, color: cal.color, contactId: b.contactId, jobId: b.jobId, title: b.title, start: b.startIso, end: iso(new Date(st + cal.slotMinutes * 60000)), status: 'confirmed', address: b.address ?? '', assignedUserId: b.assignedUserId ?? '' }
     mockAll().push(ev)
   } else {
-    const r = (await apiFetch('/calendar', { method: 'POST', body: { calendarId: b.calendarId, contactId: b.contactId, jobId: b.jobId, startTime: b.startIso, title: b.title, address: b.address, assignedUserId: b.assignedUserId } })) as { event?: Row } | null
+    const r = (await apiFetch('/api/calendar', { method: 'POST', body: { calendarId: b.calendarId, contactId: b.contactId, jobId: b.jobId, startTime: b.startIso, title: b.title, address: b.address, assignedUserId: b.assignedUserId } })) as { event?: Row } | null
     if (!r?.event) throw new Error('The booking was not confirmed')
     ev = asEvent(r.event)
   }
@@ -284,7 +284,7 @@ export async function moveVisit(id: string, startIso: string, calendarId?: strin
     Object.assign(cur, { calendarId: cal.id, calendarName: cal.name, kind: cal.kind, color: cal.color, start: startIso, end: iso(new Date(st + cal.slotMinutes * 60000)) })
     ev = { ...cur }
   } else {
-    const r = (await apiFetch('/calendar', { method: 'PUT', query: { id }, body: { startTime: startIso, calendarId } })) as { event?: Row } | null
+    const r = (await apiFetch('/api/calendar', { method: 'PUT', query: { id }, body: { startTime: startIso, calendarId } })) as { event?: Row } | null
     if (!r?.event) throw new Error('The change was not confirmed')
     ev = asEvent(r.event)
   }
@@ -299,7 +299,7 @@ export async function cancelVisit(id: string): Promise<void> {
     if (!cur) throw new Error('Visit not found')
     cur.status = 'cancelled'
   } else {
-    await apiFetch('/calendar', { method: 'PUT', query: { id }, body: { cancel: true } })
+    await apiFetch('/api/calendar', { method: 'PUT', query: { id }, body: { cancel: true } })
   }
   set({ events: state.events.filter((e) => e.id !== id) })
 }

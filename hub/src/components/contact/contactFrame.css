@@ -28,3 +28,11 @@
 @media (max-width: 1100px) {
   .ch-actions { flex: 1 1 100%; justify-content: flex-start; }
 }
+
+/* Left panel tab strip (All, Contact, Job, Company): share the panel width instead of running past the edge. */
+[data-contact-frame] .jl-viewwrap { min-width: 0; }
+[data-contact-frame] .jl-viewwrap .jl-switch { width: 100%; box-sizing: border-box; }
+[data-contact-frame] .jl-viewwrap .jl-switch-btn { flex: 1 1 auto; padding: 0 0.375rem; min-width: 0; }
+[data-contact-frame] .jl-viewwrap .cw-left-pick, [data-contact-frame] .jl-viewwrap [data-left-job] { min-width: 0; max-width: 100%; }
+[data-contact-frame] .jl-viewwrap .cw-left-pick .field { max-width: 100%; }
+[data-contact-frame] .jl-viewwrap .jl-switch { position: sticky; top: 0; z-index: 3; background: rgb(var(--c-surface)); }

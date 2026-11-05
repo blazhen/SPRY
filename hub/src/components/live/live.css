@@ -9,8 +9,17 @@
 .lb-btn[aria-pressed='true'] { background: rgb(var(--c-navy)); color: rgb(var(--c-on-navy, 255 255 255)); }
 .lb-say { flex: 1 1 8rem; min-width: 0; font-size: var(--d-small); color: rgb(var(--c-muted)); }
 
-/* The page frame while a width preview is on: centred, with a visible outline. */
-.jf[data-live-width] { margin-inline: auto; width: 100%; outline: 2px dashed rgb(var(--c-navy)); outline-offset: 4px; }
+/* The page (head and three panels) while a width preview is on: a centred frame of that width, with everything stacked in one
+   column as on a real narrow screen. The edit bar stays outside it, full width. Normally the wrapper takes no part in the layout. */
+.jf-pv { display: contents; }
+.jf-pv[data-live-preview] { display: flex; flex-direction: column; flex: 1 1 0; min-height: 0; margin-inline: auto; box-sizing: border-box; outline: 2px dashed rgb(var(--c-navy)); outline-offset: 4px; overflow-y: auto; overflow-x: hidden; overscroll-behavior: contain; gap: 0.5rem; }
+.jf-pv[data-live-preview] .jf-body { display: flex; flex-direction: column; flex: none; min-height: auto; overflow: visible; grid-template-columns: none; gap: 0.75rem; }
+.jf-pv[data-live-preview] .jf-body > .jf-panel { flex: none; overflow: visible; max-height: none; min-width: 0; }
+.jf-pv[data-live-preview] .jf-rail { display: none; }
+.jf-pv[data-live-preview] .jf-head-row { grid-template-columns: minmax(0, 1fr); }
+.jf-pv[data-live-preview] .jf-actions { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); width: 100%; }
+.jf-pv[data-live-preview] .jf-actions .jf-main { grid-column: 1 / -1; order: -1; }
+.jf-pv[data-live-preview] .jf-h1, .jf-pv[data-live-preview] .jf-title { min-width: 0; overflow-wrap: anywhere; }
 
 /* Box frame */
 .bf { position: relative; border: 2px dashed rgb(var(--c-navy) / 0.55); border-radius: var(--d-radius); margin-bottom: 0.75rem; background: rgb(var(--c-surface)); }
@@ -23,3 +32,6 @@
 .bf-note { margin: 0; padding: 0.25rem 0.5rem; font-size: var(--d-small); color: rgb(var(--c-ink)); background: rgb(var(--c-raise)); }
 .bf-content { padding: 0.25rem; pointer-events: none; user-select: none; max-height: 22rem; overflow: hidden; }
 .bf .le-pop { z-index: 45; }
+.jf-pv[data-live-preview] .jf-head-row:has([data-stage-control]) { grid-template-columns: minmax(0, 1fr); }
+.jf-pv[data-live-preview] .jf-head-row:has([data-stage-control]) :is(.jf-h1, .sc-row, .jf-value, .ss, .ss-detail, .jf-actions) { grid-column: 1; grid-row: auto; justify-self: stretch; }
+.jf-pv[data-live-preview] .jf-head-row:has([data-stage-control]) .jf-value { white-space: normal; }

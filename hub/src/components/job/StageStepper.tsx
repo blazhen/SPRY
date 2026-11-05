@@ -3,6 +3,7 @@ import type { KeyboardEvent as ReactKeyboardEvent } from 'react'
 import { Check, Trophy, X } from 'lucide-react'
 import { STAGE_HELP, getJob, stageList, stall, stallLimitFor, useStore } from '../../lib/store'
 import { useStageMove, STAGE_PHASES } from './StagePopover'
+import { usePreviewWidth } from '../../lib/previewWidth'
 import './stageStepper.css'
 
 /** True on phones, where only the current, previous and next steps keep their names. */
@@ -14,7 +15,8 @@ function useNarrow(): boolean {
     m.addEventListener('change', on)
     return () => m.removeEventListener('change', on)
   }, [])
-  return n
+  const pv = usePreviewWidth()
+  return pv ? pv <= 640 : n
 }
 
 type Kind = 'stage' | 'won' | 'lost'

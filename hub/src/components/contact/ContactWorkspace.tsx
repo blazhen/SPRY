@@ -2,6 +2,7 @@ import { Fragment, useEffect, useId, useRef, useState, useSyncExternalStore, typ
 import { ArrowLeft, Briefcase, FileText, LayoutList, MessageSquare, NotebookPen, ReceiptText, ListChecks, Paperclip, type LucideIcon } from 'lucide-react'
 import { go, href, type ContactView } from '../../lib/router'
 import { getCompany, getContact, jobsForContact, useStore } from '../../lib/store'
+import { JobFacts } from '../job/JobFacts'
 import { TabPanel, Tabs } from '../ui'
 import { CONTACT_COMPOSE } from './compose'
 import { ContactHeaderBar } from './ContactHeaderBar'
@@ -38,12 +39,12 @@ function useWide(): boolean {
 }
 
 /* ---------- the left panel switch: All | Contact | Company, remembered per browser ---------- */
-type LeftView = 'all' | 'contact' | 'company'
+type LeftView = 'all' | 'contact' | 'job' | 'company'
 const KEY = 'hub.contact.left.view.v1.advanced'
 function readLeft(): LeftView {
   try {
     const v = window.localStorage.getItem(KEY)
-    if (v === 'all' || v === 'contact' || v === 'company') return v
+    if (v === 'all' || v === 'contact' || v === 'job' || v === 'company') return v
   } catch {
     /* storage blocked: use the default */
   }
@@ -78,16 +79,50 @@ function useContactCompanies(contactId: string): { id: string; name: string }[] 
   return out
 }
 
+const LEFT_LABEL: Record<LeftView, string> = { all: 'All', contact: 'Contact', job: 'Job', company: 'Company' }
+
+/** Read-only: the other people and the jobs of a company (there is no company page yet). */
+function CompanyPeople({ contactId, companyId }: { contactId: string; companyId: string }) {
+  const s = useStore()
+  const people = s.contacts.filter((c) => c.companyId === companyId && c.id !== contactId)
+  const jobs = s.jobs.filter((j) => j.participants.some((p) => p.kind === 'company' && p.id === companyId))
+  if (people.length === 0 && jobs.length === 0) return <p className="t-small text-muted" data-company-people>No other contacts or jobs are linked to this company yet.</p>
+  return (
+    <div className="stack" data-company-people>
+      {people.length > 0 && (
+        <div>
+          <h3 className="jl-h">Other contacts ({people.length})</h3>
+          <ul className="stack">{people.map((c) => <li key={c.id}><a className="cell-link" href={href.contact(c.id)}>{c.name || 'No name'}</a></li>)}</ul>
+        </div>
+      )}
+      {jobs.length > 0 && (
+        <div>
+          <h3 className="jl-h">Jobs ({jobs.length})</h3>
+          <ul className="stack">{jobs.map((j) => <li key={j.id}><a className="cell-link" href={href.job(j.id)}>{j.name}</a></li>)}</ul>
+        </div>
+      )}
+    </div>
+  )
+}
+
 function LeftPanel({ contactId }: { contactId: string }) {
+  const s = useStore()
   const [view, setView] = useLeftView()
   const uid = useId()
   const companies = useContactCompanies(contactId)
   const [pick, setPick] = useState('')
+  const [jobPick, setJobPick] = useState('')
   const hasCompany = companies.length > 0
-  const options: LeftView[] = hasCompany ? ['all', 'contact', 'company'] : ['all', 'contact']
+  // Most recent job first.
+  const jobs = [...jobsForContact(contactId, s)].sort((a, b) => String((b as { createdAt?: string }).createdAt ?? '').localeCompare(String((a as { createdAt?: string }).createdAt ?? '')))
+  const hasJob = jobs.length > 0
+  const options: LeftView[] = ['all', 'contact', ...(hasJob ? (['job'] as LeftView[]) : []), ...(hasCompany ? (['company'] as LeftView[]) : [])]
+  // With no job and no company, All and Contact would show the same thing: no strip to click.
+  const showSwitch = options.length > 2
   const shown: LeftView = options.includes(view) ? view : 'all'
   const companyId = companies.find((c) => c.id === pick)?.id ?? companies[0]?.id
-  const picker =
+  const jobId = jobs.find((j) => j.id === jobPick)?.id ?? jobs[0]?.id
+  const companyPicker =
     companies.length > 1 ? (
       <div className="cw-left-pick">
         <label className="inline-field-label" htmlFor={`${uid}-co`}>
@@ -102,13 +137,28 @@ function LeftPanel({ contactId }: { contactId: string }) {
         </select>
       </div>
     ) : null
+  const jobPicker =
+    jobs.length > 1 ? (
+      <div className="cw-left-pick">
+        <label className="inline-field-label" htmlFor={`${uid}-job`}>
+          Job
+        </label>
+        <select id={`${uid}-job`} className="field" value={jobId} onChange={(e) => setJobPick(e.target.value)} data-left-job-pick>
+          {jobs.map((j) => (
+            <option key={j.id} value={j.id}>
+              {j.name || 'No name'}
+            </option>
+          ))}
+        </select>
+      </div>
+    ) : null
   return (
     <div className="jl-viewwrap" data-left-view={shown}>
-      {options.length > 1 && (
+      {showSwitch && (
         <div className="jl-switch" role="group" aria-label="Show in this panel">
           {options.map((o) => (
-            <button key={o} type="button" className="jl-switch-btn" aria-pressed={shown === o} onClick={() => setView(o)}>
-              {o === 'all' ? 'All' : o === 'contact' ? 'Contact' : 'Company'}
+            <button key={o} type="button" className="jl-switch-btn" aria-pressed={shown === o} data-left-tab={o} onClick={() => setView(o)}>
+              {LEFT_LABEL[o]}
             </button>
           ))}
         </div>
@@ -116,6 +166,12 @@ function LeftPanel({ contactId }: { contactId: string }) {
       {shown === 'all' && (
         <div className="cw-stack">
           <ContactDetailsSection contactId={contactId} />
+          {hasJob && jobId && (
+            <section className="cw-stack" data-left-job>
+              <h3 className="jl-h">{jobs.length > 1 ? 'Latest job' : 'Job'}</h3>
+              <JobFacts key={jobs[0].id} jobId={jobs[0].id} only="job" />
+            </section>
+          )}
           {hasCompany && <ContactCompanySection contactId={contactId} companyId={companyId} />}
         </div>
       )}
@@ -124,11 +180,19 @@ function LeftPanel({ contactId }: { contactId: string }) {
           <ContactDetailsSection contactId={contactId} />
         </SoloSection.Provider>
       )}
-      {shown === 'company' && hasCompany && (
+      {shown === 'job' && hasJob && jobId && (
+        <div className="cw-stack" data-left-job>
+          {jobPicker}
+          <JobFacts key={jobId} jobId={jobId} only="job" />
+          <a className="cell-link" href={href.job(jobId)}>Open the full job page</a>
+        </div>
+      )}
+      {shown === 'company' && hasCompany && companyId && (
         <SoloSection.Provider value>
           <div className="cw-stack">
-            {picker}
+            {companyPicker}
             <ContactCompanySection contactId={contactId} companyId={companyId} />
+            <CompanyPeople contactId={contactId} companyId={companyId} />
           </div>
         </SoloSection.Provider>
       )}

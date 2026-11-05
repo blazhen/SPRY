@@ -97,6 +97,26 @@ export default function AddBoxDrawer({ open, onClose }: { open: boolean; onClose
     }
   }, [open])
 
+  // Sit below the edit bar, and tell the page (a flag on <html>) to leave room for the drawer.
+  useEffect(() => {
+    if (!open) return
+    const place = () => {
+      const bar = document.querySelector<HTMLElement>('[data-live-bar]')
+      const bottom = bar ? Math.max(0, Math.round(bar.getBoundingClientRect().bottom)) : 72
+      document.documentElement.style.setProperty('--live-bar-bottom', `${bottom}px`)
+    }
+    place()
+    document.documentElement.setAttribute('data-live-drawer-open', '')
+    window.addEventListener('resize', place)
+    window.addEventListener('scroll', place, true)
+    return () => {
+      document.documentElement.removeAttribute('data-live-drawer-open')
+      document.documentElement.style.removeProperty('--live-bar-bottom')
+      window.removeEventListener('resize', place)
+      window.removeEventListener('scroll', place, true)
+    }
+  }, [open])
+
   if (!open) return null
 
   const can = (id: BoxId) => id !== 'costing' || costingOn

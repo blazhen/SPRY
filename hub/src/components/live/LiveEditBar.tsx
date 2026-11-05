@@ -5,7 +5,7 @@ import { useAnnouncement } from './BoxFrame'
 import AddBoxDrawer from './AddBoxDrawer'
 import './live.css'
 
-export type PreviewWidth = 390 | 820 | 0
+export type PreviewWidth = 390 | 768 | 0
 
 /**
  * The edit bar of the live layout editor: sticky above the page frame, never part of the editable area.
@@ -71,7 +71,7 @@ export function LiveEditBar({ width, onWidth }: { width: PreviewWidth; onWidth: 
         </button>
         <div className="lb-group" role="group" aria-label="Preview width">
           {preview(390, 'Phone', Smartphone)}
-          {preview(820, 'Tablet', Tablet)}
+          {preview(768, 'Tablet', Tablet)}
           {preview(0, 'Desktop', Monitor)}
         </div>
         <span className="lb-say" aria-hidden="true">

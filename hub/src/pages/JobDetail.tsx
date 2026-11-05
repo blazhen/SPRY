@@ -15,6 +15,7 @@ import InvoiceEdit from './InvoiceEdit'
 import { NewInvoicePage } from '../components/NewInvoiceDialog'
 import { JobLeft } from '../components/job/JobLeft'
 import { FocusMiddle, FocusRight } from '../components/job/FocusView'
+import { setPreviewWidth } from '../lib/previewWidth'
 import { LiveEditBar, type PreviewWidth } from '../components/live/LiveEditBar'
 import { DragLayer } from '../components/live/useBoxDrag'
 import { BOXES, boxDef, getJobLayout, setJobLayout, useJobLayout } from '../lib/jobLayout'
@@ -89,6 +90,10 @@ function JobDetailInner() {
     if (session.editing && !wide) session.cancel()
   }, [session, wide])
   useEffect(() => () => getLayoutSession().cancel(), [])
+  useEffect(() => {
+    setPreviewWidth(editing ? liveWidth : 0)
+    return () => setPreviewWidth(0)
+  }, [editing, liveWidth])
   useEffect(() => {
     if (!editing) setLiveWidth(0)
   }, [editing])
@@ -261,7 +266,7 @@ function JobDetailInner() {
   ) : null
 
   return (
-    <div className="jf" data-job-frame data-live-width={editing && liveWidth ? liveWidth : undefined} style={editing && liveWidth ? { maxWidth: liveWidth } : undefined}>
+    <div className="jf" data-job-frame>
       <TakePhotosHost jobId={job.id} />
       <CertificateHost jobId={job.id} />
       {editing && (
@@ -271,7 +276,7 @@ function JobDetailInner() {
         </>
       )}
       {wide ? (
-        <>
+        <div className="jf-pv" data-live-preview={editing && liveWidth ? liveWidth : undefined} style={editing && liveWidth ? { width: `min(${liveWidth}px, 100%)` } : undefined}>
         {head}
         {/* While Edit layout is on the quote or invoice builder steps aside so every box shows with its edit frame. */}
         <div
@@ -302,7 +307,7 @@ function JobDetailInner() {
           </section>
           {cfg.rail.show && cfg.rail.side === 'right' && <RailStrip />}
         </div>
-        </>
+        </div>
       ) : (
         /* Phone and tablet: the head scrolls away with the content and the tabs stay at the top, so the panel gets the whole screen.
            All three panels stay mounted (only the open one is shown) so a half-typed note survives a tab change. */

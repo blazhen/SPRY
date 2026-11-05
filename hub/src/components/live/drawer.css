@@ -1,9 +1,11 @@
 /* Add box drawer (live layout editor). Fixed to the right edge, below the sticky edit bar: no layout shift. */
-.ad { position: fixed; top: var(--live-bar-h, 56px); right: 0; bottom: 0; z-index: 60; width: min(24rem, 92vw); display: flex; flex-direction: column; gap: 0.5rem; padding: var(--d-pad); background: rgb(var(--c-surface)); border-left: 1px solid rgb(var(--c-line)); box-shadow: var(--shadow-pop); font-size: 1rem; outline: none; }
+.ad { position: fixed; top: var(--live-bar-bottom, 4.5rem); right: 0; bottom: 0; z-index: 60; width: min(22rem, 92vw); display: flex; flex-direction: column; gap: 0.5rem; padding: var(--d-pad); background: rgb(var(--c-surface)); border-left: 1px solid rgb(var(--c-line)); box-shadow: var(--shadow-pop); font-size: 1rem; outline: none; overflow-y: auto; overscroll-behavior: contain; box-sizing: border-box; }
+/* The page makes room for the open drawer (it sits beside the page, never over it), so nothing is clipped. Narrow windows: the drawer covers the page and has a close button. */
+@media (min-width: 900px) { html[data-live-drawer-open] .jf { padding-right: min(22.5rem, 92vw); } }
 .ad-head { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; }
 .ad-title { margin: 0; font-size: var(--d-head); }
 .ad-close { min-width: 44px; min-height: 44px; }
-.ad-scroll { flex: 1 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding-bottom: 1rem; }
+.ad-scroll { flex: none; padding-bottom: 1rem; min-height: 8rem; }
 .ad-group + .ad-group { margin-top: 0.75rem; }
 .ad-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.5rem; }
 .ad-card { border: 1px solid rgb(var(--c-control)); border-radius: var(--d-radius); background: rgb(var(--c-raise)); padding: 0.5rem; display: flex; flex-direction: column; gap: 0.4rem; }
@@ -25,3 +27,4 @@
 .ad-show { min-height: 44px; min-width: 44px; font-size: 1rem; }
 .ad-where { grid-column: 1 / -1; margin: 0; font-size: 1rem; }
 .ad button:focus-visible, .ad select:focus-visible, .ad-card:focus-within { outline: 3px solid rgb(var(--c-navy)); outline-offset: 1px; }
+.ad > * { flex-shrink: 0; }
