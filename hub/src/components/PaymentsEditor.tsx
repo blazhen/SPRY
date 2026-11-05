@@ -5,6 +5,7 @@ import { DUE_OPTIONS, PAYMENT_PRESETS, paymentRowsFor } from '../lib/due'
 import { fmtMoney, uid } from '../lib/format'
 import './quoteSections.css'
 import { paymentAmounts, paymentPercentTotal, paymentsBalance, quoteTotals, round2 } from '../lib/calc'
+import { focusIn } from '../lib/scrollIn'
 
 /** Rows follow the width of the editor pane (container "pane" set by SplitPane), not the window. */
 const ROW_CSS = `
@@ -28,7 +29,7 @@ export default function PaymentsEditor({ quote, onChange }: { quote: Quote; onCh
 
   useEffect(() => {
     if (!focusReq) return
-    document.getElementById(`${base}-${focusReq}`)?.focus()
+    focusIn(document.getElementById(`${base}-${focusReq}`))
     setFocusReq(null)
   }, [focusReq, base])
 

@@ -6,6 +6,7 @@ import { upgradeTotal } from '../lib/calc'
 import { newUpgradeFor } from '../lib/store'
 import { EmptyState, Notice } from './ui'
 import './quoteSections.css'
+import { focusIn } from '../lib/scrollIn'
 
 /** Rows follow the width of the editor pane (container "pane" set by SplitPane), not the window. */
 const ROW_CSS = `
@@ -32,7 +33,7 @@ export default function UpgradesEditor({ quote, onChange }: { quote: Quote; onCh
 
   useEffect(() => {
     if (!focusReq) return
-    document.getElementById(`${base}-${focusReq}`)?.focus()
+    focusIn(document.getElementById(`${base}-${focusReq}`))
     setFocusReq(null)
   }, [focusReq, base])
 

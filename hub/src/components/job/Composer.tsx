@@ -9,6 +9,7 @@ import { confirmAction } from '../../lib/confirmActions'
 import { toast } from '../ui'
 import { OPEN_SECTION, Section } from './Section'
 import './jobMiddle.css'
+import { focusIn } from '../../lib/scrollIn'
 
 export type ComposeMode = 'note' | 'text' | 'email' | 'task' | 'call'
 
@@ -66,7 +67,7 @@ export function Composer({ jobId, modes, sectionId = 'job-notes-section', title:
     const onOpen = (e: Event) => {
       if ((e as CustomEvent<string>).detail === sectionId) {
         wantFocus.current = true
-        window.setTimeout(() => (mode === 'task' ? titleRef.current : boxRef.current)?.focus(), 80)
+        window.setTimeout(() => focusIn(mode === 'task' ? titleRef.current : boxRef.current), 80)
       }
     }
     const onCompose = (e: Event) => {
@@ -88,7 +89,7 @@ export function Composer({ jobId, modes, sectionId = 'job-notes-section', title:
   useEffect(() => {
     if (!wantFocus.current) return
     wantFocus.current = false
-    window.setTimeout(() => (mode === 'task' ? titleRef.current : boxRef.current)?.focus(), 80)
+    window.setTimeout(() => focusIn(mode === 'task' ? titleRef.current : boxRef.current), 80)
   }, [mode])
 
   if (!job) return null

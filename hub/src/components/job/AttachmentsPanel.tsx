@@ -22,6 +22,7 @@ import { useLimited } from './PinnedNotes'
 import { OPEN_SECTION, Section } from './Section'
 import './jobRight.css'
 import '../dialogs2.css'
+import { focusIn } from '../../lib/scrollIn'
 
 /** A first guess at the kind from the file, so people rarely have to change it. */
 function guessKind(f: File): AttachKind {
@@ -63,7 +64,7 @@ export function AttachmentsPanel({ jobId, inJob = false, kinds }: { jobId: strin
   const list = inJob ? shown : items
 
   useEffect(() => {
-    if (linkOpen) nameRef.current?.focus()
+    if (linkOpen) focusIn(nameRef.current)
   }, [linkOpen])
 
   const openMe = () => window.dispatchEvent(new CustomEvent(OPEN_SECTION, { detail: 'job-documents-section' }))

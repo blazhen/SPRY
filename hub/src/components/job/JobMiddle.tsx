@@ -1,6 +1,6 @@
-import { Fragment } from 'react'
-import { renderBox } from './BoxView'
-import { boxesIn, useJobLayout } from '../../lib/jobLayout'
+import { BoxSlot } from './BoxView'
+import { boxesIn } from '../../lib/jobLayout'
+import { useLayoutSession } from '../../lib/layoutDraft'
 import './jobMiddle.css'
 
 /**
@@ -9,12 +9,12 @@ import './jobMiddle.css'
  * boxes are in this panel.
  */
 export function JobMiddle({ jobId }: { jobId: string }) {
-  const cfg = useJobLayout()
-  const boxes = boxesIn(cfg, 'middle')
+  const { layout } = useLayoutSession()
+  const boxes = boxesIn(layout, 'middle')
   return (
     <div className="jm-col">
       {boxes.map((b) => (
-        <Fragment key={b.id}>{renderBox(b.id, jobId, b)}</Fragment>
+        <BoxSlot key={b.id} id={b.id} jobId={jobId} state={b} />
       ))}
     </div>
   )

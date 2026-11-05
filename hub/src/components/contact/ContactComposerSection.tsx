@@ -1,4 +1,4 @@
-import { useId, useRef, useState } from 'react'
+import { useEffect, useId, useRef, useState } from 'react'
 import { CheckSquare, Mail, MessageSquare, PhoneCall, StickyNote, type LucideIcon } from 'lucide-react'
 import { DATA_SOURCE, OWNER } from '../../config'
 import { confirmAction } from '../../lib/confirmActions'
@@ -6,11 +6,14 @@ import { logManualMessage, openCrmConversation } from '../../lib/conversations'
 import { addDaysISO, todayISO } from '../../lib/format'
 import { addNoteTo, togglePin } from '../../lib/notesStore'
 import { addContactTask, addTask, getOwner, getOwners } from '../../lib/store'
+import { focusIn, scrollWithin } from '../../lib/scrollIn'
 import { OPEN_SECTION } from '../job/Section'
-import { toast } from '../ui'
+import { ConfirmDialog, toast } from '../ui'
+import { useSendState, useSender } from '../../lib/send'
 import '../job/jobMiddle.css'
 import './contact.css'
 import { CSection, type ContactSectionProps } from './CSection'
+import { CONTACT_COMPOSE } from './compose'
 import { useContactData } from './useContactData'
 
 export type Mode = 'note' | 'text' | 'email' | 'task' | 'call'
@@ -49,6 +52,30 @@ export function ContactComposerSection({ contactId, compact = false, initialMode
   const [who, setWho] = useState('')
   const [err, setErr] = useState('')
   const boxRef = useRef<HTMLTextAreaElement>(null)
+  const titleRef = useRef<HTMLInputElement>(null)
+  const want = useRef<Mode | null>(null)
+  const sendState = useSendState()
+  const sender = useSender()
+  const [askSend, setAskSend] = useState(false)
+
+  // The header buttons (Add note, Add task, Text, Email) ask for a tab. Switch to it, then move focus. Only the middle panel scrolls.
+  useEffect(() => {
+    const onCompose = (e: Event) => {
+      const m = (e as CustomEvent<Mode>).detail
+      want.current = m
+      setMode(m)
+      setErr('')
+      window.dispatchEvent(new CustomEvent(OPEN_SECTION, { detail: 'contact-composer-section' }))
+      window.setTimeout(() => {
+        if (want.current !== m) return
+        want.current = null
+        scrollWithin(document.getElementById('contact-composer-section'), 'start')
+        focusIn(m === 'task' ? titleRef.current : boxRef.current)
+      }, 120)
+    }
+    window.addEventListener(CONTACT_COMPOSE, onCompose)
+    return () => window.removeEventListener(CONTACT_COMPOSE, onCompose)
+  }, [])
   if (!contact) return null
 
   const owners = getOwners()
@@ -91,6 +118,13 @@ export function ContactComposerSection({ contactId, compact = false, initialMode
   const saveMessage = () => {
     if (!body.trim()) return setErr(mode === 'call' ? 'Please write a short note about the call first.' : mode === 'email' ? 'Please write the email first.' : 'Please write the text first.')
     const m = mode
+    if ((m === 'text' || m === 'email') && sendState.canSend) {
+      if (m === 'email' && !subject.trim()) return setErr('Please add a subject for the email.')
+      if (m === 'text' ? !phone : !contact.email) return setErr(m === 'text' ? `${contact.name} has no phone number on file.` : `${contact.name} has no email on file.`)
+      setErr('')
+      setAskSend(true) // always asks, even when "Ask me to confirm" is off: this one goes to a real person
+      return
+    }
     const run = () => {
       logManualMessage({
         jobId: jobId ?? '',
@@ -113,6 +147,17 @@ export function ContactComposerSection({ contactId, compact = false, initialMode
         run,
       )
     } else run()
+  }
+
+  const doSend = async () => {
+    setAskSend(false)
+    const m = mode === 'email' ? 'email' : 'sms'
+    const ok = await sender.send({ contactId: contact.id, channel: m, body: body.trim(), subject: m === 'email' ? subject.trim() : undefined, jobId, sentBy: getOwner(OWNER.id) || OWNER.name })
+    if (ok) {
+      toast(m === 'email' ? 'Email sent from the CRM' : 'Text sent from the CRM')
+      setBody('')
+      setSubject('')
+    }
   }
 
   const onSubmit = (e: React.FormEvent) => {
@@ -140,7 +185,7 @@ export function ContactComposerSection({ contactId, compact = false, initialMode
               <label className="label" htmlFor={`${uid}-title`}>
                 Title
               </label>
-              <input id={`${uid}-title`} className="field" value={title} onChange={(e) => setTitle(e.target.value)} aria-invalid={!!err} placeholder="For example: Call back about the quote" />
+              <input id={`${uid}-title`} ref={titleRef} className="field" value={title} onChange={(e) => setTitle(e.target.value)} aria-invalid={!!err} placeholder="For example: Call back about the quote" />
             </div>
             <div>
               <label className="label" htmlFor={`${uid}-tdesc`}>
@@ -189,9 +234,15 @@ export function ContactComposerSection({ contactId, compact = false, initialMode
           <div className="jm-fields">
             {mode === 'text' || mode === 'email' ? (
               <>
-                <p className="jm-notice" role="note">
-                  <strong>Sending is not switched on here yet.</strong> Nothing below goes to {contact.name}. &ldquo;Log it&rdquo; only keeps a record of what you wrote. To really send it, open the conversation in the CRM.
-                </p>
+                {sendState.canSend ? (
+                  <p className="jm-notice" role="note" data-send-on>
+                    <strong>This is sent for real from the CRM</strong>, from the business {mode === 'email' ? 'email' : 'number'}. {contact.name} will get it and it shows in the CRM inbox. You will be asked to confirm.
+                  </p>
+                ) : (
+                  <p className="jm-notice" role="note" data-send-off>
+                    <strong>Sending is switched off.</strong> Nothing below goes to {contact.name}. &ldquo;Log it&rdquo; only keeps a record of what you wrote. To really send it, open the conversation in the CRM{sendState.error ? ` (${sendState.error})` : sendState.loaded && !sendState.allowed ? '. The server owner has not allowed sending' : sendState.loaded ? '. Staff can switch it on in Settings' : ''}.
+                  </p>
+                )}
                 <p className="t-small text-muted">
                   To: {contact.name}
                   {mode === 'email' ? (contact.email ? `, ${contact.email}` : ', no email on file') : phone ? `, ${phone}` : ', no phone on file'}
@@ -234,15 +285,15 @@ export function ContactComposerSection({ contactId, compact = false, initialMode
           </div>
         )}
 
-        {err && (
-          <p className="err" role="alert">
-            {err}
+        {(err || sender.problem) && (
+          <p className="err" role="alert" data-send-problem={sender.problem ? '' : undefined}>
+            {err || sender.problem}
           </p>
         )}
 
         <div className="jm-actions">
-          <button type="submit" className="btn btn-primary is-primary-here">
-            {mode === 'note' ? 'Save note' : mode === 'task' ? 'Save task' : mode === 'call' ? 'Log the call' : 'Log it'}
+          <button type="submit" className="btn btn-primary is-primary-here" disabled={sender.busy}>
+            {mode === 'note' ? 'Save note' : mode === 'task' ? 'Save task' : mode === 'call' ? 'Log the call' : sendState.canSend ? (mode === 'email' ? 'Send email' : 'Send text') : 'Log it'}
           </button>
           {(mode === 'text' || mode === 'email') && (
             <button type="button" className="btn btn-tint" onClick={() => openCrmConversation(contact.id)}>
@@ -250,6 +301,17 @@ export function ContactComposerSection({ contactId, compact = false, initialMode
             </button>
           )}
         </div>
+        <ConfirmDialog
+          open={askSend}
+          onClose={() => setAskSend(false)}
+          title={mode === 'email' ? `Send this email to ${contact.name} at ${contact.email}?` : `Send this text to ${contact.name} on ${phone}?`}
+          confirmLabel={mode === 'email' ? 'Yes, send the email' : 'Yes, send the text'}
+          onConfirm={() => void doSend()}
+        >
+          {mode === 'email' && <p className="font-bold">{subject.trim()}</p>}
+          <p className="whitespace-pre-wrap" data-send-preview>{body.trim()}</p>
+          <p className="t-small text-muted">It goes out from the CRM now and cannot be taken back.</p>
+        </ConfirmDialog>
         {mode === 'note' && (
           <p className="t-small text-muted">
             {DATA_SOURCE === 'live' ? 'Saved in the CRM on that person.' : 'Demo data: saved in this browser only.'} By {getOwner(OWNER.id) || OWNER.name}.

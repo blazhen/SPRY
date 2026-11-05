@@ -1,7 +1,8 @@
-import { Fragment, useState } from 'react'
-import { renderBox } from './BoxView'
+import { useState } from 'react'
+import { BoxSlot, renderBox } from './BoxView'
 import { SoloSection } from './Section'
-import { boxesIn, useJobLayout, type BoxId } from '../../lib/jobLayout'
+import { boxesIn, type BoxId } from '../../lib/jobLayout'
+import { useLayoutSession } from '../../lib/layoutDraft'
 import { getJob, useStore } from '../../lib/store'
 
 /** The left panel switch: All (every box of this panel), or only the Job, Contact or Company box. */
@@ -48,7 +49,7 @@ const LABEL: Record<Exclude<LeftView, 'all'>, string> = { job: 'Job', contact: '
  */
 export function LeftPanel({ jobId }: { jobId: string }) {
   const s = useStore()
-  const cfg = useJobLayout()
+  const { layout: cfg, editing } = useLayoutSession()
   const job = getJob(jobId, s)
   const [view, setView] = useLeftView()
   if (!job) return null
@@ -57,12 +58,13 @@ export function LeftPanel({ jobId }: { jobId: string }) {
   const here = (id: BoxId) => left.some((b) => b.id === id)
   const options: LeftView[] = ['all', ...((['job', 'contact', 'company'] as const).filter((id) => here(id) && (id !== 'company' || hasCompany)))]
   // A remembered view whose box is gone (moved, hidden, no company) falls back to All, without forgetting the choice.
-  const shown: LeftView = options.includes(view) ? view : 'all'
+  // While Edit layout is on every box of the panel shows, so each one has its frame.
+  const shown: LeftView = !editing && options.includes(view) ? view : 'all'
   const one = shown === 'all' ? null : left.find((b) => b.id === shown)
 
   return (
     <div className="jl-viewwrap" data-left-view={shown}>
-      {options.length > 1 && (
+      {options.length > 1 && !editing && (
         <div className="jl-switch" role="group" aria-label="Show in this panel">
           {options.map((o) => (
             <button key={o} type="button" className="jl-switch-btn" aria-pressed={shown === o} onClick={() => setView(o)}>
@@ -80,7 +82,7 @@ export function LeftPanel({ jobId }: { jobId: string }) {
       ) : (
         <div className="jl-stack">
           {left.map((b) => (
-            <Fragment key={b.id}>{renderBox(b.id, jobId, b)}</Fragment>
+            <BoxSlot key={b.id} id={b.id} jobId={jobId} state={b} />
           ))}
           {left.length === 0 && <p className="hint">No boxes in this panel. Use Edit layout to add one.</p>}
         </div>

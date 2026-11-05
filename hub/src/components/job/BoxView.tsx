@@ -14,7 +14,20 @@ import { AddEmailBox, AddNoteBox, AddTaskBox, AddTextBox, MapBox, QuickActionsBo
 import { CallsBox, DocumentsBox, EmailsBox, HistoryBox, NotesAllBox, TextsBox, VisitsBox } from './boxes/LibraryB'
 import { CompanyBox, ContactBox, JobBox } from './boxes/LeftBoxes'
 import { MoneySummaryBox, NextActionBox, OtherJobsBox, PaymentsBox, RecentFilesBox, SiteAccessBox } from './boxes/NewBoxes'
-import type { BoxId } from '../../lib/jobLayout'
+import type { BoxId, BoxState } from '../../lib/jobLayout'
+import { useLayoutSession } from '../../lib/layoutDraft'
+import { BoxFrame } from '../live/BoxFrame'
+
+/** A box in a panel: the box itself, or inside its edit frame while Edit layout is on. */
+export function BoxSlot({ id, jobId, state }: { id: BoxId; jobId: string; state: BoxState }) {
+  const { editing } = useLayoutSession()
+  if (!editing) return <>{renderBox(id, jobId, state)}</>
+  return (
+    <BoxFrame id={id} state={state}>
+      {renderBox(id, jobId, state)}
+    </BoxFrame>
+  )
+}
 
 /**
  * One box of the job page, by id. Every panel (left, middle, right) draws its boxes through here, so a box looks and

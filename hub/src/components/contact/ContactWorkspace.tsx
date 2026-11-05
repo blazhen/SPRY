@@ -1,11 +1,9 @@
 import { Fragment, useEffect, useId, useRef, useState, useSyncExternalStore, type ReactNode } from 'react'
 import { ArrowLeft, Briefcase, FileText, LayoutList, MessageSquare, NotebookPen, ReceiptText, ListChecks, Paperclip, type LucideIcon } from 'lucide-react'
-import { fmtDate } from '../../lib/format'
-import { followUpFor, useNotesStore } from '../../lib/notesStore'
-import { useContactConversations } from '../../lib/conversations'
 import { go, href, type ContactView } from '../../lib/router'
-import { getCompany, getContact, jobsForContact, messagesForContact, useStore } from '../../lib/store'
+import { getCompany, getContact, jobsForContact, useStore } from '../../lib/store'
 import { TabPanel, Tabs } from '../ui'
+import { CONTACT_COMPOSE } from './compose'
 import { ContactHeaderBar } from './ContactHeaderBar'
 import {
   ContactCompanySection,
@@ -255,17 +253,24 @@ type TabId = 'contact' | 'messages' | 'more'
 
 export function ContactWorkspace({ contactId, view: routeView }: { contactId: string; view?: ContactView }) {
   const s = useStore()
-  const ns = useNotesStore()
   const wide = useWide()
   const contact = getContact(contactId, s)
-  const companies = useContactCompanies(contactId)
-  const { messages: liveMsgs } = useContactConversations(contactId)
   const [tab, setTab] = useState<TabId>('contact')
   const tabsId = useId()
   const view = wide ? routeView : undefined
   const middleRef = useRef<HTMLElement>(null)
   const bodyRef = useRef<HTMLDivElement>(null)
   const [hasDocs, setHasDocs] = useState(false)
+
+  // A header button (Add note, Add task, Text, Email) wants the composer: show the tab or view that has it. The composer itself focuses and scrolls the panel.
+  useEffect(() => {
+    const onCompose = () => {
+      setTab('messages')
+      if (routeView && !['messages', 'notes', 'tasks'].includes(routeView)) go(href.contact(contactId))
+    }
+    window.addEventListener(CONTACT_COMPOSE, onCompose)
+    return () => window.removeEventListener(CONTACT_COMPOSE, onCompose)
+  }, [routeView, contactId])
 
   // A focus view moves focus to the middle panel, so keyboard and screen reader users land on the new content.
   const first = useRef(true)
@@ -284,27 +289,13 @@ export function ContactWorkspace({ contactId, view: routeView }: { contactId: st
   })
 
   if (!contact) return null
-  const last = [...messagesForContact(contactId, s), ...liveMsgs].map((m) => m.at).sort().reverse()[0]
-  const follow = followUpFor({ kind: 'contact', id: contactId }, ns)
 
   const head = (
     <div className="jf-head" data-contact-head>
       <a className="jf-back" href={href.contacts()}>
         <ArrowLeft size={18} aria-hidden="true" /> Back to contacts
       </a>
-      <div className="jf-head-row">
-        <div className="jf-title">
-          <h1 className="jf-h1 cw-title">{contact.name || 'No name'}</h1>
-          <p className="cw-sub">
-            {companies[0] && <span data-head-company>{companies[0].name}</span>}
-            <span>Last contacted: <strong>{last ? fmtDate(last) : 'not yet'}</strong></span>
-            <span>Next follow-up: <strong>{follow ? fmtDate(follow) : 'none set'}</strong></span>
-          </p>
-        </div>
-        <div className="jf-actions cw-head-actions">
-          <ContactHeaderBar contactId={contactId} />
-        </div>
-      </div>
+      <ContactHeaderBar contactId={contactId} layout="head" />
     </div>
   )
 

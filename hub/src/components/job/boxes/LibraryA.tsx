@@ -12,6 +12,7 @@ import { JobStatusControls } from '../JobStatusControls'
 import { MoveToStage } from '../MoveToStage'
 import { OPEN_SECTION, Section } from '../Section'
 import './libraryA.css'
+import { scrollWithin } from '../../../lib/scrollIn'
 
 type BoxProps = { jobId: string; settings?: Record<string, string[] | string> }
 
@@ -42,7 +43,7 @@ function openComposer(anchor: string | undefined): boolean {
   if (!el) return false
   window.dispatchEvent(new CustomEvent(OPEN_SECTION, { detail: anchor }))
   window.setTimeout(() => {
-    document.getElementById(anchor)?.scrollIntoView({ block: 'nearest' })
+    scrollWithin(document.getElementById(anchor), 'nearest')
   }, 0)
   return true
 }

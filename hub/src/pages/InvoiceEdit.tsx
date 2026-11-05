@@ -16,6 +16,7 @@ import { KIND_LABEL, invoiceTotals, lineExGst, statusLabel } from '../lib/invoic
 import { go, href, useRoute } from '../lib/router'
 import { deleteInvoice, duplicateInvoice, duplicateInvoiceAsync, getContact, getInvoice, getJob, getPriceList, getQuote, invoiceSyncState, participantEmail, participantName, retryInvoiceSave, sendInvoice, updateInvoice, useStore } from '../lib/store'
 import type { Invoice, InvoiceLine, InvoiceUnit, ParticipantRef } from '../types'
+import { focusIn } from '../lib/scrollIn'
 
 const UNITS: { id: InvoiceUnit; label: string }[] = [
   { id: 'each', label: 'each' },
@@ -152,7 +153,7 @@ function InvoiceEditor({ initial, ws }: { initial: Invoice; ws?: InvoiceWs }) {
 
   useEffect(() => {
     if (!focusReq) return
-    document.getElementById(focusReq)?.focus()
+    focusIn(document.getElementById(focusReq))
     setFocusReq(null)
   }, [focusReq])
 
@@ -178,7 +179,7 @@ function InvoiceEditor({ initial, ws }: { initial: Invoice; ws?: InvoiceWs }) {
     if (errorKeys.length > 0) {
       setPicking(false)
       const first = errorKeys[0]
-      window.setTimeout(() => document.getElementById(first)?.focus(), 0)
+      window.setTimeout(() => focusIn(document.getElementById(first)), 0)
       toast('Please fix the marked fields first.')
       return
     }

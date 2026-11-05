@@ -8,6 +8,7 @@ import type { Contact } from '../types'
 import { Dialog, Notice, toast } from './ui'
 import { companyLabel, jobsOfSameCompany } from '../lib/sameCompany'
 import './newJob.css'
+import { focusIn, scrollWithin } from '../lib/scrollIn'
 
 const SHOWN = 3
 const digits = (s: string) => s.replace(/\D/g, '')
@@ -102,20 +103,18 @@ export function NewJobDialog({ open, onClose }: { open: boolean; onClose: () => 
 
   useEffect(() => {
     if (confirming) {
-      keepBtn.current?.focus()
-      keepBtn.current?.scrollIntoView({ block: 'nearest' })
+      focusIn(keepBtn.current)
     }
   }, [confirming])
 
   useEffect(() => {
-    if (failure) box.current?.querySelector<HTMLElement>('[data-nj-failure]')?.scrollIntoView({ block: 'nearest' })
+    if (failure) scrollWithin(box.current?.querySelector<HTMLElement>('[data-nj-failure]'), 'nearest')
   }, [failure])
 
   const id = (k: string) => `${uid}-${k}`
   const focusId = (k: string) => {
     const el = document.getElementById(id(k))
-    el?.focus()
-    el?.scrollIntoView({ block: 'nearest' })
+    focusIn(el)
   }
 
   const save = async () => {

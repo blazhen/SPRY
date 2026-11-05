@@ -5,6 +5,7 @@ import { notesForJob, useNotesStore } from '../../lib/notesStore'
 import { useStore } from '../../lib/store'
 import { OPEN_SECTION, Section } from './Section'
 import './jobRight.css'
+import { scrollWithin } from '../../lib/scrollIn'
 
 /**
  * Long lists in the right panel: show the first 5, then "Show all (N)" and "Show fewer".
@@ -28,7 +29,7 @@ export function useLimited<T>(items: T[]): { shown: T[]; toggle: ReactNode } {
 function seeInHistory() {
   window.dispatchEvent(new CustomEvent(OPEN_SECTION, { detail: 'job-notes-section' }))
   // Wait one frame so the section has opened before scrolling to it.
-  window.requestAnimationFrame(() => document.getElementById('job-notes-section')?.scrollIntoView({ block: 'start' }))
+  window.requestAnimationFrame(() => scrollWithin(document.getElementById('job-notes-section'), 'start'))
 }
 
 /** Remove the "[Job name] " tag that job notes start with (it is the way a note is tied to a job). */

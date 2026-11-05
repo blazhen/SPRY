@@ -14,10 +14,12 @@ import InvoiceDetail from './InvoiceDetail'
 import InvoiceEdit from './InvoiceEdit'
 import { NewInvoicePage } from '../components/NewInvoiceDialog'
 import { JobLeft } from '../components/job/JobLeft'
-import { LayoutEditor } from '../components/job/LayoutEditor'
 import { FocusMiddle, FocusRight } from '../components/job/FocusView'
+import { LiveEditBar, type PreviewWidth } from '../components/live/LiveEditBar'
+import { DragLayer } from '../components/live/useBoxDrag'
 import { BOXES, boxDef, getJobLayout, setJobLayout, useJobLayout } from '../lib/jobLayout'
-import { setEditingLayout, useEditingLayout } from '../lib/layoutEdit'
+import { useEditingLayout } from '../lib/layoutEdit'
+import { getLayoutSession, useLayoutSession } from '../lib/layoutDraft'
 import { JobMiddle } from '../components/job/JobMiddle'
 import { JobRight } from '../components/job/JobRight'
 import { StageControl } from '../components/job/StageControl'
@@ -74,9 +76,22 @@ function JobDetailInner() {
   const wide = useWide()
   const wsWide = useWorkspaceWide()
   const cfg = useJobLayout()
-  const editing = useEditingLayout() && wide
-  // Edit layout never outlives the page it was opened on.
-  useEffect(() => () => setEditingLayout(false), [])
+  const session = useLayoutSession()
+  const editing = session.editing && wide
+  const flagged = useEditingLayout()
+  const [liveWidth, setLiveWidth] = useState<PreviewWidth>(0)
+  // The rail's Edit layout button only raises the shared flag: start the live session for it.
+  useEffect(() => {
+    if (flagged && wide && !session.editing) session.start()
+  }, [flagged, wide, session])
+  // Edit layout never outlives the page it was opened on, nor a window that became too narrow for it.
+  useEffect(() => {
+    if (session.editing && !wide) session.cancel()
+  }, [session, wide])
+  useEffect(() => () => getLayoutSession().cancel(), [])
+  useEffect(() => {
+    if (!editing) setLiveWidth(0)
+  }, [editing])
   const work = route.name === 'job' ? route.work : undefined
   // A rail item opens a focus view: the middle panel shows that box, the left panel stays (wide screens only).
   const view = route.name === 'job' && !route.work && wide ? route.view : undefined
@@ -203,7 +218,7 @@ function JobDetailInner() {
             </button>
             <JobMoreMenu jobId={job.id} />
             {wide && (
-              <button type="button" className="btn btn-neutral btn-icon" data-edit-layout aria-label="Edit layout" title="Edit layout" onClick={() => setEditingLayout(true)}>
+              <button type="button" className="btn btn-neutral btn-icon" data-edit-layout aria-label="Edit layout" title="Edit layout" onClick={() => session.start()}>
                 <LayoutGrid size={18} aria-hidden="true" />
               </button>
             )}
@@ -219,7 +234,8 @@ function JobDetailInner() {
   )
 
   const hasPreview = !!work && work.kind !== 'invoiceNew'
-  const swapped = !!work && wsWide && cfg.swap && hasPreview
+  const wsOn = !!work && wsWide && !editing
+  const swapped = wsOn && cfg.swap && hasPreview
   const flipSides = () => setJobLayout({ ...cfg, swap: !cfg.swap })
   // The builder (a quote or an invoice) and its live preview: normally builder in the middle, preview on the right.
   const builder = work ? <WorkMiddle work={work} jobId={job.id} slot={hasPreview && (swapped || showPreview) ? slot : null} /> : null
@@ -245,21 +261,24 @@ function JobDetailInner() {
   ) : null
 
   return (
-    <div className="jf" data-job-frame>
+    <div className="jf" data-job-frame data-live-width={editing && liveWidth ? liveWidth : undefined} style={editing && liveWidth ? { maxWidth: liveWidth } : undefined}>
       <TakePhotosHost jobId={job.id} />
       <CertificateHost jobId={job.id} />
+      {editing && (
+        <>
+          <LiveEditBar width={liveWidth} onWidth={setLiveWidth} />
+          <DragLayer />
+        </>
+      )}
       {wide ? (
         <>
         {head}
-        {editing ? (
-          <div className="jf-body jf-body-edit">
-            <LayoutEditor workOpen={!!work && wsWide} />
-          </div>
-        ) : (
+        {/* While Edit layout is on the quote or invoice builder steps aside so every box shows with its edit frame. */}
         <div
           className="jf-body"
-          data-work={work && wsWide ? work.kind : undefined}
-          data-swap={work && wsWide && cfg.swap ? '' : undefined}
+          data-editing={editing ? '' : undefined}
+          data-work={work && wsWide && !editing ? work.kind : undefined}
+          data-swap={work && wsWide && !editing && cfg.swap ? '' : undefined}
           data-rail-side={cfg.rail.show ? cfg.rail.side : 'none'}
           data-rail-names={cfg.rail.show && cfg.rail.names ? '' : undefined}
           onClickCapture={(e) => {
@@ -275,15 +294,14 @@ function JobDetailInner() {
           <section className="jf-panel" data-panel="left" tabIndex={0} aria-label="The job and who it is for">
             <JobLeft jobId={job.id} />
           </section>
-          <section ref={middleRef} className="jf-panel" data-panel="middle" data-focus-view={view} tabIndex={0} aria-label={view ? `${boxDef(view).label}: focus view. Press Escape or Back to all to return.` : work && wsWide ? (cfg.swap ? 'Live preview' : 'Quote or invoice builder') : 'History and new notes, texts, emails and tasks'}>
-            {work && wsWide ? (swapped ? previewSide : builder) : view ? <FocusMiddle view={view} jobId={job.id} /> : <JobMiddle jobId={job.id} />}
+          <section ref={middleRef} className="jf-panel" data-panel="middle" data-focus-view={view} tabIndex={0} aria-label={view ? `${boxDef(view).label}: focus view. Press Escape or Back to all to return.` : wsOn ? (cfg.swap ? 'Live preview' : 'Quote or invoice builder') : 'History and new notes, texts, emails and tasks'}>
+            {wsOn ? (swapped ? previewSide : builder) : view && !editing ? <FocusMiddle view={view} jobId={job.id} /> : <JobMiddle jobId={job.id} />}
           </section>
-          <section className="jf-panel" data-panel="right" tabIndex={0} aria-label={work && wsWide ? (swapped ? 'Quote or invoice builder' : showPreview && hasPreview ? 'Live preview' : 'Quotes, people, files and money') : 'Quotes, people, files and money'}>
-            {work && wsWide ? (swapped ? builder : previewSide) : view ? <FocusRight view={view} jobId={job.id} /> : <JobRight jobId={job.id} railed />}
+          <section className="jf-panel" data-panel="right" tabIndex={0} aria-label={wsOn ? (swapped ? 'Quote or invoice builder' : showPreview && hasPreview ? 'Live preview' : 'Quotes, people, files and money') : 'Quotes, people, files and money'}>
+            {wsOn ? (swapped ? builder : previewSide) : view && !editing ? <FocusRight view={view} jobId={job.id} /> : <JobRight jobId={job.id} railed />}
           </section>
           {cfg.rail.show && cfg.rail.side === 'right' && <RailStrip />}
         </div>
-        )}
         </>
       ) : (
         /* Phone and tablet: the head scrolls away with the content and the tabs stay at the top, so the panel gets the whole screen.

@@ -1696,4 +1696,188 @@ if (mode === 'lock') {
   await new Promise((r2) => setTimeout(r2, 300));
   check('server output holds no token, secret or file name', out.includes(tok) || out.includes(secret) || out.includes(UNIQUE) || out.includes('example.invalid'), false);
   fs.rmSync(tmp, { recursive: true, force: true });
-} else console.log('usage: node server/test-run.mjs lock|unit|public|contacts|tasks|install|live|invoices2|files');
+} else if (mode === 'send') {
+  // Guarded send route against a stand-in CRM (no real CRM, no real messages) and a JSON-file store in a temp folder.
+  const http = await import('node:http');
+  const os = await import('node:os');
+  const fs = await import('node:fs');
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'hub-send-'));
+  const calls = []; // every request the stand-in saw: { method, url, body }
+  let crmMode = 'ok';
+  const people = {
+    goodAAA1: { id: 'goodAAA1', firstName: 'Test', lastName: 'Person', phone: '+61400000001', email: 'test.person@example.invalid' },
+    nophone1: { id: 'nophone1', firstName: 'No', lastName: 'Phone', email: 'no.phone@example.invalid' },
+    noemail1: { id: 'noemail1', firstName: 'No', lastName: 'Email', phone: '+61400000002' },
+    dndAll01: { id: 'dndAll01', firstName: 'Dee', lastName: 'Nd', phone: '+61400000003', email: 'dee@example.invalid', dnd: true },
+    dndSms01: { id: 'dndSms01', firstName: 'Sam', lastName: 'Sms', phone: '+61400000004', email: 'sam@example.invalid', dndSettings: { SMS: { status: 'active' }, Email: { status: 'inactive' } } },
+  };
+  const fake = http.createServer((req, res) => {
+    let raw = '';
+    req.on('data', (d) => { raw += d; });
+    req.on('end', () => {
+      calls.push({ method: req.method, url: req.url, body: raw ? JSON.parse(raw) : undefined });
+      res.setHeader('Content-Type', 'application/json');
+      const m = /^\/contacts\/([A-Za-z0-9]+)/.exec(req.url);
+      if (req.method === 'GET' && m) {
+        const p = people[m[1]] ?? (/^(good|rate)/.test(m[1]) ? { ...people.goodAAA1, id: m[1] } : null);
+        if (!p) { res.statusCode = 404; return res.end(JSON.stringify({ message: 'Contact not found' })); }
+        return res.end(JSON.stringify({ contact: p }));
+      }
+      if (req.method === 'POST' && req.url === '/conversations/messages') {
+        if (crmMode === 'refuse') { res.statusCode = 422; return res.end(JSON.stringify({ message: 'Number is on the carrier block list' })); }
+        if (crmMode === 'down') return req.socket.destroy();
+        return res.end(JSON.stringify({ conversationId: 'convZZZ001', messageId: 'msgZZZ001' }));
+      }
+      res.statusCode = 404; res.end('{}');
+    });
+  });
+  await new Promise((r) => fake.listen(0, '127.0.0.1', r));
+  const fakeBase = 'http://127.0.0.1:' + fake.address().port;
+  const tok = mint({ loc: DEV, exp: now + 3600 });
+  const outs = [];
+  const runSend = async (port, env, fn) => {
+    const storeFile = path.join(tmp, 'store-' + port + '.json');
+    let out = '';
+    child = spawn(process.execPath, [path.join(here, 'dev-server.mjs'), '--port', String(port), '--env', path.join(here, 'no-such.env')], {
+      env: { ...process.env, SPRY_CRM_TOKEN: 'zzFakeToken' + 'x'.repeat(16), SPRY_CRM_API_BASE: fakeBase, SPRY_CRM_LOCATION_ID: DEV, SPRY_IFRAME_SECRET: secret, SPRY_ALLOW_OPEN: '', SPRY_STORE: 'file', SPRY_STORE_FILE: storeFile, HUB_SEND_ALLOWED: '', HUB_EMAIL_FROM: '', ...env },
+      stdio: ['ignore', 'pipe', 'pipe'],
+    });
+    child.stderr.on('data', (d) => { out += String(d); });
+    await new Promise((res, rej) => { child.stdout.on('data', (d) => { out += String(d); /Hub server on/.test(String(d)) && res(); }); child.on('exit', () => rej(new Error('server exited'))); setTimeout(() => rej(new Error('start timeout')), 10000); });
+    const U = 'http://127.0.0.1:' + port;
+    const api = async (m, p, body) => {
+      const r = await fetch(U + p, { method: m, headers: { Origin: U, 'Content-Type': 'application/json', 'X-Quote-Token': tok }, body: body === undefined ? undefined : JSON.stringify(body) });
+      const text = await r.text();
+      let j = {}; try { j = JSON.parse(text); } catch { /* not json */ }
+      outs.push(text);
+      return { status: r.status, j, text };
+    };
+    try { await fn(api, storeFile); } finally { stop(); await new Promise((r2) => setTimeout(r2, 300)); outs.push(out); }
+  };
+  const posts = () => calls.filter((c) => c.method === 'POST' && c.url === '/conversations/messages');
+  const sms = (extra = {}) => ({ contactId: 'goodAAA1', channel: 'sms', body: 'Hi Test, see you at 9.', sentBy: 'Staff A', jobId: 'jobAAA1', ...extra });
+  try {
+    // 1. Off by default: server does not allow
+    await runSend(8821, {}, async (api) => {
+      let r = await api('GET', '/api/send');
+      check('GET default: nothing allowed or enabled', r.status + '|' + JSON.stringify(r.j), '200|' + JSON.stringify({ allowed: false, enabled: false, canSend: false, emailFrom: '', limits: { perMinute: 5, perHour: 30 } }));
+      r = await api('POST', '/api/send', sms());
+      check('off by default: POST -> 403 with the switched-off words', r.status + '|' + /^Sending is switched off\./.test(r.j.error), '403|true');
+      check('off by default: the stand-in CRM got zero calls', calls.length, 0);
+      r = await api('PUT', '/api/send', { enabled: true, by: 'Staff A' });
+      check('PUT refused when the server does not allow it', r.status + '|' + r.j.error, '403|Sending is locked on the server. Only the server owner can unlock it.');
+      r = await api('GET', '/api/send');
+      check('GET after refused PUT: still not enabled', r.j.enabled, false);
+    });
+    // 2. Allowed by the server but not switched on
+    await runSend(8822, { HUB_SEND_ALLOWED: '1' }, async (api) => {
+      let r = await api('GET', '/api/send');
+      check('allowed, not enabled: canSend false', r.j.allowed + '|' + r.j.enabled + '|' + r.j.canSend, 'true|false|false');
+      r = await api('POST', '/api/send', sms());
+      check('allowed but not enabled: POST -> 403', r.status, 403);
+      check('allowed but not enabled: CRM got zero calls', calls.length, 0);
+    });
+    // 3. Enabled: the normal sends, refusals and errors
+    await runSend(8823, { HUB_SEND_ALLOWED: '1', HUB_EMAIL_FROM: 'Spray It <hello@example.invalid>' }, async (api, storeFile) => {
+      let r = await api('PUT', '/api/send', { enabled: 'yes' });
+      check('PUT with a non-boolean -> 400', r.status, 400);
+      r = await api('PUT', '/api/send', { enabled: true, by: 'Staff A' });
+      check('PUT enable -> 200 canSend true, emailFrom shown', r.status + '|' + r.j.canSend + '|' + r.j.emailFrom, '200|true|Spray It <hello@example.invalid>');
+      const { createFileStore } = await import(pathToFileURL(path.join(here, '.build', 'store', 'file.js')).href);
+      const store = createFileStore(storeFile);
+      const setting = await store.get('hubsettings', 'send');
+      check('switch stored with by and at', setting?.data.enabled + '|' + setting?.data.by + '|' + !Number.isNaN(Date.parse(setting?.data.at)), 'true|Staff A|true');
+      r = await api('GET', '/api/send');
+      check('GET after enable: canSend true', r.j.canSend, true);
+
+      // Refusals before the CRM is asked to send (400s do not even read the contact)
+      calls.length = 0;
+      check('empty body -> 400', (await api('POST', '/api/send', sms({ body: '   ' }))).status, 400);
+      check('sms over 1000 chars -> 400', (await api('POST', '/api/send', sms({ body: 'a'.repeat(1001) }))).status, 400);
+      check('email over 20000 chars -> 400', (await api('POST', '/api/send', sms({ channel: 'email', subject: 'S', body: 'a'.repeat(20001) }))).status, 400);
+      check('bad channel -> 400', (await api('POST', '/api/send', sms({ channel: 'fax' }))).status, 400);
+      check('bad contact id -> 400', (await api('POST', '/api/send', sms({ contactId: 'x y' }))).status, 400);
+      check('array of contacts (bulk) -> 400', (await api('POST', '/api/send', sms({ contactId: ['goodAAA1', 'goodAAA2'] }))).status, 400);
+      check('email without a subject -> 400', (await api('POST', '/api/send', sms({ channel: 'email' }))).status, 400);
+      check('the 400s made zero CRM calls', calls.length, 0);
+
+      r = await api('POST', '/api/send', sms({ contactId: 'missing1' }));
+      check('unknown contact -> 404', r.status, 404);
+      r = await api('POST', '/api/send', sms({ contactId: 'nophone1' }));
+      check('no phone -> 409 with the exact words', r.status + '|' + r.j.error, '409|No Phone has no phone number on file');
+      r = await api('POST', '/api/send', sms({ contactId: 'noemail1', channel: 'email', subject: 'Hello' }));
+      check('no email -> 409 with the exact words', r.status + '|' + r.j.error, '409|No Email has no email on file');
+      r = await api('POST', '/api/send', sms({ contactId: 'dndAll01' }));
+      check('do-not-disturb (dnd true), sms -> 409', r.status + '|' + r.j.error, '409|Dee Nd has asked not to receive texts');
+      r = await api('POST', '/api/send', sms({ contactId: 'dndSms01' }));
+      check('do-not-disturb (SMS active), sms -> 409', r.status + '|' + r.j.error, '409|Sam Sms has asked not to receive texts');
+      r = await api('POST', '/api/send', sms({ contactId: 'dndAll01', channel: 'email', subject: 'Hi' }));
+      check('do-not-disturb (dnd true), email -> 409 emails', r.status + '|' + r.j.error, '409|Dee Nd has asked not to receive emails');
+      check('the refusals sent nothing', posts().length, 0);
+
+      // A good text
+      r = await api('POST', '/api/send', sms());
+      check('sms ok -> 201 mapped', r.status + '|' + r.j.ok + '|' + r.j.messageId + '|' + r.j.conversationId + '|' + r.j.channel + '|' + r.j.to?.name + '|' + r.j.to?.address, '201|true|msgZZZ001|convZZZ001|sms|Test Person|+61400000001');
+      check('sms ok: response has an at time', !Number.isNaN(Date.parse(r.j.at)), true);
+      check('stand-in saw exactly one send', posts().length, 1);
+      check('sms body exactly { type, contactId, message }', JSON.stringify(posts()[0]?.body), JSON.stringify({ type: 'SMS', contactId: 'goodAAA1', message: 'Hi Test, see you at 9.' }));
+
+      // A good email: escaped, newlines as <br>, emailFrom included
+      r = await api('POST', '/api/send', sms({ channel: 'email', subject: 'Your quote', body: 'Line one <b>&\nLine two' }));
+      check('email ok -> 201', r.status + '|' + r.j.channel + '|' + r.j.to?.address, '201|email|test.person@example.invalid');
+      check('stand-in saw the second send', posts().length, 2);
+      check('email body: type, subject, escaped html with <br>, message, emailFrom', JSON.stringify(posts()[1]?.body), JSON.stringify({ type: 'Email', contactId: 'goodAAA1', subject: 'Your quote', html: 'Line one &lt;b&gt;&amp;<br>Line two', message: 'Line one <b>&\nLine two', emailFrom: 'Spray It <hello@example.invalid>' }));
+
+      // Log: written, no message text
+      const log = await store.list('sendlog');
+      check('two log records written', log.length, 2);
+      const l0 = log.find((x) => x.data.channel === 'sms')?.data;
+      check('log record fields', JSON.stringify([l0?.by, l0?.contactId, l0?.to, l0?.length, l0?.jobId, l0?.messageId, !Number.isNaN(Date.parse(l0?.at))]), JSON.stringify(['Staff A', 'goodAAA1', '+61400000001', 22, 'jobAAA1', 'msgZZZ001', true]));
+      check('log holds no message text', JSON.stringify(log).includes('see you at 9') || JSON.stringify(log).includes('Line one'), false);
+
+      // CRM refuses (422): its reason shown, once, never retried
+      crmMode = 'refuse';
+      const before = posts().length;
+      r = await api('POST', '/api/send', sms({ contactId: 'goodBBB1' }));
+      check('CRM 422 -> 502 with the CRM reason', r.status + '|' + r.j.error, '502|The CRM did not send it: Number is on the carrier block list');
+      check('the refused send was tried exactly once (no retry)', posts().length - before, 1);
+      check('a refused send is not logged', (await store.list('sendlog')).length, 2);
+      // CRM drops the connection
+      crmMode = 'down';
+      r = await api('POST', '/api/send', sms({ contactId: 'goodCCC1' }));
+      check('CRM down -> 502 could not reach', r.status + '|' + r.j.error, '502|The Hub server could not reach the CRM');
+      crmMode = 'ok';
+    });
+    // 4. Rate limit on a fresh server: 5 per minute in total
+    await runSend(8824, { HUB_SEND_ALLOWED: '1' }, async (api) => {
+      await api('PUT', '/api/send', { enabled: true });
+      calls.length = 0;
+      for (let i = 1; i <= 5; i++) {
+        const r = await api('POST', '/api/send', sms({ contactId: 'rate000' + i }));
+        check('rate: send ' + i + ' ok', r.status, 201);
+      }
+      const r6 = await api('POST', '/api/send', sms({ contactId: 'rate0006' }));
+      check('rate: 6th send in a minute -> 429 with the words', r6.status + '|' + r6.j.error, '429|Too many messages just now. Wait a minute and try again.');
+      check('rate: the 6th did not reach the CRM', posts().length, 5);
+    });
+    // 5. Same contact at most 3 per hour
+    await runSend(8825, { HUB_SEND_ALLOWED: '1' }, async (api) => {
+      await api('PUT', '/api/send', { enabled: true });
+      for (let i = 1; i <= 3; i++) check('same contact: send ' + i + ' ok', (await api('POST', '/api/send', sms())).status, 201);
+      const r4 = await api('POST', '/api/send', sms());
+      check('same contact: 4th in an hour -> 429', r4.status, 429);
+      check('another contact is still fine', (await api('POST', '/api/send', sms({ contactId: 'goodDDD1' }))).status, 201);
+    });
+    // Hygiene
+    const all = outs.join('\n');
+    check('no token, secret or fake CRM address in any response or server output', all.includes(tok) || all.includes(secret) || all.includes('zzFakeToken') || all.includes(fakeBase), false);
+  } catch (e) {
+    console.log('ERROR ' + e.message);
+    process.exitCode = 1;
+  } finally {
+    stop();
+    fake.close();
+    fs.rmSync(tmp, { recursive: true, force: true });
+    console.log(process.exitCode ? 'SOME FAILED' : 'ALL PASS');
+  }
+} else console.log('usage: node server/test-run.mjs lock|unit|public|contacts|tasks|install|live|invoices2|files|send');

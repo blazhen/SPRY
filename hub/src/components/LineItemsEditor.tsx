@@ -6,6 +6,7 @@ import { fmtMoney } from '../lib/format'
 import { lineTotal } from '../lib/calc'
 import { getPriceList, newCustomLine, newLineFromPrice, useStore } from '../lib/store'
 import { EmptyState } from './ui'
+import { focusIn } from '../lib/scrollIn'
 
 const UNITS: Unit[] = ['m²', 'each', 'hour', 'lot']
 
@@ -43,12 +44,12 @@ export default function LineItemsEditor({ quote, onChange }: { quote: Quote; onC
 
   useEffect(() => {
     if (!focusReq) return
-    document.getElementById(`${base}-${focusReq}`)?.focus()
+    focusIn(document.getElementById(`${base}-${focusReq}`))
     setFocusReq(null)
   }, [focusReq, base])
 
   useEffect(() => {
-    if (picking) searchRef.current?.focus()
+    if (picking) focusIn(searchRef.current)
   }, [picking])
 
   const update = (id: string, patch: Partial<LineItem>) => onChange({ lines: lines.map((l) => (l.id === id ? { ...l, ...patch } : l)) })
@@ -56,7 +57,7 @@ export default function LineItemsEditor({ quote, onChange }: { quote: Quote; onC
   const closePicker = () => {
     setPicking(false)
     setSearch('')
-    requestAnimationFrame(() => pickBtn.current?.focus())
+    requestAnimationFrame(() => focusIn(pickBtn.current))
   }
 
   const addFromPrice = (itemId: string) => {

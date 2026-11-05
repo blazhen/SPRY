@@ -14,6 +14,7 @@ import { href } from '../../lib/router'
 import { getContact, getJob, getOwners, updateContact, updateJob, useStore } from '../../lib/store'
 import './jobFacts.css'
 import './jobLeft.css'
+import { scrollWithin } from '../../lib/scrollIn'
 
 /** The contacts on a job: the main one first (or the first person), then the others in order. */
 export function jobContacts(job: Job, s: ReturnType<typeof useStore>): { main?: Contact; others: Contact[] } {
@@ -38,7 +39,7 @@ export function goToPeople() {
         return
       }
       const calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-      el.scrollIntoView({ block: 'start', behavior: calm ? 'auto' : 'smooth' })
+      scrollWithin(el, 'start', calm ? 'auto' : 'smooth')
       el.setAttribute('tabindex', '-1')
       el.focus({ preventScroll: true })
     })

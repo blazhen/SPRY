@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react'
+import { scrollWithin } from './scrollIn'
 
 /**
  * One paging hook for every long list. Page size is shared by all lists and kept in
@@ -140,7 +141,7 @@ export function usePaged<T>(items: T[], opts: { url?: boolean; resetKey?: string
     moved.current = false
     const el = anchor.current
     if (!el) return
-    el.scrollIntoView({ block: 'start' })
+    scrollWithin(el, 'start', 'auto', true)
     el.focus({ preventScroll: true })
   }, [page])
 

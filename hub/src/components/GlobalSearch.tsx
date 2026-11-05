@@ -10,6 +10,7 @@ import { kindLabel, useRecentRows } from './RecentList'
 import { whenText } from '../lib/recent'
 import { getCompany, listJobs, participantName, useStore } from '../lib/store'
 import type { Contact, Job, Quote } from '../types'
+import { scrollWithin } from '../lib/scrollIn'
 
 const MAX = 5
 const KIND_ORDER = { job: 0, contact: 1, quote: 2 } as const
@@ -171,7 +172,7 @@ export function GlobalSearch({ variant = 'top' }: { variant?: 'top' | 'icon' }) 
   }, [query, typing])
 
   useEffect(() => {
-    document.getElementById(`${listId}-opt-${active}`)?.scrollIntoView({ block: 'nearest' })
+    scrollWithin(document.getElementById(`${listId}-opt-${active}`), 'nearest')
   }, [active, listId])
 
   const openRow = (i: number) => {

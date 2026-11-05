@@ -2,10 +2,12 @@ import { useEffect, useRef, useState } from 'react'
 import { ConfirmDialog, PageHead, StageBadge, toast } from '../components/ui'
 import { setConfirmEnabled, useConfirmEnabled } from '../lib/confirmActions'
 import { STAGE_HELP, STALL_LIMITS, stageList, stallLimitFor, word } from '../lib/format'
-import { resetStallLimits, setStallLimit, useStore } from '../lib/store'
+import { getOwner, resetStallLimits, setStallLimit, useStore } from '../lib/store'
 import type { Stage } from '../types'
 import { ExtrasSettings } from '../components/ExtrasSettings'
 import { CertificateSettings } from '../components/photos/CertificateSettings'
+import { OWNER } from '../config'
+import { setSendEnabled, useSendState } from '../lib/send'
 
 type Lim = { slow: number; stuck: number } | null
 const same = (a: Lim, b: Lim) => (a === null || b === null ? a === b : a.slow === b.slow && a.stuck === b.stuck)
@@ -202,6 +204,7 @@ export default function Settings() {
       </ConfirmDialog>
 
       <AskToConfirm />
+      <SendSwitch />
 
       <ExtrasSettings />
       <CertificateSettings />
@@ -224,6 +227,36 @@ function AskToConfirm() {
           </span>
         </span>
       </label>
+    </fieldset>
+  )
+}
+
+/** "Send texts and emails from the Hub": off by default. Two locks: the server owner allows it (server setting), then staff switch it on here. */
+function SendSwitch() {
+  const st = useSendState()
+  const [msg, setMsg] = useState('')
+  const [busy, setBusy] = useState(false)
+  const flip = async (v: boolean) => {
+    setBusy(true)
+    setMsg(await setSendEnabled(v, getOwner(OWNER.id) || OWNER.name))
+    setBusy(false)
+  }
+  const locked = st.loaded && !st.allowed
+  return (
+    <fieldset className="card stack" data-send-switch>
+      <legend className="t-small font-bold">Sending</legend>
+      <label className="flex items-start gap-3">
+        <input type="checkbox" className="mt-1 h-5 w-5" checked={st.enabled} disabled={busy || locked || !st.loaded} onChange={(e) => void flip(e.target.checked)} />
+        <span>
+          <span className="block font-bold">Send texts and emails from the Hub</span>
+          <span className="block text-muted">
+            Off by default. When on, the Text and Email boxes send for real from the CRM, one person at a time, after you confirm. At most 5 a minute. Every send is logged with who sent it (not the message).
+          </span>
+        </span>
+      </label>
+      {locked && <p className="t-small" data-send-locked>Sending is locked on the server. Only the server owner can unlock it.</p>}
+      {st.error && <p className="t-small err" role="alert">{st.error}</p>}
+      {msg && <p className="t-small err" role="alert">{msg}</p>}
     </fieldset>
   )
 }

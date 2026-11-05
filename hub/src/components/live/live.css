@@ -1,0 +1,25 @@
+/* Live layout editor: the edit bar and the frame around every box. */
+.lb {
+  flex: none; position: sticky; top: 0; z-index: 30; display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem 0.75rem;
+  padding: 0.4rem 0.6rem; border-radius: var(--d-radius); background: rgb(var(--c-navy-wash)); border: 2px solid rgb(var(--c-navy));
+}
+.lb-group { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 0.3rem; }
+.lb-end { margin-left: auto; }
+.lb-btn { min-height: 28px; min-width: 28px; }
+.lb-btn[aria-pressed='true'] { background: rgb(var(--c-navy)); color: rgb(var(--c-on-navy, 255 255 255)); }
+.lb-say { flex: 1 1 8rem; min-width: 0; font-size: var(--d-small); color: rgb(var(--c-muted)); }
+
+/* The page frame while a width preview is on: centred, with a visible outline. */
+.jf[data-live-width] { margin-inline: auto; width: 100%; outline: 2px dashed rgb(var(--c-navy)); outline-offset: 4px; }
+
+/* Box frame */
+.bf { position: relative; border: 2px dashed rgb(var(--c-navy) / 0.55); border-radius: var(--d-radius); margin-bottom: 0.75rem; background: rgb(var(--c-surface)); }
+.bf[data-dragging] { opacity: 0.45; }
+.bf-bar { display: flex; align-items: center; gap: 0.15rem; padding: 0.15rem 0.3rem; background: rgb(var(--c-navy-wash)); border-bottom: 1px solid rgb(var(--c-line)); border-radius: calc(var(--d-radius) - 2px) calc(var(--d-radius) - 2px) 0 0; }
+.bf-title { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 700; font-size: var(--d-small); padding: 0 0.25rem; }
+.bf-handle { cursor: grab; touch-action: none; }
+.bf-group { display: inline-flex; gap: 1px; }
+.bf-panelbtn { font-size: 0.75rem; font-weight: 700; min-width: 24px; }
+.bf-note { margin: 0; padding: 0.25rem 0.5rem; font-size: var(--d-small); color: rgb(var(--c-ink)); background: rgb(var(--c-raise)); }
+.bf-content { padding: 0.25rem; pointer-events: none; user-select: none; max-height: 22rem; overflow: hidden; }
+.bf .le-pop { z-index: 45; }

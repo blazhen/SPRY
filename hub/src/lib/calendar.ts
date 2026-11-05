@@ -184,6 +184,7 @@ export function calendarErrorText(e: unknown): string {
   if (e instanceof NetworkError) return 'The Hub server could not be reached. Check the connection and try again'
   if (e instanceof AuthError) return 'Your Hub sign-in has run out. Open the Hub again from the CRM'
   if (e instanceof ApiError && e.status === 404) return NOT_SET_UP + 'the calendar part of the Hub server is not installed (route /api/calendar not found)'
+  if (e instanceof ApiError && /^Only HTML requests/.test(e.message)) return 'The published Hub server does not answer the calendar address (/api/calendar). It needs the latest build: publish again, and if it stays, ask the host about the server routes'
   if (e instanceof ApiError && e.status >= 500 && /^Request failed|^Server error/.test(e.message)) return 'The Hub server had a problem reading the calendar (' + e.status + ')'
   return e instanceof Error && e.message ? e.message : 'Could not read the calendars'
 }

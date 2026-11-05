@@ -306,7 +306,7 @@ export function LayoutEditor({ workOpen }: { workOpen: boolean }) {
 }
 
 /** The fields popover of a Job, Contact or Company card: tick the fields to show and put them in order. */
-function FieldsPick({ box, state, onChange }: { box: FieldBox; state: BoxState; onChange: (fields: string[] | undefined) => void }) {
+export function FieldsPick({ box, state, onChange }: { box: FieldBox; state: BoxState; onChange: (fields: string[] | undefined) => void }) {
   const [open, setOpen] = useState(false)
   const uid = useId()
   const btn = useRef<HTMLButtonElement>(null)

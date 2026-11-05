@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { Mail, MessageSquare, Phone, Plus } from 'lucide-react'
 import { OPEN_SECTION } from '../job/Section'
+import { scrollWithin } from '../../lib/scrollIn'
+import { composeOnContact } from './compose'
 import { InlineField } from '../InlineField'
 import { fmtDate } from '../../lib/format'
 import { addNoteTo } from '../../lib/notesStore'
@@ -15,7 +17,8 @@ import { useContactData } from './useContactData'
  * The Add a task and Add a note dialogs live here, so the buttons work with no other contact section on the page.
  * Add note jumps to the notes section when one is on the page; otherwise it opens the Add a note dialog.
  */
-export function ContactHeaderBar({ contactId }: { contactId: string }) {
+/** layout 'head': the contact page header, ONE full-width card (avatar, name once, type chip, company, last contacted and follow-up, actions on the right). Default: the older stacked card. */
+export function ContactHeaderBar({ contactId, layout }: { contactId: string; layout?: 'head' }) {
   const { LIVE, contact, extra, jobs, companies, last, nextFollow, phone } = useContactData(contactId)
   const [taskOpen, setTaskOpen] = useState(false)
   const [taskTitle, setTaskTitle] = useState('')
@@ -32,10 +35,12 @@ export function ContactHeaderBar({ contactId }: { contactId: string }) {
   const noTask = !LIVE && jobs.length === 0
   const noTaskWhy = noTask ? 'A task needs a job. Add this person to a job first.' : undefined
 
+  const head = layout === 'head'
   const addNote = () => {
+    if (head) return composeOnContact('note')
     if (document.getElementById('contact-notes')) {
       window.dispatchEvent(new CustomEvent(OPEN_SECTION, { detail: 'contact-notes-section' }))
-      window.setTimeout(() => document.getElementById('contact-notes')?.scrollIntoView({ behavior: 'smooth' }), 50)
+      window.setTimeout(() => scrollWithin(document.getElementById('contact-notes'), 'start'), 50)
     } else setNoteOpen(true)
   }
   const saveNote = () => {
@@ -46,6 +51,7 @@ export function ContactHeaderBar({ contactId }: { contactId: string }) {
     setNoteOpen(false)
   }
   const openTask = () => {
+    if (head) return composeOnContact('task')
     setTaskOpen(true)
   }
   const saveTask = () => {
@@ -65,44 +71,38 @@ export function ContactHeaderBar({ contactId }: { contactId: string }) {
     setTaskWho('')
   }
 
-  return (
-    <div className="card cs-head">
-      <div>
-        <h2 className="t-page break-words">
-          <InlineField
-            label="Name"
-            hideLabel
-            value={contact.name}
-            onSave={(v) => updateContact(contact.id, { name: v })}
-            autoComplete="name"
-            placeholder="Click to add a name"
-            className="[&_.inline-field]:!font-display [&_.inline-field]:!text-[clamp(1.5rem,1.1rem+2vw,2.5rem)] [&_.inline-field]:font-semibold [&_.inline-field]:!leading-tight"
-          />
-        </h2>
-        <p className="t-body text-muted">
-          {extra.contactType}
-          {companies[0] ? `, ${companies[0].name}` : ''}
-        </p>
-      </div>
-      <div className="cs-actions" role="group" aria-label="Quick actions">
+  const actionsEl = (
+      <div className={layout === 'head' ? 'cs-actions ch-actions' : 'cs-actions'} role="group" aria-label="Quick actions">
         {phone && (
-          <a className="btn btn-primary" href={`tel:${phone}`}>
-            <Phone size={20} aria-hidden="true" />
-            {`Call ${phone}`}
+          <a className="btn btn-primary" href={`tel:${phone}`} aria-label={`Call ${phone}`} title={phone}>
+            <Phone size={layout === 'head' ? 16 : 20} aria-hidden="true" />
+            {layout === 'head' ? 'Call' : `Call ${phone}`}
           </a>
         )}
-        {phone && (
-          <a className="btn btn-neutral" href={`sms:${phone}`}>
-            <MessageSquare size={16} aria-hidden="true" />
-            Text
-          </a>
-        )}
-        {contact.email && (
-          <a className="btn btn-neutral" href={`mailto:${contact.email}`}>
-            <Mail size={16} aria-hidden="true" />
-            Email
-          </a>
-        )}
+        {phone &&
+          (head ? (
+            <button type="button" className="btn btn-neutral" onClick={() => composeOnContact('text')}>
+              <MessageSquare size={16} aria-hidden="true" />
+              Text
+            </button>
+          ) : (
+            <a className="btn btn-neutral" href={`sms:${phone}`}>
+              <MessageSquare size={16} aria-hidden="true" />
+              Text
+            </a>
+          ))}
+        {contact.email &&
+          (head ? (
+            <button type="button" className="btn btn-neutral" onClick={() => composeOnContact('email')}>
+              <Mail size={16} aria-hidden="true" />
+              Email
+            </button>
+          ) : (
+            <a className="btn btn-neutral" href={`mailto:${contact.email}`}>
+              <Mail size={16} aria-hidden="true" />
+              Email
+            </a>
+          ))}
         <button type="button" className="btn btn-add" onClick={addNote}>
           <Plus size={16} aria-hidden="true" />
           Add note
@@ -112,10 +112,10 @@ export function ContactHeaderBar({ contactId }: { contactId: string }) {
           Add task
         </button>
       </div>
-      <p className="t-small text-muted cs-meta">
-        Last contacted: <strong>{last ? fmtDate(last) : 'No messages yet'}</strong>. Next follow-up: <strong>{nextFollow ? fmtDate(nextFollow) : 'not set'}</strong>.
-      </p>
-
+  )
+  const initials = (contact.name || '?').split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0]!.toUpperCase()).join('') || '?'
+  const dialogs = (
+    <>
       <Dialog
         open={noteOpen}
         onClose={() => setNoteOpen(false)}
@@ -210,6 +210,55 @@ export function ContactHeaderBar({ contactId }: { contactId: string }) {
           {!LIVE && jobs.length === 0 && <p className="t-small text-muted">A task needs a job.</p>}
         </div>
       </Dialog>
+    </>
+  )
+
+  if (layout === 'head')
+    return (
+      <div className="card ch-card" data-contact-head-card>
+        <div className="ch-id">
+          <span className="ch-avatar" aria-hidden="true">{initials}</span>
+          <div className="ch-text">
+            <div className="ch-line">
+              <h1 className="ch-name break-words">{contact.name || 'No name'}</h1>
+              <span className="ch-chip" data-contact-type>{extra.contactType}</span>
+              {companies[0] && <span className="ch-company" data-head-company>{companies[0].name}</span>}
+            </div>
+            <p className="ch-meta">
+              Last contacted: <strong>{last ? fmtDate(last) : 'not yet'}</strong> · Next follow-up: <strong>{nextFollow ? fmtDate(nextFollow) : 'none set'}</strong>
+            </p>
+          </div>
+        </div>
+        {actionsEl}
+        {dialogs}
+      </div>
+    )
+
+  return (
+    <div className="card cs-head">
+      <div>
+        <h2 className="t-page break-words">
+          <InlineField
+            label="Name"
+            hideLabel
+            value={contact.name}
+            onSave={(v) => updateContact(contact.id, { name: v })}
+            autoComplete="name"
+            placeholder="Click to add a name"
+            className="[&_.inline-field]:!font-display [&_.inline-field]:!text-[clamp(1.5rem,1.1rem+2vw,2.5rem)] [&_.inline-field]:font-semibold [&_.inline-field]:!leading-tight"
+          />
+        </h2>
+        <p className="t-body text-muted">
+          {extra.contactType}
+          {companies[0] ? `, ${companies[0].name}` : ''}
+        </p>
+      </div>
+      {actionsEl}
+      <p className="t-small text-muted cs-meta">
+        Last contacted: <strong>{last ? fmtDate(last) : 'No messages yet'}</strong>. Next follow-up: <strong>{nextFollow ? fmtDate(nextFollow) : 'not set'}</strong>.
+      </p>
+
+      {dialogs}
     </div>
   )
 }

@@ -1,10 +1,11 @@
 import { ArrowLeft } from 'lucide-react'
-import { useJobLayout } from '../../lib/jobLayout'
+import { boxesIn, type BoxState } from '../../lib/jobLayout'
+import { useLayoutSession } from '../../lib/layoutDraft'
 import { peopleOnJob, useLiveNotes } from '../../lib/notesStore'
 import { PANE_SECTIONS, setPaneView, usePane, type PaneSectionId } from '../../lib/paneView'
 import { getJob, useStore } from '../../lib/store'
 import { useExtra } from '../../lib/useExtras'
-import { renderBox } from './BoxView'
+import { BoxSlot } from './BoxView'
 import { SoloSection } from './Section'
 import './jobSide.css'
 
@@ -32,8 +33,10 @@ export function usePaneState() {
 export function JobSide({ jobId }: { jobId: string; railed?: boolean }) {
   const store = useStore()
   const job = getJob(jobId, store)
-  const { sections } = usePaneState()
-  const cfg = useJobLayout()
+  const { available } = usePaneState()
+  const { layout: cfg } = useLayoutSession()
+  // The draft while Edit layout is on, the saved layout otherwise.
+  const sections = boxesIn(cfg, 'right').map((b) => b.id).filter((id) => available.includes(id))
   // Live: load the notes of everyone on the job so the pinned list is complete.
   useLiveNotes(peopleOnJob(jobId, store))
 
@@ -42,7 +45,7 @@ export function JobSide({ jobId }: { jobId: string; railed?: boolean }) {
   // The rail now opens focus views of the whole workspace (FocusView.tsx), so the pane never shows one box alone here any more.
   const solo = null as PaneSectionId | null
   const shown = solo ? [solo] : sections
-  const stateOf = (id: PaneSectionId) => cfg.boxes.find((b) => b.id === id)
+  const stateOf = (id: PaneSectionId) => cfg.boxes.find((b) => b.id === id) as BoxState
 
   const backToAll = () => {
     setPaneView('all')
@@ -72,7 +75,7 @@ export function JobSide({ jobId }: { jobId: string; railed?: boolean }) {
       <SoloSection.Provider value={!!solo}>
         {shown.map((id) => (
           <div key={id} className="pane-part" data-pane-part={id}>
-            {renderBox(id, jobId, stateOf(id))}
+            <BoxSlot id={id} jobId={jobId} state={stateOf(id)} />
           </div>
         ))}
       </SoloSection.Provider>
