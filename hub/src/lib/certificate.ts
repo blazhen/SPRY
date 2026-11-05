@@ -195,11 +195,13 @@ export function buildCertificatePdf(d: CertData, photos: Uint8Array[], issued = 
   return doc.build()
 }
 
+export const MAX_CERT_PHOTOS = 6
+
 /** Reads the After photos' bytes (skips any that cannot be read). */
 export async function afterPhotoBytes(after: Attachment[]): Promise<{ bytes: Uint8Array[]; skipped: number }> {
   const bytes: Uint8Array[] = []
   let skipped = 0
-  for (const a of after.slice(0, 6)) {
+  for (const a of after.slice(0, MAX_CERT_PHOTOS)) {
     const b = await attachmentBytes(a)
     // JPEG files start FF D8. Photos taken in the Hub are always JPEG; other pictures are left off.
     if (b && b[0] === 0xff && b[1] === 0xd8) bytes.push(b)

@@ -1,7 +1,13 @@
 import { Fragment, useEffect, useId, useRef, useState, useSyncExternalStore, type ReactNode } from 'react'
-import { ArrowLeft, Briefcase, FileText, LayoutList, MessageSquare, NotebookPen, ReceiptText, ListChecks, Paperclip, type LucideIcon } from 'lucide-react'
+import { ArrowLeft, Briefcase, FileText, LayoutGrid, LayoutList, MessageSquare, NotebookPen, ReceiptText, ListChecks, Paperclip, type LucideIcon } from 'lucide-react'
 import { go, href, type ContactView } from '../../lib/router'
-import { getCompany, getContact, jobsForContact, useStore } from '../../lib/store'
+import { getContact, useStore } from '../../lib/store'
+import { setPreviewWidth } from '../../lib/previewWidth'
+import { type BoxId } from '../../lib/jobLayout'
+import { getLayoutSession, useLayoutSession } from '../../lib/layoutDraft'
+import { LiveEditBar, type PreviewWidth } from '../live/LiveEditBar'
+import { DragLayer } from '../live/useBoxDrag'
+import { ContactPanelBoxes, useContactCompanies, useContactJobs, useContactPageLayout } from './ContactBoxes'
 import { JobFacts } from '../job/JobFacts'
 import { TabPanel, Tabs } from '../ui'
 import { CONTACT_COMPOSE } from './compose'
@@ -22,8 +28,6 @@ import { SoloSection } from '../job/Section'
 import '../job/jobFrame.css'
 import '../job/jobLeft.css'
 import './contactFrame.css'
-
-// Edit layout for the contact page: later (it needs its own saved layout and a contact box list, like jobLayout.ts).
 
 const WIDE = '(min-width: 1024px)'
 function useWide(): boolean {
@@ -65,20 +69,6 @@ function useLeftView(): [LeftView, (v: LeftView) => void] {
   ]
 }
 
-/** The companies of this person: their own, then any on their jobs. */
-function useContactCompanies(contactId: string): { id: string; name: string }[] {
-  const s = useStore()
-  const contact = getContact(contactId, s)
-  const out: { id: string; name: string }[] = []
-  const add = (id?: string) => {
-    const c = id ? getCompany(id, s) : undefined
-    if (c && !out.some((x) => x.id === c.id)) out.push({ id: c.id, name: c.name })
-  }
-  if (contact?.companyId) add(contact.companyId)
-  jobsForContact(contactId, s).forEach((j) => j.participants.filter((p) => p.kind === 'company').forEach((p) => add(p.id)))
-  return out
-}
-
 const LEFT_LABEL: Record<LeftView, string> = { all: 'All', contact: 'Contact', job: 'Job', company: 'Company' }
 
 /** Read-only: the other people and the jobs of a company (there is no company page yet). */
@@ -106,20 +96,21 @@ function CompanyPeople({ contactId, companyId }: { contactId: string; companyId:
 }
 
 function LeftPanel({ contactId }: { contactId: string }) {
-  const s = useStore()
   const [view, setView] = useLeftView()
   const uid = useId()
   const companies = useContactCompanies(contactId)
+  const { editing, kind } = useLayoutSession()
   const [pick, setPick] = useState('')
   const [jobPick, setJobPick] = useState('')
   const hasCompany = companies.length > 0
   // Most recent job first.
-  const jobs = [...jobsForContact(contactId, s)].sort((a, b) => String((b as { createdAt?: string }).createdAt ?? '').localeCompare(String((a as { createdAt?: string }).createdAt ?? '')))
+  const jobs = useContactJobs(contactId)
   const hasJob = jobs.length > 0
   const options: LeftView[] = ['all', 'contact', ...(hasJob ? (['job'] as LeftView[]) : []), ...(hasCompany ? (['company'] as LeftView[]) : [])]
   // With no job and no company, All and Contact would show the same thing: no strip to click.
-  const showSwitch = options.length > 2
-  const shown: LeftView = options.includes(view) ? view : 'all'
+  const showSwitch = options.length > 2 && !(editing && kind === 'contact')
+  // While Edit layout is on the panel shows every left box, so each one can be moved.
+  const shown: LeftView = editing && kind === 'contact' ? 'all' : options.includes(view) ? view : 'all'
   const companyId = companies.find((c) => c.id === pick)?.id ?? companies[0]?.id
   const jobId = jobs.find((j) => j.id === jobPick)?.id ?? jobs[0]?.id
   const companyPicker =
@@ -163,18 +154,7 @@ function LeftPanel({ contactId }: { contactId: string }) {
           ))}
         </div>
       )}
-      {shown === 'all' && (
-        <div className="cw-stack">
-          <ContactDetailsSection contactId={contactId} />
-          {hasJob && jobId && (
-            <section className="cw-stack" data-left-job>
-              <h3 className="jl-h">{jobs.length > 1 ? 'Latest job' : 'Job'}</h3>
-              <JobFacts key={jobs[0].id} jobId={jobs[0].id} only="job" />
-            </section>
-          )}
-          {hasCompany && <ContactCompanySection contactId={contactId} companyId={companyId} />}
-        </div>
-      )}
+      {shown === 'all' && <ContactPanelBoxes panel="left" contactId={contactId} />}
       {shown === 'contact' && (
         <SoloSection.Provider value>
           <ContactDetailsSection contactId={contactId} />
@@ -221,12 +201,7 @@ function Middle({ contactId, view }: { contactId: string; view?: ContactView }) 
   // The composer is keyed by the view, so choosing a rail item re-opens it on the matching tab:
   // Messages: Text, Notes: Note, Tasks: Task. The All page starts on Note.
   if (!view) {
-    body = (
-      <>
-        <ContactComposerSection key="all" contactId={contactId} />
-        <ContactMessagesSection contactId={contactId} />
-      </>
-    )
+    return <ContactPanelBoxes panel="middle" contactId={contactId} />
   } else if (view === 'messages') {
     body = (
       <>
@@ -269,30 +244,23 @@ function Right({ contactId, view }: { contactId: string; view?: ContactView }) {
   if (view === 'tasks') return <div className="cw-stack"><ContactJobsSection contactId={contactId} /><ContactQuotesSection contactId={contactId} /></div>
   if (view === 'messages') return <div className="cw-stack"><ContactJobsSection contactId={contactId} /><ContactTasksSection contactId={contactId} /></div>
   if (view === 'documents') return <div className="cw-stack"><ContactJobsSection contactId={contactId} /></div>
-  return (
-    <div className="cw-stack">
-      <ContactJobsSection contactId={contactId} />
-      <ContactQuotesSection contactId={contactId} />
-      <ContactInvoicesSection contactId={contactId} />
-      <ContactNotesSection contactId={contactId} />
-      <ContactTasksSection contactId={contactId} />
-      <ContactDocumentsSection contactId={contactId} />
-    </div>
-  )
+  return <ContactPanelBoxes panel="right" contactId={contactId} />
 }
 
 /* ---------- the icon rail ---------- */
-const RAIL: { view: ContactView; label: string; Icon: LucideIcon }[] = [
-  { view: 'jobs', label: 'Jobs', Icon: Briefcase },
-  { view: 'quotes', label: 'Quotes', Icon: FileText },
-  { view: 'invoices', label: 'Invoices and payments', Icon: ReceiptText },
-  { view: 'notes', label: 'Notes', Icon: NotebookPen },
-  { view: 'tasks', label: 'Tasks', Icon: ListChecks },
-  { view: 'messages', label: 'Messages', Icon: MessageSquare },
-  { view: 'documents', label: 'Documents', Icon: Paperclip },
+const RAIL: { view: ContactView; label: string; Icon: LucideIcon; box: BoxId }[] = [
+  { view: 'jobs', label: 'Jobs', Icon: Briefcase, box: 'c_jobs' },
+  { view: 'quotes', label: 'Quotes', Icon: FileText, box: 'c_quotes' },
+  { view: 'invoices', label: 'Invoices and payments', Icon: ReceiptText, box: 'c_invoices' },
+  { view: 'notes', label: 'Notes', Icon: NotebookPen, box: 'c_notes' },
+  { view: 'tasks', label: 'Tasks', Icon: ListChecks, box: 'c_tasks' },
+  { view: 'messages', label: 'Messages', Icon: MessageSquare, box: 'c_messages' },
+  { view: 'documents', label: 'Documents', Icon: Paperclip, box: 'c_documents' },
 ]
 
 function Rail({ contactId, view, hasDocs }: { contactId: string; view?: ContactView; hasDocs: boolean }) {
+  const layout = useContactPageLayout()
+  const shown = new Set(layout.boxes.filter((b) => !b.hidden).map((b) => b.id))
   return (
     <nav className="jf-rail no-print" aria-label="Right pane: choose what to show">
       <button type="button" className="jf-rail-btn" data-rail="all" aria-pressed={!view} aria-label="All" onClick={() => go(href.contact(contactId))}>
@@ -300,7 +268,7 @@ function Rail({ contactId, view, hasDocs }: { contactId: string; view?: ContactV
         <span className="jf-rail-tip" aria-hidden="true">All</span>
       </button>
       <span className="jf-rail-sep" aria-hidden="true" />
-      {RAIL.filter((r) => r.view !== 'documents' || hasDocs || view === 'documents').map(({ view: v, label, Icon }) => (
+      {RAIL.filter((r) => shown.has(r.box) && (r.view !== 'documents' || hasDocs || view === 'documents')).map(({ view: v, label, Icon }) => (
         <Fragment key={v}>
           <button type="button" className="jf-rail-btn" data-rail={v} aria-pressed={view === v} aria-label={label} onClick={() => go(view === v ? href.contact(contactId) : href.contactView(contactId, v))}>
             <Icon size={22} aria-hidden="true" />
@@ -321,10 +289,29 @@ export function ContactWorkspace({ contactId, view: routeView }: { contactId: st
   const contact = getContact(contactId, s)
   const [tab, setTab] = useState<TabId>('contact')
   const tabsId = useId()
-  const view = wide ? routeView : undefined
+  const session = useLayoutSession()
+  const layout = useContactPageLayout()
+  const editing = session.editing && session.kind === 'contact' && wide
+  const [liveWidth, setLiveWidth] = useState<PreviewWidth>(0)
+  const view = wide && !editing ? routeView : undefined
   const middleRef = useRef<HTMLElement>(null)
   const bodyRef = useRef<HTMLDivElement>(null)
   const [hasDocs, setHasDocs] = useState(false)
+
+  // Edit layout never outlives the page it was opened on, nor a window that became too narrow for it.
+  useEffect(() => {
+    if (session.editing && session.kind === 'contact' && !wide) session.cancel()
+  }, [session, wide])
+  useEffect(() => () => {
+    if (getLayoutSession().kind === 'contact') getLayoutSession().cancel()
+  }, [])
+  useEffect(() => {
+    setPreviewWidth(editing ? liveWidth : 0)
+    return () => setPreviewWidth(0)
+  }, [editing, liveWidth])
+  useEffect(() => {
+    if (!editing) setLiveWidth(0)
+  }, [editing])
 
   // A header button (Add note, Add task, Text, Email) wants the composer: show the tab or view that has it. The composer itself focuses and scrolls the panel.
   useEffect(() => {
@@ -356,9 +343,16 @@ export function ContactWorkspace({ contactId, view: routeView }: { contactId: st
 
   const head = (
     <div className="jf-head" data-contact-head>
-      <a className="jf-back" href={href.contacts()}>
-        <ArrowLeft size={18} aria-hidden="true" /> Back to contacts
-      </a>
+      <div className="cw-headtop">
+        <a className="jf-back" href={href.contacts()}>
+          <ArrowLeft size={18} aria-hidden="true" /> Back to contacts
+        </a>
+        {wide && (
+          <button type="button" className="btn btn-neutral btn-icon" data-edit-layout aria-label="Edit layout" title="Edit layout" onClick={() => session.start('contact')}>
+            <LayoutGrid size={18} aria-hidden="true" />
+          </button>
+        )}
+      </div>
       <ContactHeaderBar contactId={contactId} layout="head" />
     </div>
   )
@@ -394,12 +388,21 @@ export function ContactWorkspace({ contactId, view: routeView }: { contactId: st
 
   return (
     <div className="jf" data-job-frame data-contact-frame>
+      {editing && (
+        <>
+          <LiveEditBar width={liveWidth} onWidth={setLiveWidth} />
+          <DragLayer />
+        </>
+      )}
+      <div className="jf-pv" data-live-preview={editing && liveWidth ? liveWidth : undefined} style={editing && liveWidth ? { width: `min(${liveWidth}px, 100%)` } : undefined}>
       {head}
       <div
         ref={bodyRef}
         className="jf-body"
         data-contact
-        data-rail-side="right"
+        data-editing={editing ? '' : undefined}
+        data-rail-side={layout.rail.show ? layout.rail.side : 'none'}
+        data-rail-names={layout.rail.show && layout.rail.names ? '' : undefined}
         onKeyDown={(e) => {
           // Escape leaves a focus view for All (a dialog, menu, popover or text field handles its own Escape first).
           if (e.key === 'Escape' && view && !e.defaultPrevented && !(e.target as HTMLElement).closest('dialog, .menu-pop, .pane-pop, .le-pop, input, textarea, select, [role="dialog"]')) go(href.contact(contactId))
@@ -414,7 +417,8 @@ export function ContactWorkspace({ contactId, view: routeView }: { contactId: st
         <section className="jf-panel" data-panel="right" tabIndex={0} aria-label="Jobs, quotes, invoices, notes and tasks">
           <Right contactId={contactId} view={view} />
         </section>
-        <Rail contactId={contactId} view={view} hasDocs={hasDocs} />
+        {layout.rail.show && <Rail contactId={contactId} view={view} hasDocs={hasDocs} />}
+      </div>
       </div>
     </div>
   )

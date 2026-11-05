@@ -18,7 +18,12 @@ export type BoxId =
   // The box library (single-purpose boxes, all hidden until added)
   | 'addNote' | 'addText' | 'addEmail' | 'addTask' | 'texts' | 'emails' | 'calls' | 'visits' | 'notesAll'
   | 'quotePreview' | 'map' | 'stage' | 'quickActions'
-  | 'inspection'
+  | 'inspection' | 'calculator'
+  // The contact page boxes (their own layout, see CONTACT_BOXES)
+  | 'c_details' | 'c_job' | 'c_company' | 'c_compose' | 'c_messages' | 'c_jobs' | 'c_quotes' | 'c_invoices' | 'c_notes' | 'c_tasks' | 'c_documents' | 'c_visits'
+
+/** Which page a layout is for. Each has its own box list and its own saved layout. */
+export type LayoutKind = 'job' | 'contact'
 
 /** One option a box lets you choose in its Settings (the gear in Edit layout). Values live in BoxState.settings[name]. */
 export type SettingDef =
@@ -80,6 +85,7 @@ export const BOXES: BoxDef[] = [
   },
   { id: 'milestones', label: 'Milestones', about: 'Record a deposit, a call or a review.', panel: 'middle', anchor: 'job-milestones-section' },
   { id: 'inspection', label: 'Inspection notes', about: 'Type or dictate your notes from the site visit, then draft quote lines from them.', panel: 'middle', anchor: 'job-inspection-section' },
+  { id: 'calculator', label: 'Calculator', about: 'Add up a price: pick items, type one number each, see the total. Then add it to a quote.', panel: 'middle', anchor: 'job-calculator-section' },
   { id: 'quotes', label: 'Quotes', about: 'All quotes and revisions for this job.', panel: 'right', anchor: 'job-quotes-section' },
   { id: 'people', label: 'People and companies', about: 'Who is on the job. Add or remove them.', panel: 'right', anchor: 'job-people-section' },
   {
@@ -112,7 +118,24 @@ export const BOXES: BoxDef[] = [
   { id: 'quickActions', label: 'Quick actions', about: 'The buttons you use most: call, text, email, write the quote.', panel: 'left', anchor: 'job-quick-section', startsHidden: true, library: true },
 ]
 
-export const boxDef = (id: BoxId): BoxDef => BOXES.find((b) => b.id === id) as BoxDef
+/** The boxes of the contact page: the same layout engine, its own list and saved layout. */
+export const CONTACT_BOXES: BoxDef[] = [
+  { id: 'c_details', label: 'Contact details', about: 'Phone, email, address, private note and the contact fields.', panel: 'left', anchor: 'contact-details-section' },
+  { id: 'c_job', label: 'Latest job', about: 'The job details of the most recent job for this contact.', panel: 'left', anchor: 'contact-job-section' },
+  { id: 'c_company', label: 'Company', about: 'The company this contact is linked to. Shows only when there is one.', panel: 'left', anchor: 'contact-company-section' },
+  { id: 'c_compose', label: 'Add to this contact', about: 'Write a note, text, email or task.', panel: 'middle', anchor: 'contact-composer-section' },
+  { id: 'c_messages', label: 'Messages and activity', about: 'Texts, emails, calls and notes, newest first.', panel: 'middle', anchor: 'contact-messages-section' },
+  { id: 'c_jobs', label: 'Jobs', about: 'Every job for this contact.', panel: 'right', anchor: 'contact-jobs-section' },
+  { id: 'c_quotes', label: 'Quotes', about: 'Every quote for this contact.', panel: 'right', anchor: 'contact-quotes-section' },
+  { id: 'c_invoices', label: 'Invoices', about: 'Invoices and what is still owed.', panel: 'right', anchor: 'contact-invoices-section' },
+  { id: 'c_notes', label: 'Notes and follow-up', about: 'Notes on this contact, pinned first.', panel: 'right', anchor: 'contact-notes-section' },
+  { id: 'c_tasks', label: 'Tasks', about: 'What is still to do for this contact.', panel: 'right', anchor: 'contact-tasks-section' },
+  { id: 'c_documents', label: 'Documents', about: 'Files and links for this contact.', panel: 'right', anchor: 'contact-documents-section' },
+  { id: 'c_visits', label: 'Visits', about: 'Site visits and appointments for this contact.', panel: 'right', anchor: 'contact-visits-section', startsHidden: true },
+]
+
+const defsOf = (kind: LayoutKind): BoxDef[] => (kind === 'contact' ? CONTACT_BOXES : BOXES)
+export const boxDef = (id: BoxId): BoxDef => (BOXES.find((b) => b.id === id) ?? CONTACT_BOXES.find((b) => b.id === id)) as BoxDef
 export const PANEL_LABEL: Record<PanelId, string> = { left: 'Left', middle: 'Middle', right: 'Right' }
 export const PANELS: PanelId[] = ['left', 'middle', 'right']
 
@@ -160,12 +183,12 @@ export interface JobLayout {
 }
 
 /** The layout a person gets until they change it: every box, except the ones that start hidden. */
-export function defaultLayout(): JobLayout {
+export function defaultLayout(kind: LayoutKind = 'job'): JobLayout {
   return {
     v: 1,
     swap: false,
     rail: { show: true, side: 'right', names: false },
-    boxes: BOXES.map((b) => ({ id: b.id, panel: b.panel, hidden: !!b.startsHidden })),
+    boxes: defsOf(kind).map((b) => ({ id: b.id, panel: b.panel, hidden: !!b.startsHidden })),
   }
 }
 
@@ -173,11 +196,11 @@ const KEY = 'hub.job.layout.v2.advanced'
 const OLD_SECTIONS = 'hub.pane.sections.v1.advanced'
 
 const isPanel = (x: unknown): x is PanelId => x === 'left' || x === 'middle' || x === 'right'
-const isBox = (x: unknown): x is BoxId => BOXES.some((b) => b.id === x)
+const isBox = (x: unknown, kind: LayoutKind = 'job'): x is BoxId => defsOf(kind).some((b) => b.id === x)
 
 /** Read a saved layout, repairing anything odd: unknown boxes dropped, missing boxes added, at least one middle box. */
-export function sanitize(raw: unknown): JobLayout {
-  const base = defaultLayout()
+export function sanitize(raw: unknown, kind: LayoutKind = 'job'): JobLayout {
+  const base = defaultLayout(kind)
   if (!raw || typeof raw !== 'object') return base
   const r = raw as { boxes?: unknown; swap?: unknown; rail?: unknown; menu?: unknown }
   if (!Array.isArray(r.boxes)) return base
@@ -185,7 +208,7 @@ export function sanitize(raw: unknown): JobLayout {
   const boxes: BoxState[] = []
   for (const item of r.boxes) {
     const b = item as Partial<BoxState>
-    if (!isBox(b?.id) || seen.has(b.id)) continue
+    if (!isBox(b?.id, kind) || seen.has(b.id)) continue
     seen.add(b.id)
     const d = base.boxes.find((x) => x.id === b.id) as BoxState
     boxes.push({
@@ -198,16 +221,16 @@ export function sanitize(raw: unknown): JobLayout {
   }
   for (const d of base.boxes) if (!seen.has(d.id)) boxes.push(d)
   const menu = r.menu ? sanitizeMenu(r.menu) : undefined
-  const out: JobLayout = { v: 1, boxes, swap: r.swap === true, rail: sanitizeRail(r.rail, base.rail), ...(menu && !isDefaultMenu(menu) ? { menu } : {}) }
+  const out: JobLayout = { v: 1, boxes, swap: r.swap === true, rail: sanitizeRail(r.rail, base.rail, kind), ...(menu && !isDefaultMenu(menu) ? { menu } : {}) }
   return ensureMiddle(out)
 }
 
-function sanitizeRail(raw: unknown, d: RailConfig): RailConfig {
+function sanitizeRail(raw: unknown, d: RailConfig, kind: LayoutKind = 'job'): RailConfig {
   if (!raw || typeof raw !== 'object') return d
   const r = raw as Partial<RailConfig>
   const items = Array.isArray(r.items)
     ? r.items
-        .filter((i): i is RailItem => !!i && typeof i === 'object' && (i.kind === 'divider' || i.kind === 'all' || (i.kind === 'box' && isBox(i.box))) && typeof i.id === 'string')
+        .filter((i): i is RailItem => !!i && typeof i === 'object' && (i.kind === 'divider' || i.kind === 'all' || (i.kind === 'box' && isBox(i.box, kind))) && typeof i.id === 'string')
         .map((i) => ({ id: i.id, kind: i.kind, ...(i.kind === 'box' ? { box: i.box } : {}), ...(typeof i.label === 'string' && i.label ? { label: i.label.slice(0, 40) } : {}), ...(RAIL_ICONS.includes(i.icon as RailIcon) ? { icon: i.icon } : {}) }))
     : undefined
   return { show: r.show !== false, side: r.side === 'left' ? 'left' : 'right', names: r.names === true, ...(items ? { items } : {}) }
@@ -216,9 +239,10 @@ function sanitizeRail(raw: unknown, d: RailConfig): RailConfig {
 /** At least one visible box must stay in the middle panel. If none is, the first visible middle-default box comes back. */
 export function ensureMiddle(l: JobLayout): JobLayout {
   if (l.boxes.some((b) => b.panel === 'middle' && !b.hidden)) return l
-  const history = l.boxes.find((b) => b.id === 'history')
+  const fallback = l.boxes.some((b) => b.id === 'c_messages') ? 'c_messages' : 'history'
+  const history = l.boxes.find((b) => b.id === fallback)
   if (!history) return l
-  return { ...l, boxes: l.boxes.map((b) => (b.id === 'history' ? { ...b, panel: 'middle', hidden: false } : b)) }
+  return { ...l, boxes: l.boxes.map((b) => (b.id === fallback ? { ...b, panel: 'middle', hidden: false } : b)) }
 }
 
 function readStored(): JobLayout {
@@ -284,6 +308,34 @@ export function setBoxVisible(id: BoxId, visible: boolean): boolean {
 export function useJobLayout(): JobLayout {
   return useSyncExternalStore(subscribe, () => state)
 }
+
+// ---- The contact page layout: its own key, same shape, no menu (the menu belongs to the whole app and lives in the job layout) ----
+const CKEY = 'hub.contact.layout.v1'
+function readContact(): JobLayout {
+  try {
+    const raw = window.localStorage.getItem(CKEY)
+    if (raw) return sanitize(JSON.parse(raw), 'contact')
+  } catch {
+    /* storage blocked or damaged: use the default */
+  }
+  return defaultLayout('contact')
+}
+let cstate: JobLayout = readContact()
+export const getContactLayout = (): JobLayout => cstate
+export function setContactLayout(next: JobLayout) {
+  const { menu: _menu, ...rest } = ensureMiddle(sanitize(next, 'contact'))
+  cstate = rest
+  try {
+    window.localStorage.setItem(CKEY, JSON.stringify(cstate))
+  } catch {
+    /* storage blocked: the choice lasts until the page closes */
+  }
+  listeners.forEach((f) => f())
+}
+export function useContactLayout(): JobLayout {
+  return useSyncExternalStore(subscribe, () => cstate)
+}
+export const savedLayout = (kind: LayoutKind): JobLayout => (kind === 'contact' ? cstate : state)
 
 /** Visible boxes of one panel in order. */
 export function boxesIn(l: JobLayout, panel: PanelId): BoxState[] {

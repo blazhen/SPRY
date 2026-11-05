@@ -2,12 +2,13 @@ import type { ReactNode } from 'react'
 import { PhotosBox } from '../photos/PhotosBox'
 import { Composer, type ComposeMode } from './Composer'
 import { ContactsPanel } from './ContactsPanel'
-import { JobCosting } from './JobCosting'
 import { JobInvoices } from './PaymentsPanel'
 import { PinnedNotes } from './PinnedNotes'
 import { QuoteFamily } from './QuoteFamily'
 import { Section } from './Section'
 import { InspectionNotes } from '../../pages/InspectionNotes'
+import { CalculatorBox } from '../calculator/CalculatorBox'
+import { JobCostingBox } from '../calculator/JobCostingBox'
 import { StampBar } from './StampBar'
 import { OpenTasksSection } from './TasksPanel'
 import { AddEmailBox, AddNoteBox, AddTaskBox, AddTextBox, MapBox, QuickActionsBox, QuotePreviewBox, StageBox } from './boxes/LibraryA'
@@ -54,7 +55,7 @@ export function renderBox(id: BoxId, jobId: string, st?: { fields?: string[]; se
     case 'photos': return <PhotosBox jobId={jobId} />
     case 'invoices': return <JobInvoices jobId={jobId} />
     case 'payments': return <PaymentsBox jobId={jobId} />
-    case 'costing': return <JobCosting jobId={jobId} />
+    case 'costing': return <JobCostingBox jobId={jobId} />
     case 'pinned': return <PinnedNotes jobId={jobId} />
     case 'next': return <NextActionBox jobId={jobId} />
     case 'money': return <MoneySummaryBox jobId={jobId} />
@@ -75,5 +76,6 @@ export function renderBox(id: BoxId, jobId: string, st?: { fields?: string[]; se
     case 'stage': return <StageBox jobId={jobId} />
     case 'quickActions': return <QuickActionsBox jobId={jobId} />
     case 'inspection': return <InspectionNotes jobId={jobId} />
+    case 'calculator': return <CalculatorBox jobId={jobId} />
   }
 }

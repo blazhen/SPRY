@@ -28,7 +28,7 @@ const BOX_ICON: Partial<Record<BoxId, typeof FileText>> = {
   job: Briefcase, contact: Users, company: Briefcase, notes: StickyNote, tasks: ListChecks, history: LayoutList, milestones: Target,
   quotes: Receipt, people: Users, documents: FileText, photos: Camera, invoices: Wallet, payments: CircleDollarSign, costing: Calculator, pinned: Pin,
   next: Target, money: CircleDollarSign, otherJobs: Briefcase, siteAccess: MapPin, recentFiles: Folder, map: MapPin, visits: CalendarDays,
-  quotePreview: Receipt, inspection: FileText, addNote: StickyNote, addTask: ListChecks, calls: Phone, stage: Target,
+  quotePreview: Receipt, inspection: FileText, calculator: Calculator, addNote: StickyNote, addTask: ListChecks, calls: Phone, stage: Target,
 }
 
 export const iconFor = (item: RailItem) => (item.icon ? RAIL_ICON_COMPONENTS[item.icon] : item.kind === 'all' ? LayoutList : (item.box && BOX_ICON[item.box]) || Folder)

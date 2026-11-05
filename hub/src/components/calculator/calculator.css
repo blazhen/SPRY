@@ -1,0 +1,99 @@
+/* Price calculator. Everything inside is at least 18px, buttons and boxes at least 44px, so it is easy to read and tap. */
+.calc { font-size: 1.125rem; line-height: 1.45; color: rgb(var(--c-ink)); display: flex; flex-direction: column; gap: 1.25rem; min-width: 0; }
+.calc *, .calc *::before, .calc *::after { box-sizing: border-box; }
+.calc-card { max-width: 900px; width: 100%; margin-inline: auto; }
+.calc-page { max-width: 900px; margin-inline: auto; width: 100%; }
+
+/* Nothing under 18px, including the shared dialog pieces that sit inside the calculator. */
+.calc .btn, .calc .btn-sm, .calc .btn-primary { font-size: 1.125rem; min-height: 44px; min-width: 44px; white-space: normal; text-align: center; line-height: 1.2; }
+.calc .field, .calc select.field { font-size: 1.125rem; min-height: 44px; }
+.calc .label, .calc .hint, .calc .err, .calc .calc-note, .calc .dg-body, .calc .dg-body .label, .calc .dg-body .hint, .calc .dg-body .err, .calc .dg-title { font-size: 1.125rem; }
+.calc .dg-body .field { font-size: 1.125rem; min-height: 44px; }
+.calc .dg-title { font-size: 1.375rem; }
+.calc .calc-note { line-height: 1.45; }
+.calc a { color: rgb(var(--c-navy)); text-decoration: underline; }
+.calc :is(button, input, select, a):focus-visible { outline: 3px solid rgb(var(--c-navy)); outline-offset: 2px; }
+.calc .calc-big { min-height: 52px; padding-inline: 1.25rem; font-weight: 800; }
+.calc-sub { font-size: 1.125rem; color: rgb(var(--c-muted)); margin: 0; }
+.calc-form { display: flex; flex-direction: column; gap: 1rem; font-size: 1.125rem; }
+.calc-readonly { margin: 0; min-height: 44px; display: flex; align-items: center; padding-inline: 0.75rem; border-radius: 6px; background: rgb(var(--c-raise)); border: 1px dashed rgb(var(--c-control)); font-weight: 700; }
+.calc-actions { display: flex; flex-wrap: wrap; gap: 0.75rem; justify-content: flex-end; }
+
+/* The total bar: always visible, below the app header (--calc-top is set from code). */
+.calc-bar {
+  position: sticky; top: var(--calc-top, 0px); z-index: 4;
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.5rem 1rem;
+  padding: 0.75rem 1rem; border-radius: 12px;
+  background: rgb(var(--c-navy-wash)); border: 2px solid rgb(var(--c-navy)); color: rgb(var(--c-ink));
+}
+.calc-bar-main { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.1rem 1rem; min-width: 0; flex: 1 1 14rem; }
+.calc-bar-label { font-weight: 700; flex: 1 0 100%; }
+.calc-grand { font-size: 2rem; font-weight: 800; line-height: 1.1; font-family: inherit; }
+.calc-bar-small { font-size: 1.125rem; color: rgb(var(--c-ink)); }
+.calc-bar-undo { display: flex; flex-direction: column; align-items: flex-start; gap: 0.25rem; }
+
+.calc-saved { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 1rem; }
+.calc-tools { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+
+.calc-group { display: flex; flex-direction: column; gap: 0.5rem; min-width: 0; }
+.calc-group-h { font-size: 1.375rem; font-weight: 800; margin: 0; padding-bottom: 0.25rem; border-bottom: 2px solid rgb(var(--c-line)); }
+.calc-list, .calc-lines, .calc-jobs { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.75rem; }
+
+.calc-item {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 0.75rem 1.25rem; align-items: center;
+  padding: 0.75rem 1rem; border-radius: 12px; background: rgb(var(--c-surface)); border: 1px solid rgb(var(--c-line));
+  scroll-margin-top: 10rem;
+}
+.calc-item-info { display: flex; flex-direction: column; gap: 0.15rem; min-width: 0; align-items: flex-start; }
+.calc-item-name { font-weight: 800; margin: 0; overflow-wrap: anywhere; }
+.calc-tag { display: inline-block; margin-top: 0.25rem; padding: 0.15rem 0.6rem; border-radius: 999px; background: rgb(var(--c-amber-wash)); color: rgb(var(--c-amber)); border: 1px solid rgb(var(--c-amber)); font-size: 1.125rem; font-weight: 700; }
+.calc-item-ctl { display: flex; flex-direction: column; gap: 0.25rem; align-items: flex-start; min-width: 0; }
+.calc-ask { font-weight: 700; }
+.calc-qtyrow { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+.calc .calc-step { width: 52px; min-width: 52px; min-height: 52px; padding: 0; }
+.calc .calc-qty { width: 7rem; min-height: 52px; text-align: center; font-size: 1.375rem; font-weight: 800; }
+.calc .calc-change { min-height: 44px; }
+.calc-err { margin: 0; }
+.calc-linetotal { color: rgb(var(--c-ink)); }
+.calc-item-hidden { grid-template-columns: minmax(0, 1fr) auto; }
+
+.calc-hidden { display: flex; flex-direction: column; gap: 0.75rem; align-items: flex-start; }
+.calc-hidden .calc-list { width: 100%; }
+
+/* Output */
+.calc-output { display: flex; flex-direction: column; gap: 1rem; padding: 1rem; border-radius: 12px; background: rgb(var(--c-raise)); border: 1px solid rgb(var(--c-line)); }
+.calc-line { display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid rgb(var(--c-line)); }
+.calc-line-name { font-weight: 700; grid-column: 1; overflow-wrap: anywhere; }
+.calc-line .calc-sub { grid-column: 1; }
+.calc-line-total { grid-column: 2; grid-row: 1 / span 2; align-self: center; font-weight: 800; text-align: right; }
+.calc-sums { margin: 0; display: flex; flex-direction: column; gap: 0.35rem; }
+.calc-sums > div { display: flex; justify-content: space-between; gap: 1rem; }
+.calc-sums dt { font-weight: 600; }
+.calc-sums dd { margin: 0; font-weight: 800; text-align: right; }
+.calc-sums-grand { padding-top: 0.5rem; border-top: 2px solid rgb(var(--c-ink)); font-size: 1.375rem; }
+.calc-staff { padding: 0.75rem 1rem; border-radius: 10px; border: 1px dashed rgb(var(--c-control)); background: rgb(var(--c-surface)); display: flex; flex-direction: column; gap: 0.5rem; }
+.calc-staff-h { margin: 0; font-weight: 700; color: rgb(var(--c-muted)); }
+.calc-staff p { margin: 0; }
+
+/* Dialogs */
+.calc-jobs .calc-jobrow { width: 100%; min-height: 56px; justify-content: flex-start; flex-direction: column; align-items: flex-start; gap: 0.1rem; text-align: left; padding: 0.5rem 0.9rem; }
+.calc-choices { border: 0; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.75rem; }
+.calc-choice { display: flex; align-items: flex-start; gap: 0.75rem; padding: 0.75rem 1rem; min-height: 56px; border: 2px solid rgb(var(--c-control)); border-radius: 12px; cursor: pointer; background: rgb(var(--c-surface)); }
+.calc-choice:has(input:checked) { border-color: rgb(var(--c-navy)); background: rgb(var(--c-navy-wash)); }
+.calc-choice:has(input:focus-visible) { outline: 3px solid rgb(var(--c-navy)); outline-offset: 2px; }
+.calc-choice input { width: 1.5rem; height: 1.5rem; margin-top: 0.15rem; flex: none; accent-color: rgb(var(--c-navy)); }
+.calc-choice .calc-sub { display: block; }
+
+/* Phones: name and price on top, the number box with minus and plus below. */
+@media (max-width: 640px) {
+  .calc-item { grid-template-columns: minmax(0, 1fr); }
+  .calc-item-hidden { grid-template-columns: minmax(0, 1fr); }
+  .calc-grand { font-size: 1.75rem; }
+  .calc .calc-qty { width: 6rem; }
+  .calc-tools > .btn, .calc-actions > .btn { flex: 1 1 100%; }
+  .calc-qtyrow .calc-change { flex: 1 1 auto; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .calc *, .calc *::before, .calc *::after { transition: none !important; animation: none !important; scroll-behavior: auto !important; }
+}

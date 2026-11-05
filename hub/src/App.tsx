@@ -15,6 +15,7 @@ import PriceBook from './pages/PriceBook'
 import QuoteList from './pages/QuoteList'
 import Settings from './pages/Settings'
 import FoamPrices from './pages/FoamPrices'
+import Calculator from './pages/Calculator'
 import Templates from './pages/Templates'
 import Terms from './pages/Terms'
 import Todo from './pages/Todo'
@@ -59,6 +60,7 @@ export default function App() {
       {route.name === 'daysheet' && <DaySheet />}
       {route.name === 'settings' && <Settings />}
       {route.name === 'foam' && <FoamPrices />}
+      {route.name === 'calculator' && <Calculator />}
       <Toaster />
     </Shell>
   )

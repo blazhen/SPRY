@@ -51,6 +51,7 @@ export type Route =
   | { name: 'daysheet' }
   | { name: 'settings' }
   | { name: 'foam' }
+  | { name: 'calculator' }
   | { name: 'invoices' }
   | { name: 'invoice'; id: string }
   | { name: 'invoiceNew'; jobId?: string }
@@ -94,6 +95,8 @@ export function parseHash(hash: string): Route {
       return { name: 'daysheet' }
     case 'settings':
       return { name: 'settings' }
+    case 'calculator':
+      return { name: 'calculator' }
     case 'foam':
       return { name: 'foam' }
     case 'invoices':
@@ -132,6 +135,7 @@ export const href = {
   daysheet: () => '#/day',
   settings: () => '#/settings',
   foam: () => '#/foam',
+  calculator: () => '#/calculator',
   invoices: () => '#/invoices',
   invoice: (id: string) => `#/invoices/${encodeURIComponent(id)}`,
   /** New invoice. With a job id the job is already chosen. */

@@ -76,3 +76,27 @@ html:has(.app-frame) body { height: 100dvh; overflow: hidden; }
 @media (prefers-reduced-motion: reduce) {
   * { scroll-behavior: auto !important; }
 }
+
+/* ---- Round 13: less padding on phone and tablet so the boxes keep their width. Inputs stay 16px+ and main buttons 44px. ---- */
+@media (max-width: 1023px) {
+  .page-frame { padding-inline: 0.5rem; }
+  .jf { --d-pad: 0.625rem; }
+  .jf .jf-panel { padding: 0.5rem; border-radius: 12px; }
+  .jf-panel .sec-body { padding: 0.125rem 0.125rem 0.75rem; }
+  .jf-panel .sec-btn { padding: 0 0.125rem; }
+  .jf-panel .jm-col > .sec { padding: 0.125rem 0.25rem 0; }
+  .jf-panel .jm-composer { padding: 0.125rem 0.125rem; }
+  .jf-panel .la-body, .jf-panel .la-preview { padding: 0.125rem; }
+  .jf-panel .hf-item { padding: 0.5rem 0.5rem; }
+  .jf-panel .jm-item { padding: 0.5rem; }
+  .ch-card { padding: 0.5rem 0.625rem; }
+  .jf-scroll { gap: 0.375rem; }
+}
+/* The Phone and Tablet previews inside Edit layout use a narrow frame on a wide window: same values, set on the preview frame. */
+.jf-pv[data-live-preview] { --d-pad: 0.625rem; }
+.jf .jf-pv[data-live-preview] .jf-panel { padding: 0.5rem; border-radius: 12px; }
+.jf-pv[data-live-preview] .sec-body { padding: 0.125rem 0.125rem 0.75rem; }
+.jf-pv[data-live-preview] .sec-btn { padding: 0 0.125rem; }
+.jf-pv[data-live-preview] .jm-col > .sec { padding: 0.125rem 0.25rem 0; }
+.jf-pv[data-live-preview] .jm-composer { padding: 0.125rem; }
+.jf-pv[data-live-preview] .hf-item, .jf-pv[data-live-preview] .jm-item { padding: 0.5rem; }

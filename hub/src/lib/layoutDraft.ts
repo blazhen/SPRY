@@ -1,5 +1,5 @@
 import { useSyncExternalStore } from 'react'
-import { defaultLayout, ensureMiddle, getJobLayout, sanitize, setJobLayout, type JobLayout } from './jobLayout'
+import { defaultLayout, ensureMiddle, getJobLayout, sanitize, savedLayout, setContactLayout, setJobLayout, type JobLayout, type LayoutKind } from './jobLayout'
 import { setEditingLayout } from './layoutEdit'
 
 /**
@@ -8,12 +8,14 @@ import { setEditingLayout } from './layoutEdit'
  */
 export interface LayoutSession {
   editing: boolean
+  /** Which page is being edited (job until a contact page starts the session). */
+  kind: LayoutKind
   /** The draft while editing, the saved layout otherwise. */
   layout: JobLayout
   canUndo: boolean
   canRedo: boolean
   dirty: boolean
-  start(): void
+  start(kind?: LayoutKind): void
   apply(fn: (l: JobLayout) => JobLayout): void
   undo(): void
   redo(): void
@@ -27,20 +29,32 @@ export interface LayoutSession {
 
 const CAP = 100
 const same = (a: JobLayout, b: JobLayout) => JSON.stringify(a) === JSON.stringify(b)
-const repair = (l: JobLayout): JobLayout => ensureMiddle(sanitize(l))
+const repair = (l: JobLayout): JobLayout => ensureMiddle(sanitize(l, kind))
+
+/** The saved layout of the page being edited. The contact draft carries the app menu too, so the Menu tab works on both pages. Cached so the same inputs give the same object. */
+let memo: { base: JobLayout; menu: unknown; out: JobLayout } | null = null
+const loadSaved = (): JobLayout => {
+  const l = savedLayout(kind)
+  const m = getJobLayout().menu
+  if (kind !== 'contact' || !m) return l
+  if (!memo || memo.base !== l || memo.menu !== m) memo = { base: l, menu: m, out: { ...l, menu: m } }
+  return memo.out
+}
 
 let editing = false
+let kind: LayoutKind = 'job'
 let present: JobLayout | null = null
 let past: JobLayout[] = []
 let future: JobLayout[] = []
-let savedSeen: JobLayout = getJobLayout()
+let savedSeen: JobLayout = savedLayout('job')
 let snapshot: LayoutSession
 const listeners = new Set<() => void>()
 
 function build(): LayoutSession {
-  const saved = getJobLayout()
+  const saved = loadSaved()
   return {
     editing,
+    kind,
     layout: editing && present ? present : saved,
     canUndo: editing && past.length > 0,
     canRedo: editing && future.length > 0,
@@ -60,10 +74,11 @@ function emit() {
   listeners.forEach((f) => f())
 }
 
-function start() {
+function start(k: LayoutKind = 'job') {
   if (editing) return
   editing = true
-  present = repair(getJobLayout())
+  kind = k
+  present = repair(loadSaved())
   past = []
   future = []
   setEditingLayout(true)
@@ -97,11 +112,12 @@ function redo() {
 }
 
 function reset() {
-  apply(() => defaultLayout())
+  apply(() => (kind === 'contact' ? { ...defaultLayout('contact'), ...(present?.menu ? { menu: present.menu } : {}) } : defaultLayout()))
 }
 
 function leave() {
   editing = false
+  kind = 'job'
   present = null
   past = []
   future = []
@@ -116,7 +132,13 @@ function cancel() {
 
 function done() {
   if (!editing || !present) return
-  setJobLayout(present)
+  if (kind === 'contact') {
+    // The menu is app wide: it is saved into the job layout, the rest into the contact layout.
+    const { menu, ...rest } = present
+    setContactLayout(rest)
+    const job = getJobLayout()
+    if (JSON.stringify(job.menu ?? null) !== JSON.stringify(menu ?? null)) setJobLayout({ ...job, menu })
+  } else setJobLayout(present)
   leave()
 }
 
@@ -129,7 +151,7 @@ const subscribe = (l: () => void) => {
 
 /** The saved layout can change under us (reset elsewhere, another save): refresh the snapshot when it does. */
 function current(): LayoutSession {
-  const saved = getJobLayout()
+  const saved = loadSaved()
   if (saved !== savedSeen) {
     savedSeen = saved
     snapshot = build()

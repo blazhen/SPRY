@@ -1,23 +1,10 @@
 import { useEffect, useId, useLayoutEffect, useRef, useState } from 'react'
+import type { PointerEvent as ReactPointerEvent } from 'react'
 import type { KeyboardEvent as ReactKeyboardEvent } from 'react'
 import { Check, Trophy, X } from 'lucide-react'
 import { STAGE_HELP, getJob, stageList, stall, stallLimitFor, useStore } from '../../lib/store'
 import { useStageMove, STAGE_PHASES } from './StagePopover'
-import { usePreviewWidth } from '../../lib/previewWidth'
 import './stageStepper.css'
-
-/** True on phones, where only the current, previous and next steps keep their names. */
-function useNarrow(): boolean {
-  const [n, setN] = useState(() => window.matchMedia('(max-width: 640px)').matches)
-  useEffect(() => {
-    const m = window.matchMedia('(max-width: 640px)')
-    const on = () => setN(m.matches)
-    m.addEventListener('change', on)
-    return () => m.removeEventListener('change', on)
-  }, [])
-  const pv = usePreviewWidth()
-  return pv ? pv <= 640 : n
-}
 
 type Kind = 'stage' | 'won' | 'lost'
 type Item = { key: string; kind: Kind; name: string; stageIdx: number }
@@ -36,7 +23,6 @@ export function usualTime(stage: string): string {
  * One roving-tabindex group. Click or Enter moves through the same useStageMove path as the stage menu.
  */
 export function StageStepper({ jobId, onWon }: { jobId: string; onWon: () => void }) {
-  const narrow = useNarrow()
   const s = useStore()
   const job = getJob(jobId, s)
   const move = useStageMove()
@@ -47,6 +33,9 @@ export function StageStepper({ jobId, onWon }: { jobId: string; onWon: () => voi
   const [tip, setTip] = useState<number | null>(null)
   const [tipPos, setTipPos] = useState<{ left: number; top: number } | null>(null)
   const [dismissed, setDismissed] = useState(false)
+  const list = useRef<HTMLOListElement>(null)
+  const dragged = useRef(false)
+  const drag = useRef<{ x: number; left: number; id: number; on: boolean } | null>(null)
 
   const stages = stageList() as string[]
   const curIdx = job ? stages.findIndex((x) => x.toLowerCase() === job.stage.toLowerCase()) : -1
@@ -61,6 +50,15 @@ export function StageStepper({ jobId, onWon }: { jobId: string; onWon: () => voi
   // When the job moves (or closes), the tab stop goes back to the current step.
   useEffect(() => setRove(null), [job?.stage, job?.status])
 
+  // The current step is brought to the middle of the slider, inside the slider only (the page never moves).
+  const nowKey = `${job?.stage}|${job?.status}`
+  useLayoutEffect(() => {
+    const l = list.current
+    const b = l?.querySelector<HTMLElement>('[data-state="current"]')?.parentElement
+    if (!l || !b) return
+    l.scrollLeft = Math.max(0, b.offsetLeft - (l.clientWidth - b.offsetWidth) / 2)
+  }, [nowKey, total])
+
   // Place the tooltip under the step, kept inside the box.
   useLayoutEffect(() => {
     if (tip === null || dismissed) return setTipPos(null)
@@ -73,7 +71,7 @@ export function StageStepper({ jobId, onWon }: { jobId: string; onWon: () => voi
     const w = t.offsetWidth
     const left = Math.max(0, Math.min(r.left - br.left + r.width / 2 - w / 2, br.width - w))
     setTipPos({ left, top: r.bottom - br.top + 6 })
-  }, [tip, dismissed, narrow])
+  }, [tip, dismissed])
 
   if (!job) return null
   const level = status === 'open' ? stall(job).level : 'ok'
@@ -91,7 +89,6 @@ export function StageStepper({ jobId, onWon }: { jobId: string; onWon: () => voi
     return it.kind === 'won' ? 'the end, not reached' : 'to do'
   }
 
-  const showName = (i: number) => !narrow || items[i].kind === 'lost' || i === curItem - 1 || i === curItem || i === curItem + 1 || (status === 'won' && i === total - 1)
 
   const focusAt = (i: number) => {
     const at = (i + total) % total
@@ -115,6 +112,34 @@ export function StageStepper({ jobId, onWon }: { jobId: string; onWon: () => voi
     if (e.key === 'Home') return go(0)
     if (e.key === 'End') return go(total - 1)
   }
+  // Mouse drag scrolls the slider (touch scrolls natively). A drag past 5 px never counts as a click.
+  const onDown = (e: ReactPointerEvent) => {
+    if (e.pointerType !== 'mouse' || e.button !== 0 || !list.current) return
+    drag.current = { x: e.clientX, left: list.current.scrollLeft, id: e.pointerId, on: false }
+    dragged.current = false
+  }
+  const onMove = (e: ReactPointerEvent) => {
+    const d = drag.current
+    const l = list.current
+    if (!d || !l) return
+    const dx = e.clientX - d.x
+    if (!d.on && Math.abs(dx) > 5) {
+      d.on = true
+      dragged.current = true
+      l.setPointerCapture(d.id)
+      l.classList.add('ss-dragging')
+    }
+    if (d.on) l.scrollLeft = d.left - dx
+  }
+  const onUp = () => {
+    const l = list.current
+    if (drag.current?.on && l) {
+      l.classList.remove('ss-dragging')
+      if (l.hasPointerCapture(drag.current.id)) l.releasePointerCapture(drag.current.id)
+      setTimeout(() => (dragged.current = false), 0)
+    }
+    drag.current = null
+  }
   const show = (i: number) => {
     setTip(i)
     setDismissed(false)
@@ -131,27 +156,28 @@ export function StageStepper({ jobId, onWon }: { jobId: string; onWon: () => voi
 
   return (
     <div className="ss" ref={box} onKeyDown={onKey}>
-      <ol className="ss-list" aria-label="Steps in the pipeline">
+      <ol className="ss-list" ref={list} aria-label="Steps in the pipeline" onPointerDown={onDown} onPointerMove={onMove} onPointerUp={onUp} onPointerCancel={onUp}>
         {items.map((it, i) => {
           const st = stateOf(it)
-          const named = showName(i)
           const marker =
             st === 'done' ? <Check size={13} strokeWidth={3} aria-hidden="true" /> : st === 'ended' ? <X size={13} strokeWidth={3} aria-hidden="true" /> : it.kind === 'won' ? <Trophy size={13} aria-hidden="true" /> : null
           const markerText = st === 'current' && it.kind === 'stage' ? 'now' : st === 'ended' ? 'lost' : st === 'current' ? 'won' : st === 'done' ? '' : it.kind === 'won' ? 'end' : String(i + 1)
           return (
-            <li key={it.key} className={`ss-li ${named ? '' : 'ss-li-dot'}`}>
+            <li key={it.key} className="ss-li">
               <button
                 type="button"
                 data-sc-step
                 data-name={it.name}
                 data-state={st}
-                className={`sc-bar-step ss-step ss-${st} ${st === 'current' && it.kind === 'stage' ? `ss-${level}` : ''} ${named ? '' : 'ss-dot'}`}
+                className={`sc-bar-step ss-step ss-${st} ${st === 'current' && it.kind === 'stage' ? `ss-${level}` : ''} `}
                 aria-label={`${it.name}, step ${i + 1} of ${total}, ${stateWord(it, st)}`}
                 aria-current={st === 'current' && it.kind === 'stage' ? 'step' : undefined}
                 aria-describedby={tip === i && !dismissed ? tipId : undefined}
                 tabIndex={i === rovingAt ? 0 : -1}
-                title={named ? undefined : it.name}
-                onClick={() => activate(it)}
+                onClick={() => {
+                  if (dragged.current) return
+                  activate(it)
+                }}
                 onFocus={() => {
                   setRove(i)
                   show(i)
@@ -160,19 +186,11 @@ export function StageStepper({ jobId, onWon }: { jobId: string; onWon: () => voi
                 onMouseEnter={() => show(i)}
                 onMouseLeave={() => hide(i)}
               >
-                {named ? (
-                  <>
-                    <span className="ss-mark" aria-hidden="true">
-                      {marker}
-                      {markerText && <span>{markerText + (st === 'current' && it.kind === 'stage' ? `, ${stall(job).days}d` : '')}</span>}
-                    </span>
-                    <span className="ss-name">{it.name}</span>
-                  </>
-                ) : (
-                  <span className="ss-pip" aria-hidden="true">
-                    {st === 'done' && <Check size={9} strokeWidth={4} />}
+                  <span className="ss-mark" aria-hidden="true">
+                    {marker}
+                    {markerText && <span>{markerText + (st === 'current' && it.kind === 'stage' ? `, ${stall(job).days}d` : '')}</span>}
                   </span>
-                )}
+                  <span className="ss-name">{it.name}</span>
               </button>
             </li>
           )

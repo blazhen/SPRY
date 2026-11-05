@@ -16,6 +16,9 @@ const COLLECTIONS = new Set([
   "companies",
   "quoteOpens",
   "inspection",
+  "calculator-items",
+  "calculations",
+  "jobcosting",
 ]);
 const ID = /^[A-Za-z0-9_-]{1,64}$/;
 const MAX_BODY = 1024 * 1024;

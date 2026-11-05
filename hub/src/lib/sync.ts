@@ -3,6 +3,7 @@ import { DATA_SOURCE } from '../config'
 import { ApiError, AuthError, storeApi, type StoreCollection, type StoreRecord } from './api'
 import { followUpAdapter } from './notesStore'
 import { inspectionAdapter } from './inspectionNotesStore'
+import { calcAdapters } from './calcItems'
 import { invoicesLoaded } from './live'
 import { expireDueQuotes, processAcceptedPending, setPersistent, syncAdapters, type SyncAdapter, type SyncRec } from './store'
 
@@ -322,7 +323,7 @@ async function bootstrap() {
 export function startSync(collections?: StoreCollection[]) {
   if (DATA_SOURCE !== 'live' || started) return
   started = true
-  const adapters = [...syncAdapters, followUpAdapter, inspectionAdapter].filter((a) => !collections || collections.includes(a.collection))
+  const adapters = [...syncAdapters, followUpAdapter, inspectionAdapter, ...calcAdapters].filter((a) => !collections || collections.includes(a.collection))
   runs = adapters.map((a) => ({ a, snap: new Map(), ver: new Map(), pending: new Set(), busy: new Set() }))
   // Mirrored collections (invoices) start from what is local now: only later changes are written.
   for (const run of runs) {

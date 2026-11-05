@@ -22,7 +22,7 @@ import './drawer.css'
  */
 
 /** A short plain description of each box, for the cards. */
-const ABOUT: Record<BoxId, string> = {
+const ABOUT: Partial<Record<BoxId, string>> = {
   job: 'The job name, site address, stage, value and owner.',
   contact: 'The person: phone, email and address.',
   company: 'The company on the job, when it has one.',
@@ -57,10 +57,11 @@ const ABOUT: Record<BoxId, string> = {
   stage: 'Where the job is up to, with a Move to button.',
   quickActions: 'Call, text, email and write the quote.',
   inspection: 'Site visit notes, and draft quote lines from them.',
+  calculator: 'Add up a price from your items, then add it to a quote.',
 }
 
 const FORM: BoxId[] = ['addNote', 'addText', 'addEmail', 'addTask', 'notes', 'inspection']
-const aboutOf = (id: BoxId) => boxDef(id).about || ABOUT[id]
+const aboutOf = (id: BoxId) => boxDef(id).about || ABOUT[id] || ''
 
 /** A static mini sketch of a box (never the real box with data). */
 function Sketch({ id }: { id: BoxId }) {
@@ -235,6 +236,7 @@ export default function AddBoxDrawer({ open, onClose }: { open: boolean; onClose
           )}
           {tab === 'rail' && (
             <RailEditor
+              simple={session.kind === 'contact'}
               rail={layout.rail}
               rightBoxes={boxesIn(layout, 'right')
                 .map((b) => b.id)

@@ -38,6 +38,7 @@ function tabFor(route: Route): TabId | null {
     case 'prices': return 'prices'
     case 'settings': return 'settings'
     case 'foam': return 'foam'
+    case 'calculator': return 'calculator'
     default: return null
   }
 }

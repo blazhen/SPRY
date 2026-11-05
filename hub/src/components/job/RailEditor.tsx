@@ -11,7 +11,7 @@ const newId = () => `u${Date.now().toString(36)}${counter++}`
  * icons only or icons and names, and what is in it: items for boxes (name, icon, which box), dividers, order.
  * Until the items are customised the rail follows the boxes in the right panel by itself.
  */
-export function RailEditor({ rail, rightBoxes, onChange }: { rail: RailConfig; rightBoxes: BoxId[]; onChange: (r: RailConfig, message: string) => void }) {
+export function RailEditor({ rail, rightBoxes, onChange, simple = false }: { rail: RailConfig; rightBoxes: BoxId[]; onChange: (r: RailConfig, message: string) => void; simple?: boolean }) {
   const uid = useId()
   const items = rail.items
   const set = (next: RailItem[], message: string) => onChange({ ...rail, items: next }, message)
@@ -49,7 +49,9 @@ export function RailEditor({ rail, rightBoxes, onChange }: { rail: RailConfig; r
         </label>
       </div>
 
-      {!items ? (
+      {simple ? (
+        <p className="le-hint" data-le-rail-simple>The rail follows the boxes in the right panel by itself.</p>
+      ) : !items ? (
         <div className="le-rail-auto">
           <p className="le-hint">The rail follows the boxes in the right panel by itself: All, one item per box, then Notes and Tasks.</p>
           <button type="button" className="btn btn-tint btn-sm" data-le-rail-custom onClick={() => set(autoRailItems(rightBoxes), 'Rail items are now yours to edit')}>

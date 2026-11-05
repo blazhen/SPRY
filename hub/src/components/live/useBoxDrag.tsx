@@ -1,6 +1,6 @@
 import { useRef, useSyncExternalStore } from 'react'
 import type { HTMLAttributes, KeyboardEvent, PointerEvent as ReactPointerEvent } from 'react'
-import { BOXES, boxesIn, moveToPanel, moveWithin, PANELS, PANEL_LABEL, type BoxId, type PanelId } from '../../lib/jobLayout'
+import { boxDef, boxesIn, moveToPanel, moveWithin, PANELS, PANEL_LABEL, type BoxId, type PanelId } from '../../lib/jobLayout'
 import { getLayoutSession, useLayoutSession } from '../../lib/layoutDraft'
 import './drag.css'
 
@@ -86,7 +86,7 @@ function setDs(p: Partial<DragState>) {
   listeners.forEach((f) => f())
 }
 
-const titleOf = (id: string) => BOXES.find((b) => b.id === id)?.label ?? id
+const titleOf = (id: string) => boxDef(id as BoxId)?.label ?? id
 
 function readPanels(): { rects: PanelRect[]; els: Map<string, HTMLElement> } {
   const rects: PanelRect[] = []

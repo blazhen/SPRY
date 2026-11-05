@@ -22,7 +22,7 @@
 .jf-pv[data-live-preview] .jf-h1, .jf-pv[data-live-preview] .jf-title { min-width: 0; overflow-wrap: anywhere; }
 
 /* Box frame */
-.bf { position: relative; border: 2px dashed rgb(var(--c-navy) / 0.55); border-radius: var(--d-radius); margin-bottom: 0.75rem; background: rgb(var(--c-surface)); }
+.bf { min-width: 0; max-width: 100%; position: relative; border: 2px dashed rgb(var(--c-navy) / 0.55); border-radius: var(--d-radius); margin-bottom: 0.75rem; background: rgb(var(--c-surface)); }
 .bf[data-dragging] { opacity: 0.45; }
 .bf-bar { display: flex; align-items: center; gap: 0.15rem; padding: 0.15rem 0.3rem; background: rgb(var(--c-navy-wash)); border-bottom: 1px solid rgb(var(--c-line)); border-radius: calc(var(--d-radius) - 2px) calc(var(--d-radius) - 2px) 0 0; }
 .bf-title { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 700; font-size: var(--d-small); padding: 0 0.25rem; }

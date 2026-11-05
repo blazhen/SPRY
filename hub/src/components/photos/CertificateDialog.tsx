@@ -1,7 +1,7 @@
 import { useEffect, useId, useState } from 'react'
 import { Award, ExternalLink, Plus, Trash2 } from 'lucide-react'
 import { openAttachment, type Attachment } from '../../lib/attachments'
-import { certificateData, saveCertificate, DEFAULT_WARRANTY, type CertData, type CertRow } from '../../lib/certificate'
+import { MAX_CERT_PHOTOS, certificateData, saveCertificate, DEFAULT_WARRANTY, type CertData, type CertRow } from '../../lib/certificate'
 import { getJob, useStore } from '../../lib/store'
 import { Dialog, Notice, toast } from '../ui'
 import { usePhotos } from '../../lib/photoList'
@@ -28,7 +28,9 @@ export function CertificateHost({ jobId }: { jobId: string }) {
 function CertificateDialog({ jobId, open, onClose }: { jobId: string; open: boolean; onClose: () => void }) {
   const s = useStore()
   const job = getJob(jobId, s)
-  const after = usePhotos(jobId).filter((p) => p.photo.purpose === 'after')
+  // Oldest first, so page 2 reads in the order the work was photographed.
+  const after = usePhotos(jobId).filter((p) => p.photo.purpose === 'after').reverse()
+  const [picked, setPicked] = useState<string[]>([])
   const [d, setD] = useState<CertData | undefined>()
   const [busy, setBusy] = useState(false)
   const [made, setMade] = useState<Attachment | null>(null)
@@ -40,6 +42,7 @@ function CertificateDialog({ jobId, open, onClose }: { jobId: string; open: bool
     setD(certificateData(jobId, s))
     setMade(null)
     setNote('')
+    setPicked(after.slice(-MAX_CERT_PHOTOS).map((p) => p.id))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, jobId])
 
@@ -50,7 +53,7 @@ function CertificateDialog({ jobId, open, onClose }: { jobId: string; open: bool
   const make = async () => {
     if (!d) return
     setBusy(true)
-    const r = await saveCertificate(jobId, d, after)
+    const r = await saveCertificate(jobId, d, after.filter((p) => picked.includes(p.id)))
     setBusy(false)
     if (!r.ok) {
       setNote(r.error)
@@ -153,9 +156,27 @@ function CertificateDialog({ jobId, open, onClose }: { jobId: string; open: bool
             <textarea id={`${idp}-w`} className="field" rows={5} value={d.warranty} onChange={(e) => set({ warranty: e.target.value })} data-cert-warranty />
             {d.warranty === DEFAULT_WARRANTY && <p className="hint">This is the placeholder wording.</p>}
           </div>
-          <p className="hint" data-cert-photos>
-            {after.length ? `${Math.min(after.length, 6)} After ${after.length === 1 ? 'photo' : 'photos'} will go on page 2${after.length > 6 ? ' (the newest 6 of ' + after.length + ')' : ''}.` : 'No After photos on this job yet. The certificate will have no photo page.'}
-          </p>
+          <fieldset className="dg-fs" data-cert-photo-pick>
+            <legend className="dg-legend">Photos for page 2 (up to {MAX_CERT_PHOTOS})</legend>
+            {after.length === 0 && <p className="hint" data-cert-photos>No After photos on this job yet. The certificate will have no photo page.</p>}
+            {after.length > 0 && (
+              <p className="hint" data-cert-photos>{picked.length} After {picked.length === 1 ? 'photo' : 'photos'} will go on page 2{after.length > MAX_CERT_PHOTOS ? ` (${after.length} to choose from)` : ''}.</p>
+            )}
+            {after.map((p) => {
+              const on = picked.includes(p.id)
+              return (
+                <label key={p.id} className="ph-check" data-cert-pick>
+                  <input
+                    type="checkbox"
+                    checked={on}
+                    disabled={!on && picked.length >= MAX_CERT_PHOTOS}
+                    onChange={(e) => setPicked((x) => (e.target.checked ? [...x, p.id] : x.filter((i) => i !== p.id)))}
+                  />
+                  <span>{p.photo.caption || p.name}{p.photo.width ? ` (${p.photo.width} x ${p.photo.height})` : ''}</span>
+                </label>
+              )
+            })}
+          </fieldset>
           {note && <p className="err" role="alert">{note}</p>}
           {made && <p className="ph-saved" role="status" data-cert-saved>Saved to the documents as {made.name}.</p>}
         </div>

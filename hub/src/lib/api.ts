@@ -259,7 +259,7 @@ export interface StoreRecord {
   data: unknown
   updatedAt: string
 }
-export type StoreCollection = 'quotes' | 'invoices' | 'terms' | 'templates' | 'priceItems' | 'settings' | 'followups' | 'events' | 'messages' | 'jobmeta' | 'companies' | 'quoteOpens' | 'inspection'
+export type StoreCollection = 'quotes' | 'invoices' | 'terms' | 'templates' | 'priceItems' | 'settings' | 'followups' | 'events' | 'messages' | 'jobmeta' | 'companies' | 'quoteOpens' | 'inspection' | 'calculator-items' | 'calculations' | 'jobcosting'
 
 // ---- Parsers and mappers ---------------------------------------------------
 

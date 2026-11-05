@@ -18,9 +18,9 @@ const PAGES = {
   'This week': '#/week', Templates: '#/templates', Terms: '#/terms', 'Price list': '#/prices', 'Foam prices': '#/foam', Settings: '#/settings',
 }
 // One layout only (Round 9). Default menu: To do, Jobs, Contacts, This week in the bar; the rest inside More.
-const MORE_DEFAULT = ['Quotes', 'Invoices', 'Templates', 'Terms', 'Price list', 'Foam prices', 'Settings']
-const MORE_PHONE = ['This week', 'Templates', 'Terms', 'Price list', 'Foam prices', 'Settings']
-const TOP_DEFAULT = ['To do', 'Jobs', 'Contacts', 'This week']
+const MORE_DEFAULT = ['Calendar', 'Quotes', 'Invoices', 'Templates', 'Terms', 'Price list', 'Foam prices', 'Settings']
+const MORE_PHONE = ['This week', 'Calculator', 'Calendar', 'Templates', 'Terms', 'Price list', 'Foam prices', 'Settings']
+const TOP_DEFAULT = ['To do', 'Jobs', 'Contacts', 'This week', 'Calculator']
 const BOTTOM = ['To do', 'Jobs', 'Quotes', 'Invoices', 'Contacts']
 
 try {

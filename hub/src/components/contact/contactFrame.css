@@ -2,13 +2,18 @@
 .cw-sub { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.15rem 1rem; margin-top: 0.25rem; font-size: var(--d-small); color: rgb(var(--c-muted)); }
 .cw-sub strong { color: rgb(var(--c-ink)); font-weight: 700; }
 .cw-head-actions { min-width: 0; }
-.cw-stack { display: grid; gap: var(--d-gap, 0.75rem); min-width: 0; align-content: start; }
+.cw-stack { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--d-gap, 0.75rem); min-width: 0; align-content: start; }
+.cw-stack > * { min-width: 0; }
 .cw-left-pick { display: grid; gap: 0.25rem; min-width: 0; }
 .cw-left-pick .field { max-width: 100%; }
 .cw-focus-top { display: grid; gap: 0.5rem; min-width: 0; margin-bottom: 0.5rem; }
 .cw-title { overflow-wrap: anywhere; word-break: normal; hyphens: manual; }
 /* The three panels of the contact page have no fifth column: the rail is the fourth. */
 .jf-body[data-contact] { grid-template-columns: minmax(16rem, 0.9fr) minmax(0, 1.5fr) minmax(17rem, 1fr) var(--rail-w, 3.25rem); }
+.jf-body[data-contact][data-rail-side='left'] { grid-template-columns: var(--rail-w, 3.25rem) minmax(16rem, 0.9fr) minmax(0, 1.5fr) minmax(17rem, 1fr); }
+.jf-body[data-contact][data-rail-side='left'] > .jf-rail { order: -1; }
+.jf-body[data-contact][data-rail-side='none'] { grid-template-columns: minmax(16rem, 0.9fr) minmax(0, 1.5fr) minmax(17rem, 1fr); }
+.cw-headtop { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; min-width: 0; }
 @media (max-width: 1023px) {
   .cw-head-actions { width: 100%; }
 }

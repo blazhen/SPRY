@@ -39,7 +39,7 @@ try {
     const go = async () => { await page.goto(BASE + '#/jobs/j1'); await page.waitForLoadState('networkidle'); await settle() }
 
     await go()
-    rec(`${T} default bar`, (await bar()).join('|') === 'To do|Jobs|Contacts|This week', (await bar()).join('|'))
+    rec(`${T} default bar`, (await bar()).join('|') === 'To do|Jobs|Contacts|This week|Calculator', (await bar()).join('|'))
     rec(`${T} default More`, (await more()).join('|') === 'Calendar|Quotes|Invoices|Templates|Terms|Price list|Foam prices|Settings')
     rec(`${T} no Layout switch any more`, (await page.locator('[data-layout-switch], .layout-switch').count()) === 0 && (await page.getByText('Compact', { exact: true }).count()) === 0)
     rec(`${T} html has no data-layout`, (await page.evaluate(() => document.documentElement.getAttribute('data-layout'))) === null)

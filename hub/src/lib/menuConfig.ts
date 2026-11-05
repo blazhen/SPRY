@@ -6,7 +6,7 @@ import { href } from './router'
  * Absent = the default below. A saved menu is always a full split of the items, so a new item added later
  * lands inside More instead of vanishing.
  */
-export type MenuId = 'todo' | 'jobs' | 'quotes' | 'invoices' | 'contacts' | 'week' | 'calendar' | 'templates' | 'terms' | 'prices' | 'foam' | 'settings'
+export type MenuId = 'todo' | 'jobs' | 'quotes' | 'invoices' | 'contacts' | 'week' | 'calendar' | 'templates' | 'terms' | 'prices' | 'foam' | 'calculator' | 'settings'
 
 export interface MenuItemDef {
   id: MenuId
@@ -28,6 +28,7 @@ export const MENU_ITEMS: MenuItemDef[] = [
   { id: 'terms', label: 'Terms', to: href.terms() },
   { id: 'prices', label: 'Price list', to: href.prices() },
   { id: 'foam', label: 'Foam prices', to: href.foam() },
+  { id: 'calculator', label: 'Calculator', to: href.calculator() },
   { id: 'settings', label: 'Settings', to: href.settings() },
 ]
 
@@ -47,7 +48,7 @@ export const PLACE_LABEL: Record<MenuPlace, string> = { top: 'Top menu', more: '
 
 export function defaultMenu(): MenuConfig {
   return {
-    top: ['todo', 'jobs', 'contacts', 'week'],
+    top: ['todo', 'jobs', 'contacts', 'week', 'calculator'],
     more: ['calendar', 'quotes', 'invoices', 'templates', 'terms', 'prices', 'foam', 'settings'],
     hidden: [],
   }
