@@ -189,14 +189,14 @@ export default function Terms() {
               <button type="button" className="btn btn-primary btn-lg" onClick={save}>
                 Save terms
               </button>
-              <button type="button" className="btn btn-quiet btn-lg" onClick={() => setCreating(false)}>
+              <button type="button" className="btn btn-neutral" onClick={() => setCreating(false)}>
                 Cancel
               </button>
             </>
           ) : (
             sel && (
-              <button type="button" className="btn btn-danger btn-lg" onClick={() => setToDelete(true)}>
-                <Trash2 size={18} aria-hidden="true" />
+              <button type="button" className="btn btn-danger" onClick={() => setToDelete(true)}>
+                <Trash2 size={16} aria-hidden="true" />
                 Delete terms
               </button>
             )
@@ -206,6 +206,7 @@ export default function Terms() {
 
       <ConfirmDialog
         open={toDelete}
+        action="delete-other"
         onClose={() => setToDelete(false)}
         title="Delete these terms?"
         confirmLabel="Delete terms"

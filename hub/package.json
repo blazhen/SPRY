@@ -3,11 +3,15 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
+    "build:vercel": "tsc --noEmit && vite build && node scripts/vercel-postbuild.mjs",
     "server:build": "tsc -p server/tsconfig.json",
     "server:dev": "npm run server:build && node server/dev-server.mjs"
   },

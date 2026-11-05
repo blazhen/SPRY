@@ -76,7 +76,10 @@ async function run() {
     if (pipes[0]?.stages.length) applyStages(pipes[0].stages.map((st) => st.name))
     applyUsers(users)
     const [open, won, lost] = await Promise.all([loadStatus('open'), loadStatus('won'), loadStatus('lost')])
-    liveMergeJobs([...open, ...won, ...lost].map((row) => jobFromApi(row)))
+    const all = [...open, ...won, ...lost]
+    // Names the CRM sent with the jobs: the list shows them at once, and the full contact still loads when a screen needs it.
+    liveMergeContacts(all.filter((r) => r.contactId && r.contactName).map((r) => ({ id: r.contactId, name: r.contactName ?? '', email: '', phone: '', placeholder: true as const })), true)
+    liveMergeJobs(all.map((row) => jobFromApi(row)))
     set({ status: 'ready', error: '' })
     void loadInvoices() // the invoices list has its own retry card, so it never holds the jobs back
   } catch (e) {

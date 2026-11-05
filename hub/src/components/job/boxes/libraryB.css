@@ -1,0 +1,2 @@
+/* Library B: the list boxes. They reuse the History and Documents looks, so only the Visits wrapper needs a rule. */
+.lb-visits { scroll-margin-top: 1rem; }

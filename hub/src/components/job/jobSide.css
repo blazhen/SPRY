@@ -1,0 +1,29 @@
+/* The right pane is a column of Sections. The pane scrolls (jobFrame.css); this only sets the column. */
+.job-side {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.job-side .sec {
+  scroll-margin-top: 1rem;
+  min-width: 0;
+}
+
+/* Top of the pane: Customise, and the way back to All when the rail shows one section */
+.pane-bar { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.25rem; position: relative; }
+.pane-bar-title { font-size: var(--d-small); font-weight: 700; color: rgb(var(--c-muted)); }
+.pane-cust { position: relative; margin-left: auto; }
+.pane-pop {
+  position: absolute; right: 0; top: calc(100% + 0.25rem); z-index: 30; width: min(20rem, calc(100vw - 2rem));
+  padding: 0.75rem; border: 1px solid rgb(var(--c-line)); border-radius: var(--d-radius); background: rgb(var(--c-surface));
+  box-shadow: var(--shadow-pop); display: flex; flex-direction: column; gap: 0.5rem;
+}
+.pane-pop-head { margin: 0; font-weight: 700; font-size: var(--d-text); }
+.pane-pop-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+.pane-pop-row { display: flex; align-items: center; gap: 0.6rem; min-height: 44px; font-size: var(--d-text); cursor: pointer; }
+.pane-pop-hint { margin: 0; }
+.pane-pop-actions { display: flex; justify-content: space-between; gap: 0.5rem; }
+.pane-part { min-width: 0; }
+/* The costing fields stay inside the pane: no negative side margin here (it pushed the page 6px wider on a phone). */
+.job-side .inline-field { margin-inline: 0; width: 100%; }
+.sec-solo { cursor: default; }

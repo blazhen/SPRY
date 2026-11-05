@@ -1,5 +1,7 @@
 # Copy instructions for a developer agent (AI Studio repo, TanStack Start)
 
+NOTE (3 Nov): the Hub is going to Vercel as its own project instead (see `hub/DEPLOY-VERCEL.md`). The sections below are the AI Studio route and stay valid for it only. Vercel does not use the `tanstack/` route files: it uses `hub/api/` and `hub/vercel.json`.
+
 Source: `hub/` of the Hub project (`hub/server/` for the back end, the rest of `hub/` for the front end). Target: the AI Studio repo.
 Do NOT copy: `server/.build/`, `server/.data/`, `server/dev-server.mjs`, `server/test-run.mjs`, `server/load-env.mjs`, `server/store/store-test.mjs`, `hub/scripts/`, `hub/dist*`, `hub/node_modules`, `hub/shots`.
 Keep `server/issue-token.mjs` on a trusted machine (it mints menu-link tokens); it is not deployed.
@@ -33,6 +35,17 @@ One file per path. Copy each file below to the target name. The header comment o
 That is 20 source files and 20 paths (verified: every createFileRoute path appears exactly once). There is no `contact.tsx` in the source folder on purpose: `contact-write.tsx` is the only route for `/api/contact`. Do not also create a second file for that path.
 After copying, regenerate the route tree if the repo needs it (`routeTree.gen.ts`).
 
+## A2. Install flow route files (optional, only when the marketplace app is used; NOT in src/routes/api)
+Three more files, copied to `src/routes` itself because their paths are not under /api. They do not change the 20 above.
+
+| Source (hub/server/tanstack) | Target (src/routes) | Path served |
+|---|---|---|
+| oauth-callback.tsx | oauth.callback.tsx (RENAME) | GET /oauth/callback (install redirect, no staff token) |
+| webhooks-platform.tsx | webhooks.platform.tsx (RENAME) | POST /webhooks/platform (install and uninstall events) |
+| auth-user-context.tsx | auth.user-context.tsx (RENAME) | POST /auth/user-context (encrypted user data to a Hub session) |
+
+Needs `lib/app-config.ts`, `lib/oauth.ts`, `lib/accounts.ts`, `lib/cryptojs.ts`, `lib/session.ts` (already inside `server/lib/`). Accounts are stored in the collection `accounts` of the same `hub_records` table (no schema change). That collection is not in the `/api/store` allow list, so tokens never reach a browser. Environment variables are in section E (HUB_APP_*). Not wired to any existing route yet.
+
 ## B. Server folders and the import fix
 1. Create `src/server-hub/`. Copy `server/lib/` to `src/server-hub/lib/`, `server/handlers/` to `src/server-hub/handlers/`, and `server/store/` to `src/server-hub/store/` (skip `store-test.mjs`; `schema.sql` is only for the SQL editor, copying it is harmless). Keep the `.js` import suffixes inside these files.
 2. One-time import path fix. Route files import `@/server-hub/...` and (store.tsx, public-quote*.tsx) `@/integrations/supabase/client.server`. If `@` points at `src` in the repo, nothing to do. Otherwise, from the repo root run once: `sed -i 's#@/server-hub/#<alias>/server-hub/#g' src/routes/api/*.tsx` (that folder only).
@@ -62,8 +75,16 @@ After copying, regenerate the route tree if the repo needs it (`routeTree.gen.ts
 | SPRY_ACCEPTED_STAGE | optional | Stage the job moves to on acceptance. Default `Quote Accepted` | `Quote Accepted` |
 | SPRY_TIMEZONE | optional | Decides when `validUntil` has passed. Default `Australia/Melbourne` | `Australia/Melbourne` |
 | SPRY_NEW_JOB_STAGE | optional | Stage for new jobs. Default `New lead`; if missing from the pipeline, the first stage is used | `New lead` |
+| SPRY_NOTES_AGENT_ID | optional | ID of the Agent Studio agent that reads inspection notes (see `HUB-NOTES-AGENT-SETUP.md`). Not set: the smart reader is off and the built-in rules run. No API key needed: it uses the same integration token | `abc123...` |
 | SPRY_INVOICE_BUSINESS_NAME | optional | Business name printed on invoices. Default `Spray It Solutions` | `Spray It Solutions` |
 | SPRY_ALLOWED_ORIGINS | optional | Comma list of extra allowed origins (same-origin is always allowed) | `https://<other-origin>` |
+| HUB_APP_CLIENT_ID | install flow only | The marketplace app's client id (its part before the first dash is the app id) | `<client id>` |
+| HUB_APP_CLIENT_SECRET | install flow only | The app's client secret (server only, never logged) | `<client secret>` |
+| HUB_APP_SHARED_SECRET | install flow only | The app's shared secret, decrypts the user data for /auth/user-context | `<shared secret>` |
+| HUB_APP_TOKEN_URL | install flow only | Full address of the platform's token endpoint. Kept out of the repo on purpose; unset gives 503 on /oauth/callback | `<token endpoint>` |
+| HUB_APP_REDIRECT_URI | optional | Redirect address sent with the code. Default `https://hub.systemations.ai/oauth/callback` | same as registered |
+| HUB_APP_ID | optional | App id if it is not the first part of the client id | `<app id>` |
+| HUB_APP_WEBHOOK_PUBLIC_KEY, HUB_APP_WEBHOOK_SIG_HEADER | optional, both or neither | PEM public key and the header name that carries the webhook signature (Ed25519, base64 over the raw body: a guess until checked on a real delivery) | |
 | SPRY_ALLOW_OPEN | NEVER SET IN PRODUCTION | Dev only: skips the staff lock when no secret is set. Ignored when NODE_ENV is production (503 as if unset) | `1` |
 | SPRY_STORE | NEVER SET IN PRODUCTION | Dev only: `file` uses a local JSON file instead of the database | `file` |
 | SPRY_STORE_FILE | NEVER SET IN PRODUCTION | Dev only: path of that JSON file | `hub/server/.data/store.json` |
@@ -91,6 +112,21 @@ Also read: `NODE_ENV`. Build-time (front end): `VITE_DATA_SOURCE` (`live` for th
 - Public quote, bad key: `curl -i "https://<host>/api/public/quote?id=nope&k=nope"` -> 404 (503 if `SPRY_PUBLIC_LINK_SECRET` is not set)
 - Quote link without token: `curl -i "https://<host>/api/quote-link?id=<quote id>"` -> 401
 - Contact write (use a made-up contact, delete it afterwards): `curl -i -X POST -H "Origin: https://<host>" -H "X-Quote-Token: <token>" -H "Content-Type: application/json" -d '{"name":"ZZ-TEST Copy Check","email":"zz-copy@example.invalid"}' https://<host>/api/contact` -> 201
+
+## G2. Job files (private bucket)
+Real file upload for the job Documents. Files go straight from the browser to a private Supabase Storage bucket through short-lived signed links; the server only hands out the links and keeps the rows.
+1. Copy the route file `studio-copy/src/routes/api/files.tsx` to `src/routes/api/files.tsx` (it also sets up the file storage next to the store).
+2. Copy `handlers/files.ts`, `lib/files.ts` and the adapters `store/files-supabase.ts` (and `store/files-fake.ts` only if tests run in that repo) into the same `src/server-hub` folders as the rest, with the same import fix as section B.
+3. Run the migration `supabase/migrations/20261104120000_create_private_job_files_bucket.sql` (creates bucket `job-files`, Private, 25 MB limit, allowed types only, no policies for anon or authenticated).
+4. No new environment variable. The route uses the same server admin client as `/api/store`.
+
+After AI Studio applies it, Zen must confirm:
+- Bucket `job-files` exists in Storage and is marked Private.
+- One real upload from a job's Documents works, then Open shows the file.
+- Delete removes the object in the bucket (not only the row in the Hub).
+- A second location's files are not reachable (a file id from another location answers 404).
+
+Nothing here was tested against real Supabase. It is proven only against the in-memory fake and by reading the storage library's types.
 
 ## H. What is real and what is not yet
 Proven against the Dev account or a fake, per the tests in `server/test-run.mjs` and `hub/scripts`. NOT yet built or NOT proven:

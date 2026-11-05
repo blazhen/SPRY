@@ -35,6 +35,7 @@ export const seedContacts: Contact[] = [
   { id: 'c8', name: 'Hannah Okafor', email: 'hannah@example.com', phone: '0400 000 008', address: '61 Sample Cres, Narre Warren VIC', placeholder: true },
   { id: 'c9', name: 'Ben Lee', companyId: 'k6', email: 'ben@example.com', phone: '0400 000 009', mobile: '0400 000 019', placeholder: true },
   { id: 'c10', name: 'Rosa Marino', email: 'rosa@example.com', phone: '0400 000 010', address: '8 Test Ln, Frankston VIC', placeholder: true },
+  { id: 'c12', name: 'Jess Marlow', companyId: 'k3', email: 'jess@example.com', phone: '0400 000 031', placeholder: true },
   { id: 'c11', name: 'Sam Dutta', email: 'sam@example.com', phone: '0400 000 021', mobile: '0400 000 022', address: '70 Made Up Ave, Cranbourne VIC', note: 'Works from home. Any time is fine.', placeholder: true },
 ]
 
@@ -180,7 +181,7 @@ export function seedJobs(): Job[] {
   const today = todayISO()
   const ago = (d: number) => addDaysISO(today, -d)
   const ahead = (d: number) => addDaysISO(today, d)
-  const t = (id: string, title: string, dueDate?: string, done = false): JobTask => ({ id, title, dueDate, done })
+  const t = (id: string, title: string, dueDate?: string, done = false, more: Pick<JobTask, 'description' | 'dueTime'> = {}): JobTask => ({ id, title, dueDate, done, ...more })
   const a = (id: string, title: string, kind: JobAppointment['kind'], date: string, time: string, reminderOn: boolean): JobAppointment => ({ id, title, kind, date, time, reminderOn })
   return [
     {
@@ -195,8 +196,10 @@ export function seedJobs(): Job[] {
         { kind: 'company', id: 'k2', role: 'company' },
       ],
       tasks: [
-        t('t1', 'Call Travis about access', ahead(1)),
+        t('t1', 'Call Travis about access', ahead(1), false, { description: 'Ask which gate the crew should use.\nCheck if the loading dock is free on the day.\nConfirm a phone number for the site supervisor.', dueTime: '14:30' }),
         t('t2', 'Send photos of roof to office', ahead(2)),
+        t('t1a', 'Ring Travis before the site visit', ahead(0), false, { dueTime: '08:00' }),
+        t('t1b', 'Send the roof measurements', ahead(0), false, { dueTime: '17:00' }),
         t('t2b', 'Book the site visit', ago(14), true),
       ],
       appointments: [
@@ -390,7 +393,7 @@ export function seedMessages(): Message[] {
   m('j1', 'c1', 'sms', 'out', 29, '08:30', 'Hi Travis, this is Glenn from Spray It. Thanks for the call. Can I visit Monday at 10?')
   m('j1', 'c1', 'sms', 'in', 29, '08:41', 'Monday at 10 is fine. Use the north gate.')
   m('j1', 'c1', 'email', 'out', 20, '14:10', 'Hi Travis, your quote Q-1038 is attached. Please have a look and let me know if you have questions.', { subject: 'Your quote Q-1038', automated: true })
-  m('j1', 'c1', 'call', 'out', 12, '11:20', 'Talked through the roof price. He wants it a bit higher on the ceiling. I will send a new version.', { callMinutes: 9 })
+  m('j1', 'c1', 'call', 'out', 12, '11:20', 'Talked through the roof price. He wants it a bit higher on the ceiling. I will send a new version.', { callMinutes: 9, summary: '- Travis is happy with the wall price.\n- He wants the roof quoted at a higher R-value.\n- Glenn will send a new version this week.' })
   m('j1', 'c1', 'sms', 'in', 3, '16:02', 'Any news on the new version? The owners are asking.')
   // Harper
   m('j5', 'c5', 'email', 'out', 4, '10:00', 'Hi Priya, your quote Q-1043 is ready. You can look at it and say yes online.', { subject: 'Your quote Q-1043', automated: true })

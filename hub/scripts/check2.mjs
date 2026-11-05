@@ -11,6 +11,8 @@ const rec = (name, ok, detail = '') => console.log(`${ok ? 'PASS' : 'FAIL'} ${na
 
 async function open(width, height = 900) {
   const context = await browser.newContext({ viewport: { width, height } })
+  // HUB_LAYOUT=advanced or compact picks the layout (when not set, the app's default, Compact, is used).
+  if (process.env.HUB_LAYOUT) await context.addInitScript((l) => { try { localStorage.setItem('hub.layout.v1', l) } catch {} }, process.env.HUB_LAYOUT)
   const page = await context.newPage()
   page.errs = []
   page.on('console', (m) => { if (m.type() === 'error') page.errs.push('console: ' + m.text().slice(0, 200)) })
@@ -21,6 +23,13 @@ const go = async (page, hash) => { await page.goto(BASE + hash); await page.wait
 const openAll = async (page) => {
   const closed = page.locator('main button[aria-expanded=false][aria-controls$="-body"]')
   for (let i = 0; i < 12 && (await closed.count()); i++) { await closed.first().click(); await page.waitForTimeout(60) }
+}
+// A job page section opens from its heading button (Compact keeps most of them closed).
+const openSec = async (page, id) => {
+  const btn = page.locator(`#${id} .sec-btn`).first()
+  await btn.waitFor({ timeout: 5000 })
+  if ((await btn.getAttribute('aria-expanded')) !== 'true') await btn.click()
+  await page.waitForTimeout(150)
 }
 const safe = async (name, fn) => { try { await fn() } catch (e) { rec(name, false, 'script error: ' + String(e.message).split('\n')[0].slice(0, 200)) } }
 
@@ -43,7 +52,7 @@ try {
     rec('a3 typing filters rows and count line', n > 0 && n < total && line.startsWith(String(n)), `rows ${total}->${n}, line="${line}"`)
     await box.fill('zzqqxx')
     await page.waitForTimeout(150)
-    const empty = await page.getByText('No contacts match your search').count()
+    const empty = await page.getByText('No contacts match', { exact: true }).count()
     const clr = page.getByRole('button', { name: 'Clear search' })
     const line0 = (await page.locator('[role=status]').filter({ hasText: /contacts?$/ }).first().innerText()).trim()
     rec('a4 nonsense: empty state + Clear search', empty === 1 && (await clr.count()) >= 1, `empty=${empty} clearBtns=${await clr.count()} line="${line0}"`)
@@ -78,6 +87,15 @@ try {
   await safe('b', async () => {
     const { context, page } = await open(1280)
     const bad = []
+    const narrow = await open(800, 900)
+    const openAllIn = async (p) => {
+      const closed = p.locator('main button[aria-expanded=false][aria-controls$="-body"]')
+      for (let i = 0; i < 12 && (await closed.count()); i++) { await closed.first().click(); await p.waitForTimeout(60) }
+    }
+    const scanIn = async (p, label) => {
+      const r = await p.evaluate(() => [...document.querySelectorAll('th')].filter((t) => !t.textContent.trim() && !t.getAttribute('aria-label')).map((t) => (t.closest('table')?.getAttribute('aria-label') || t.closest('table')?.className || 'table')))
+      if (r.length) bad.push(`${label}: ${r.length} empty th (${[...new Set(r)].join('|')})`)
+    }
     const scan = async (label) => {
       const r = await page.evaluate(() => [...document.querySelectorAll('th')].filter((t) => !t.textContent.trim() && !t.getAttribute('aria-label')).map((t) => (t.closest('table')?.getAttribute('aria-label') || t.closest('table')?.className || 'table')))
       if (r.length) bad.push(`${label}: ${r.length} empty th (${[...new Set(r)].join('|')})`)
@@ -85,12 +103,18 @@ try {
     for (const r of ['#/todo', '#/jobs', '#/jobs/j1', '#/jobs/j6', '#/jobs/j11', '#/jobs/j12', '#/quotes', '#/quote/q2', '#/quote/q14', '#/view/q2', '#/contacts', '#/contacts/c1', '#/templates', '#/terms', '#/prices', '#/week']) {
       await go(page, r); await scan(r)
       if (r.startsWith('#/jobs/j')) {
-        const tabs = page.getByRole('tab'); const n = await tabs.count()
-        for (let i = 0; i < n; i++) { await tabs.nth(i).click(); await page.waitForTimeout(100); await scan(r + ' tab' + i) }
+        // wide: three panes, no tabs; open every Fold section (Messages, To do, Visits, Payments) then scan
+        await openAll(page); await page.waitForTimeout(100); await scan(r + ' sections open')
+        // narrow: 3 tabs (Details, History, Quotes and notes)
+        await narrow.page.goto(BASE + r); await narrow.page.waitForLoadState('networkidle'); await narrow.page.waitForTimeout(250)
+        const tabs = narrow.page.getByRole('tab'); const n = await tabs.count()
+        if (n !== 3) bad.push(r + ': expected 3 tabs at 800px, found ' + n)
+        for (let i = 0; i < n; i++) { await tabs.nth(i).click(); await narrow.page.waitForTimeout(100); await openAllIn(narrow.page); await scanIn(narrow.page, r + ' tab' + i) }
       }
       if (r.startsWith('#/quote/')) { await openAll(page); await scan(r + ' open') }
     }
-    rec('b no empty th anywhere (16 routes + job tabs)', !bad.length, bad.join('; '))
+    rec('b no empty th anywhere (16 routes + job panes + job tabs)', !bad.length, bad.join('; '))
+    await narrow.context.close()
     await context.close()
   })
 
@@ -130,9 +154,10 @@ try {
 
   // (d) tabpanel ids
   await safe('d', async () => {
-    const { context, page } = await open(1280)
+    const { context, page } = await open(800)
     await go(page, '#/jobs/j1')
     const tabs = page.getByRole('tab'); const n = await tabs.count(); const bad = []
+    if (n !== 3) bad.push('expected 3 tabs at 800px, found ' + n)
     for (let i = 0; i < n; i++) {
       await tabs.nth(i).click(); await page.waitForTimeout(100)
       const r = await page.evaluate(() => {
@@ -153,16 +178,15 @@ try {
     const { context, page } = await open(1280)
     const stage = async (j) => { await go(page, '#/jobs/' + j); return page.evaluate(() => (document.querySelector('main').innerText.slice(0, 500)).match(/New Lead|Dial 1|Dial 2|Quoting|Quote Sent|Follow-Up|Nurture|Quote Accepted|Inspection Required|Booking Required|Job Booked|Deposit Requested|Job Completed|Retention Claim|Won|Lost/g) || []) }
     const before = await stage('j9')
-    await go(page, '#/quote/q11')
-    await page.locator('main').getByRole('button', { name: /^More/ }).click()
-    await page.getByRole('button', { name: /Start from last quote/ }).click(); await page.waitForTimeout(500)
+    await go(page, '#/jobs/j9')
+    // The editor has no "More" menu now: "Start from last quote" is in the job's Quotes section and a draft offers "Mark as accepted".
+    await openSec(page, 'job-quotes-section')
+    await page.locator('#job-quotes-section').getByRole('button', { name: /Start from last quote/ }).click(); await page.waitForTimeout(500)
     const newUrl = page.url()
-    await page.locator('main').getByRole('button', { name: /^More/ }).click()
     await page.getByRole('button', { name: 'Mark as accepted' }).first().click(); await page.waitForTimeout(250)
     await page.getByRole('button', { name: /Yes, mark as accepted/ }).click(); await page.waitForTimeout(400)
     const after = await stage('j9')
-    await page.getByRole('tab', { name: /^History/ }).click()
-    const hist = await page.evaluate(() => /Quote accepted/.test(document.querySelector('[role=tabpanel]').innerText) )
+    const hist = /Quote accepted/.test(await page.locator('[data-panel="middle"]').innerText())
     rec('e accept 2nd quote on Won job j9 keeps Job Completed and Won', before.includes('Job Completed') && after.includes('Job Completed') && after.includes('Won') && !after.includes('Quote Accepted'), `new quote ${newUrl}; stage before ${before} after ${after}; history says "Quote accepted": ${hist}`)
     await context.close()
   })
@@ -170,12 +194,15 @@ try {
   // (f) deposit stamps j12 / j11
   await safe('f', async () => {
     const { context, page } = await open(1280)
+    const overdueNow = () => page.evaluate(() => { const m = document.querySelector('main').cloneNode(true); m.querySelectorAll('#job-tasks-section').forEach((sec) => sec.remove()); return /Overdue/.test(m.textContent) })
+    // The invoices are cards in the right panel; the milestone buttons are in the middle panel. textContent is used so Compact (which hides some lines) works too.
+    const depositCard = () => [...document.querySelectorAll('#job-invoices-section li[data-invoice]')].find((li) => /Deposit/i.test(li.textContent) && !li.querySelector('.st-green'))
     for (const j of ['j12', 'j11']) {
       await go(page, '#/jobs/' + j)
-      await page.getByRole('tab', { name: /^Payments/ }).click()
-      const info = await page.evaluate(() => { const tr = [...document.querySelectorAll('tbody tr')].find((r) => /Deposit/i.test(r.innerText) && !/Paid\b/.test(r.querySelector('td[data-label=Status]')?.innerText || '')); return tr ? { num: tr.querySelector('th').innerText.trim(), amt: tr.querySelector('td[data-label="Amount due"]').innerText.trim() } : null })
-      const over0 = await page.evaluate(() => /Overdue/.test(document.querySelector('main').innerText))
-      await page.getByRole('tab', { name: /^Overview/ }).click()
+      const openPay = async () => { await openSec(page, 'job-milestones-section'); await openSec(page, 'job-invoices-section') }
+      await openPay()
+      const info = await page.evaluate(() => { const li = [...document.querySelectorAll('#job-invoices-section li[data-invoice]')].find((l) => /Deposit/i.test(l.textContent) && !l.querySelector('.st-green')); return li ? { num: li.querySelector('a.jr-title').textContent.trim(), amt: li.querySelector('.jr-rich .font-bold').textContent.trim() } : null })
+      const over0 = await overdueNow()
       const btn = page.getByRole('button', { name: 'Mark deposit paid' })
       if (!(await btn.count()) || !(await btn.isEnabled())) { rec(`f ${j} Mark deposit paid`, false, 'button missing/disabled'); continue }
       await btn.click(); await page.waitForTimeout(250)
@@ -184,14 +211,13 @@ try {
       const amtOk = info && txt.replace(/,/g, '').includes(info.amt.replace(/,/g, ''))
       rec(`f1 ${j} dialog names invoice number and amount`, !!info && txt.includes(info.num) && amtOk, `dialog="${txt.slice(0, 120)}" invoice=${JSON.stringify(info)}`)
       await dlg.getByRole('button', { name: /Cancel/ }).click(); await page.waitForTimeout(200)
-      await page.getByRole('tab', { name: /^Payments/ }).click()
-      const still = await page.evaluate(() => /Overdue|Not sent|Draft|Sent/.test(document.querySelector('main').innerText) && !!([...document.querySelectorAll('tbody tr')].find((r) => /Deposit/i.test(r.innerText) && !/Paid\b/.test(r.querySelector('td[data-label=Status]')?.innerText || ''))))
+      await openPay()
+      const still = await page.evaluate(() => [...document.querySelectorAll('#job-invoices-section li[data-invoice]')].some((l) => /Deposit/i.test(l.textContent) && !l.querySelector('.st-green')))
       rec(`f2 ${j} Cancel leaves it unpaid`, still)
-      await page.getByRole('tab', { name: /^Overview/ }).click()
       await page.getByRole('button', { name: 'Mark deposit paid' }).click(); await page.waitForTimeout(200)
       await page.locator('dialog[open], [role=dialog]').first().getByRole('button', { name: /^Yes/ }).click(); await page.waitForTimeout(400)
-      await page.getByRole('tab', { name: /^Payments/ }).click()
-      const post = await page.evaluate((num) => { const tr = [...document.querySelectorAll('tbody tr')].find((r) => r.querySelector('th')?.innerText.trim() === num); return { paid: /Paid\b/.test(tr?.querySelector('td[data-label=Status]')?.innerText || ''), overdue: /Overdue/.test(document.querySelector('main').innerText) } }, info.num)
+      await openPay()
+      const post = await page.evaluate((num) => { const li = [...document.querySelectorAll('#job-invoices-section li[data-invoice]')].find((l) => l.querySelector('a.jr-title')?.textContent.trim() === num); return { paid: !!li?.querySelector('.st-green') } }, info.num); post.overdue = await overdueNow()
       rec(`f3 ${j} Confirm marks paid${j === 'j11' ? ', Overdue gone' : ''}`, post.paid && (j !== 'j11' || (over0 && !post.overdue)), `overdueBefore=${over0} paid=${post.paid} overdueAfter=${post.overdue}`)
     }
     await context.close()
@@ -202,6 +228,7 @@ try {
     const { context, page } = await open(1280)
     for (const how of ['Cancel', 'Escape']) {
       await go(page, '#/jobs/j12')
+      await openSec(page, 'job-milestones-section')
       const btn = page.getByRole('button', { name: 'Mark deposit paid' })
       await btn.focus(); await btn.click(); await page.waitForTimeout(250)
       if (how === 'Cancel') await page.locator('dialog[open], [role=dialog]').first().getByRole('button', { name: /Cancel/ }).click()
@@ -223,8 +250,9 @@ try {
       let clicked = 0
       for (let i = 0; i < 2; i++) {
         await go(page, '#/jobs/' + j)
-        await page.getByRole('tab', { name: /^Quotes/ }).click()
-        const b = page.getByRole('button', { name: /Start from last quote/ })
+        await openSec(page, 'job-quotes-section')
+        // The Quotes section's own button (the header one shows only when no quote is open).
+        const b = page.locator('#job-quotes-section').getByRole('button', { name: /Start from last quote/ })
         if (await b.count()) { await b.first().click(); clicked++; await page.waitForTimeout(500) }
       }
       const after = await drafts()

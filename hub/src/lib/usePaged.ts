@@ -5,9 +5,9 @@ import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore
  * localStorage. A list with `url: true` also keeps its page in the hash query
  * (#/jobs?page=3) so Back works and a link can be shared.
  */
-export const PAGE_SIZES = [10, 25, 50, 100] as const
+export const PAGE_SIZES = [5, 10, 25, 50, 100] as const
 const SIZE_KEY = 'hub.pageSize.v1'
-const DEFAULT_SIZE = 25
+const DEFAULT_SIZE = 5
 
 function readSize(): number {
   try {

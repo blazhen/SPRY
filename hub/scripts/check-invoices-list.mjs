@@ -1,7 +1,10 @@
 // Invoices list check. Usage: node scripts/check-invoices-list.mjs http://localhost:5199
 import { chromium } from 'playwright'
 
-const base = process.argv[2] || 'http://localhost:5199'
+import { startPreview } from './_server.mjs'
+const base = process.argv[2] || 'http://localhost:4352'
+// Starts its own preview server unless a web address is passed on the command line.
+const server = process.argv[2] ? null : await startPreview(4352)
 const b = await chromium.launch({ channel: 'msedge', headless: true })
 const errs = []
 const out = []
@@ -9,6 +12,9 @@ const ok = (name, pass, note = '') => out.push(`${pass ? 'PASS' : 'FAIL'} ${name
 const money = (t) => Number(String(t).replace(/[^0-9.\-]/g, '')) || 0
 
 const p = await b.newPage({ viewport: { width: 1440, height: 900 } })
+// HUB_LAYOUT=compact (default) or advanced picks the Hub layout.
+const LAYOUT = 'advanced' // Round 9: one look only (HUB_LAYOUT is ignored)
+await p.addInitScript((l) => localStorage.setItem('hub.layout.v1', l), LAYOUT)
 p.on('console', (m) => {
   if (m.type() === 'error') errs.push(m.text())
 })
@@ -17,7 +23,7 @@ await p.goto(`${base}/#/invoices`)
 await p.waitForSelector('table tbody tr')
 
 // Tab and headers
-const tab = p.locator('nav[aria-label="Quote Hub sections"] a', { hasText: 'Invoices' }).first()
+const tab = p.locator('nav[aria-label="Hub sections"] a', { hasText: 'Invoices' }).first()
 ok('Invoices tab shown and current', (await tab.count()) > 0 && (await tab.getAttribute('aria-current')) === 'page')
 const heads = (await p.locator('table thead th').allInnerTexts()).map((t) => t.trim())
 const want = ['Invoice no', 'Customer', 'Job', 'Type', 'Status', 'Issued', 'Due', 'Total', 'Amount due']
@@ -26,8 +32,12 @@ ok('New invoice button', (await p.getByRole('link', { name: 'New invoice' }).get
 
 const count = async () => parseInt((await p.getByTestId('inv-count').innerText()).trim(), 10)
 const rowsText = async () => p.locator('table tbody tr').allInnerTexts()
+// Compact has a "Show" choice (labels end in a count, like "Drafts (3)"), Advanced has chips.
 const show = async (label) => {
-  await p.locator('#inv-show').selectOption({ label })
+  if (LAYOUT === 'compact') {
+    const value = await p.locator('#inv-show option').filter({ hasText: new RegExp('^' + label + ' \\(') }).first().getAttribute('value')
+    await p.locator('#inv-show').selectOption(value)
+  } else await p.getByRole('group', { name: 'Show' }).getByRole('button', { name: new RegExp('^' + label) }).click()
   await p.waitForTimeout(150)
 }
 
@@ -135,3 +145,4 @@ for (const [w, h] of [[1440, 900], [390, 844]]) {
 ok('no console errors', errs.length === 0, errs.slice(0, 3).join(' | '))
 console.log(out.join('\n'))
 await b.close()
+server?.kill()

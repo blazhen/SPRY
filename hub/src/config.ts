@@ -54,9 +54,9 @@ export const DEMO = true
 /**
  * Where data comes from. 'mock' keeps everything in this browser (localStorage).
  * 'live' talks to the Hub proxy under PROXY_URL and the staff app sits behind the access gate.
- * Set VITE_DATA_SOURCE=live at build time. Default stays 'mock' for now.
+ * Set VITE_DATA_SOURCE=mock for mock mode. Default is 'live'.
  */
-export const DATA_SOURCE: 'mock' | 'live' = import.meta.env.VITE_DATA_SOURCE === 'live' ? 'live' : 'mock'
+export const DATA_SOURCE: 'mock' | 'live' = import.meta.env.VITE_DATA_SOURCE === 'mock' ? 'mock' : 'live'
 
 /** Base address of the proxy. '' means same origin (the normal case). No trailing slash. */
 export const PROXY_URL: string = ((import.meta.env.VITE_PROXY_URL as string | undefined) ?? '').replace(/\/+$/, '')

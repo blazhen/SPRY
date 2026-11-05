@@ -1,0 +1,29 @@
+/* The compact stage control for the job page header. Existing tokens only. */
+
+.sc { display: grid; gap: 0.25rem; min-width: 0; }
+.sc-row { display: flex; align-items: center; gap: 0.25rem 0.5rem; flex-wrap: wrap; min-height: 2rem; min-width: 0; }
+.sc-days { font-size: var(--d-small); color: rgb(var(--c-muted)); min-width: 0; }
+.sc-days.sc-slow, .sc-days.sc-stuck { color: rgb(var(--c-ink)); font-weight: 700; } /* the words carry the state; colour is only on the bar */
+
+.sc-next {
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.25rem;
+  min-height: 44px; padding: 0 0.75rem; border: 1px solid rgb(var(--c-control)); border-radius: 8px;
+  background: rgb(var(--c-surface)); color: rgb(var(--c-ink)); font-size: var(--d-small); font-weight: 700; cursor: pointer;
+  white-space: nowrap;
+}
+.sc-next:hover { background: rgb(var(--c-navy-wash)); }
+.sc-next:focus-visible { outline: 3px solid rgb(var(--c-navy)); outline-offset: 2px; }
+
+.sc-won, .sc-lost, .sc-reopen {
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.35rem; min-height: 44px; padding: 0 0.875rem; border-radius: 8px;
+  font-size: var(--d-small); font-weight: 800; cursor: pointer; white-space: nowrap;
+}
+.sc-won { background: rgb(var(--c-green)); color: rgb(var(--c-ink)); border: 2px solid rgb(var(--c-green)); }
+.sc-won:hover { filter: brightness(0.94); }
+.sc-lost { background: rgb(var(--c-surface)); color: rgb(var(--c-hot)); border: 2px solid rgb(var(--c-hot)); }
+.sc-lost:hover { background: rgb(var(--c-hot) / 0.1); }
+.sc-reopen { background: rgb(var(--c-surface)); color: rgb(var(--c-ink)); border: 2px solid rgb(var(--c-control)); }
+.sc-reopen:hover { background: rgb(var(--c-navy-wash)); }
+.sc-won:focus-visible, .sc-lost:focus-visible, .sc-reopen:focus-visible { outline: 3px solid rgb(var(--c-navy)); outline-offset: 2px; }
+
+.sc-help { margin: 0; font-size: var(--d-small); color: rgb(var(--c-muted)); }

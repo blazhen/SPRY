@@ -1,8 +1,11 @@
 import { useEffect, useRef, useState } from 'react'
 import { ConfirmDialog, PageHead, StageBadge, toast } from '../components/ui'
+import { setConfirmEnabled, useConfirmEnabled } from '../lib/confirmActions'
 import { STAGE_HELP, STALL_LIMITS, stageList, stallLimitFor, word } from '../lib/format'
 import { resetStallLimits, setStallLimit, useStore } from '../lib/store'
 import type { Stage } from '../types'
+import { ExtrasSettings } from '../components/ExtrasSettings'
+import { CertificateSettings } from '../components/photos/CertificateSettings'
 
 type Lim = { slow: number; stuck: number } | null
 const same = (a: Lim, b: Lim) => (a === null || b === null ? a === b : a.slow === b.slow && a.stuck === b.stuck)
@@ -154,7 +157,7 @@ export default function Settings() {
       </p>
 
       <div className="flex flex-wrap items-center gap-3">
-        <button type="button" className="btn btn-quiet btn-lg" onClick={() => setAskReset(true)}>
+        <button type="button" className="btn btn-warn" onClick={() => setAskReset(true)}>
           Reset to defaults
         </button>
         <p className="t-body font-bold text-green-ink" aria-live="polite" role="status" data-saved>
@@ -197,6 +200,30 @@ export default function Settings() {
       >
         <p>Every stage goes back to its built-in days. Your changes will be lost.</p>
       </ConfirmDialog>
+
+      <AskToConfirm />
+
+      <ExtrasSettings />
+      <CertificateSettings />
     </div>
+  )
+}
+
+/** "Ask me to confirm": on by default. Off means the actions in lib/confirmActions.ts run at once, with no question. Per browser. */
+function AskToConfirm() {
+  const on = useConfirmEnabled()
+  return (
+    <fieldset className="card stack" data-confirm-switch>
+      <legend className="t-small font-bold">Mistakes</legend>
+      <label className="flex items-start gap-3">
+        <input type="checkbox" className="mt-1 h-5 w-5" checked={on} onChange={(e) => setConfirmEnabled(e.target.checked)} />
+        <span>
+          <span className="block font-bold">Ask me to confirm</span>
+          <span className="block text-muted">
+            A small Yes or Cancel question before anything hard to undo: deleting, ticking a task done, marking a job won or lost, moving a job back a stage, sending, recording a payment, voiding an invoice, closing a revision. Saved in this browser.
+          </span>
+        </span>
+      </label>
+    </fieldset>
   )
 }

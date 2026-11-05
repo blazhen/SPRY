@@ -1,6 +1,7 @@
 import { useId } from 'react'
 import { GST_RATE, GST_ROUNDING_NOTE, GST_ROUNDING_TO_CONFIRM, VALID_DAYS_DEFAULT, VALID_DAYS_TO_CONFIRM } from '../config'
 import { PRODUCT_TYPES, type ProductType, type Quote } from '../types'
+import './quoteSections.css'
 import { defaultTermsId, getTerms, termsForProduct, useStore } from '../lib/store'
 
 export interface QuoteSettingsFieldsProps {
@@ -22,18 +23,29 @@ export function QuoteSettingsFields({ quote, onChange }: QuoteSettingsFieldsProp
   const active = quote.termsId === 'custom' ? undefined : getTerms(quote.termsId, s)
   const inList = choices.some((t) => t.id === quote.termsId)
   const gstOn = quote.gstApplies !== false
+  const termsText = (
+    <>
+      Terms for {product}: <strong>{active?.name ?? (quote.termsId === 'custom' ? 'written just for this quote' : 'none chosen')}</strong>
+    </>
+  )
+  const gstText = (
+    <>
+      {gstOn ? 'Prices you type are before GST. The quote shows the subtotal, the GST and the total.' : 'No GST is added. The quote says so.'} {GST_ROUNDING_NOTE}
+      {GST_ROUNDING_TO_CONFIRM && <ToConfirm>Open question</ToConfirm>}
+    </>
+  )
 
   return (
-    <div className="stack-lg">
+    <div className="stack-lg qs-root qs-settings">
       <fieldset>
-        <legend className="label">What kind of job is this?</legend>
-        <div className="grid gap-3 sm:grid-cols-2">
+        <legend className="label qs-legend">What kind of job is this?</legend>
+        <div className="grid gap-3 sm:grid-cols-2 qs-radios">
           {PRODUCT_TYPES.map((p) => {
             const on = product === p
             return (
               <label
                 key={p}
-                className="flex min-h-[64px] cursor-pointer items-center gap-3 rounded-lg px-4 py-3 text-[1.125rem] font-bold focus-within:outline focus-within:outline-2 focus-within:outline-offset-2"
+                className="qs-radio flex min-h-[64px] cursor-pointer items-center gap-3 rounded-lg px-4 py-3 text-[1.125rem] font-bold focus-within:outline focus-within:outline-2 focus-within:outline-offset-2"
                 style={{ border: `${on ? 3 : 1}px solid rgb(var(${on ? '--c-navy' : '--c-line'}))`, background: on ? 'rgb(var(--c-navy-wash))' : undefined }}
               >
                 <input
@@ -54,8 +66,9 @@ export function QuoteSettingsFields({ quote, onChange }: QuoteSettingsFieldsProp
         </div>
       </fieldset>
 
-      <div>
-        <label className="label" htmlFor={`${base}-terms`}>Terms and conditions</label>
+      <div className="qs-terms">
+        <div className="qs-labelrow">
+          <label className="label" htmlFor={`${base}-terms`}>Terms and conditions</label>        </div>
         <select id={`${base}-terms`} className="field" value={quote.termsId} onChange={(e) => onChange({ termsId: e.target.value, termsCustom: undefined })}>
           {!inList && quote.termsId === 'custom' && <option value="custom">Written just for this quote</option>}
           {!inList && quote.termsId !== 'custom' && <option value={quote.termsId}>Choose terms</option>}
@@ -65,12 +78,10 @@ export function QuoteSettingsFields({ quote, onChange }: QuoteSettingsFieldsProp
             </option>
           ))}
         </select>
-        <p className="hint">
-          Terms for {product}: <strong>{active?.name ?? (quote.termsId === 'custom' ? 'written just for this quote' : 'none chosen')}</strong>
-        </p>
+        <p className="hint">{termsText}</p>
       </div>
 
-      <div>
+      <div className="qs-days">
         <label className="label" htmlFor={`${base}-days`}>
           How many days the quote stays open
           {VALID_DAYS_TO_CONFIRM && <ToConfirm>To confirm</ToConfirm>}
@@ -88,8 +99,8 @@ export function QuoteSettingsFields({ quote, onChange }: QuoteSettingsFieldsProp
         />
       </div>
 
-      <div>
-        <label className="flex min-h-[48px] cursor-pointer items-center gap-3 text-[1.125rem] font-bold" htmlFor={`${base}-gst`}>
+      <div className="qs-gst">
+        <label className="qs-gst-label flex min-h-[48px] cursor-pointer items-center gap-3 text-[1.125rem] font-bold" htmlFor={`${base}-gst`}>
           <input
             id={`${base}-gst`}
             type="checkbox"
@@ -100,10 +111,7 @@ export function QuoteSettingsFields({ quote, onChange }: QuoteSettingsFieldsProp
           />
           Add GST ({Math.round(GST_RATE * 100)}%) to the total
         </label>
-        <p className="hint">
-          {gstOn ? 'Prices you type are before GST. The quote shows the subtotal, the GST and the total.' : 'No GST is added. The quote says so.'} {GST_ROUNDING_NOTE}
-          {GST_ROUNDING_TO_CONFIRM && <ToConfirm>Open question</ToConfirm>}
-        </p>
+        <p className="hint">{gstText}</p>
       </div>
     </div>
   )

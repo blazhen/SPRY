@@ -7,7 +7,7 @@ import { chromium } from 'playwright'
 const PORT = 4291
 const BASE = `http://localhost:${PORT}/`
 mkdirSync('shots', { recursive: true })
-for (const f of readdirSync('shots')) if (f.endsWith('.png')) unlinkSync('shots/' + f)
+for (const f of readdirSync('shots')) if (f.endsWith('.png') && (f.startsWith('check-') || f.startsWith('layout-'))) unlinkSync('shots/' + f)
 const server = await startPreview(PORT)
 const browser = await chromium.launch({ channel: 'msedge' })
 const results = []
@@ -18,6 +18,8 @@ const rec = (name, ok, detail = '') => {
 
 async function open(width, height = 900, theme) {
   const context = await browser.newContext({ viewport: { width, height } })
+  // HUB_LAYOUT=advanced or compact picks the layout (when not set, the app's default, Compact, is used).
+  if (process.env.HUB_LAYOUT) await context.addInitScript((l) => { try { localStorage.setItem('hub.layout.v1', l) } catch {} }, process.env.HUB_LAYOUT)
   if (theme) await context.addInitScript((t) => { try { localStorage.setItem('hub.theme', t) } catch {} }, theme)
   const page = await context.newPage()
   page.errs = []
@@ -34,7 +36,14 @@ const openAll = async (page) => {
   const closed = page.locator('main button[aria-expanded=false][aria-controls$="-body"]')
   for (let i = 0; i < 12 && (await closed.count()); i++) { await closed.first().click(); await page.waitForTimeout(60) }
 }
-const setTheme = (page, t) => page.evaluate((t) => document.documentElement.setAttribute('data-theme', t), t)
+// A job page section opens from its heading button (Compact keeps most of them closed).
+const openSec = async (page, id) => {
+  const btn = page.locator(`#${id} .sec-btn`).first()
+  await btn.waitFor({ timeout: 5000 })
+  if ((await btn.getAttribute('aria-expanded')) !== 'true') await btn.click()
+  await page.waitForTimeout(150)
+}
+const setTheme =(page, t) => page.evaluate((t) => document.documentElement.setAttribute('data-theme', t), t)
 
 try {
   // 2 routes x widths
@@ -62,23 +71,61 @@ try {
   rec('2b no console/page errors', !errFail.length, errFail.slice(0, 6).join('; '))
   rec('2c every table has thead th[scope=col]', !tableFail.length, tableFail.slice(0, 8).join('; '))
 
-  // 3 job tabs
+  // 3 job page structure: three panes at wide, three tabs at narrow
   {
-    const { context, page } = await open(1280)
-    await go(page, '#/jobs/j1')
-    const tabs = page.getByRole('tab')
-    const n = await tabs.count()
-    const bad = []
-    for (let i = 0; i < n; i++) {
-      const t = tabs.nth(i)
-      const label = (await t.innerText()).replace(/\s+/g, ' ')
-      await t.click()
-      await page.waitForTimeout(150)
-      const len = await page.evaluate(() => (document.querySelector('[role=tabpanel]') || document.querySelector('main') || document.body).innerText.trim().length)
-      if (len < 20) bad.push(`${label} empty`)
+    const paneNames = ['The job and who it is for', 'History and new notes, texts, emails and tasks', 'Quotes, people, files and money']
+    for (const w of [1280, 1440]) {
+      const { context, page } = await open(w)
+      await go(page, '#/jobs/j1')
+      const bad = []
+      for (const nm of paneNames) {
+        const pane = page.getByRole('region', { name: nm, exact: true })
+        const c = await pane.count()
+        if (c !== 1) { bad.push(`pane "${nm}" count=${c}`); continue }
+        const len = (await pane.innerText()).trim().length
+        if (len < 20) bad.push(`pane "${nm}" empty`)
+      }
+      // The middle panel holds the composer, the open tasks, the history and the milestones.
+      const mid = page.locator('[data-panel="middle"]')
+      for (const sec of ['Add to this job', 'History', 'Milestones']) {
+        if (!(await mid.locator('.sec-btn').filter({ hasText: new RegExp('^' + sec) }).count())) bad.push(`middle panel section "${sec}" missing`)
+      }
+      for (const id of ['job-notes-section', 'job-tasks-section', 'job-quotes-section', 'job-people-section', 'job-documents-section']) {
+        if (!(await page.locator('#' + id).count())) bad.push(`#${id} missing`)
+      }
+      const railN = await page.getByRole('navigation', { name: 'Right pane: choose what to show' }).getByRole('button').count()
+      // Round 7: All, one per right pane section (quotes, people, documents, invoices, pinned; costing in Advanced), then Notes and Tasks.
+      if (railN < 8) bad.push(`rail buttons=${railN}`)
+      const pageScroll = await page.evaluate(() => document.documentElement.scrollHeight - window.innerHeight)
+      if (pageScroll > 0) bad.push(`page scrolls by ${pageScroll}px`)
+      const mainBtn = await page.getByRole('button', { name: /Write the quote|Open the quote|Start from last quote/ }).count()
+      if (mainBtn < 1) bad.push('main quote button missing')
+      const tabsAtWide = await page.getByRole('tab').count()
+      if (tabsAtWide) bad.push(`tabs shown at wide: ${tabsAtWide}`)
+      rec(`3 job page @${w}: 3 panes with content, history sections, right-pane sections`, !bad.length && !page.errs.length, `${bad.join(', ')} ${page.errs.join(';')}`)
+      await context.close()
     }
-    rec('3 job tabs: 8 tabs, each has content', n === 8 && !bad.length && !page.errs.length, `tabs=${n} ${bad.join(',')} ${page.errs.join(';')}`)
-    await context.close()
+    {
+      const { context, page } = await open(390, 844)
+      await go(page, '#/jobs/j1')
+      const tabs = page.getByRole('tab')
+      const n = await tabs.count()
+      const bad = []
+      const labels = []
+      for (let i = 0; i < n; i++) {
+        const t = tabs.nth(i)
+        const label = (await t.innerText()).replace(/\s+/g, ' ')
+        labels.push(label)
+        await t.click()
+        await page.waitForTimeout(150)
+        const len = await page.evaluate(() => (document.querySelector('[role=tabpanel]') || document.body).innerText.trim().length)
+        if (len < 20) bad.push(`${label} empty`)
+      }
+      const named = /^Job/.test(labels[0] || '') && /^History/.test(labels[1] || '') && /^Quotes and files/.test(labels[2] || '')
+      const regionsAtNarrow = await page.getByRole('region', { name: 'The job and who it is for', exact: true }).count()
+      rec('3 job page @390: three tabs (Job, History, Quotes and files), each has content', n === 3 && named && !bad.length && !regionsAtNarrow && !page.errs.length, `tabs=${JSON.stringify(labels)} ${bad.join(',')} regions=${regionsAtNarrow} ${page.errs.join(';')}`)
+      await context.close()
+    }
   }
 
   // 4 keyboard
@@ -149,15 +196,17 @@ try {
     let jobId = null
     for (const j of ['j6', 'j9', 'j11', 'j12', 'j1', 'j2', 'j3', 'j4', 'j5', 'j7', 'j8']) {
       await go(page, '#/jobs/' + j)
+      await openSec(page, 'job-milestones-section')
       const b = page.getByRole('button', { name: /Mark final payment paid/ })
       if ((await b.count()) && (await b.first().isEnabled()) && (await b.first().getAttribute('aria-disabled')) !== 'true') { jobId = j; break }
     }
     if (!jobId) rec('5 stamps: deposit stamp', false, 'no job with an enabled "Mark deposit paid" button j1-j9')
     else {
-      const histCount = async () => { await page.getByRole('tab', { name: /^History/ }).click(); await page.waitForTimeout(150); return page.evaluate(() => (document.querySelector('[role=tabpanel]') || document.body).innerText.split('\n').filter((l) => l.trim()).length) }
-      const ov = page.getByRole('tab', { name: /^Overview/ })
+      await openSec(page, 'job-history-section')
+      const histPane = page.locator('[data-panel="middle"]')
+      const histCount = async () => { await page.waitForTimeout(150); return (await histPane.innerText()).split('\n').filter((l) => l.trim()).length }
       const before = await histCount()
-      await ov.click()
+      const topBefore = await histPane.locator('#job-history-section li[data-type]').first().innerText().catch(() => '')
       const stamp = page.getByRole('button', { name: /Mark final payment paid/ }).first()
       await stamp.click(); await page.waitForTimeout(200)
       const dlg = page.locator('dialog[open], [role=dialog]').first()
@@ -167,18 +216,18 @@ try {
       await dlg.getByRole('button', { name: /Cancel/ }).click(); await page.waitForTimeout(200)
       const mid = await histCount()
       rec('5b Cancel changes nothing', mid === before, `history lines ${before} -> ${mid}`)
-      await ov.click()
       await page.getByRole('button', { name: /Mark final payment paid/ }).first().click(); await page.waitForTimeout(200)
       await page.locator('dialog[open], [role=dialog]').first().getByRole('button', { name: /^Yes/ }).click(); await page.waitForTimeout(300)
       const after = await histCount()
-      const hasLine = await page.evaluate(() => /paid/i.test((document.querySelector('[role=tabpanel]') || document.body).innerText))
-      rec('5c Confirm records it, History shows new line', after > mid && hasLine, `history lines ${mid} -> ${after}`)
+      // The timeline is paged now, so the line count can stay level; the newest entry (top of page 1) must be a new "paid" line.
+      const firstEvent = () => histPane.locator('#job-history-section li[data-type]').first().innerText().catch(() => '')
+      const topAfter = await firstEvent()
+      const hasLine = /paid/i.test(topAfter) && topAfter !== topBefore
+      rec('5c Confirm records it, History shows new line', after >= mid && hasLine, `history lines ${mid} -> ${after}; newest entry before "${topBefore.replace(/\s+/g, ' ').slice(0, 50)}" after "${topAfter.replace(/\s+/g, ' ').slice(0, 50)}"`)
       // log a call
-      await ov.click()
       await page.getByRole('button', { name: /Log a phone call/ }).first().click(); await page.waitForTimeout(200)
       await page.locator('#call-note').fill('Test call note from tester'); await page.getByRole('button', { name: 'Save the call' }).click(); await page.waitForTimeout(300)
-      await page.getByRole('tab', { name: /^History/ }).click(); await page.waitForTimeout(150)
-      const callSeen = await page.evaluate(() => /call/i.test((document.querySelector('[role=tabpanel]') || document.body).innerText))
+      const callSeen = /call/i.test(await histPane.innerText())
       rec('5d log a call shows in History', callSeen)
     }
     rec('5e no console errors during stamps', !page.errs.length, page.errs.join(';'))
@@ -189,19 +238,20 @@ try {
   {
     const { context, page } = await open(1280)
     await go(page, '#/jobs/j1')
-    await page.getByRole('tab', { name: /^Quotes/ }).click(); await page.waitForTimeout(150)
-    const sb = page.getByRole('button', { name: /Start from last quote/ })
+    // The button is in the Quotes section of the right panel (the header one only shows when no quote is open).
+    await openSec(page, 'job-quotes-section')
+    const sb = page.locator('#job-quotes-section').getByRole('button', { name: /Start from last quote/ })
     const nb = await sb.count()
-    if (!nb) rec('6a start from last quote', false, 'button not found on j1 Quotes tab')
+    if (!nb) rec('6a start from last quote', false, 'button not found in the Quotes section on j1')
     else {
       await sb.first().click(); await page.waitForTimeout(500)
       const body = await page.evaluate(() => document.body.innerText)
       const url = page.url()
       const rev = /Rev \d+/.test(body)
       rec('6a start from last quote makes Rev N, no "(copy)" on editor', !body.includes('(copy)') && rev, `url ${url}; revText=${rev}`)
-      await go(page, '#/jobs/j1'); await page.getByRole('tab', { name: /^Quotes/ }).click()
+      await go(page, '#/jobs/j1')
       const b2 = await page.evaluate(() => document.body.innerText)
-      rec('6b no "(copy)" on job quotes tab', !b2.includes('(copy)'))
+      rec('6b no "(copy)" on job page quotes section', !b2.includes('(copy)'))
     }
     // find an editable draft
     let draft = null
@@ -317,7 +367,7 @@ try {
     for (const theme of ['light', 'dark']) {
       for (const r of ['#/todo', '#/jobs', '#/jobs/j1', '#/jobs/j6?tab=payments', '#/contacts', '#/prices', '#/week', '#/quote/q2']) {
         await go(page, r.split('?')[0])
-        if (r.includes('tab=payments')) await page.getByRole('tab', { name: /^Payments/ }).click()
+        if (r.includes('tab=payments')) await openAll(page)
         if (r.startsWith('#/quote/')) await openAll(page)
         await setTheme(page, theme); await page.waitForTimeout(200)
         const list = await page.evaluate(contrastFn)
@@ -355,9 +405,9 @@ try {
     const bad = []; let overdue = 0, stage = 0
     for (const r of ['#/todo', '#/jobs', '#/jobs/j1', '#/jobs/j6', '#/jobs/j2', '#/quotes', '#/week']) {
       await go(page, r)
-      for (const t of ['Payments']) { const tab = page.getByRole('tab', { name: new RegExp('^' + t) }); if (await tab.count()) { await tab.click(); await page.waitForTimeout(150) } }
+      if (r.startsWith('#/jobs/')) await openAll(page)
       const info = await page.evaluate(() => {
-        const els = [...document.querySelectorAll('.badge,[class*="st-"]')].filter((e) => e.getBoundingClientRect().width > 2)
+        const els = [...document.querySelectorAll('.badge,[class^="st-"],[class*=" st-"]')].filter((e) => e.getBoundingClientRect().width > 2)
         return { empty: els.filter((e) => !/[A-Za-z]{3,}/.test(e.textContent)).map((e) => e.className), overdue: els.filter((e) => /overdue/i.test(e.textContent)).length, stage: els.filter((e) => /(New Lead|Dial 1|Dial 2|Quoting|Quote Sent|Follow-Up|Nurture|Quote Accepted|Inspection Required|Booking Required|Job Booked|Deposit Requested|Job Completed|Retention Claim|Won|Lost)/.test(e.textContent)).length }
       })
       if (info.empty.length) bad.push(`${r}: ${info.empty.join(',')}`)
@@ -375,12 +425,11 @@ try {
     await shot(p, '#/todo', 'todo')
     await shot(p, '#/jobs', 'jobs')
     await shot(p, '#/jobs/j1', 'job-overview')
-    const tabShot = (name) => async (pg) => { await pg.getByRole('tab', { name: new RegExp('^' + name) }).click() }
-    await shot(p, '#/jobs/j6', 'job-payments-j6', tabShot('Payments'))
-    await shot(p, '#/jobs/j11', 'job-payments-j11', tabShot('Payments'))
-    await shot(p, '#/jobs/j1', 'job-quotes', tabShot('Quotes'))
-    await shot(p, '#/jobs/j1', 'job-messages', tabShot('Messages'))
-    await shot(p, '#/jobs/j1', 'job-history', tabShot('History'))
+    await shot(p, '#/jobs/j6', 'job-payments-j6', openAll)
+    await shot(p, '#/jobs/j11', 'job-payments-j11', openAll)
+    await shot(p, '#/jobs/j1', 'job-quotes')
+    await shot(p, '#/jobs/j1', 'job-messages', openAll)
+    await shot(p, '#/jobs/j1', 'job-history', openAll)
     await shot(p, '#/quote/q2', 'editor-split-items', async (pg) => { await pg.getByRole('radio', { name: 'Both' }).click().catch(() => {}) })
     await shot(p, '#/quote/q2', 'editor-split-closed', async (pg) => { await pg.getByRole('radio', { name: 'Both' }).click().catch(() => {}); const o = pg.locator('main button[aria-expanded=true][aria-controls$="-body"]'); for (let i = 0; i < 8 && (await o.count()); i++) await o.first().click() })
     await shot(p, '#/view/q9', 'customer-view')

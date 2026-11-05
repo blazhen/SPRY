@@ -1,6 +1,6 @@
 import { useId } from 'react'
 import { BUSINESS, GST_RATE } from '../config'
-import logo from '../assets/logo.png'
+const logo = 'https://vibe.filesafe.space/1792617879857668669/assets/3769dd19-d4f3-4485-b0dd-960502b82b99.png'
 import { dueShort } from '../lib/due'
 import { lineTotal, paymentAmounts, quoteTotals, upgradeTotal, upgradesForLine } from '../lib/calc'
 import { fmtMoney, fmtQty } from '../lib/format'

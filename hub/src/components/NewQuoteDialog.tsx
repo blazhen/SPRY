@@ -43,27 +43,27 @@ export function NewQuoteDialog({ open, onClose }: { open: boolean; onClose: () =
       size="lg"
       footer={
         <>
-          <button type="button" className="btn btn-quiet btn-lg" onClick={onClose}>
+          <button type="button" className="btn btn-neutral" onClick={onClose}>
             Cancel
           </button>
-          <button type="button" className="btn btn-primary btn-lg" disabled={!chosen || !mainRef} onClick={make}>
+          <button type="button" className="btn btn-primary" disabled={!chosen || !mainRef} onClick={make}>
             Start the quote
           </button>
         </>
       }
     >
-      <div className="space-y-4">
+      <div className="dg-stack">
         <div>
-          <label htmlFor={`${id}-s`} className="label">
+          <label htmlFor={`${id}-s`} className="label dg-lab dg-lab-sr">
             {jobText('Which %j is the quote for?')}
           </label>
           <div className="relative">
-            <Search size={20} aria-hidden="true" className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted" />
+            <Search size={18} aria-hidden="true" className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted" />
             <input
               id={`${id}-s`}
               type="search"
-              className="field pl-11"
-              placeholder={jobText('Type a customer, %j or address')}
+              className="field pl-10"
+              placeholder={jobText('Find a customer, %j or address')}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               data-autofocus
@@ -74,38 +74,24 @@ export function NewQuoteDialog({ open, onClose }: { open: boolean; onClose: () =
         <p className="sr-only" role="status">
           {jobs.length} found
         </p>
-        <fieldset className="min-w-0 border-0 p-0">
+        <fieldset className="dg-fs">
           <legend className="sr-only">{jobText('Choose a %j')}</legend>
-          <div className="max-h-[45vh] space-y-1 overflow-y-auto pr-1">
-            {jobs.length === 0 && <p className="t-body text-muted">{jobText('No %j matches. Try a different word.')}</p>}
-            {jobs.map((j) => (
-              <label
-                key={j.id}
-                htmlFor={`${id}-${j.id}`}
-                className={`flex min-h-[56px] cursor-pointer items-center gap-3 rounded-md border px-3 py-2 ${sel === j.id ? 'bg-navy-wash' : ''}`}
-                style={{ borderColor: 'rgb(var(--c-control))' }}
-              >
-                <input
-                  id={`${id}-${j.id}`}
-                  type="radio"
-                  name={`${id}-job`}
-                  className="h-5 w-5 shrink-0 accent-[rgb(var(--c-navy))]"
-                  checked={sel === j.id}
-                  onChange={() => setSel(j.id)}
-                />
-                <span className="min-w-0 break-words">
-                  <span className="block font-bold">{j.name}</span>
-                  <span className="t-small block text-muted">
-                    {customerName(j, s)}
-                    {j.address ? `, ${j.address}` : ''}
-                  </span>
-                </span>
-              </label>
-            ))}
+          <div className="dg-list dg-scroll">
+            {jobs.length === 0 && <p className="dg-muted">{jobText('No %j matches. Try a different word.')}</p>}
+            {jobs.map((j) => {
+              const who = `${customerName(j, s)}${j.address ? `, ${j.address}` : ''}`
+              return (
+                <label key={j.id} htmlFor={`${id}-${j.id}`} className="dg-row" title={`${j.name}, ${who}`}>
+                  <input id={`${id}-${j.id}`} type="radio" name={`${id}-job`} checked={sel === j.id} onChange={() => setSel(j.id)} />
+                  <span className="dg-name">{j.name}</span>
+                  <span className="dg-sub">{who}</span>
+                </label>
+              )
+            })}
           </div>
         </fieldset>
         {chosen && !mainRef && <p className="err">{jobText('This %j has no customer yet. Add someone on the %j first.')}</p>}
-        <p className="hint">{jobText('To add a brand new %j, ask in the office. It is not in this version yet.')}</p>
+        <p className="dg-muted dg-adv">{jobText('To add a brand new %j, ask in the office. It is not in this version yet.')}</p>
       </div>
     </Dialog>
   )

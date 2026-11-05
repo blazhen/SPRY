@@ -1,0 +1,2 @@
+/* Left panel helpers shared by JobFacts and JobKeyFacts. Layout rules are in jobLeft.css. */
+.job-facts-group { display: grid; gap: var(--d-gap, 0.75rem); min-width: 0; }

@@ -1,0 +1,7 @@
+/* Contact header bar: the full row of action buttons. */
+.cs-head { display: flex; flex-direction: column; gap: var(--d-gap); min-width: 0; }
+.cs-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 0.75rem; }
+.cs-meta { margin: 0; font-size: var(--d-small); }
+@media (pointer: coarse) {
+  .cs-actions .btn, :root .cs-head .cs-actions .btn { min-height: 44px; }
+}

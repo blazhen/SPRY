@@ -59,6 +59,7 @@ try {
     const ctx = await browser.newContext({ viewport: { width: 1280, height: 900 }, colorScheme: 'light' })
     const page = await ctx.newPage()
     watch(page, 'shots')
+    page.setDefaultTimeout(5000)
     await page.goto(BASE + '#/todo')
     await page.evaluate(() => localStorage.setItem('sq.theme', 'light'))
     const pages = [
@@ -104,17 +105,7 @@ try {
         }
       }
     }
-    // dark editor at 1280
-    try {
-      await page.setViewportSize({ width: 1280, height: 900 })
-      await page.goto(BASE + '#/quote/q2')
-      await page.getByRole('button', { name: 'Dark theme' }).click()
-      await page.waitForTimeout(250)
-      await page.screenshot({ path: `${SHOTS}editor-dark-1280.png`, fullPage: true })
-    } catch (e) {
-      ok = false
-      notes.push(`FAIL dark shot: ${String(e.message).split('\n')[0].slice(0, 160)}`)
-    }
+    // REMOVED: dark editor screenshot. There is no theme switch in hub\src any more (no "Dark theme" button).
     if (overflow.length) {
       ok = false
       notes.push(...overflow.map((o) => `FAIL overflow ${o}`))
@@ -127,7 +118,8 @@ try {
   const ctx = await browser.newContext({ viewport: { width: 1280, height: 900 }, colorScheme: 'light' })
   const page = await ctx.newPage()
   watch(page, 'main')
-  const tabs = page.getByRole('navigation', { name: 'Quote Hub sections' })
+  page.setDefaultTimeout(5000) // a stale selector fails in 5 s, not the 30 s default (the old run looked hung: results print only at the end)
+  const tabs = page.getByRole('navigation', { name: 'Hub sections' }).first()
 
   await step(1, 'To do queue and Open next', [
     ['load #/todo', async () => { await page.goto(BASE + '#/todo'); await page.getByRole('heading', { name: 'To do', exact: true }).waitFor({ timeout: 5000 }) }],

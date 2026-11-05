@@ -48,7 +48,7 @@ export function FollowUpBar({ target }: { target: NoteTarget }) {
           <input id={`${id}-d`} type="date" className="field" value={due ?? ''} min={today} onChange={(e) => setFollowUp(target, e.target.value || undefined)} />
         </div>
         {due && (
-          <button type="button" className="btn btn-quiet" onClick={() => setFollowUp(target, undefined)}>
+          <button type="button" className="btn btn-neutral" onClick={() => setFollowUp(target, undefined)}>
             Clear date
           </button>
         )}
@@ -70,12 +70,12 @@ export function AddressActions({ address }: { address: string }) {
   }
   return (
     <span className="inline-flex flex-wrap gap-2">
-      <button type="button" className="btn btn-quiet" onClick={copy}>
-        <Copy size={18} aria-hidden="true" />
+      <button type="button" className="btn btn-neutral" onClick={copy}>
+        <Copy size={16} aria-hidden="true" />
         Copy address
       </button>
-      <a className="btn btn-quiet" href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`} target="_blank" rel="noreferrer">
-        <MapPin size={18} aria-hidden="true" />
+      <a className="btn btn-neutral" href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`} target="_blank" rel="noreferrer">
+        <MapPin size={16} aria-hidden="true" />
         Open in maps
       </a>
     </span>

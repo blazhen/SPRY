@@ -1,5 +1,6 @@
 import { useEffect, useId, useRef, useState } from 'react'
-import { ArrowDown, ArrowUp, PackagePlus, Plus, Search, Trash2, Undo2, X } from 'lucide-react'
+import { ArrowDown, ArrowUp, Plus, Search, Trash2, Undo2, X } from 'lucide-react'
+import './quoteSections.css'
 import type { LineItem, Quote, Unit, Upgrade } from '../types'
 import { fmtMoney } from '../lib/format'
 import { lineTotal } from '../lib/calc'
@@ -106,7 +107,7 @@ export default function LineItemsEditor({ quote, onChange }: { quote: Quote; onC
   const matches = priceList.filter((p) => (!p.productType || p.productType === quote.productType) && (!q || `${p.name} ${p.section} ${p.description}`.toLowerCase().includes(q)))
 
   return (
-    <div className="min-w-0 space-y-3">
+    <div className="min-w-0 space-y-3 qs-root">
       <style>{ROW_CSS}</style>
       <div className="sr-only" role="status" aria-live="polite">
         {announce}
@@ -137,18 +138,23 @@ export default function LineItemsEditor({ quote, onChange }: { quote: Quote; onC
           const listItem = l.priceItemId ? priceList.find((p) => p.id === l.priceItemId) : undefined
           const offList = !!listItem && l.unitPrice !== listItem.unitPrice
           return (
-            <tr key={l.id} role="row" className="panel block p-3 sm:p-4" aria-label={`Line ${index + 1}`}>
+            <tr key={l.id} role="row" className="panel block p-3 sm:p-4 qs-row" aria-label={`Line ${index + 1}`}>
               <td role="cell" className="block"><div className="li-grid">
-                <div className="li-wide">
-                  <label className="label" htmlFor={fid('name')}>Item</label>
+                <div className="li-wide li-name">
+                  <label className="label qs-lbl" htmlFor={fid('name')}>Item</label>
                   <input id={fid('name')} className="field" value={l.name} onChange={(e) => update(l.id, { name: e.target.value })} autoComplete="off" />
                 </div>
-                <div className="li-wide">
-                  <label className="label" htmlFor={fid('detail')}>More detail (optional)</label>
+                <div className="li-wide li-detail">
+                  <label className="label qs-lbl" htmlFor={fid('detail')}>More detail (optional)</label>
                   <input id={fid('detail')} className="field" value={l.description} onChange={(e) => update(l.id, { description: e.target.value })} autoComplete="off" />
                 </div>
-                <div>
-                  <label className="label" htmlFor={fid('qty')}>Quantity</label>
+                {l.fromNotes && (
+                  <p className="li-wide hint !mt-0" data-from-notes>
+                    From your notes: &ldquo;{l.fromNotes}&rdquo;. Only you see this.
+                  </p>
+                )}
+                <div className="li-qty">
+                  <label className="label qs-lbl" htmlFor={fid('qty')}>Quantity</label>
                   <input
                     id={fid('qty')}
                     className="field num"
@@ -161,8 +167,8 @@ export default function LineItemsEditor({ quote, onChange }: { quote: Quote; onC
                     onChange={(e) => update(l.id, { qty: numOrNull(e.target.value) ?? 0 })}
                   />
                 </div>
-                <div>
-                  <label className="label" htmlFor={fid('unit')}>Unit</label>
+                <div className="li-unit">
+                  <label className="label qs-lbl" htmlFor={fid('unit')}>Unit</label>
                   <select id={fid('unit')} className="field" value={l.unit} onChange={(e) => update(l.id, { unit: e.target.value as Unit })}>
                     {UNITS.map((u) => (
                       <option key={u} value={u}>
@@ -171,8 +177,8 @@ export default function LineItemsEditor({ quote, onChange }: { quote: Quote; onC
                     ))}
                   </select>
                 </div>
-                <div>
-                  <label className="label" htmlFor={fid('price')}>Price ex GST</label>
+                <div className="li-price">
+                  <label className="label qs-lbl" htmlFor={fid('price')}>Price ex GST</label>
                   <input
                     id={fid('price')}
                     className="field num"
@@ -185,8 +191,8 @@ export default function LineItemsEditor({ quote, onChange }: { quote: Quote; onC
                     onChange={(e) => update(l.id, { unitPrice: numOrNull(e.target.value) })}
                   />
                 </div>
-                <div className="flex flex-col justify-end text-right">
-                  <span className="label !mb-1 text-muted" id={fid('tot-l')}>Line total</span>
+                <div className="flex flex-col justify-end text-right li-tot">
+                  <span className="label !mb-1 text-muted qs-lbl" id={fid('tot-l')}>Line total</span>
                   <output aria-labelledby={fid('tot-l')} className="num flex min-h-[44px] items-center justify-end font-bold">
                     {l.unitPrice == null ? 'No price' : fmtMoney(lineTotal(l))}
                   </output>
@@ -194,7 +200,7 @@ export default function LineItemsEditor({ quote, onChange }: { quote: Quote; onC
                 {offList && listItem && (
                   <div className="li-wide flex flex-wrap items-center gap-2">
                     <p className="hint !mt-0">Price list says {fmtMoney(listItem.unitPrice)} per {listItem.unit}. You have changed it for this quote.</p>
-                    <button type="button" className="btn btn-quiet btn-sm" onClick={() => update(l.id, { unitPrice: listItem.unitPrice })}>
+                    <button type="button" className="btn btn-neutral btn-sm" onClick={() => update(l.id, { unitPrice: listItem.unitPrice })}>
                       Use list price
                     </button>
                   </div>
@@ -225,7 +231,7 @@ export default function LineItemsEditor({ quote, onChange }: { quote: Quote; onC
             {removed.upgrades.length > 0 ? ` and ${removed.upgrades.length === 1 ? 'its upgrade' : 'its upgrades'}` : ''}.
           </span>
           <span className="flex items-center gap-1">
-            <button type="button" className="btn btn-quiet btn-sm" onClick={undo}>
+            <button type="button" className="btn btn-neutral btn-sm" onClick={undo}>
               <Undo2 size={16} aria-hidden="true" />
               Undo
             </button>
@@ -281,13 +287,13 @@ export default function LineItemsEditor({ quote, onChange }: { quote: Quote; onC
         </div>
       )}
 
-      <div className="flex flex-wrap items-center gap-2">
-        <button ref={pickBtn} type="button" className="btn btn-quiet" onClick={() => setPicking(true)} aria-expanded={picking}>
-          <PackagePlus size={18} aria-hidden="true" />
+      <div className="flex flex-wrap items-center gap-2 qs-adds">
+        <button ref={pickBtn} type="button" className="btn btn-add" onClick={() => setPicking(true)} aria-expanded={picking}>
+          <Plus size={16} aria-hidden="true" />
           Add from price list
         </button>
-        <button type="button" className="btn btn-quiet" onClick={addCustom}>
-          <Plus size={18} aria-hidden="true" />
+        <button type="button" className="btn btn-add" onClick={addCustom}>
+          <Plus size={16} aria-hidden="true" />
           Add your own line
         </button>
       </div>

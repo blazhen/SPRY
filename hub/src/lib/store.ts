@@ -7,9 +7,13 @@ import type {
   PriceItem, ProductType, Quote, QuoteKind, Settings, Stage, Template, Terms, TimelineEvent, TimelineKind, Upgrade,
 } from '../types'
 import { reportWriteError } from './writeError'
+import { fixExtras, type ExtrasSettings } from './extras'
+import { quoteOpensAdapter } from './quoteOpens'
 import { bulkCount, makeBulk } from './bulk'
 import { paymentAmounts, quoteTotals, roundHalfUp } from './calc'
 import { paymentRowsFor } from './due'
+import { compareTasks, taskTime } from './tasks'
+import { eventDay, getCalendarState, visitsForJob } from './calendar'
 import { addDaysISO, daysSince, fmtDate, fmtMoneyWhole, roleIndex, roleStage, setCurrentStallLimits, setCurrentWord, setStages, stallLimitProblem, stageIndex, stageList, toISODate, todayISO, uid, word } from './format'
 import { invoiceLabel, invoiceTotals, isOverdue, lineForAmount, syncInvoice } from './invoices'
 
@@ -129,6 +133,8 @@ export function fixSettings(raw: unknown): Settings {
     }
     if (Object.keys(out).length) settings.stallLimits = out as Settings['stallLimits']
   }
+  const extras = fixExtras(d.extras)
+  if (Object.keys(extras).length) settings.extras = extras
   return settings
 }
 const arr = <T>(v: T[] | undefined | null): T[] => (Array.isArray(v) ? v : [])
@@ -381,6 +387,9 @@ export interface JobMeta {
   jobReportSentAt?: string
   reviewAskedAt?: string
   lostReason?: string
+  leadSource?: string
+  actualMaterials?: number
+  actualCost?: number
   /** Hub company ids attached to the job. */
   companyRefs?: string[]
 }
@@ -389,7 +398,7 @@ const metaCache = new Map<string, JobMeta>()
 function normMeta(raw: unknown): JobMeta {
   const d = isRec(raw) ? raw : {}
   const m: JobMeta = { productType: d.productType === 'InjectaCore' ? 'InjectaCore' : 'Spray foam' }
-  const text = (k: 'businessName' | 'notes' | 'jobReportSentAt' | 'reviewAskedAt' | 'lostReason') => {
+  const text = (k: 'businessName' | 'notes' | 'jobReportSentAt' | 'reviewAskedAt' | 'lostReason' | 'leadSource') => {
     const v = d[k]
     if (typeof v === 'string' && v !== '') m[k] = v
   }
@@ -398,6 +407,11 @@ function normMeta(raw: unknown): JobMeta {
   text('jobReportSentAt')
   text('reviewAskedAt')
   text('lostReason')
+  text('leadSource')
+  for (const k of ['actualMaterials', 'actualCost'] as const) {
+    const v = d[k]
+    if (typeof v === 'number' && Number.isFinite(v) && v > 0) m[k] = v
+  }
   if (Array.isArray(d.companyRefs)) {
     const refs = d.companyRefs.filter((x): x is string => typeof x === 'string' && x !== '')
     if (refs.length) m.companyRefs = refs
@@ -407,6 +421,7 @@ function normMeta(raw: unknown): JobMeta {
 const metaOf = (j: Job): JobMeta =>
   normMeta({
     productType: j.productType, businessName: j.businessName, notes: j.notes, jobReportSentAt: j.jobReportSentAt, reviewAskedAt: j.reviewAskedAt, lostReason: j.lostReason,
+    leadSource: j.leadSource, actualMaterials: j.actualMaterials, actualCost: j.actualCost,
     companyRefs: j.participants.filter((p) => p.kind === 'company').map((p) => p.id),
   })
 const isDefaultMeta = (m: JobMeta) => m.productType === 'Spray foam' && Object.keys(m).length === 1
@@ -418,10 +433,14 @@ function withMeta(j: Job, m: JobMeta | undefined): Job {
     ...j,
     productType: m?.productType ?? 'Spray foam',
     businessName: m?.businessName ?? '',
-    notes: m?.notes ?? '',
+    // The CRM's access_notes wins; notes saved before that in the Hub-only record are the fallback.
+    notes: j.notes || m?.notes || '',
     jobReportSentAt: m?.jobReportSentAt,
     reviewAskedAt: m?.reviewAskedAt,
     lostReason: m?.lostReason,
+    leadSource: m?.leadSource,
+    actualMaterials: m?.actualMaterials,
+    actualCost: m?.actualCost,
     participants: [...j.participants.filter((p) => p.kind !== 'company'), ...companies],
   }
 }
@@ -468,6 +487,7 @@ export const syncAdapters: SyncAdapter[] = [
   { collection: 'messages', read: () => list(state.messages), apply: (r) => applyRemote({ messages: fixList(r.map((x) => x.data), fixMessage) ?? [] }), subscribe },
   { collection: 'events', read: () => list(state.events), apply: (r) => applyRemote({ events: fixList(r.map((x) => x.data), fixEvent) ?? [] }), subscribe },
   { collection: 'jobmeta', read: readJobMeta, apply: applyJobMeta, subscribe },
+  quoteOpensAdapter,
   {
     collection: 'companies',
     read: () => list(state.companies),
@@ -597,7 +617,11 @@ export function recipientContactId(ref: ParticipantRef, s: State = state): strin
 
 /** Short name: "Travis Gillespie" or "Forsyth Projects". */
 export function participantName(ref: ParticipantRef, s: State = state): string {
-  return (ref.kind === 'contact' ? getContact(ref.id, s)?.name : getCompany(ref.id, s)?.name) ?? 'Unknown'
+  const name = (ref.kind === 'contact' ? getContact(ref.id, s)?.name : getCompany(ref.id, s)?.name) || undefined
+  if (name) return name
+  // Live: the CRM gave us an id but the contact has not arrived (or could not be fetched yet). Never say Unknown for it.
+  if (LIVE && ref.kind === 'contact' && ref.id) return isContactPending(ref.id) ? 'Loading name…' : 'Name not loaded'
+  return 'Unknown'
 }
 
 /** Long name: "Travis Gillespie, Quadricon" or "Forsyth Projects (attn Lachlan Hart)". */
@@ -694,6 +718,9 @@ function jobUpdateOf(p: Partial<Job>): JobUpdate | undefined {
   if (p.name !== undefined) u.name = p.name
   if (p.ownerId) u.assignedTo = p.ownerId
   if (p.status !== undefined) u.status = p.status
+  // The job SITE address and the access notes are CRM job fields (site_address, access_notes). An empty text clears them.
+  if (p.address !== undefined) u.siteAddress = p.address
+  if (p.notes !== undefined) u.accessNotes = p.notes
   return Object.keys(u).length ? u : undefined
 }
 
@@ -781,6 +808,7 @@ function pumpContacts() {
       .finally(() => {
         contactPending.delete(id)
         contactRunning--
+        if (!state.contacts.some((c) => c.id === id)) commit({}) // refresh screens: "Loading" becomes "Name not loaded"
         pumpContacts()
       })
   }
@@ -889,12 +917,40 @@ export function createContact(c: NewContact): Contact {
   return contact
 }
 
+/** The parts of a contact that can be edited on the contact and job pages. */
+export type ContactPatch = Partial<Pick<Contact, 'name' | 'email' | 'phone' | 'mobile' | 'address' | 'note'>>
+
+/**
+ * Edit a contact. An empty text is a valid value (the field is cleared). Live: name, email, phone, mobile, home address
+ * and the private note all go to the CRM (and are undone on the screen if it refuses).
+ */
+export function updateContact(id: string, p: ContactPatch) {
+  const before = state.contacts.find((c) => c.id === id)
+  if (!before) return
+  commit({ contacts: state.contacts.map((c) => (c.id === id ? { ...c, ...p } : c)) })
+  if (!LIVE) return
+  // Hub property name to the name the server route uses.
+  const sent: [keyof ContactPatch, string][] = [['name', 'name'], ['email', 'email'], ['phone', 'phone'], ['mobile', 'mobile'], ['address', 'homeAddress'], ['note', 'privateNote']]
+  const up: Record<string, string> = {}
+  for (const [k, wire] of sent) if (p[k] !== undefined) up[wire] = p[k] as string
+  if (!Object.keys(up).length) return
+  liveWrite(
+    () => contactsApi.update(id, up),
+    () => commit({ contacts: state.contacts.map((c) => (c.id === id ? { ...c, ...Object.fromEntries(sent.filter(([k]) => p[k] !== undefined).map(([k]) => [k, before[k]])) } : c)) }),
+  )
+}
+
 /** Makes a contact. Live: POST /api/contact (an existing person with the same details is reused), and the answer is kept at once. Throws when the CRM refuses. */
 export async function createContactAsync(c: NewContact): Promise<Contact> {
   if (!LIVE) return createContact(c)
   const row = await contactsApi.create({ name: c.name, email: c.email || undefined, phone: c.phone || undefined })
-  const contact: Contact = { ...contactFromApi(row), companyId: c.companyId, mobile: c.mobile, note: c.note }
+  const contact: Contact = { ...contactFromApi(row), companyId: c.companyId, mobile: c.mobile, note: c.note, ...(c.address ? { address: c.address } : {}) }
   liveMergeContacts([contact])
+  // Mobile, home address and the private note are CRM contact fields: send them once the person exists.
+  if (c.mobile || c.address || c.note) {
+    const extra = { ...(c.mobile ? { mobile: c.mobile } : {}), ...(c.address ? { homeAddress: c.address } : {}), ...(c.note ? { privateNote: c.note } : {}) }
+    liveWrite(() => contactsApi.update(contact.id, extra), () => {})
+  }
   return contact
 }
 
@@ -902,18 +958,22 @@ export async function createContactAsync(c: NewContact): Promise<Contact> {
  * Makes a job for a contact and puts it at the top of the list at once, from the answer of the CRM (the CRM's own
  * search needs a few seconds to show a new job, so the list is never re-read straight after). Throws when the CRM refuses.
  */
-export async function createJobAsync(input: { contactId: string; name: string; value?: number }): Promise<Job> {
+export async function createJobAsync(input: { contactId: string; name: string; value?: number; address?: string; notes?: string; businessName?: string }): Promise<Job> {
   const name = input.name.trim()
   const value = Math.max(0, Number(input.value) || 0)
+  // The job SITE address and the job notes. Live: they are saved in the CRM job fields site_address and access_notes (see HUB-CHANGES-NOV2.md).
+  const extra = { address: (input.address ?? '').trim(), notes: (input.notes ?? '').trim(), businessName: (input.businessName ?? '').trim() }
   if (!LIVE) {
-    const job = fixJob({ id: uid('j'), name, value, ownerId: OWNER.id, stage: stageList()[0], participants: [{ kind: 'contact', id: input.contactId, role: 'main' }] })
+    const job = fixJob({ id: uid('j'), name, value, ...extra, ownerId: OWNER.id, stage: stageList()[0], participants: [{ kind: 'contact', id: input.contactId, role: 'main' }] })
     commit({ jobs: [job, ...state.jobs] })
     logEvent(job.id, 'stage', `${word()} created`)
     return job
   }
-  const row = await jobsApi.create({ contactId: input.contactId, title: name, monetaryValue: value })
+  const row = await jobsApi.create({ contactId: input.contactId, title: name, monetaryValue: value, ...(extra.address ? { siteAddress: extra.address } : {}), ...(extra.notes ? { accessNotes: extra.notes } : {}) })
   const job = jobFromApi(row)
   liveMergeJobs([job])
+  // The CRM keeps the site address and access notes; the business name is Hub-only.
+  if (extra.address || extra.notes || extra.businessName) patchJob(job.id, extra)
   logEvent(job.id, 'stage', `${word()} created`)
   return getJob(job.id) ?? job
 }
@@ -1076,6 +1136,18 @@ export function saveQuote(q: Quote) {
   const next = { ...q, updatedAt: new Date().toISOString() }
   const exists = state.quotes.some((x) => x.id === q.id)
   commit({ quotes: exists ? state.quotes.map((x) => (x.id === q.id ? next : x)) : [next, ...state.quotes] })
+}
+
+/**
+ * Log that staff chased a quote (they rang or messaged the customer themselves; the Hub sends nothing). Adds a time to the
+ * quote and a line to the job history. Does not change the quote's status or its updatedAt-based Sent logic.
+ */
+export function chaseQuote(id: string, totalChases?: number): void {
+  const q = state.quotes.find((x) => x.id === id)
+  if (!q) return
+  const chases = [...(q.chases ?? []), new Date().toISOString()]
+  commit({ quotes: state.quotes.map((x) => (x.id === id ? { ...x, chases, updatedAt: new Date().toISOString() } : x)) })
+  logEvent(q.jobId, 'quote', `Chased quote ${q.number} (chase ${chases.length}${totalChases ? ` of ${totalChases}` : ''})`)
 }
 
 export function deleteQuote(id: string) {
@@ -1258,7 +1330,9 @@ function sendDraftsToCrm(made: Invoice[]): Promise<boolean> {
 function createInvoicesFor(quoteId: string, total: number): Promise<boolean> {
   const q = getQuote(quoteId)
   if (!q || (q.kind !== 'addon' && q.payments.length === 0) || state.invoices.some((i) => i.quoteId === quoteId)) return Promise.resolve(true)
-  const install = getJob(q.jobId)?.appointments.filter((a) => a.kind === 'Install').sort((a, b) => (a.date < b.date ? -1 : 1))[0]
+  const job = getJob(q.jobId)
+  const installDay = job ? visitsForJob(getCalendarState().events, job).filter((e) => e.kind === 'Install').map(eventDay).sort()[0] : undefined
+  const install = installDay ? { date: installDay } : undefined
   const amounts = paymentAmounts(q.payments, total)
   const max = lastInvoiceNumber()
   const contactId = recipientContactId(q.recipient) ?? contactIdForJob(q.jobId)
@@ -1956,7 +2030,7 @@ const taskLoad = new Map<string, LoadState>()
 const sessionTasks = new Set<string>()
 const sessionDone = new Map<string, boolean>()
 
-const toJobTask = (t: ApiTask): JobTask => ({ id: t.id, title: t.title, dueDate: t.dueDate ? t.dueDate.slice(0, 10) : undefined, done: t.completed })
+const toJobTask = (t: ApiTask): JobTask => ({ id: t.id, title: t.title, ...(t.description ? { description: t.description } : {}), dueDate: t.dueDate ? t.dueDate.slice(0, 10) : undefined, ...(t.dueTime ? { dueTime: t.dueTime } : {}), done: t.completed })
 
 /** Contact ids of the people on a job. A company counts through the person its quotes go to. */
 export function peopleOfJob(job: Job, s: State = state): string[] {
@@ -2022,7 +2096,7 @@ export function taskLoadState(contactIds: string[]): LoadState {
 
 /** Tasks of one contact (live). Open ones first, soonest due first. */
 export function tasksForContact(contactId: string): JobTask[] {
-  return [...(tasksByContact.get(contactId) ?? [])].sort((a, b) => Number(a.done) - Number(b.done) || (a.dueDate ?? '9999').localeCompare(b.dueDate ?? '9999'))
+  return [...(tasksByContact.get(contactId) ?? [])].sort((a, b) => Number(a.done) - Number(b.done) || compareTasks(a, b))
 }
 
 const userIdOf = (id?: string) => (id && liveUsers.some((u) => u.id === id) ? id : undefined)
@@ -2046,13 +2120,27 @@ function toggleLive(contactId: string, taskId: string, jobId?: string) {
   )
 }
 
-function addLive(contactId: string, title: string, dueDate: string | undefined, who: string | undefined, jobId?: string): JobTask {
-  const temp: JobTask = { id: `${PENDING}${uid('task')}`, title, dueDate: dueDate || undefined, done: false, assigneeId: who }
+/** The optional extra parts of a task. */
+export interface TaskExtra {
+  description?: string
+  /** 'HH:MM' in the Hub time zone; '' or missing = all day. */
+  dueTime?: string
+}
+const extraOf = (x?: TaskExtra): TaskExtra => {
+  const o: TaskExtra = {}
+  if (x?.description?.trim()) o.description = x.description.trim()
+  if (x?.dueTime && taskTime({ dueTime: x.dueTime })) o.dueTime = taskTime({ dueTime: x.dueTime })
+  return o
+}
+
+function addLive(contactId: string, title: string, dueDate: string | undefined, who: string | undefined, jobId?: string, extra?: TaskExtra): JobTask {
+  const ex = dueDate ? extraOf(extra) : { ...extraOf(extra), dueTime: undefined }
+  const temp: JobTask = { id: `${PENDING}${uid('task')}`, title, ...(ex.description ? { description: ex.description } : {}), dueDate: dueDate || undefined, ...(ex.dueTime ? { dueTime: ex.dueTime } : {}), done: false, assigneeId: who }
   sessionTasks.add(temp.id)
   setContactTasks(contactId, [...(tasksByContact.get(contactId) ?? []), temp])
   liveWrite(
     async () => {
-      const row = await tasksApi.add({ contactId, title, dueDate: dueDate || undefined, assignedTo: userIdOf(who) })
+      const row = await tasksApi.add({ contactId, title, description: ex.description, dueDate: dueDate || undefined, dueTime: ex.dueTime, assignedTo: userIdOf(who) })
       if (!row.id) throw new Error('the CRM did not return the task')
       sessionTasks.add(row.id)
       const real: JobTask = { ...toJobTask(row), title: row.title || title, assigneeId: who }
@@ -2071,9 +2159,9 @@ function addLive(contactId: string, title: string, dueDate: string | undefined, 
 }
 
 /** A task for a contact, not tied to a job (live; the CRM keeps tasks on the person). */
-export function addContactTask(contactId: string, title: string, dueDate?: string, assigneeId?: string): JobTask | undefined {
+export function addContactTask(contactId: string, title: string, dueDate?: string, assigneeId?: string, extra?: TaskExtra): JobTask | undefined {
   if (!title.trim()) return undefined
-  return addLive(contactId, title.trim(), dueDate, assigneeId || undefined, jobsForContact(contactId)[0]?.id)
+  return addLive(contactId, title.trim(), dueDate, assigneeId || undefined, jobsForContact(contactId)[0]?.id, extra)
 }
 
 export function toggleContactTask(contactId: string, taskId: string) {
@@ -2093,15 +2181,60 @@ export function toggleTask(jobId: string, taskId: string) {
   logEvent(jobId, 'task', `${t.done ? 'Task put back to do' : 'Task done'}: ${t.title}`)
 }
 
-export function addTask(jobId: string, title: string, dueDate?: string, assigneeId?: string): JobTask | undefined {
+/** Change a task's title, description, date or time (the fields you pass; description '' clears it, dueTime '' makes it all day). */
+export function updateTask(jobId: string, taskId: string, patch: { title?: string; description?: string; dueDate?: string; dueTime?: string }) {
+  const j = getJob(jobId)
+  const t = j?.tasks.find((x) => x.id === taskId)
+  if (!j || !t) return
+  const title = patch.title !== undefined ? patch.title.trim() : t.title
+  if (!title) return
+  const next: JobTask = { ...t, title }
+  if (patch.description !== undefined) {
+    if (patch.description.trim()) next.description = patch.description.trim()
+    else delete next.description
+  }
+  if (patch.dueDate !== undefined) next.dueDate = patch.dueDate || undefined
+  if (patch.dueTime !== undefined) {
+    const tm = taskTime({ dueTime: patch.dueTime })
+    if (tm) next.dueTime = tm
+    else delete next.dueTime
+  }
+  if (!next.dueDate) delete next.dueTime
+  const changed = (['title', 'description', 'dueDate', 'dueTime'] as const).some((k) => next[k] !== t[k])
+  if (!changed) return
+  if (LIVE) {
+    const owner = taskOwner.get(taskId)
+    if (!owner || taskId.startsWith(PENDING)) return
+    const put = (x: JobTask) => setContactTasks(owner, (tasksByContact.get(owner) ?? []).map((y) => (y.id === taskId ? x : y)))
+    put(next)
+    // The server wants the date whenever it gets a time, and a date without a time means all day: send both together.
+    const dateChanged = next.dueDate !== t.dueDate || next.dueTime !== t.dueTime
+    liveWrite(
+      () =>
+        tasksApi.update(owner, taskId, {
+          ...(next.title !== t.title ? { title: next.title } : {}),
+          ...(next.description !== t.description ? { description: next.description ?? '' } : {}),
+          ...(dateChanged && next.dueDate ? { dueDate: next.dueDate, dueTime: next.dueTime ?? '' } : {}),
+        }),
+      () => put(t),
+      () => logEvent(jobId, 'task', `Task changed: ${next.title}`),
+    )
+    return
+  }
+  patchJob(jobId, { tasks: j.tasks.map((x) => (x.id === taskId ? next : x)) })
+  logEvent(jobId, 'task', `Task changed: ${next.title}`)
+}
+
+export function addTask(jobId: string, title: string, dueDate?: string, assigneeId?: string, extra?: TaskExtra): JobTask | undefined {
   const j = getJob(jobId)
   if (!j || !title.trim()) return undefined
   const who = assigneeId || j.ownerId
   if (LIVE) {
     const contactId = contactIdForJob(jobId)
-    return contactId ? addLive(contactId, title.trim(), dueDate, who, jobId) : undefined
+    return contactId ? addLive(contactId, title.trim(), dueDate, who, jobId, extra) : undefined
   }
-  const t: JobTask ={ id: uid('task'), title: title.trim(), dueDate: dueDate || undefined, done: false, assigneeId: who }
+  const ex = extraOf(extra)
+  const t: JobTask = { id: uid('task'), title: title.trim(), ...(ex.description ? { description: ex.description } : {}), dueDate: dueDate || undefined, ...(dueDate && ex.dueTime ? { dueTime: ex.dueTime } : {}), done: false, assigneeId: who }
   patchJob(jobId, { tasks: [...j.tasks, t] })
   logEvent(jobId, 'task', `Task added for ${getOwner(who)}: ${t.title}`)
   return t
@@ -2159,6 +2292,15 @@ export function setStallLimit(stage: Stage, limit: { slow: number | null; stuck:
   if (error) return { ok: false, error }
   commit({ settings: { ...state.settings, stallLimits: { ...state.settings.stallLimits, [stage]: { slow: limit.slow, stuck: limit.stuck } } } })
   return { ok: true }
+}
+
+/** Change the Round 5 extras settings. A key set to undefined goes back to its default. */
+export function updateExtras(patch: Partial<ExtrasSettings>) {
+  const next: Record<string, unknown> = { ...state.settings.extras, ...patch }
+  for (const k of Object.keys(next)) if (next[k] === undefined) delete next[k]
+  const { extras: _old, ...rest } = state.settings
+  void _old
+  commit({ settings: Object.keys(next).length ? { ...rest, extras: next as ExtrasSettings } : rest })
 }
 
 /** Forget every saved stall limit: all stages go back to the built-in defaults. */

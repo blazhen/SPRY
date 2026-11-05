@@ -1,0 +1,46 @@
+/* Jobs list: the morning overview strip, the two filter layouts, and the stall rows. Colours come from existing tokens. */
+/* Quick-start strip */
+.jp-quick-list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--d-gap, 0.75rem); list-style: none; margin: 0; padding: 0; }
+.jp-quick-list li { min-width: 0; }
+.jp-quick-btn {
+  display: flex; flex-direction: column; gap: 0.15rem; align-items: flex-start; width: 100%; min-height: 44px;
+  padding: var(--d-pad, 0.75rem) 1rem; text-align: left; cursor: pointer;
+  background: rgb(var(--c-surface)); color: rgb(var(--c-ink));
+  border: 1px solid rgb(var(--c-control)); border-radius: var(--d-radius, 10px);
+}
+.jp-quick-btn:hover { background: rgb(var(--c-navy-wash)); }
+.jp-quick-btn[aria-pressed='true'] { background: rgb(var(--c-navy)); color: rgb(var(--c-on-navy)); border-color: rgb(var(--c-navy)); }
+.jp-quick-label { display: inline-flex; align-items: center; gap: 0.5rem; font-weight: 700; font-size: 1.0625rem; }
+.jp-quick-hint { font-size: 0.875rem; color: rgb(var(--c-muted)); }
+.jp-quick-btn[aria-pressed='true'] .jp-quick-hint { color: rgb(var(--c-on-navy)); }
+.jp-quick-btn.jp-stalled { border-left: 6px solid rgb(var(--c-hot)); }
+.jp-quick-btn.jp-stalled .jp-quick-label svg { color: rgb(var(--c-hot)); }
+.jp-quick-btn.jp-stalled[aria-pressed='true'] .jp-quick-label svg { color: inherit; }
+.jp-quick-clear { grid-column: 1 / -1; }
+@media (max-width: 640px) {
+  .jp-quick-list { grid-template-columns: 1fr; }
+}
+/* Filters */
+.jp-filters-adv { display: grid; grid-template-columns: 2fr 1fr; gap: var(--d-gap, 1rem); align-items: end; }
+.jp-chipgroup { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 1rem; }
+.jp-chipgroup .label { margin: 0; min-width: 7.5rem; }
+.jp-chips { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.jp-row { display: grid; grid-template-columns: minmax(12rem, 2fr) repeat(3, minmax(9rem, 1fr)); gap: 0.5rem; align-items: center; }
+@media (max-width: 760px) {
+  .jp-filters-adv { grid-template-columns: 1fr; }
+  .jp-row { grid-template-columns: 1fr 1fr; }
+  .jp-row-search { grid-column: 1 / -1; }
+}
+/* Stall rows: a bar, a tint and a word, so colour is never the only signal. */
+.jp-stall { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 0.4rem 0.6rem; }
+.jp-stall-word { display: inline-flex; align-items: center; gap: 0.25rem; font-weight: 700; font-size: 0.875rem; color: rgb(var(--st-hot-fg)); text-transform: uppercase; letter-spacing: 0.03em; }
+.jp-table tr.jp-row-slow .jp-stall-word { color: rgb(var(--c-amber)); }
+.jp-table tbody tr.jp-row-stuck { background: rgb(var(--c-hot-wash)); box-shadow: inset 6px 0 0 rgb(var(--c-hot)); }
+.jp-table tbody tr.jp-row-slow { box-shadow: inset 4px 0 0 rgb(var(--c-amber)); }
+.jp-table tbody tr.jp-row-stuck:hover { background: rgb(var(--c-hot-wash)); filter: brightness(0.97); }
+@media (max-width: 760px) {
+  .jp-table tbody tr.jp-row-stuck { border-radius: 6px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .jp-quick-btn { transition: none; }
+}

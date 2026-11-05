@@ -1,12 +1,14 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { Check, Printer } from 'lucide-react'
 import QuoteSheet from '../components/QuoteSheet'
+import { CustomerPhotos, useMockCustomerPhotos, type CustomerPhoto } from '../components/photos/CustomerPhotos'
 import { Dialog } from '../components/ui'
 import { BUSINESS, DATA_SOURCE } from '../config'
 import { effectiveStatus, paymentAmounts, quoteTotals } from '../lib/calc'
 import { fmtDate, fmtMoney } from '../lib/format'
 import { useRoute } from '../lib/router'
 import { markQuoteOpened } from '../lib/quoteStatus'
+import { recordMockOpen } from '../lib/quoteOpens'
 import { linkKey, publicQuoteApi, type PublicQuote, type PublicResult } from '../lib/publicQuote'
 import { acceptQuote, declineQuote, getJob, getQuote, liveMergeContacts, liveMergeJobs, setUpgradeTicked, useStore } from '../lib/store'
 import type { Job, Quote } from '../types'
@@ -34,12 +36,15 @@ function MockCustomerView() {
   const quote = getQuote(id, s)
   const job = quote ? getJob(quote.jobId, s) : undefined
   const countedRef = useRef('')
+  const mockPhotos = useMockCustomerPhotos(quote?.jobId ?? '')
 
   // DEMO: opening the link marks a sent quote as opened (once per visit).
   useEffect(() => {
     if (id && countedRef.current !== id) {
       countedRef.current = id
       markQuoteOpened(id)
+      // Round 5: the count behind "Opened, call now" (the server does this in live mode).
+      if (quote?.status === 'Sent') recordMockOpen(id)
     }
   }, [id])
 
@@ -51,6 +56,7 @@ function MockCustomerView() {
       quote={quote}
       job={job}
       businessName={BUSINESS.name}
+      photos={mockPhotos}
       onToggle={(lineId) => {
         for (const u of quote.upgrades.filter((x) => x.lineId === lineId)) setUpgradeTicked(quote.id, u.id, !u.ticked)
       }}
@@ -86,7 +92,9 @@ function LiveCustomerView() {
   const chain = useRef<Promise<unknown>>(Promise.resolve())
   const latest = useRef<PublicQuote | null>(null)
 
-  const show = (d: PublicQuote) => {
+  const show = (d0: PublicQuote) => {
+    // Only the first load carries the photos; later answers keep them.
+    const d = d0.photos ? d0 : { ...d0, photos: latest.current?.photos }
     latest.current = d
     liveMergeContacts([{ id: d.quote.recipient.id, name: d.recipientName, email: '', phone: '', placeholder: true }])
     liveMergeJobs([stubJob(d)])
@@ -148,6 +156,7 @@ function LiveCustomerView() {
       quote={q}
       job={getJob(q.jobId, s) ?? stubJob(data)}
       businessName={data.businessName}
+      photos={data.photos}
       error={error}
       onToggle={(lineId) => {
         const before = latest.current ?? data
@@ -183,9 +192,11 @@ interface ScreenProps {
   onDecline: (reason: string) => boolean | Promise<boolean>
   /** A calm message under the buttons when a call to the server failed. */
   error?: string
+  /** Inspection photos staff put on the quote. */
+  photos?: CustomerPhoto[]
 }
 
-function QuoteScreen({ quote, job, businessName, onToggle, onAccept, onDecline, error }: ScreenProps) {
+function QuoteScreen({ quote, job, businessName, onToggle, onAccept, onDecline, error, photos }: ScreenProps) {
   const [confirmOpen, setConfirmOpen] = useState(false)
   const [declineOpen, setDeclineOpen] = useState(false)
   const [reason, setReason] = useState('')
@@ -232,8 +243,8 @@ function QuoteScreen({ quote, job, businessName, onToggle, onAccept, onDecline, 
 
       <div className="no-print mb-6 flex flex-wrap items-center justify-between gap-3">
         <p className="text-[1.25rem]">Here is your quote from {businessName}.</p>
-        <button type="button" className="btn btn-quiet" onClick={() => window.print()}>
-          <Printer size={18} aria-hidden="true" />
+        <button type="button" className="btn btn-neutral" onClick={() => window.print()}>
+          <Printer size={16} aria-hidden="true" />
           Print or save a copy
         </button>
       </div>
@@ -291,6 +302,8 @@ function QuoteScreen({ quote, job, businessName, onToggle, onAccept, onDecline, 
 
       <QuoteSheet quote={quote} job={job} mode="customer" onToggleUpgrade={open ? toggle : undefined} businessName={businessName} />
 
+      <CustomerPhotos photos={photos ?? []} />
+
       {open && (
         <section className="no-print mt-6 rounded-lg bg-raise p-5 sm:p-6" style={{ border: '1px solid rgb(var(--c-line))' }} aria-label="Accept or decline">
           <h2 className="text-[1.5rem]">Ready to go ahead?</h2>
@@ -304,7 +317,7 @@ function QuoteScreen({ quote, job, businessName, onToggle, onAccept, onDecline, 
             <button type="button" className="btn btn-primary btn-lg min-h-[56px] px-10 text-[1.25rem]" onClick={() => setConfirmOpen(true)}>
               Accept this quote
             </button>
-            <button type="button" className="btn btn-quiet min-h-[48px]" onClick={() => setDeclineOpen(true)}>
+            <button type="button" className="btn btn-neutral min-h-[48px]" onClick={() => setDeclineOpen(true)}>
               No thanks
             </button>
           </div>
@@ -323,7 +336,7 @@ function QuoteScreen({ quote, job, businessName, onToggle, onAccept, onDecline, 
         title="Accept this quote?"
         footer={
           <>
-            <button type="button" className="btn btn-quiet" onClick={() => setConfirmOpen(false)}>
+            <button type="button" className="btn btn-neutral" onClick={() => setConfirmOpen(false)}>
               Go back
             </button>
             <button type="button" className="btn btn-primary" onClick={accept}>
@@ -360,7 +373,7 @@ function QuoteScreen({ quote, job, businessName, onToggle, onAccept, onDecline, 
         title="Turn this quote down?"
         footer={
           <>
-            <button type="button" className="btn btn-quiet" onClick={() => setDeclineOpen(false)}>
+            <button type="button" className="btn btn-neutral" onClick={() => setDeclineOpen(false)}>
               Go back
             </button>
             <button type="button" className="btn btn-danger" onClick={decline}>

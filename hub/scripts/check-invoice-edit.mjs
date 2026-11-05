@@ -6,6 +6,9 @@ const server = process.argv[2] ? null : await startPreview(5198)
 const SHOTS = 'F:\\Systemations Clients\\SPRY\\hub\\shots\\check\\'
 const b = await chromium.launch({ channel: 'msedge', headless: true })
 const p = await b.newPage({ viewport: { width: 1440, height: 1000 } })
+// HUB_LAYOUT=advanced (default) or compact picks the Hub layout. Compact hides the "Still to pay" line on the job's invoice cards on purpose.
+const LAYOUT = process.env.HUB_LAYOUT || 'advanced'
+await p.addInitScript((l) => { if (!sessionStorage.getItem('layout-set')) localStorage.setItem('hub.layout.v1', l) }, LAYOUT)
 const errors = []
 p.on('console', (m) => m.type() === 'error' && errors.push(m.text()))
 p.on('pageerror', (e) => errors.push(String(e)))
@@ -22,20 +25,27 @@ await p.evaluate(() => localStorage.clear())
 await p.reload()
 await p.waitForLoadState('networkidle')
 
-// Payments tab lists invoices
-await p.getByRole('tab', { name: /Payments/ }).first().click()
-const panel = p.locator('main')
-ok('Payments tab has labelled headers', (await panel.getByRole('columnheader', { name: 'Invoice no' }).count()) > 0)
-ok('Payments tab has summary', /Invoiced/.test(await panel.innerText()) && /Still to pay/.test(await panel.innerText()))
-ok('Payments tab links to invoices', (await panel.locator('a[href^="#/invoices/"]').count()) > 0)
+// The Invoices section is in the right panel of the job page (Compact keeps it closed): open it if it is closed.
+const openPayments = async () => {
+  const fold = p.locator('#job-invoices-section .sec-btn')
+  await fold.waitFor({ timeout: 5000 })
+  if ((await fold.getAttribute('aria-expanded')) !== 'true') await fold.click()
+  await p.waitForTimeout(250)
+}
+// Invoices section lists invoices
+await openPayments()
+const panel = p.locator('#job-invoices-section')
+ok('Invoices section lists the invoices', (await panel.locator('ul[aria-label="Invoices"] li[data-invoice]').count()) > 0)
+if (LAYOUT === 'advanced') ok('Invoices section shows what is still to pay', /still to pay/i.test(await panel.innerText()))
+ok('Invoices section links to invoices', (await panel.locator('a[href^="#/invoices/"], a[href*="/invoice/"]').count()) > 0)
 
 // New invoice from the job: skips the job step, deposit from quote
-await panel.getByRole('button', { name: 'New invoice' }).first().click()
+await panel.getByRole('button', { name: 'Create invoice' }).first().click()
 const dlg = p.getByRole('dialog')
 ok('dialog opens at the type step', await dlg.getByText('What kind of invoice is it?').isVisible())
 ok('start from quote on by default', await dlg.getByLabel('Start from the accepted quote').isChecked())
 await dlg.getByRole('radio', { name: /Deposit/ }).check()
-await dlg.getByRole('button', { name: 'Start the invoice' }).click()
+await dlg.getByRole('button', { name: /^Start the (deposit |final )?invoice$/ }).click()
 await p.waitForURL(/#\/invoices\/[^/]+\/edit/)
 ok('editor opened', /\/edit$/.test(p.url()), p.url())
 await p.waitForTimeout(300)
@@ -105,12 +115,16 @@ ok('draft survives reload', (await p.locator('[role=group][aria-label^="Line "]'
 // Back on the job: invoice listed
 await p.goto(`${BASE}/#/jobs/j11`)
 await p.waitForLoadState('networkidle')
-await p.getByRole('tab', { name: /Payments/ }).first().click()
+await openPayments()
 ok('new draft listed on job', (await p.locator('main').getByText('Draft').count()) > 0)
 
 // Contact page shows Invoices section
 await p.goto(`${BASE}/#/contacts/c3`)
 await p.waitForLoadState('networkidle')
+const invFold = p.getByRole('button', { name: /^Invoices/ }).first()
+await invFold.waitFor({ timeout: 5000 })
+if ((await invFold.getAttribute('aria-expanded')) !== 'true') await invFold.click()
+await p.waitForTimeout(200)
 const cb = await p.locator('main').innerText()
 ok('contact page has Invoices section', /Invoices/.test(cb) && (await p.locator('main a[href^="#/invoices/"]').count()) > 0)
 

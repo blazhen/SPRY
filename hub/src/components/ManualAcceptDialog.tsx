@@ -5,7 +5,9 @@ import { VIA_LABEL, VIA_OPTIONS } from '../lib/due'
 import { fmtMoney } from '../lib/format'
 import { acceptQuote, getQuote, saveQuote } from '../lib/store'
 import type { AcceptedVia, Quote } from '../types'
-import { Dialog, Notice, toast } from './ui'
+import { noteForAction } from '../lib/confirmNotes'
+import { MayHappen } from './confirmText'
+import { Dialog, toast } from './ui'
 
 /**
  * Staff record an acceptance that did not come from the click in the email:
@@ -58,38 +60,37 @@ export function ManualAcceptDialog({ open, onClose, quote, onDone }: { open: boo
       title="Mark as accepted"
       footer={
         <>
-          <button type="button" className="btn btn-quiet" onClick={onClose}>
+          <button type="button" className="btn btn-neutral" data-autofocus onClick={onClose}>
             Cancel
           </button>
-          <button type="button" className="btn btn-primary btn-lg" onClick={confirm}>
-            <Check size={20} aria-hidden="true" />
+          <button type="button" className="btn btn-primary" onClick={confirm}>
+            <Check size={18} aria-hidden="true" />
             Yes, mark as accepted
           </button>
         </>
       }
     >
-      <div className="space-y-5">
-        <p className="t-body text-muted">
+      <div className="dg-stack">
+        <p className="dg-muted dg-adv">
           Use this when the customer said yes to quote {quote.number} on the phone, or sent a purchase order, instead of clicking Accept in the email.
         </p>
 
-        <fieldset className="min-w-0 border-0 p-0">
-          <legend className="label">How did they say yes?</legend>
-          <div className="space-y-1">
+        <fieldset className="dg-fs">
+          <legend className="dg-legend">How did they say yes?</legend>
+          <div className="dg-list" role="radiogroup" aria-label="How did they say yes?">
             {VIA_OPTIONS.map((c) => (
-              <label key={c.id} htmlFor={`${uid}-${c.id}`} className="t-body flex min-h-[48px] cursor-pointer items-center gap-3 py-1">
+              <label key={c.id} htmlFor={`${uid}-${c.id}`} className="dg-row">
                 <input
                   id={`${uid}-${c.id}`}
                   type="radio"
                   name={`${uid}-via`}
-                  className="h-5 w-5 shrink-0 accent-[rgb(var(--c-navy))]"
                   checked={via === c.id}
                   onChange={() => {
                     setVia(c.id)
                     setErr('')
                   }}
                 />
-                <span className="font-bold">{c.label}</span>
+                <span className="dg-name font-bold">{c.label}</span>
               </label>
             ))}
           </div>
@@ -113,7 +114,7 @@ export function ManualAcceptDialog({ open, onClose, quote, onDone }: { open: boo
               aria-describedby={err ? `${uid}-po-e` : undefined}
             />
             {err && (
-              <p id={`${uid}-po-e`} className="err">
+              <p id={`${uid}-po-e`} className="err" role="alert">
                 {err}
               </p>
             )}
@@ -121,13 +122,13 @@ export function ManualAcceptDialog({ open, onClose, quote, onDone }: { open: boo
         )}
 
         {quote.upgrades.length > 0 && (
-          <fieldset className="min-w-0 border-0 p-0">
-            <legend className="label">Extras they said yes to</legend>
-            <div className="space-y-1">
+          <fieldset className="dg-fs">
+            <legend className="dg-legend">Extras they said yes to</legend>
+            <div className="dg-list">
               {quote.upgrades.map((u) => {
                 const amt = u.unitPrice == null ? null : upgradeTotal(u, quote.lines)
                 return (
-                  <label key={u.id} htmlFor={`${uid}-u-${u.id}`} className="flex min-h-[44px] cursor-pointer items-center gap-3 py-1">
+                  <label key={u.id} htmlFor={`${uid}-u-${u.id}`} className="dg-row dg-check">
                     <input
                       id={`${uid}-u-${u.id}`}
                       type="checkbox"
@@ -135,8 +136,8 @@ export function ManualAcceptDialog({ open, onClose, quote, onDone }: { open: boo
                       checked={chosen.includes(u.id)}
                       onChange={() => setChosen((cur) => (cur.includes(u.id) ? cur.filter((x) => x !== u.id) : [...cur, u.id]))}
                     />
-                    <span className="min-w-0 flex-1 break-words">{u.name}</span>
-                    <span className="num shrink-0 font-bold">{amt == null ? 'No price' : `+${fmtMoney(amt)}`}</span>
+                    <span className="dg-name">{u.name}</span>
+                    <span className="num dg-end font-bold">{amt == null ? 'No price' : `+${fmtMoney(amt)}`}</span>
                   </label>
                 )
               })}
@@ -144,12 +145,14 @@ export function ManualAcceptDialog({ open, onClose, quote, onDone }: { open: boo
           </fieldset>
         )}
 
-        <div className="flex items-baseline justify-between gap-4 rounded-md bg-navy-wash px-4 py-3">
+        <div className="dg-total">
           <span className="font-bold">Total with GST</span>
-          <span className="num font-display text-2xl">{fmtMoney(total)}</span>
+          <span className="num dg-amt">{fmtMoney(total)}</span>
         </div>
 
-        <Notice>Are you sure? This marks the quote as accepted and the job moves on. Demo only: it is saved in this browser and nothing is sent.</Notice>
+        <MayHappen note={noteForAction('accept-quote')} />
+
+        <p className="dg-muted">Demo only: saved in this browser, nothing is sent.</p>
       </div>
     </Dialog>
   )

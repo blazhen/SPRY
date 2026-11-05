@@ -100,8 +100,8 @@ export default function Templates() {
                           <ArrowRight size={18} aria-hidden="true" />
                         </button>
                         {!t.builtIn && (
-                          <button type="button" className="btn btn-danger btn-lg" onClick={() => setToDelete(t)} aria-label={`Delete template ${t.name}`}>
-                            <Trash2 size={18} aria-hidden="true" />
+                          <button type="button" className="btn btn-danger" onClick={() => setToDelete(t)} aria-label={`Delete template ${t.name}`}>
+                            <Trash2 size={16} aria-hidden="true" />
                             Delete
                           </button>
                         )}
@@ -126,7 +126,7 @@ export default function Templates() {
         title={`Use "${toUse?.name ?? ''}"`}
         footer={
           <>
-            <button type="button" className="btn btn-quiet btn-lg" onClick={closeUse}>
+            <button type="button" className="btn btn-neutral" onClick={closeUse}>
               Cancel
             </button>
             <button type="button" className="btn btn-primary btn-lg" onClick={apply}>
@@ -158,6 +158,7 @@ export default function Templates() {
 
       <ConfirmDialog
         open={!!toDelete}
+        action="delete-other"
         onClose={() => setToDelete(null)}
         title="Delete this template?"
         confirmLabel="Delete template"

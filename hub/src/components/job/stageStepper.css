@@ -1,0 +1,55 @@
+/* The pipeline stepper under the job title. Existing tokens only. State is never colour alone: tick, "now", number, outline, text. */
+.ss { position: relative; min-width: 0; }
+.ss-list { list-style: none; margin: 0; padding: 0; display: flex; gap: 3px; width: 100%; }
+.ss-li { flex: 1 1 0; min-width: 0; display: flex; }
+.ss-li:has(.ss-current) { flex-grow: 1.5; }
+.ss-li-dot { flex: 0 0 14px; }
+
+.ss-step {
+  position: relative; flex: 1 1 auto; min-width: 0; height: 44px; padding: 2px 4px; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 1px; border-radius: 8px; border: 2px solid rgb(var(--c-control)); background: transparent; color: rgb(var(--c-muted)); cursor: pointer; text-align: center;
+  transition: background-color 120ms, border-color 120ms;
+}
+.ss-mark { display: inline-flex; align-items: center; justify-content: center; gap: 2px; min-height: 13px; font-size: 0.6875rem; line-height: 1; font-weight: 800; letter-spacing: 0.02em; text-transform: uppercase; white-space: nowrap; }
+.ss-name { display: block; max-width: 100%; font-size: 0.75rem; line-height: 1.1; font-weight: 700; overflow-wrap: anywhere; text-wrap: balance; }
+.ss-step:hover { background: rgb(var(--c-navy-wash)); }
+
+/* Done: filled, with a tick. */
+.ss-done { background: rgb(var(--c-navy-wash)); border-color: rgb(var(--c-navy)); color: rgb(var(--c-navy)); }
+.ss-done:hover { background: rgb(var(--c-navy) / 0.18); }
+/* Current: strong. Over the limit: amber (slow) or red (stuck); the words are in the label and the detail line. */
+.ss-current { background: rgb(var(--c-navy)); border-color: rgb(var(--c-navy)); color: rgb(var(--c-on-navy, 255 255 255)); }
+.ss-current:hover { background: rgb(var(--c-navy)); filter: brightness(1.15); }
+.ss-current.ss-slow { background: rgb(var(--c-amber)); border-color: rgb(var(--c-amber)); }
+.ss-current.ss-stuck { background: rgb(var(--c-hot)); border-color: rgb(var(--c-hot)); }
+/* Upcoming: outlined (the base). The Lost end state: red, double border, the word "lost". */
+.ss-ended { background: rgb(var(--c-hot)); border-color: rgb(var(--c-hot)); color: rgb(var(--c-on-navy, 255 255 255)); border-style: double; border-width: 4px; }
+.ss-ended:hover { background: rgb(var(--c-hot)); filter: brightness(0.92); }
+
+.ss-step:focus-visible { outline: 3px solid rgb(var(--c-ink)); outline-offset: 2px; z-index: 2; }
+
+/* A dot for a step whose name is hidden on a phone. The button keeps a full-height tap area. */
+.ss-dot { padding: 0; border: 0; background: transparent; justify-content: center; }
+.ss-dot:hover { background: transparent; }
+.ss-pip { display: inline-flex; align-items: center; justify-content: center; width: 12px; height: 12px; border-radius: 50%; border: 2px solid rgb(var(--c-control)); }
+.ss-dot.ss-done .ss-pip { background: rgb(var(--c-navy)); border-color: rgb(var(--c-navy)); color: rgb(var(--c-on-navy, 255 255 255)); }
+
+.ss-tip {
+  position: absolute; z-index: 30; width: max-content; max-width: min(22rem, 100%); padding: 0.5rem 0.75rem; border-radius: 8px;
+  background: rgb(var(--c-bar)); color: rgb(var(--c-on-bar)); box-shadow: var(--shadow-pop); font-size: var(--d-small); pointer-events: none;
+}
+.ss-tip p { margin: 0; }
+.ss-tip p + p { margin-top: 0.2rem; }
+.ss-tip-h { font-weight: 800; font-size: var(--d-text); }
+.ss-tip-phase { font-weight: 400; opacity: 0.85; }
+
+.ss-detail { display: grid; gap: 0.125rem; min-width: 0; }
+.ss-detail-line { margin: 0; display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.1rem 0.9rem; font-size: var(--d-small); color: rgb(var(--c-muted)); }
+.ss-detail-line strong { color: rgb(var(--c-ink)); font-size: var(--d-text); }
+.ss-fact-slow, .ss-fact-stuck { color: rgb(var(--c-ink)); font-weight: 800; }
+
+@media (max-width: 640px) {
+  .ss-list { gap: 2px; }
+  .ss-step { padding-inline: 2px; }
+}
+@media (prefers-reduced-motion: reduce) { .ss-step { transition: none; } }

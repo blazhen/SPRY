@@ -1,0 +1,73 @@
+/* Calm dialogs (round 8 stage 4). The shared Dialog frame, one-line option rows, and the small-screen fit.
+   Compact uses the --d-* tokens from frame.css; Advanced keeps a little more room and words. No new colours. */
+.dg-panel {
+  --dg-row: 2.25rem; /* a pick row: 36px */
+  --dg-btn: 2.5rem;
+  --dg-pad: 1rem;
+  display: flex; flex-direction: column; width: 100%; min-height: 0;
+  max-height: calc(100vh - 2rem); max-height: calc(100dvh - 2rem);
+  border-radius: var(--d-radius, 12px);
+}
+:root .dg-panel { --dg-row: 2.5rem; --dg-btn: 2.75rem; --dg-pad: 1.25rem; }
+@media (pointer: coarse) { .dg-panel { --dg-row: 2.75rem; --dg-btn: 2.75rem; } }
+.dg-md { max-width: 28rem; }
+.dg-lg { max-width: 36rem; }
+:root .dg-md { max-width: 30rem; }
+:root .dg-lg { max-width: 40rem; }
+
+.dg-head { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; padding: 0.5rem 0.5rem 0.5rem var(--dg-pad); border-bottom: 1px solid rgb(var(--c-line)); flex: none; }
+.dg-title { margin: 0; min-width: 0; overflow-wrap: anywhere; font-family: var(--font-body); font-size: var(--d-head, 1.125rem); font-weight: 700; letter-spacing: 0; line-height: 1.25; }
+:root .dg-title { font-size: 1.25rem; }
+.dg-x.btn { min-height: var(--dg-row); min-width: var(--dg-row); padding: 0; flex: none; }
+.dg-body { flex: 1 1 auto; min-height: 0; overflow-y: auto; padding: var(--d-pad, 0.75rem) var(--dg-pad); font-size: var(--d-text, 1rem); }
+.dg-foot { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 0.5rem; padding: 0.625rem var(--dg-pad); border-top: 1px solid rgb(var(--c-line)); flex: none; background: rgb(var(--c-surface, 255 255 255)); border-radius: 0 0 var(--d-radius, 12px) var(--d-radius, 12px); }
+
+/* inside the body */
+.dg-stack { display: flex; flex-direction: column; gap: var(--d-gap, 0.75rem); min-width: 0; }
+.dg-body .label { font-size: var(--d-text, 1rem); margin-bottom: 0.25rem; }
+.dg-body .field { font-size: var(--d-field, 1rem); min-height: var(--d-field-h, 2.5rem); }
+.dg-body textarea.field { min-height: 0; }
+.dg-body .hint { font-size: var(--d-small, 0.9375rem); margin-top: 0.25rem; }
+.dg-body .err { font-size: var(--d-text, 1rem); margin-top: 0.25rem; }
+.dg-muted { margin: 0; font-size: var(--d-small, 0.9375rem); color: rgb(var(--c-muted)); }
+.dg-grid2, .dg-grid3 { display: grid; gap: var(--d-gap, 0.75rem); grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 640px) {
+  .dg-grid2 { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .dg-grid3 { grid-template-columns: minmax(0, 1fr) minmax(0, 0.9fr) minmax(0, 1.1fr); }
+}
+.dg-fs { border: 0; margin: 0; padding: 0; min-width: 0; }
+.dg-legend { padding: 0; margin: 0 0 0.25rem; font-size: var(--d-text, 1rem); font-weight: 700; }
+
+/* One tight row per option: radio or checkbox, name, quiet detail on the right */
+.dg-list { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.dg-scroll { max-height: min(17rem, 40vh); overflow-y: auto; }
+.dg-row { display: flex; align-items: center; gap: 0.625rem; min-height: var(--dg-row); padding: 0.125rem 0.625rem; border-radius: 8px; cursor: pointer; min-width: 0; font-size: var(--d-text, 1rem); }
+.dg-row:hover { background: rgb(var(--c-navy-wash)); }
+.dg-row:has(input:checked) { background: rgb(var(--c-navy-wash)); }
+.dg-row:has(input:checked) .dg-name { font-weight: 700; }
+.dg-row:has(:focus-visible) { outline: 2px solid rgb(var(--c-navy)); outline-offset: -2px; }
+.dg-row input[type='radio'] { width: 1.125rem; height: 1.125rem; flex: none; accent-color: rgb(var(--c-navy)); margin: 0; }
+.dg-name { min-width: 0; max-width: 65%; flex: 0 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.dg-sub { min-width: 0; flex: 1 1 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: rgb(var(--c-muted)); font-size: var(--d-small, 0.9375rem); }
+.dg-end { margin-left: auto; flex: none; color: rgb(var(--c-muted)); font-size: var(--d-small, 0.9375rem); }
+.dg-tag { flex: none; padding: 0 0.4rem; border-radius: 999px; background: rgb(var(--c-line-soft)); color: rgb(var(--c-ink)); font-size: 0.8125rem; font-weight: 700; line-height: 1.4; }
+.dg-row.dg-check .check { flex: none; }
+.dg-total { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; padding: 0.375rem 0.625rem; border-radius: 8px; background: rgb(var(--c-navy-wash)); }
+.dg-total .dg-amt { font-size: 1.25rem; font-weight: 700; }
+
+/* New job: the same fields, packed tighter */
+.dg-body .nj { gap: var(--d-gap, 0.75rem); }
+.dg-body .nj .nj-find { padding: 0; border: 0; }
+.dg-body .nj .nj-pick-row { min-height: var(--dg-row); padding: 0.125rem 0.375rem 0.125rem 0.625rem; }
+.dg-body .nj .nj-more-btn { min-height: var(--dg-row); }
+.dg-body .nj .nj-legend { font-size: var(--d-text, 1rem); color: rgb(var(--c-ink)); margin: 0 0 0.125rem; }
+.dg-body .nj .nj-group { gap: var(--d-gap, 0.75rem); }
+
+@media (prefers-reduced-motion: reduce) { .dg-panel.pop-in { animation: none; } }
+
+/* The grid track must be allowed to shrink, or a long one-line row pushes the dialog wider than a phone. */
+dialog.modal[open] { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 1fr); }
+.dg-panel { min-width: 0; margin-inline: auto; max-height: 100%; }
+:root .dg-body .nj, :root .dg-body .nj .nj-group { gap: 0.5rem; }
+:root .dg-body:has(.nj) { padding-top: 0.75rem; padding-bottom: 0.75rem; }
+:root .dg-body .nj .label { margin-bottom: 0.125rem; }

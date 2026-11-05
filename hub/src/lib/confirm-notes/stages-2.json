@@ -1,0 +1,72 @@
+{
+  "Follow-Up": {
+    "sends": false,
+    "lines": [
+      "Nothing is sent to the customer. The job needs a callback time.",
+      "The customer is taken out of the Dial 2 emails and the quote follow-up. This is how the pause is done, and a person puts them back by hand.",
+      "Task for the office: call back as asked, due at the callback time.",
+      "If the job is still here one day after the callback time, it is listed under Callbacks overdue in the daily summary to the team.",
+      "Residential and commercial are the same."
+    ],
+    "stops": [
+      "This ends when the job moves to another stage. A new callback time starts it again."
+    ],
+    "sources": ["WF-13", "WF-06", "WF-10", "WF-11"]
+  },
+  "Nurture": {
+    "sends": true,
+    "lines": [
+      "The Dial 2 emails and the quote follow-up stop for this job.",
+      "Residential, task for the office: check in, a year since the quote, due in 12 months. This task is made whether or not the customer agreed to marketing.",
+      "Residential, only if the customer agreed to marketing: emails to the customer the next business morning (the bit about R-value nobody explains), 30 days later (where the heat actually goes), 60 days after that (still on the list?), and 12 months after the move (a year on from your quote). Task for the owner after the third email: still a fit? It repeats every quarter.",
+      "Commercial, task for the owner: check in, every quarter. Only if the customer agreed to marketing, an email every 90 days (still on the plan for the site address?), the first one 90 days after the move.",
+      "If the customer has not agreed to marketing, no email is sent. The tasks still stand.",
+      "Every email has an unsubscribe link."
+    ],
+    "stops": [
+      "The emails stop when the customer replies, books or fills in a new form, or the job moves to Quoting.",
+      "An unsubscribe stops the emails and the job stays where it is."
+    ],
+    "sources": ["WF-16", "WF-06", "WF-10", "WF-11", "NUR-01", "NUR-02", "NUR-03", "NUR-04", "C-FUT-01"]
+  },
+  "Quote Accepted": {
+    "sends": true,
+    "lines": [
+      "This happens once per job. If the job comes back here from a later stage, or it is an add-on quote on a job already under way, nothing is sent.",
+      "All sales follow-ups on the job stop first. The phone call reminders keep running.",
+      "Residential: the job is marked Won. Email to the customer now (thanks for going ahead) and a text to the customer now (quote accepted). Neither asks for a deposit.",
+      "Commercial: email to the customer now (awaiting purchase order). No text. The job is marked Won if the quote was accepted online, signed, or has a purchase order number. If not, it stays open and the office gets a task, repeating every 7 days, to chase the purchase order. Entering the number marks it Won.",
+      "Alert to the team: the owner by text and email, the office by email and in the app (quote accepted).",
+      "The deposit amount and foam order type are copied from the accepted quote, where a deposit applies. Nothing is invoiced yet.",
+      "Task for the owner, due today: choose inspection or booking."
+    ],
+    "stops": [],
+    "sources": ["WF-14", "WF-06", "WF-07", "WF-10", "WF-11", "WF-13", "WF-16", "X-ACC-01", "X-ACC-02", "C-PO-01"]
+  },
+  "Inspection Required": {
+    "sends": false,
+    "lines": [
+      "Moving a job here by hand sends nothing to the customer and creates no task or alert.",
+      "The customer is messaged when the visit is booked in the inspection calendar, not when the job is moved.",
+      "When a visit is booked: residential gets a text now (site inspection booked) and a text at 7:00am on the day. Commercial gets an email now (inspection booked) and the same text on the day.",
+      "Task for the estimator, due on the day of the visit: attend the inspection.",
+      "If the visit is moved, the customer gets an email (booking moved). If it is cancelled, the owner gets an alert and a task, due in 1 business day, to rebook. Nothing is rebooked automatically."
+    ],
+    "stops": [],
+    "sources": ["WF-17", "WF-18", "X-INSP-01", "X-INSP-02", "C-INSP-01", "X-APPT-06"]
+  },
+  "Booking Required": {
+    "sends": false,
+    "lines": [
+      "Nothing is sent to the customer.",
+      "Task for the owner, due in 2 business days: book the install date (residential) or the works dates (commercial).",
+      "Alert to the owner by text and email: Assigned to you, the task is waiting.",
+      "If the job is still here after 2 business days, it is listed under Installs to book in the daily summary to the team.",
+      "The customer is messaged only when the install is booked in an install calendar. That also moves the job to Job Booked."
+    ],
+    "stops": [
+      "This ends when the install is booked, which moves the job to Job Booked."
+    ],
+    "sources": ["WF-19", "WF-20"]
+  }
+}

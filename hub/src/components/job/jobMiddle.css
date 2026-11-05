@@ -1,0 +1,63 @@
+/* Middle panel of the job page: composer, open tasks, history. Density comes from the --d-* tokens in frame.css. */
+.jm-col { display: flex; flex-direction: column; gap: var(--d-gap); min-width: 0; }
+.jm-col > .sec { background: rgb(var(--c-surface)); border: 1px solid rgb(var(--c-line)); border-radius: var(--d-radius); padding: calc(var(--d-pad) * 0.5) calc(var(--d-pad) * 0.5) 0; }
+.jm-col > .sec[data-open='true'] { padding-bottom: calc(var(--d-pad) * 0.5); }
+
+/* Composer */
+.jm-composer { display: flex; flex-direction: column; gap: var(--d-gap); padding: 0.25rem calc(var(--d-pad) * 0.5) 0.25rem; }
+.jm-modes, .jm-chips { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.jm-mode { gap: 0.4rem; }
+.jm-fields { display: flex; flex-direction: column; gap: var(--d-gap); min-width: 0; }
+.jm-composer .label { font-size: var(--d-small); margin-bottom: 0.25rem; }
+.jm-composer .field { font-size: var(--d-field); }
+.jm-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr)); gap: var(--d-gap); }
+.jm-checks { display: flex; flex-wrap: wrap; gap: 0.25rem 1.25rem; }
+.jm-check { display: inline-flex; align-items: center; gap: 0.5rem; min-height: 44px; font-size: var(--d-text); cursor: pointer; }
+.jm-actions { display: flex; flex-wrap: wrap; gap: 0.5rem 0.75rem; align-items: center; }
+.jm-notice { margin: 0; padding: 0.6rem 0.8rem; border-radius: 10px; background: rgb(var(--c-navy-wash)); border: 1px solid rgb(var(--c-line)); font-size: var(--d-small); color: rgb(var(--c-ink)); }
+
+/* Open tasks */
+.jm-tasks { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+.jm-task { display: grid; grid-template-columns: auto minmax(0, 1fr); column-gap: 0.75rem; align-items: center; min-height: var(--d-row); padding: 0.25rem 0.25rem; border-top: 1px solid rgb(var(--c-line)); }
+.jm-task:first-child { border-top: 0; }
+.jm-task-title { font-size: var(--d-text); font-weight: 600; overflow-wrap: anywhere; cursor: pointer; }
+.jm-task-title.is-done { text-decoration: line-through; color: rgb(var(--c-muted)); font-weight: 400; }
+.jm-task-meta { grid-column: 2; font-size: var(--d-small); color: rgb(var(--c-muted)); }
+
+/* History */
+.jm-show { max-width: 16rem; }
+.jm-chip-n { margin-left: 0.15rem; font-weight: 700; }
+.jm-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: calc(var(--d-gap) * 0.75); }
+.jm-item { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 0.75rem; padding: var(--d-pad); border-radius: calc(var(--d-radius) - 2px); background: rgb(var(--c-raise)); border: 1px solid rgb(var(--c-line)); }
+.jm-item[data-type='note'] { background: rgb(var(--c-surface)); }
+.jm-icon { display: inline-flex; align-items: center; justify-content: center; width: 2.25rem; height: 2.25rem; border-radius: 999px; background: rgb(var(--c-navy-wash)); color: rgb(var(--c-navy)); flex: none; }
+.jm-main { min-width: 0; display: flex; flex-direction: column; gap: 0.25rem; }
+.jm-line { margin: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 0.2rem 0.75rem; font-size: var(--d-small); color: rgb(var(--c-muted)); }
+.jm-type { font-weight: 700; color: rgb(var(--c-ink)); }
+.jm-meta { margin: 0; font-size: var(--d-small); color: rgb(var(--c-muted)); }
+.jm-heading { margin: 0; font-size: var(--d-text); font-weight: 700; }
+.jm-text { margin: 0; font-size: var(--d-text); white-space: pre-wrap; overflow-wrap: anywhere; }
+.jm-tools { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.25rem; }
+.jm-more { font-size: var(--d-text); }
+.jm-more > summary { min-height: 44px; display: flex; align-items: center; cursor: pointer; font-weight: 700; color: rgb(var(--c-navy)); }
+.jm-more > summary:focus-visible { outline: 3px solid rgb(var(--c-navy)); outline-offset: 2px; border-radius: 6px; }
+.jm-bullets { margin: 0 0 0.25rem; padding-left: 1.25rem; list-style: disc; }
+.jm-more-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.5rem 1rem; margin-top: calc(var(--d-gap) * 0.75); }
+.jm-more-row p { margin: 0; }
+
+/* Milestones: the stamp buttons wrap their long labels instead of pushing the panel sideways, and sit calmer than in the quote editor. */
+.jm-col .grid-cards { grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr)); }
+.jm-col .stamp, .jm-col .stamp .btn { min-width: 0; }
+.jm-col .stamp .btn { white-space: normal; text-align: left; height: auto; }
+.jm-col .stamp .hint { font-size: var(--d-small); }
+
+/* Keep the one primary button navy on hover (the panel's quiet-button hover rule would wash it out under white text). */
+.jf-panel .btn-primary.is-primary-here:hover:not(:disabled) { background: rgb(var(--c-navy)); color: rgb(var(--c-on-navy, 255 255 255)); filter: brightness(1.15); }
+
+/* Phones: less nesting padding so the text keeps its width. */
+@media (max-width: 479px) {
+  .jm-col > .sec { padding: 0.125rem 0.125rem 0; }
+  .jm-col > .sec[data-open='true'] { padding-bottom: 0.125rem; }
+  .jm-item { grid-template-columns: minmax(0, 1fr); padding: 0.75rem; }
+  .jm-icon { display: none; }
+}

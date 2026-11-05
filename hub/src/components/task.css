@@ -1,0 +1,27 @@
+/* One task row (TaskRow.tsx): tick, bold title, description clamped to 2 lines, owner and due date and time. */
+.tk-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+.tk-row { display: grid; grid-template-columns: auto minmax(0, 1fr); column-gap: 0.75rem; align-items: start; padding: 0.35rem 0.25rem; border-top: 1px solid rgb(var(--c-line)); }
+.tk-list > .tk-row:first-child { border-top: 0; }
+.tk-row.card { border-top: 1px solid rgb(var(--c-line)); }
+.tk-check { margin-top: 0.15rem; }
+.tk-main { min-width: 0; }
+.tk-title { margin: 0; font-size: var(--d-text); font-weight: 700; overflow-wrap: anywhere; }
+.tk-title.is-done { text-decoration: line-through; color: rgb(var(--c-muted)); font-weight: 400; }
+.tk-descwrap { margin-top: 0.1rem; }
+.tk-desc { margin: 0; font-size: var(--d-small); white-space: pre-wrap; overflow-wrap: anywhere; }
+.tk-desc.is-clamped { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.tk-more, .tk-edit { min-height: 24px; padding: 0 0.25rem; background: none; border: 0; font: inherit; font-size: var(--d-small); font-weight: 700; color: rgb(var(--c-navy)); text-decoration: underline; cursor: pointer; }
+.tk-more:focus-visible, .tk-edit:focus-visible { outline: 3px solid rgb(var(--c-navy)); outline-offset: 2px; border-radius: 4px; }
+.tk-meta { margin: 0.1rem 0 0; display: flex; flex-wrap: wrap; align-items: center; gap: 0 0.75rem; font-size: var(--d-small); color: rgb(var(--c-muted)); }
+.tk-due.is-overdue { font-weight: 700; color: rgb(var(--c-hot)); }
+.tk-due.is-today { font-weight: 700; color: rgb(var(--c-navy)); }
+.tk-editing { grid-template-columns: minmax(0, 1fr); }
+.tk-form { display: flex; flex-direction: column; gap: var(--d-gap); min-width: 0; }
+.tk-pair { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 9rem), 1fr)); gap: var(--d-gap); }
+.tk-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+@media (pointer: coarse) {
+  .tk-more, .tk-edit { min-height: 44px; min-width: 44px; }
+}
+
+.tk-tick { display: inline-flex; align-items: center; justify-content: center; min-width: 1.5rem; }
+@media (max-width: 640px), (pointer: coarse) { .tk-tick { min-width: 44px; min-height: 44px; } }

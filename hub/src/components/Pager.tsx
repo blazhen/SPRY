@@ -75,8 +75,8 @@ export function Pager<T>({ paged, noun = 'items', top = false, showCount = false
         {size}
       </div>
       <div className="flex flex-wrap items-center gap-2">
-        <button type="button" className="btn btn-quiet btn-sm" disabled={page <= 1} onClick={() => setPage(page - 1)} aria-label="Previous page">
-          <ChevronLeft size={20} aria-hidden="true" />
+        <button type="button" className="btn btn-neutral btn-sm" disabled={page <= 1} onClick={() => setPage(page - 1)} aria-label="Previous page">
+          <ChevronLeft size={16} aria-hidden="true" />
           Previous
         </button>
         <ul className="m-0 flex list-none flex-wrap items-center gap-1 p-0">
@@ -89,7 +89,7 @@ export function Pager<T>({ paged, noun = 'items', top = false, showCount = false
               <li key={n}>
                 <button
                   type="button"
-                  className={`btn btn-sm min-w-[44px] px-2 ${n === page ? 'btn-primary' : 'btn-quiet'}`}
+                  className={`btn btn-sm min-w-[44px] px-2 ${n === page ? 'btn-primary' : 'btn-neutral'}`}
                   aria-current={n === page ? 'page' : undefined}
                   aria-label={`Page ${n}`}
                   onClick={() => setPage(n)}
@@ -100,9 +100,9 @@ export function Pager<T>({ paged, noun = 'items', top = false, showCount = false
             ),
           )}
         </ul>
-        <button type="button" className="btn btn-quiet btn-sm" disabled={page >= pageCount} onClick={() => setPage(page + 1)} aria-label="Next page">
+        <button type="button" className="btn btn-neutral btn-sm" disabled={page >= pageCount} onClick={() => setPage(page + 1)} aria-label="Next page">
           Next
-          <ChevronRight size={20} aria-hidden="true" />
+          <ChevronRight size={16} aria-hidden="true" />
         </button>
       </div>
     </nav>

@@ -1,11 +1,17 @@
 import { Printer } from 'lucide-react'
 import { PagedList } from '../components/Pager'
-import { EmptyState, MoneyText, PageHead, Section, StageBadge, StallBadge, StatTile } from '../components/ui'
-import { fmtDate, word } from '../lib/format'
+import { EmptyState, MoneyText, PageHead, Section, StallBadge, StatTile } from '../components/ui'
+import { StageChip } from '../components/job/StagePopover'
+import { addDaysISO, fmtDate, todayISO, word } from '../lib/format'
+import { eventDay, eventEndTime, eventTime, useCalendar, useCalendarSync, visitsBetween } from '../lib/calendar'
+import { CalendarError } from '../components/calendar/CalendarError'
 import { weeklySummary, type ExpiryNudge } from '../lib/insights'
 import { href } from '../lib/router'
-import { getJob, participantName, useStore } from '../lib/store'
+import { getContact, getJob, participantName, useStore } from '../lib/store'
+import { TaskListAcrossJobs } from '../components/TaskRow'
+import { compareTasks } from '../lib/tasks'
 import type { Job } from '../types'
+import { LostReport } from '../components/LostReport'
 
 function days(n: number): string {
   return `${n} ${n === 1 ? 'day' : 'days'}`
@@ -32,6 +38,16 @@ export default function Week() {
   const w = weeklySummary(s)
   const jobWord = word(true, true)
   const runningOut = w.expiring
+  // Visits come from the CRM calendar: today up to 7 days ahead, same days as the weekly summary.
+  useCalendarSync()
+  const cal = useCalendar()
+  const today = todayISO()
+  const upcoming = visitsBetween(cal.events, today, addDaysISO(today, 7))
+  // Open tasks that are late or due up to the end of the week, soonest first (date, then time).
+  const weekTasks = s.jobs
+    .filter((j) => j.status === 'open')
+    .flatMap((job) => job.tasks.filter((t) => !t.done && !!t.dueDate && t.dueDate <= w.to).map((task) => ({ job, task })))
+    .sort((a, b) => compareTasks(a.task, b.task))
 
   return (
     <div className="stack-lg week-page">
@@ -73,7 +89,7 @@ export default function Week() {
         />
         <StatTile label="Quotes about to run out" value={runningOut.length} tone={runningOut.length > 0 ? 'warn' : 'plain'} />
         <StatTile label={`${word(true)} that look stuck`} value={w.stuckJobs.length} tone={w.stuckJobs.length > 0 ? 'warn' : 'plain'} />
-        <StatTile label="Booked in the next 7 days" value={w.upcoming.length} />
+        <StatTile label="Booked in the next 7 days" value={upcoming.length} />
       </div>
 
       <Section title="Overdue invoices">
@@ -110,7 +126,7 @@ export default function Week() {
                           {inv.dueDate ? `Overdue, was due ${fmtDate(inv.dueDate)}` : 'Overdue'}
                         </span>
                       </td>
-                      <td data-label="Amount" className="num-col text-hot font-bold">
+                      <td data-label="Amount" className="num-col text-hot-ink font-bold">
                         <MoneyText value={inv.amount} whole />
                       </td>
                     </tr>
@@ -187,7 +203,7 @@ export default function Week() {
                       </a>
                     </th>
                     <td data-label="Stage">
-                      <StageBadge stage={j.stage} />
+                      <StageChip jobId={j.id} />
                     </td>
                     <td data-label="Time in stage">
                       <StallBadge job={j} />
@@ -201,11 +217,25 @@ export default function Week() {
         )}
       </Section>
 
-      <Section title="Booked in the next 7 days">
-        {w.upcoming.length === 0 ? (
-          <EmptyState title="Nothing booked yet." />
+      <div className="no-print">
+      <Section title={`Tasks due this week (${weekTasks.length})`}>
+        {weekTasks.length === 0 ? (
+          <EmptyState title="No tasks due this week." />
         ) : (
-          <PagedList items={w.upcoming} noun="bookings" render={(rows) => (
+          <PagedList items={weekTasks} noun="tasks" render={(rows) => <TaskListAcrossJobs items={rows} label="Open tasks due this week, soonest first" />} />
+        )}
+      </Section>
+      </div>
+
+      <Section title="Booked in the next 7 days">
+        {cal.error && cal.events.length === 0 ? (
+          <EmptyState title="The calendar could not be read.">
+            <CalendarError error={cal.error} />
+          </EmptyState>
+        ) : upcoming.length === 0 ? (
+          <EmptyState title={cal.syncedAt ? 'Nothing booked yet.' : 'Reading the calendar...'} />
+        ) : (
+          <PagedList items={upcoming} noun="bookings" render={(rows) => (
           <div className="tbl-wrap">
             <table className="tbl tbl-click tbl-stack">
               <caption className="sr-only">Appointments in the next 7 days</caption>
@@ -217,25 +247,33 @@ export default function Week() {
                 </tr>
               </thead>
               <tbody>
-                {rows.map(({ job, appt }) => (
-                  <tr key={appt.id}>
-                    <th scope="row" data-label="What">
-                      <a href={href.job(job.id)} className="row-link">
-                        {appt.title}
-                      </a>
-                    </th>
-                    <td data-label={word()}>{job.name}</td>
-                    <td data-label="When">
-                      {fmtDate(appt.date)} at {appt.time}
-                    </td>
-                  </tr>
-                ))}
+                {rows.map((ev) => {
+                  const job = ev.jobId ? getJob(ev.jobId, s) : undefined
+                  const contact = ev.contactId ? getContact(ev.contactId, s) : undefined
+                  return (
+                    <tr key={ev.id}>
+                      <th scope="row" data-label="What">
+                        <a href={ev.jobId ? href.job(ev.jobId) : ev.contactId ? href.contact(ev.contactId) : href.calendar()} className="row-link">
+                          {ev.title}
+                        </a>
+                      </th>
+                      <td data-label={word()}>{job?.name ?? (contact ? `${contact.name} (no ${word().toLowerCase()} linked)` : 'No contact linked')}</td>
+                      <td data-label="When">
+                        {fmtDate(eventDay(ev))} at {eventTime(ev)} to {eventEndTime(ev)}, {ev.calendarName}
+                      </td>
+                    </tr>
+                  )
+                })}
               </tbody>
             </table>
           </div>
           )} />
         )}
       </Section>
+
+      <div className="no-print">
+        <LostReport />
+      </div>
     </div>
   )
 }

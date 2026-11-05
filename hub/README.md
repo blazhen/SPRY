@@ -55,6 +55,11 @@ Front end (all in `scripts/`; run `npm run build` first; most start and stop the
 ## Placeholders
 Prices and product names in `src/data/mock.ts`, all mock contacts, jobs and addresses, the owner mobile, email and ABN in `src/config.ts`, payment wording and default terms.
 
+Round 5 extras (Advanced layout only; all flagged `placeholder: true` in code or labelled Placeholder on screen until Glenn gives real numbers):
+- Foam types in `src/lib/extras.ts` `DEFAULT_FOAM`: Open cell (yield 14000 bd ft per set, price $350/m3, cost $150/m3, waste 10%) and Closed cell (4500, $1200, $520, 8%). Editable in Settings, Extras.
+- Chase days 2, 5, 10 (`DEFAULT_CHASE_DAYS`), the lost reasons list and the lead sources list.
+- Deposit percentages by foam type in `crm-build/workflows/HUB-EXTRAS-WORKFLOWS.md` (spec only, nothing built).
+
 ## Licences and credits
 Clash Display and Satoshi (Fontshare), self-hosted, ITF Free Font License. lucide-react icons, ISC licence. The SprayIT logo files come from the client's brand assets.
 

@@ -1,0 +1,88 @@
+{
+  "Job Booked": {
+    "sends": true,
+    "lines": [
+      "This normally happens when the install is booked in the calendar. The booking saves the job dates, vehicles and crew on the job.",
+      "Residential, now (inside sending hours): text to the customer (install booked) and email to the customer (what to prepare).",
+      "Commercial, now: email to the client (works booked). Tasks: induct the crew, for the crew lead, and issue the safe work method statement and confirm receipt, for the owner. Both are due before the start date.",
+      "Reminders to the customer: an email 30 days before if the job was booked more than 6 weeks ahead, then an email and a text 7 days before, then an email and a text 48 hours before. Each has Yes and No buttons.",
+      "If neither reminder is answered, task for the office, due the day before the job: call the customer.",
+      "If the customer taps No, alert to the owner and the office, and a task for the owner, due the same day, to reschedule. Nothing is rescheduled automatically.",
+      "Deposit: if the job has a deposit, a draft deposit invoice is made 14 days before the job date and the owner gets a task, due in 2 business days, to send it. If no deposit applies, no draft is made.",
+      "Job day: residential gets an on-the-way text at 6:30am. Task for the crew lead: photos and variations. Commercial gets a site-morning message each day, plus weekly progress, photos and variations tasks.",
+      "A further booking for the same job only extends the dates and resends nothing. Moving the booking resends the install booked text with the new date and restarts the reminders and the deposit draft."
+    ],
+    "stops": [
+      "The reminders stop if the booking is cancelled, and restart against the new date if the date moves.",
+      "The job day messages stop when the job is marked complete or the booking moves.",
+      "The deposit draft stops when the owner sends the deposit invoice or the job is cancelled."
+    ],
+    "sources": ["WF-20", "WF-21", "WF-22", "WF-23", "WF-24", "JOB-01", "JOB-02", "C-MOB-01", "REM-01", "REM-02", "REM-03", "REM-04", "REM-06", "JOB-04", "C-SITE-01"]
+  },
+  "Deposit Requested": {
+    "sends": true,
+    "lines": [
+      "This normally happens when the owner sends the deposit invoice.",
+      "Email to the customer now: the deposit invoice, with the accepted quote attached.",
+      "The due date is 1 business day before the job date for stock open cell foam, and 7 days before for special order foam. Nothing is sent before the due date.",
+      "If the deposit is unpaid at 4pm on the due date: text to the customer asking for the payment, alert to the owner by text and email and to the office by email and in the app, and a task for the owner, due that day, to chase it.",
+      "When the deposit invoice is marked paid: text to the customer (deposit received, you are all set for the job date) and an alert to the owner and the office. The card stays here until the job is marked complete.",
+      "A job with no deposit skips this stage and goes from Job Booked to Job Completed. Residential and commercial are the same."
+    ],
+    "stops": [
+      "The reminders stop when the deposit is paid or the job is cancelled. The 4pm check is cancelled when the deposit is paid."
+    ],
+    "sources": ["WF-25", "WF-26", "WF-24", "DEP-01", "DEP-02", "DEP-03"]
+  },
+  "Job Completed": {
+    "sends": true,
+    "lines": [
+      "The job cannot be marked complete until the photos are ticked as captured.",
+      "Residential: email to the customer now (job complete). The job report and certificates are not in it.",
+      "Commercial: email to the client now (works complete).",
+      "A draft final invoice is made from the accepted quote: the balance after any deposit, with its payment schedule and the accepted quote attached. It is not sent.",
+      "Task for the owner, due in 2 business days: check the draft, adjust it for the area actually sprayed, then send it. If it is still unsent after that, it is listed under Invoices to send in the daily summary.",
+      "Task for the owner, due in 7 days: choose whether to ask for a Google review. Yes sends a review text to the customer 4 weeks after the job date. No sends no review text.",
+      "When the owner sends the final invoice: email to the customer now. Residential, if unpaid: text on day 7, email on day 14 and a task for the office on day 14 to chase. Commercial, if unpaid: task for the office on day 30 to chase.",
+      "When the final invoice is paid: task for the owner, due the same day, to send the job report and certificates. Commercial also gets a closing email one day later and a task for the owner on day 7 to ask for a reference."
+    ],
+    "stops": [
+      "The payment reminders stop the moment the invoice is marked paid.",
+      "The Google review is asked once and never chased."
+    ],
+    "sources": ["WF-27", "WF-28", "WF-29", "WF-30", "JOB-05", "C-DONE-01", "PAY-01", "PAY-02", "PAY-03", "REV-01", "C-CLOSE-01"]
+  },
+  "Retention Claim": {
+    "sends": false,
+    "lines": [
+      "Nothing is sent to the customer when the card moves here. The card needs the retention amount and the release date.",
+      "On the release date: task for the office to send the retention claim email from the saved template, with the claim attached. The team sends it by hand.",
+      "30 days later, if the card is still here: task for the office to chase the unpaid retention by ringing the accounts contact.",
+      "The card moves here by itself when the final invoice is paid and a retention amount is set. The job stays Won and open.",
+      "Residential and commercial are the same."
+    ],
+    "stops": [
+      "The reminders stop when the retention is marked paid by hand. The card then closes as Won."
+    ],
+    "sources": ["WF-33", "WF-29", "RET-01"]
+  },
+  "Won": {
+    "sends": false,
+    "lines": ["Nothing is sent and no task is created."],
+    "stops": [],
+    "sources": []
+  },
+  "Lost": {
+    "sends": true,
+    "lines": [
+      "A lost reason is required. The reasons are: Price, Went with another contractor, Chose batts or another product, Timing project deferred, Outside service area, Not suitable for spray foam, Unreachable, Not the decision maker, Budget withdrawn, Cancelled after acceptance, Duplicate, Spam.",
+      "Residential: email to the customer the next business morning (thanks for considering us), inside sending hours. Nothing is sent for Unreachable, Duplicate or Spam.",
+      "Commercial: no email. The owner writes to the client personally.",
+      "Task for the office, due today: record why the job was lost, from the fixed list.",
+      "Every automatic message and reminder on the job stops.",
+      "A customer who is just not ready now goes to Nurture, not Lost."
+    ],
+    "stops": [],
+    "sources": ["WF-15", "LOST-01"]
+  }
+}

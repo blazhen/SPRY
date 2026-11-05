@@ -1,0 +1,233 @@
+{
+  "task-done": {
+    "sends": false,
+    "lines": [
+      "The task is ticked as done. Nothing is sent and nothing else is created."
+    ],
+    "stops": [],
+    "sources": []
+  },
+  "task-undone": {
+    "sends": false,
+    "lines": [
+      "The task goes back on the open list. Nothing is sent."
+    ],
+    "stops": [],
+    "sources": []
+  },
+  "send-quote": {
+    "sends": true,
+    "lines": [
+      "The job moves to Quote Sent, with the quote number, the quote link, the sent time, the valid-until date and the value saved on it.",
+      "Residential: email to the customer now with the quote link and the accept button, and a text to the customer now, with no waiting for sending hours. Then, between 8am and 8pm: text on day 2, email on day 5, text on day 10, and a final close email on day 21.",
+      "Residential tasks for the office: call on day 2 to follow up the quote, and on day 21 decide: accepted, nurture or lost.",
+      "Commercial: email to the customer with the proposal, then follow-up emails on day 7 and day 21. Tasks for the owner: call within 2 days to confirm receipt, and on day 7 chase the decision date.",
+      "The Dial 2 emails and the Nurture emails stop on this job.",
+      "A revised quote (revision 2 or later) sends the revised quote email and text instead, and the first quote email is never sent again."
+    ],
+    "stops": [
+      "The follow-up stops when the customer replies, accepts or declines, or the job leaves Quote Sent."
+    ],
+    "sources": ["WF-10", "WF-11", "R-QUOTE-01", "R-QUOTE-02", "R-FU-01", "R-FU-02", "R-FU-03", "R-FU-04", "C-PROP-01", "C-PROP-02", "C-PROP-03"]
+  },
+  "send-invoice": {
+    "sends": true,
+    "lines": [
+      "The invoice is sent from the platform. The invoice number and the sent time are saved on the job.",
+      "Deposit invoice: email to the customer now, with the invoice and the accepted quote attached. The job moves to Deposit Requested. If the deposit is unpaid at 4:00pm on the due date: text to the customer asking for the payment, alert to the owner by text and email, and a task for the owner to chase. Nothing goes to the customer before the due date.",
+      "Final invoice, residential: email to the customer now with the invoice and the accepted quote attached. If unpaid: text on day 7, email on day 14 (now overdue), and a task for the office on day 14 to chase.",
+      "Final invoice or progress claim, commercial: email to the customer now. If unpaid, task for the office on day 30 to chase. A progress claim sent while works run also sends the progress claim email."
+    ],
+    "stops": [
+      "Every reminder stops the moment the invoice is marked paid.",
+      "A reply from the customer stops the payment reminders. The date reminders keep running."
+    ],
+    "sources": ["WF-25", "DEP-02", "DEP-03", "WF-28", "PAY-01", "PAY-02", "PAY-03", "WF-32"]
+  },
+  "send-text": {
+    "sends": false,
+    "lines": [
+      "The text is logged on the contact and the job. It is not sent from the Hub."
+    ],
+    "stops": [],
+    "sources": []
+  },
+  "send-email": {
+    "sends": false,
+    "lines": [
+      "The email is logged on the contact and the job. It is not sent from the Hub."
+    ],
+    "stops": [],
+    "sources": []
+  },
+  "record-payment": {
+    "sends": true,
+    "lines": [
+      "The payment is added to the invoice. If it leaves a balance, the invoice stays open and the reminders carry on. Nothing is sent to the customer for a part payment.",
+      "Deposit invoice paid in full: text to the customer straight away (deposit received, you are all set for the job date). Alert to the owner by text and email and to the office by email (deposit in). The 4:00pm due-date check is cancelled. The job stays in Deposit Requested until it is marked complete.",
+      "Final invoice paid in full: task for the owner, due the same day, to send the job report and certificates. The payment reminders stop.",
+      "Final invoice, commercial: the customer also gets a closing email one day later, and the owner gets a task on day 7 to ask for a reference.",
+      "Final invoice with a retention held: the job moves to Retention Claim. With no retention the job closes as Won.",
+      "Final invoice, residential, when the customer agreed to marketing and the owner left Ask for Google review on Yes: referral email 7 days later, a 12 month check-in email a year after the job date, and a Google review text 4 weeks after the job date."
+    ],
+    "stops": [
+      "A paid invoice stops every payment reminder."
+    ],
+    "sources": ["WF-26", "DEP-01", "WF-25", "WF-29", "WF-28", "C-CLOSE-01", "WF-31", "REV-02", "REV-03", "WF-30", "REV-01"]
+  },
+  "accept-quote": {
+    "sends": true,
+    "lines": [
+      "The option accepted and the accepted date are saved (and the purchase order number if you gave one). The other quotes on the job are marked Superseded. The job moves to Quote Accepted.",
+      "All sales follow-ups on the job stop.",
+      "Residential: the job is marked Won. Email to the customer straight away (thanks for going ahead) and a text to the customer straight away (quote accepted, we will be in touch to book your install date).",
+      "Commercial: email to the customer (awaiting purchase order). If the quote was accepted online, signed, or has a purchase order number, the job is marked Won. If not, the office gets a task, repeating weekly, to chase the purchase order.",
+      "Alert to the team: the owner by text and email, the office by email (quote accepted).",
+      "The deposit amount and foam order type are copied onto the job. No invoice is made. Task for the owner, due today: choose inspection or booking.",
+      "If the job is already under way (an add-on or variation quote), no welcome goes out and the job does not move. The office gets a task to update the job and the invoice schedule."
+    ],
+    "stops": [
+      "The welcome is sent once per job. A job that returns to Quote Accepted from a later stage sends nothing again."
+    ],
+    "sources": ["WF-14", "WF-12", "X-ACC-01", "X-ACC-02", "C-PO-01", "WF-06", "WF-10", "WF-11", "WF-13", "WF-16"]
+  },
+  "job-value": {
+    "sends": false,
+    "lines": [
+      "The job value is changed on the job. Nothing is sent.",
+      "The new value is what the owner sees in the quote accepted alert and in the weekly report (open value, and accepted but not yet completed)."
+    ],
+    "stops": [],
+    "sources": ["WF-14", "WF-40"]
+  },
+  "void-invoice": {
+    "sends": false,
+    "lines": [
+      "The invoice is voided. Nothing is sent to the customer and no task is created."
+    ],
+    "stops": [],
+    "sources": []
+  },
+  "discard-revision": {
+    "sends": false,
+    "lines": [
+      "The quote is marked Superseded in the Hub only. Nothing is sent to the customer.",
+      "The job is not set to Lost and does not move."
+    ],
+    "stops": [],
+    "sources": []
+  },
+  "delete-note": {
+    "sends": false,
+    "lines": [
+      "The note is deleted from the job or contact. Nothing is sent."
+    ],
+    "stops": [],
+    "sources": []
+  },
+  "delete-task": {
+    "sends": false,
+    "lines": [
+      "The task disappears from the task list. Nothing is sent, and it is not made again."
+    ],
+    "stops": [],
+    "sources": []
+  },
+  "delete-quote": {
+    "sends": false,
+    "lines": [
+      "The quote and its lines disappear from the job. Nothing is sent to the customer."
+    ],
+    "stops": [],
+    "sources": []
+  },
+  "delete-invoice": {
+    "sends": false,
+    "lines": [
+      "The invoice disappears from the job. Nothing is sent to the customer."
+    ],
+    "stops": [],
+    "sources": []
+  },
+  "delete-file": {
+    "sends": false,
+    "lines": [
+      "The file is removed from the job or contact. Nothing is sent."
+    ],
+    "stops": [],
+    "sources": []
+  },
+  "delete-link": {
+    "sends": false,
+    "lines": [
+      "Only the link between the two records is removed. Both records stay. Nothing is sent."
+    ],
+    "stops": [],
+    "sources": []
+  },
+  "delete-contact": {
+    "sends": false,
+    "lines": [
+      "The contact disappears, with its notes and tasks. Nothing is sent.",
+      "Messages already sent to this contact stay with the customer."
+    ],
+    "stops": [],
+    "sources": []
+  },
+  "delete-company": {
+    "sends": false,
+    "lines": [
+      "The company disappears. Nothing is sent."
+    ],
+    "stops": [],
+    "sources": []
+  },
+  "delete-other": {
+    "sends": false,
+    "lines": [
+      "The saved item (template, terms text, price or similar) disappears from the Hub. Quotes and invoices already made keep their own copy. Nothing is sent."
+    ],
+    "stops": [],
+    "sources": []
+  },
+  "tag-add:*": {
+    "sends": false,
+    "lines": [
+      "The tag is added. Nothing is sent and nothing is created."
+    ],
+    "stops": [],
+    "sources": []
+  },
+  "visit-book": {
+    "sends": false,
+    "lines": [
+      "The visit is booked in the calendar at the time you picked, for this customer and job. The Hub itself sends nothing."
+    ],
+    "stops": [],
+    "sources": []
+  },
+  "visit-move": {
+    "sends": false,
+    "lines": [
+      "The visit moves to the new time in the calendar. The Hub itself sends nothing."
+    ],
+    "stops": [],
+    "sources": []
+  },
+  "visit-cancel": {
+    "sends": false,
+    "lines": [
+      "The visit is cancelled in the calendar and the time is free again. The Hub itself sends nothing."
+    ],
+    "stops": [],
+    "sources": []
+  },
+  "tag-remove:*": {
+    "sends": false,
+    "lines": [
+      "The tag is removed. Nothing is sent and nothing is created."
+    ],
+    "stops": [],
+    "sources": []
+  }
+}

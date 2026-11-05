@@ -1,0 +1,29 @@
+/* New job dialog and global search. Density comes from the layout tokens in frame.css. */
+.nj { display: flex; flex-direction: column; gap: var(--d-gap); font-size: var(--d-text); min-width: 0; }
+.nj .field { font-size: var(--d-field); min-height: var(--d-field-h); }
+.nj .label { font-size: var(--d-text); margin-bottom: 0.25rem; }
+.nj .hint, .nj .nj-hint { font-size: var(--d-small); margin-top: 0.25rem; color: rgb(var(--c-muted)); }
+.nj-group { border: 0; margin: 0; padding: 0; min-width: 0; display: flex; flex-direction: column; gap: var(--d-gap); }
+.nj-legend { padding: 0; margin: 0 0 0.25rem; font-weight: 700; font-size: var(--d-head); color: rgb(var(--c-navy)); }
+.nj-find { padding: 0.5rem 0.75rem 0.75rem; border: 1px dashed rgb(var(--c-control)); border-radius: var(--d-radius); }
+.nj-find summary, .nj-more-btn { min-height: 44px; display: flex; align-items: center; gap: 0.5rem; cursor: pointer; font-weight: 700; color: rgb(var(--c-navy)); }
+.nj-find[open] summary { margin-bottom: 0.25rem; }
+.nj-pick { display: flex; flex-direction: column; gap: 0.35rem; margin-top: 0.5rem; }
+.nj-pick-row { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; min-height: 44px; padding: 0.35rem 0.5rem 0.35rem 0.75rem; border: 1px solid rgb(var(--c-line)); border-radius: var(--d-radius); background: rgb(var(--c-surface)); }
+.nj-pick-row > span { min-width: 0; overflow-wrap: anywhere; }
+.nj-pick-row .btn { flex: none; }
+.nj-chosen { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; padding: 0.5rem 0.75rem; border: 2px solid rgb(var(--c-navy)); border-radius: var(--d-radius); background: rgb(var(--c-navy-wash)); }
+.nj-chosen > span { min-width: 0; overflow-wrap: anywhere; }
+.nj-dupe { padding: 0.65rem 0.75rem; border: 2px solid rgb(var(--c-hot)); border-radius: var(--d-radius); background: rgb(var(--c-surface)); display: flex; flex-direction: column; gap: 0.5rem; }
+.nj-dupe-btns { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.nj-row2 { display: grid; gap: var(--d-gap); grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 640px) { .nj-row2 { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
+.nj-confirm { padding: 0.75rem; border: 2px solid rgb(var(--c-navy)); border-radius: var(--d-radius); background: rgb(var(--c-navy-wash)); display: flex; flex-direction: column; gap: 0.5rem; }
+.nj-confirm-btns { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.nj-field-err { margin: 0.25rem 0 0; font-size: var(--d-text); font-weight: 700; color: rgb(var(--c-hot-ink)); }
+
+/* Global search */
+.gs-row { display: block; border-radius: var(--d-radius); padding: 0.5rem 1rem; min-height: 44px; text-decoration: none; color: inherit; }
+.gs-title { display: block; font-size: 1.125rem; font-weight: 700; overflow-wrap: anywhere; }
+.gs-meta { display: flex; flex-wrap: wrap; gap: 0.15rem 0.75rem; color: rgb(var(--c-muted)); font-size: var(--d-text); overflow-wrap: anywhere; }
+.gs-empty { margin: 0.5rem 1rem 1rem; padding: 1rem; border: 1px dashed rgb(var(--c-control)); border-radius: var(--d-radius); display: flex; flex-direction: column; gap: 0.75rem; align-items: flex-start; }

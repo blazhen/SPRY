@@ -1,3 +1,4 @@
+import './frame.css'
 import { Shell } from './components/Shell'
 import { Toaster } from './components/ui'
 import { useRoute } from './lib/router'
@@ -13,10 +14,14 @@ import Jobs from './pages/Jobs'
 import PriceBook from './pages/PriceBook'
 import QuoteList from './pages/QuoteList'
 import Settings from './pages/Settings'
+import FoamPrices from './pages/FoamPrices'
 import Templates from './pages/Templates'
 import Terms from './pages/Terms'
 import Todo from './pages/Todo'
 import Week from './pages/Week'
+import Calendar from './pages/Calendar'
+import Enquiry from './pages/Enquiry'
+import DaySheet from './pages/DaySheet'
 
 export default function App() {
   const route = useRoute()
@@ -49,7 +54,11 @@ export default function App() {
       {route.name === 'terms' && <Terms />}
       {route.name === 'prices' && <PriceBook />}
       {route.name === 'week' && <Week />}
+      {route.name === 'calendar' && <Calendar />}
+      {route.name === 'enquiry' && <Enquiry />}
+      {route.name === 'daysheet' && <DaySheet />}
       {route.name === 'settings' && <Settings />}
+      {route.name === 'foam' && <FoamPrices />}
       <Toaster />
     </Shell>
   )

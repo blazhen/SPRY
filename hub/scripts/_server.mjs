@@ -8,7 +8,9 @@ export async function startStatic(port = 4310) {
 }
 
 export async function startPreview(port) {
-  const server = spawn(process.execPath, ['node_modules/vite/bin/vite.js', 'preview', '--port', String(port), '--strictPort'], { stdio: 'ignore' })
+  // HUB_DIST picks another build folder (several people can build and test side by side).
+  const outDir = process.env.HUB_DIST ? ['--outDir', process.env.HUB_DIST] : []
+  const server = spawn(process.execPath, ['node_modules/vite/bin/vite.js', 'preview', '--port', String(port), '--strictPort', ...outDir], { stdio: 'ignore' })
   for (let i = 0; i < 60; i++) {
     try {
       const r = await fetch(`http://localhost:${port}/`)

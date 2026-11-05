@@ -1,3 +1,4 @@
+import type { ExtrasSettings } from './lib/extras'
 // Quote Hub data model. All seed values are made up and flagged as placeholders.
 
 /**
@@ -43,6 +44,8 @@ export interface Contact {
   id: string
   name: string
   companyId?: string
+  /** Live: the company name the CRM holds for this person. */
+  companyName?: string
   email: string
   phone: string
   /** Mobile, if different from phone. */
@@ -51,6 +54,8 @@ export interface Contact {
   address?: string
   /** Short private note, for example "Prefers texts". */
   note?: string
+  /** Live: the contact's custom field values (from the CRM). Empty in mock. */
+  customFields?: ContactCustomField[]
   placeholder: true
 }
 
@@ -74,9 +79,14 @@ export interface Owner {
 /** Mock of a CRM task on a job. Ticking it done is allowed in the mock. */
 export interface JobTask {
   id: string
+  /** The task's TITLE: one short line. (Named `title`, as it always was.) */
   title: string
+  /** Optional longer text, several lines. */
+  description?: string
   /** ISO date. */
   dueDate?: string
+  /** 'HH:MM' 24 hour, Hub time zone. Absent or '' means all day. */
+  dueTime?: string
   done: boolean
   /** Owner id of who should do it. Missing means the job's owner. */
   assigneeId?: string
@@ -117,6 +127,10 @@ export interface Message {
   automated: boolean
   /** Calls only. */
   callMinutes?: number
+  /** Optional AI summary of a call, one point per line ("- ..."). The history shows it only when present (slot for later). */
+  summary?: string
+  /** Optional word for word transcript of a call. The history shows it only when present (slot for later). */
+  transcript?: string
 }
 
 export type InvoiceKind = 'deposit' | 'final' | 'other'
@@ -190,6 +204,26 @@ export interface TimelineEvent {
   kind: TimelineKind
   /** Plain words, past tense: "Quote Q-1042 sent to Travis". */
   text: string
+  /** Optional summary and transcript, same slot as on Message. Shown only when present. */
+  summary?: string
+  transcript?: string
+}
+
+/** One opportunity (job) custom field value, as the CRM holds it. */
+export interface JobCustomField {
+  id: string
+  name: string
+  value: string | number | null
+}
+
+/** One contact custom field value, as the CRM holds it. */
+export interface ContactCustomField {
+  id: string
+  key?: string
+  name: string
+  dataType?: string
+  options?: string[]
+  value: string | number | null
 }
 
 /** The CRM opportunity. */
@@ -209,6 +243,11 @@ export interface Job {
   /** Decides which terms set new quotes start with. */
   productType: ProductType
   /** ISO timestamp the job report was sent (stamp button). */
+  /** Where the lead came from (Advanced extra: lost report). Hub-only, kept in jobmeta in live mode. */
+  leadSource?: string
+  /** Job costing (Advanced extra), dollars ex GST. Hub-only. */
+  actualMaterials?: number
+  actualCost?: number
   jobReportSentAt?: string
   /** ISO timestamp the review was asked for (stamp button). */
   reviewAskedAt?: string
@@ -221,6 +260,8 @@ export interface Job {
   participants: Participant[]
   tasks: JobTask[]
   appointments: JobAppointment[]
+  /** Live: the opportunity's custom field values (from the CRM). Empty in mock. */
+  customFields?: JobCustomField[]
   placeholder: true
 }
 
@@ -235,6 +276,8 @@ export interface LineItem {
   /** Price per unit, ex GST. null = not set yet (templates carry no prices). */
   unitPrice: number | null
   priceItemId?: string
+  /** Staff only: the words in the inspection notes this line was drafted from. Never shown to the customer. */
+  fromNotes?: string
 }
 
 /** An optional extra on one line. Total = unitPrice x the line's quantity. */
@@ -307,6 +350,8 @@ export interface Quote {
   acceptedPending?: boolean
   poNumber?: string
   acceptedAt?: string
+  /** ISO timestamps of each time staff chased this quote (Advanced extra: Chase now). */
+  chases?: string[]
   /** Total inc GST when accepted, with the ticked upgrades. */
   acceptedTotal?: number
   declinedAt?: string
@@ -393,4 +438,6 @@ export interface Settings {
   jobWord: JobWord
   /** Saved stall limits in days per stage. A missing stage uses the built-in default; null means never flagged. */
   stallLimits?: Partial<Record<Stage, { slow: number | null; stuck: number | null }>>
+  /** Round 5 Advanced extras: switches, chase days, foam table, lost reasons, lead sources. */
+  extras?: ExtrasSettings
 }

@@ -22,7 +22,7 @@ await build({
   platform: 'node',
   logLevel: 'error',
   nodePaths: [path.join(ROOT, 'node_modules')],
-  define: { 'import.meta.env': '{}' },
+  define: { 'import.meta.env': '{"VITE_DATA_SOURCE":"mock"}' },
   banner: { js: "import { createRequire as __cr } from 'node:module'; const require = __cr(import.meta.url);" },
 })
 

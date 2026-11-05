@@ -1,0 +1,78 @@
+/* ============================================================================
+   Density tokens, the app frame and the Section component.
+   Rules: text people read is 14px or more, fields people type in 16px,
+   touch targets 44px on a phone, one focus ring everywhere.
+   ============================================================================ */
+
+:root {
+  --d-gap: 1rem; /* space between blocks */
+  --d-pad: 1.125rem; /* inside a card or panel */
+  --d-text: 1.0625rem; /* text people read: 17px */
+  --d-small: 0.9375rem; /* hints, meta: 15px */
+  --d-head: 1.25rem; /* section headings */
+  --d-row: 3rem; /* a clickable row: 48px */
+  --d-radius: 14px;
+  --d-field: 1.0625rem; /* text people type: 17px */
+  --d-field-h: 2.875rem;
+}
+@media (pointer: coarse), (max-width: 639px) {
+  :root {
+    --d-row: 2.75rem; /* 44px */
+    --d-field-h: 2.75rem;
+  }
+}
+
+/* Tablet and small laptop: the tools (sync, search) take a second row so nothing overflows. */
+@media (min-width: 640px) and (max-width: 1199px) {
+  .topbar-inner { flex-wrap: wrap; }
+  .topbar-inner > nav { margin-right: auto; }
+  .topbar-tools { order: 3; width: 100%; justify-content: flex-end; padding-bottom: 0.5rem; }
+}
+@media (max-width: 639px) {
+  /* two classes, so they beat the gap and padding utilities on these elements in both the standalone build and AI Studio */
+  .topbar .topbar-inner { gap: 0.5rem; padding-inline: 0.75rem; }
+  .topbar .topbar-tools { gap: 0.5rem; }
+}
+
+/* ---- App frame: the job page is exactly as high as the window and the page does not scroll ---- */
+html:has(.app-frame),
+html:has(.app-frame) body { height: 100dvh; overflow: hidden; }
+/* position: relative so visually hidden (absolute) text inside cannot make the document scrollable */
+.app-frame { position: relative; height: 100dvh; display: flex; flex-direction: column; overflow: hidden; }
+.app-frame > .topbar { position: relative; flex: none; }
+.app-frame > .bottombar { position: relative; flex: none; }
+.app-frame > div { flex: none; } /* notices above the page */
+.page-frame {
+  flex: 1 1 0; min-height: 0; display: flex; flex-direction: column;
+  width: 100%; max-width: 120rem; margin-inline: auto; padding: 0.75rem 1rem 0;
+}
+@media (min-width: 1280px) { .page-frame { padding: 1rem 1.5rem 0; } }
+@media print { html:has(.app-frame), html:has(.app-frame) body, .app-frame { height: auto; overflow: visible; } }
+
+/* ---- Section: heading that opens and closes its content (job panels) ---- */
+.sec { border-bottom: 1px solid rgb(var(--c-line-soft)); }
+.sec:last-child { border-bottom: 0; }
+/* The heading row is ONE line: chevron, title, count. It never wraps; a title that is too long is cut with an ellipsis as a last resort. */
+.sec-head { display: flex; flex-wrap: nowrap; align-items: center; min-width: 0; }
+.sec-title { margin: 0; flex: 1 1 auto; min-width: 0; font-family: var(--font-body); font-size: var(--d-head); font-weight: 700; letter-spacing: 0; line-height: 1.2; word-spacing: 0; }
+.sec-btn {
+  display: flex; flex-wrap: nowrap; width: 100%; min-width: 0; min-height: var(--d-row); align-items: center; gap: 0 0.5rem; padding: 0 0.25rem;
+  background: transparent; border: 0; border-radius: 8px; font: inherit; font-weight: 700; color: rgb(var(--c-ink)); text-align: left;
+}
+.sec-btn:hover { background: rgb(var(--c-navy-wash)); }
+.sec-btn > svg { flex: none; }
+.sec-name { flex: 0 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sec-count {
+  flex: none; min-width: 1.5rem; padding: 0.1rem 0.45rem; border-radius: 999px; text-align: center;
+  background: rgb(var(--c-navy-wash)); color: rgb(var(--c-navy)); font-size: var(--d-small); font-weight: 700;
+}
+.sec-summary { flex: 1 1 8rem; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 400; font-size: var(--d-small); color: rgb(var(--c-muted)); }
+/* The buttons: their own row right under the heading, left aligned, wrapping. No buttons means no row (it is not rendered). */
+.sec-action { min-width: 0; max-width: 100%; display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-start; gap: 0.5rem; padding: 0.375rem 0.25rem 0; }
+.sec-body { padding: 0.25rem 0.25rem calc(var(--d-pad) + 0.5rem); font-size: var(--d-text); }
+.sec-action + .sec-body { padding-top: 1.25rem; }
+.sec[data-empty='true'] .sec-count { background: transparent; color: rgb(var(--c-muted)); }
+
+@media (prefers-reduced-motion: reduce) {
+  * { scroll-behavior: auto !important; }
+}

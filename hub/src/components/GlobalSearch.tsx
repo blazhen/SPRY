@@ -2,7 +2,9 @@ import { useEffect, useId, useMemo, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { Search, X } from 'lucide-react'
 import { href } from '../lib/router'
-import { fmtMoney, word } from '../lib/format'
+import { daysSince, fmtMoney, jobText, word } from '../lib/format'
+import { NewJobDialog } from './NewJobDialog'
+import './newJob.css'
 import { quoteTotals } from '../lib/calc'
 import { kindLabel, useRecentRows } from './RecentList'
 import { whenText } from '../lib/recent'
@@ -10,6 +12,7 @@ import { getCompany, listJobs, participantName, useStore } from '../lib/store'
 import type { Contact, Job, Quote } from '../types'
 
 const MAX = 5
+const KIND_ORDER = { job: 0, contact: 1, quote: 2 } as const
 const digits = (s: string) => s.replace(/\D/g, '')
 const squash = (s: string) => s.toLowerCase().replace(/\s+/g, '')
 
@@ -17,7 +20,7 @@ interface Hit {
   key: string
   to: string
   title: string
-  detail: string
+  detail: string[]
 }
 interface Group {
   id: 'jobs' | 'contacts' | 'quotes'
@@ -73,7 +76,10 @@ function useResults(query: string): Group[] {
         id: 'jobs',
         label: word(true),
         total: jobsAll.length,
-        hits: jobsAll.slice(0, MAX).map((j) => ({ key: j.id, to: href.job(j.id), title: j.name, detail: [j.address, j.participants.length ? jobLabel(j) : ''].filter(Boolean).join(' | ') })),
+        hits: jobsAll.slice(0, MAX).map((j) => {
+          const d = daysSince(j.stageSince)
+          return { key: j.id, to: href.job(j.id), title: j.name, detail: [j.participants.length ? jobLabel(j) : 'No contact yet', j.address, `${j.stage}, ${d} ${d === 1 ? 'day' : 'days'}`].filter(Boolean) }
+        }),
         seeAll: jobsAll.length > MAX ? { to: `#/jobs?q=${encodeURIComponent(q)}`, text: `See all ${jobsAll.length} ${word(true, true)}` } : undefined,
       },
       {
@@ -84,7 +90,7 @@ function useResults(query: string): Group[] {
           key: c.id,
           to: href.contact(c.id),
           title: c.name,
-          detail: [c.companyId ? getCompany(c.companyId, s)?.name : '', c.phone, c.email].filter(Boolean).join(' | '),
+          detail: [c.companyId ? getCompany(c.companyId, s)?.name : '', c.phone, c.email].filter((x): x is string => !!x),
         })),
       },
       {
@@ -95,7 +101,7 @@ function useResults(query: string): Group[] {
           key: x.id,
           to: href.edit(x.id),
           title: `${x.number} for ${participantName(x.recipient, s)}`,
-          detail: [s.jobs.find((j) => j.id === x.jobId)?.name, x.status, fmtMoney(quoteTotals(x).total)].filter(Boolean).join(' | '),
+          detail: [s.jobs.find((j) => j.id === x.jobId)?.name, x.status, fmtMoney(quoteTotals(x).total)].filter((v): v is string => !!v),
         })),
       },
     ]
@@ -114,7 +120,10 @@ export function GlobalSearch({ variant = 'top' }: { variant?: 'top' | 'icon' }) 
   const listId = useId()
   const query = useDebounced(text, 150)
   const groups = useResults(query)
-  const recent = useRecentRows()
+  const [making, setMaking] = useState(false)
+  // Recently opened, jobs first (the sort keeps the newest-first order inside each kind).
+  const recentRaw = useRecentRows()
+  const recent = useMemo(() => [...recentRaw].sort((a, b) => KIND_ORDER[a.item.kind] - KIND_ORDER[b.item.kind]), [recentRaw])
   const typing = text.trim().length > 0
 
   // Every row you can step through with the arrow keys, in order.
@@ -176,7 +185,9 @@ export function GlobalSearch({ variant = 'top' }: { variant?: 'top' | 'icon' }) 
   const onKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Escape') {
       e.preventDefault()
-      close()
+      // Like a search box: the first Escape clears what was typed, the second closes.
+      if (text) setText('')
+      else close()
     } else if (e.key === 'ArrowDown') {
       e.preventDefault()
       if (rows.length) setActive((a) => (a + 1) % rows.length)
@@ -189,6 +200,7 @@ export function GlobalSearch({ variant = 'top' }: { variant?: 'top' | 'icon' }) 
     } else if (e.key === 'Tab') {
       // Keep Tab inside the dialog.
       const f = box.current?.querySelectorAll<HTMLElement>('input, button, a[href]')
+      // (the "Make a new" button is inside the dialog too, so it is part of this loop)
       if (!f || f.length === 0) return
       const first = f[0]
       const last = f[f.length - 1]
@@ -207,12 +219,13 @@ export function GlobalSearch({ variant = 'top' }: { variant?: 'top' | 'icon' }) 
   const count = !typing ? '' : waiting ? 'Searching' : found === 0 ? 'Nothing found' : `${found} ${found === 1 ? 'result' : 'results'} found`
   let idx = -1
   const optId = (i: number) => `${listId}-opt-${i}`
-  const optClass = (i: number) => `block rounded-lg px-4 py-3 no-underline ${i === active ? 'bg-navy-wash outline outline-2 outline-offset-[-2px]' : ''}`
+  const optClass = (i: number) => `gs-row ${i === active ? 'bg-navy-wash outline outline-2 outline-offset-[-2px]' : ''}`
 
   return (
     <>
-      <button ref={btn} type="button" className={variant === 'icon' ? 'chip' : 'btn btn-quiet'} aria-haspopup="dialog" onClick={() => setOpen(true)}>
-        <Search size={20} aria-hidden="true" />
+      <NewJobDialog open={making} onClose={() => setMaking(false)} />
+      <button ref={btn} type="button" className={variant === 'icon' ? 'chip' : 'btn btn-neutral'} aria-haspopup="dialog" onClick={() => setOpen(true)}>
+        <Search size={16} aria-hidden="true" />
         <span className="min-[640px]:max-[1099px]:sr-only">Search</span>
       </button>
       {open && createPortal(
@@ -230,8 +243,8 @@ export function GlobalSearch({ variant = 'top' }: { variant?: 'top' | 'icon' }) 
               <h2 id={titleId} className="font-display text-2xl">
                 Search
               </h2>
-              <button type="button" className="btn btn-quiet" onClick={close}>
-                <X size={20} aria-hidden="true" />
+              <button type="button" className="btn btn-neutral" onClick={close}>
+                <X size={16} aria-hidden="true" />
                 Close
               </button>
             </div>
@@ -267,14 +280,29 @@ export function GlobalSearch({ variant = 'top' }: { variant?: 'top' | 'icon' }) 
                     const i = idx
                     return (
                       <a key={r.item.kind + r.item.id} id={optId(i)} role="option" aria-selected={i === active} href={r.to} className={optClass(i)} onClick={() => { setOpen(false); setText('') }} onMouseMove={() => setActive(i)}>
-                        <span className="block text-lg font-bold">{r.name}</span>
-                        <span className="block text-muted">{kindLabel(r.item.kind)}, {whenText(r.item.at)}</span>
+                        <span className="gs-title">{r.name}</span>
+                        <span className="gs-meta">{kindLabel(r.item.kind)}, {whenText(r.item.at)}</span>
                       </a>
                     )
                   })}
                 </div>
               )}
-              {typing && !waiting && found === 0 && <p className="px-4 py-6 text-lg">Nothing found, try fewer letters</p>}
+              {typing && !waiting && found === 0 && (
+                <div className="gs-empty">
+                  <p className="text-lg">Nothing found. Try fewer letters, or make a new {word(false, true)}.</p>
+                  <button
+                    type="button"
+                    className="btn btn-primary"
+                    onClick={() => {
+                      setOpen(false)
+                      setText('')
+                      setMaking(true)
+                    }}
+                  >
+                    {jobText('Make a new %j')}
+                  </button>
+                </div>
+              )}
               {typing &&
                 groups.map((g) => (
                   <div key={g.id} className="px-2">
@@ -284,8 +312,12 @@ export function GlobalSearch({ variant = 'top' }: { variant?: 'top' | 'icon' }) 
                       const i = idx
                       return (
                         <a key={h.key} id={optId(i)} role="option" aria-selected={i === active} href={h.to} className={optClass(i)} onClick={() => { setOpen(false); setText('') }} onMouseMove={() => setActive(i)}>
-                          <span className="block text-lg font-bold">{h.title}</span>
-                          <span className="block text-muted">{h.detail}</span>
+                          <span className="gs-title">{h.title}</span>
+                          <span className="gs-meta">
+                            {h.detail.map((d, n) => (
+                              <span key={n}>{d}</span>
+                            ))}
+                          </span>
                         </a>
                       )
                     })}

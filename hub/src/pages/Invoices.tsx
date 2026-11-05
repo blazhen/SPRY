@@ -1,8 +1,12 @@
 import { useMemo, useState } from 'react'
 import { AlertTriangle, Ban, CheckCircle2, Clock, FilePen, Plus, Send } from 'lucide-react'
+import './listsPages.css'
+import { SortHeader, SortPicker } from '../components/SortHeader'
+import { compareNumber, compareText, findWaitBucket, flipDir, inWaitBucket, sortBy, WAIT_BUCKETS } from '../lib/sortFilter'
+import type { SortDir } from '../lib/sortFilter'
 import { PagerPair } from '../components/Pager'
 import { MoneyText, PageHead } from '../components/ui'
-import { addDaysISO, fmtDate, todayISO } from '../lib/format'
+import { addDaysISO, daysSince, fmtDate, todayISO } from '../lib/format'
 import { daysOverdue, invoiceTotals, isOverdue, KIND_LABEL, statusLabel } from '../lib/invoices'
 import { DATA_SOURCE } from '../config'
 import { retryInvoices, useInvoiceLoad } from '../lib/live'
@@ -30,19 +34,24 @@ type ShowId = (typeof SHOW)[number]['id']
 interface Filters {
   q: string
   show: ShowId
+  /** A WAIT_BUCKETS id: only invoices issued that many days ago. '' = any time. */
+  age: string
 }
+
+type ISort = '' | 'number' | 'customer' | 'status' | 'amount' | 'due'
 
 // Filters live in the hash query (#/invoices?q=..&show=..) so a reload or a shared link keeps them.
 function readFilters(): Filters {
   const p = new URLSearchParams(window.location.hash.split('?')[1] ?? '')
   const show = SHOW.find((x) => x.id === p.get('show'))?.id ?? 'all'
-  return { q: p.get('q') ?? '', show }
+  return { q: p.get('q') ?? '', show, age: findWaitBucket(p.get('age'))?.id ?? '' }
 }
 
 function writeFilters(f: Filters) {
   const p = new URLSearchParams()
   if (f.q) p.set('q', f.q)
   if (f.show !== 'all') p.set('show', f.show)
+  if (f.age) p.set('age', f.age)
   const qs = p.toString()
   window.history.replaceState(null, '', `#/invoices${qs ? `?${qs}` : ''}`)
 }
@@ -81,6 +90,8 @@ export default function Invoices() {
   const s = useStore()
   const load = useInvoiceLoad()
   const today = todayISO()
+  const [sort, setSort] = useState<ISort>('')
+  const [dir, setDir] = useState<SortDir>('asc')
   const [f, setF] = useState<Filters>(readFilters)
   const change = (patch: Partial<Filters>) => {
     const next = { ...f, ...patch }
@@ -111,7 +122,8 @@ export default function Invoices() {
 
   const rows = useMemo(() => {
     const needle = f.q.trim().toLowerCase()
-    return all.filter((i) => {
+    const kept = all.filter((i) => {
+      if (f.age && !inWaitBucket(daysSince(i.issueDate), findWaitBucket(f.age))) return false
       if (f.show === 'draft' && i.status !== 'draft') return false
       if (f.show === 'waiting' && !((i.status === 'sent' || i.status === 'part') && !isOverdue(i, today))) return false
       if (f.show === 'overdue' && !isOverdue(i, today)) return false
@@ -121,10 +133,44 @@ export default function Invoices() {
       const hay = `${i.number} ${whoFor(i, s).name} ${getJob(i.jobId, s)?.name ?? ''}`.toLowerCase()
       return hay.includes(needle)
     })
-  }, [all, f, s, today])
+    if (!sort) return kept
+    return sortBy(kept, (a, b) => {
+      switch (sort) {
+        case 'number':
+          return compareText(a.number, b.number, dir)
+        case 'customer':
+          return compareText(whoFor(a, s).name, whoFor(b, s).name, dir)
+        case 'status':
+          return compareText(statusLabel(a, today), statusLabel(b, today), dir)
+        case 'amount':
+          return compareNumber(invoiceTotals(a).due, invoiceTotals(b).due, dir)
+        case 'due':
+          return compareText(a.dueDate ?? '', b.dueDate ?? '', dir)
+      }
+    })
+  }, [all, f, s, today, sort, dir])
 
-  const paged = usePaged(rows, { url: true, resetKey: `${f.q}|${f.show}` })
-  const active = !!f.q || f.show !== 'all'
+  const paged = usePaged(rows, { url: true, resetKey: `${f.q}|${f.show}|${f.age}|${sort}|${dir}` })
+  const active = !!f.q || f.show !== 'all' || !!f.age
+  const dirOf = (k: ISort): SortDir | null => (sort === k ? dir : null)
+  const toggleSort = (k: ISort) => {
+    if (sort === k) setDir(flipDir(dir))
+    else {
+      setSort(k)
+      setDir(k === 'amount' ? 'desc' : 'asc')
+    }
+  }
+  const showCounts = useMemo(() => {
+    const c: Record<ShowId, number> = { all: all.length, draft: 0, waiting: 0, overdue: 0, paid: 0, void: 0 }
+    for (const i of all) {
+      if (i.status === 'draft') c.draft++
+      if ((i.status === 'sent' || i.status === 'part') && !isOverdue(i, today)) c.waiting++
+      if (isOverdue(i, today)) c.overdue++
+      if (i.status === 'paid') c.paid++
+      if (i.status === 'void') c.void++
+    }
+    return c
+  }, [all, today])
 
   const cards: { label: string; value: React.ReactNode; hot?: boolean }[] = [
     { label: 'Overdue', value: <MoneyText value={sums.overdue} whole />, hot: sums.overdue > 0 },
@@ -134,7 +180,7 @@ export default function Invoices() {
   ]
 
   return (
-    <div className="stack-lg">
+    <div className="stack-lg lp" data-page="invoices">
       <PageHead
         title="Invoices"
         subtitle="Every invoice in one place. Search, or pick which ones to show."
@@ -157,7 +203,7 @@ export default function Invoices() {
         ))}
       </dl>
 
-      <form className="grid gap-4 sm:grid-cols-[2fr_1fr]" role="search" onSubmit={(e) => e.preventDefault()}>
+      <form className="lp-search-grid" role="search" onSubmit={(e) => e.preventDefault()}>
         <div>
           <label className="label" htmlFor="inv-search">
             Search invoices
@@ -165,26 +211,55 @@ export default function Invoices() {
           <input id="inv-search" type="search" className="field" value={f.q} onChange={(e) => change({ q: e.target.value })} placeholder="e.g. INV-2003 or Dutta" />
         </div>
         <div>
-          <label className="label" htmlFor="inv-show">
-            Show
+          <label className="label" htmlFor="inv-age">
+            Days since issued
           </label>
-          <select id="inv-show" className="field" value={f.show} onChange={(e) => change({ show: SHOW.find((x) => x.id === e.target.value)?.id ?? 'all' })}>
-            {SHOW.map((x) => (
-              <option key={x.id} value={x.id}>
-                {x.label}
+          <select id="inv-age" className="field" value={f.age} onChange={(e) => change({ age: e.target.value })}>
+            <option value="">Any time</option>
+            {WAIT_BUCKETS.map((b) => (
+              <option key={b.id} value={b.id}>
+                {b.label}
               </option>
             ))}
           </select>
         </div>
       </form>
 
+      <div className="flex flex-wrap gap-2" role="group" aria-label="Show">
+        {SHOW.map((x) => (
+          <button key={x.id} type="button" className="chip" aria-pressed={f.show === x.id} onClick={() => change({ show: x.id })}>
+            {x.label}
+            <span className="num font-medium">{showCounts[x.id]}</span>
+          </button>
+        ))}
+      </div>
+
+      {rows.length > 1 && (
+        <SortPicker
+          id="inv-sort"
+          options={[
+            { id: 'number', label: 'Invoice no' },
+            { id: 'customer', label: 'Customer' },
+            { id: 'status', label: 'Status' },
+            { id: 'amount', label: 'Amount due' },
+            { id: 'due', label: 'Due date' },
+          ]}
+          sort={sort || 'number'}
+          dir={dir}
+          onChange={(k, d) => {
+            setSort(k as ISort)
+            setDir(d)
+          }}
+        />
+      )}
+
       <div className="flex flex-wrap items-center gap-3" role="status" aria-live="polite">
         <p className="t-body text-muted" data-testid="inv-count">
           {rows.length} {rows.length === 1 ? 'invoice' : 'invoices'}
         </p>
         {active && (
-          <button type="button" className="btn btn-quiet btn-sm" onClick={() => change({ q: '', show: 'all' })}>
-            Clear search
+          <button type="button" className="btn btn-neutral btn-sm" onClick={() => change({ q: '', show: 'all', age: '' })}>
+            Clear filters
           </button>
         )}
       </div>
@@ -216,19 +291,17 @@ export default function Invoices() {
               <caption className="sr-only">All invoices</caption>
               <thead>
                 <tr>
-                  <th scope="col">Invoice no</th>
-                  <th scope="col">Customer</th>
-                  <th scope="col">Job</th>
-                  <th scope="col">Type</th>
-                  <th scope="col">Status</th>
-                  <th scope="col">Issued</th>
-                  <th scope="col">Due</th>
-                  <th scope="col" className="num-col">
+                  <SortHeader dir={dirOf('number')} onSort={() => toggleSort('number')}>Invoice no</SortHeader>
+                  <SortHeader dir={dirOf('customer')} onSort={() => toggleSort('customer')}>Customer</SortHeader>
+                  <th scope="col" className="col-adv">Job</th>
+                  <th scope="col" className="col-adv">Type</th>
+                  <SortHeader dir={dirOf('status')} onSort={() => toggleSort('status')}>Status</SortHeader>
+                  <th scope="col" className="col-adv">Issued</th>
+                  <SortHeader dir={dirOf('due')} onSort={() => toggleSort('due')}>Due</SortHeader>
+                  <th scope="col" className="num-col col-adv">
                     Total
                   </th>
-                  <th scope="col" className="num-col">
-                    Amount due
-                  </th>
+                  <SortHeader className="num-col" dir={dirOf('amount')} onSort={() => toggleSort('amount')}>Amount due</SortHeader>
                 </tr>
               </thead>
               <tbody>
@@ -253,7 +326,7 @@ export default function Invoices() {
                           who.name
                         )}
                       </td>
-                      <td data-label="Job">
+                      <td data-label="Job" className="col-adv">
                         {job ? (
                           <a href={href.job(job.id)} className="cell-link">
                             {job.name}
@@ -262,16 +335,16 @@ export default function Invoices() {
                           'Unknown'
                         )}
                       </td>
-                      <td data-label="Type">{KIND_LABEL[i.kind]}</td>
+                      <td data-label="Type" className="col-adv">{KIND_LABEL[i.kind]}</td>
                       <td data-label="Status">
                         <InvoiceStatusBadge inv={i} today={today} />
                       </td>
-                      <td data-label="Issued" className="whitespace-nowrap">{shortDate(i.issueDate)}</td>
+                      <td data-label="Issued" className="col-adv whitespace-nowrap">{shortDate(i.issueDate)}</td>
                       <td data-label="Due" className={`whitespace-nowrap ${late ? 'font-bold text-hot-ink' : ''}`}>
                         {i.dueDate ? shortDate(i.dueDate) : 'Not set'}
                         {late > 0 && <span className="block">{late} {late === 1 ? 'day' : 'days'} late</span>}
                       </td>
-                      <td data-label="Total" className="num-col">
+                      <td data-label="Total" className="num-col col-adv">
                         <MoneyText value={t.total} />
                       </td>
                       <td data-label="Amount due" className={`num-col ${late ? 'font-bold text-hot-ink' : ''}`}>

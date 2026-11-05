@@ -147,7 +147,7 @@ export function NotesPanel({ target, title = 'Notes' }: { target: NoteTarget; ti
                     >
                       Save note
                     </button>
-                    <button type="button" className="btn btn-quiet" onClick={() => setEditing(null)}>
+                    <button type="button" className="btn btn-neutral" onClick={() => setEditing(null)}>
                       Cancel
                     </button>
                   </div>
@@ -156,25 +156,25 @@ export function NotesPanel({ target, title = 'Notes' }: { target: NoteTarget; ti
                 <>
                   <p className="t-body mt-2 whitespace-pre-wrap break-words">{n.text}</p>
                   <div className="mt-3 flex flex-wrap gap-2">
-                    <button type="button" className="btn btn-quiet" onClick={() => togglePin(n.id)}>
-                      {n.pinned ? <PinOff size={18} aria-hidden="true" /> : <Pin size={18} aria-hidden="true" />}
+                    <button type="button" className="btn btn-neutral" onClick={() => togglePin(n.id)}>
+                      {n.pinned ? <PinOff size={16} aria-hidden="true" /> : <Pin size={16} aria-hidden="true" />}
                       {n.pinned ? 'Unpin' : 'Pin to top'}
                     </button>
                     {!LIVE && (
                       <button
                         type="button"
-                        className="btn btn-quiet"
+                        className="btn btn-tint"
                         onClick={() => {
                           setEditing(n.id)
                           setEditText(n.text)
                         }}
                       >
-                        <Pencil size={18} aria-hidden="true" />
+                        <Pencil size={16} aria-hidden="true" />
                         Edit
                       </button>
                     )}
-                    <button type="button" className="btn btn-quiet" onClick={() => setDeleting(n.id)} disabled={LIVE && n.id.startsWith('pending-')}>
-                      <Trash2 size={18} aria-hidden="true" />
+                    <button type="button" className="btn btn-danger" onClick={() => setDeleting(n.id)} disabled={LIVE && n.id.startsWith('pending-')}>
+                      <Trash2 size={16} aria-hidden="true" />
                       Delete
                     </button>
                   </div>
@@ -196,6 +196,7 @@ export function NotesPanel({ target, title = 'Notes' }: { target: NoteTarget; ti
 
       <ConfirmDialog
         open={deleting !== null}
+        action="delete-note"
         title="Delete this note?"
         confirmLabel="Delete note"
         tone="danger"

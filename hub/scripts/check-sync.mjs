@@ -118,7 +118,7 @@ if (!build(LIVE_DIR, { VITE_DATA_SOURCE: 'live', VITE_SYNC_POLL_MS: '1500' })) {
   console.log('FAIL live build')
   process.exit(1)
 }
-if (!build(MOCK_DIR, {})) {
+if (!build(MOCK_DIR, { VITE_DATA_SOURCE: 'mock' })) {
   console.log('FAIL mock build')
   process.exit(1)
 }
@@ -137,7 +137,7 @@ try {
   rec('1: terms, price items and settings were seeded', f2('terms') > 0 && f2('priceItems') > 0 && f2('settings') > 0, `terms=${f2('terms')} prices=${f2('priceItems')} settings=${f2('settings')}`)
   rec('1: quotes, invoices, messages, events were NOT seeded', ['quotes', 'invoices', 'messages', 'events'].every((c) => f2(c) === 0), ['quotes', 'invoices', 'messages', 'events'].map((c) => `${c}=${f2(c)}`).join(' '))
   // The app also loads the pipeline stages and owners in live mode, so /api/pipelines, /api/users and (when a job page opens) /api/participants are expected.
-  const unexpected = fake.other.filter((p) => !p.endsWith('/api/pipelines') && !p.endsWith('/api/users') && !p.endsWith('/api/participants') && !p.endsWith('/api/invoices') && !p.endsWith('/api/tasks') && !p.endsWith('/api/notes'))
+  const unexpected = fake.other.filter((p) => !p.endsWith('/api/pipelines') && !p.endsWith('/api/users') && !p.endsWith('/api/participants') && !p.endsWith('/api/invoices') && !p.endsWith('/api/tasks') && !p.endsWith('/api/notes') && !p.endsWith('/api/opportunity-fields') && !p.endsWith('/api/contact-fields') && !p.endsWith('/api/files'))
   rec('1: no other /api calls', unexpected.length === 0, unexpected.join(','))
 
   // Second user opens now, so it can only learn about the quote through its poll.

@@ -1,0 +1,32 @@
+/* The optional job page boxes (Edit layout). Sizes come from the --d-* tokens. */
+.bx-stack { display: flex; flex-direction: column; gap: var(--d-gap); min-width: 0; }
+.bx-line { margin: 0; font-size: var(--d-text); line-height: 1.4; overflow-wrap: anywhere; }
+.bx-meta { margin: 0; font-size: var(--d-small); color: rgb(var(--c-muted)); overflow-wrap: anywhere; }
+.bx-late { font-weight: 700; color: rgb(var(--c-hot-ink, var(--c-ink))); }
+.bx-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.bx-more { min-height: 24px; }
+.bx-more { align-self: flex-start; }
+.bx-next { display: flex; align-items: flex-start; gap: 0.5rem 0.75rem; flex-wrap: wrap; }
+.bx-next-text { flex: 1 1 10rem; min-width: 0; display: flex; flex-direction: column; gap: 0.125rem; }
+
+.bx-dl { margin: 0; display: grid; grid-template-columns: 1fr auto; gap: 0.25rem 1rem; font-size: var(--d-text); }
+.bx-dl dt { margin: 0; color: rgb(var(--c-muted)); }
+.bx-dl dd { margin: 0; text-align: right; font-variant-numeric: tabular-nums; font-weight: 700; }
+
+.bx-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; min-width: 0; }
+.bx-row {
+  display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0.125rem 0.75rem;
+  min-width: 0; padding: 0.25rem 0; border-bottom: 1px solid rgb(var(--c-line));
+}
+.bx-row:last-child { border-bottom: 0; }
+.bx-name { flex: 1 1 8rem; min-width: 0; font-size: var(--d-text); font-weight: 700; overflow-wrap: anywhere; }
+.bx-amt { flex: none; font-size: var(--d-text); font-variant-numeric: tabular-nums; text-align: right; }
+.bx-sub { flex-basis: 100%; margin: 0; font-size: var(--d-small); color: rgb(var(--c-muted)); }
+.bx-row a { color: rgb(var(--c-navy)); text-decoration: underline; text-underline-offset: 2px; }
+.bx-row a:focus-visible, .bx-actions a:focus-visible, .bx-link:focus-visible { outline: 2px solid rgb(var(--c-navy)); outline-offset: 2px; }
+.bx-link { color: rgb(var(--c-navy)); text-decoration: underline; text-underline-offset: 2px; background: none; border: 0; padding: 0; font: inherit; font-size: var(--d-small); cursor: pointer; min-height: 24px; align-self: flex-start; }
+
+@media (pointer: coarse) {
+  .bx-actions .btn, .bx-more, .bx-link { min-height: 44px; }
+  .bx-row a { display: inline-flex; align-items: center; min-height: 44px; }
+}

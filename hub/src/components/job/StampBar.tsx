@@ -12,7 +12,7 @@ function Stamp({ icon, label, help, why, onClick }: { icon: ReactNode; label: st
   const id = `stamp-why-${label.replace(/\W+/g, '-')}`
   return (
     <div className="stamp">
-      <button type="button" className="btn btn-quiet btn-lg w-full justify-start" onClick={onClick} disabled={!!why} aria-describedby={id}>
+      <button type="button" className="btn btn-neutral btn-lg w-full justify-start" onClick={onClick} disabled={!!why} aria-describedby={id}>
         {icon}
         {label}
       </button>
@@ -25,7 +25,7 @@ function Stamp({ icon, label, help, why, onClick }: { icon: ReactNode; label: st
 }
 
 /** Big plain buttons that record something. Each one asks "Are you sure?" first. */
-export function StampBar({ jobId }: { jobId: string }) {
+export function StampBar({ jobId, quiet = false }: { jobId: string; quiet?: boolean }) {
   const s = useStore()
   const job = getJob(jobId, s)
   const [which, setWhich] = useState<Which>(null)
@@ -85,7 +85,8 @@ export function StampBar({ jobId }: { jobId: string }) {
 
   return (
     <section aria-labelledby="stamps-h">
-      <h2 id="stamps-h" className="t-section" tabIndex={-1} ref={headingRef}>
+      {/* quiet: the job page wraps this in its own Milestones section, so the heading is only for screen readers */}
+      <h2 id="stamps-h" className={quiet ? 'sr-only' : 't-section'} tabIndex={-1} ref={headingRef}>
         Record something
       </h2>
       <p className="hint">Nothing is sent to the customer from here. Each button only keeps a record.</p>
@@ -134,7 +135,7 @@ export function StampBar({ jobId }: { jobId: string }) {
             help="Use this after you have asked the customer for a review." onClick={() => setWhich('review')} />}
       </div>
 
-      <ConfirmDialog open={which === 'deposit'} title="Are you sure?" confirmLabel="Yes, it is paid" onConfirm={() => paid(deposit)} onClose={close}>
+      <ConfirmDialog open={which === 'deposit'} action="record-payment" title="Are you sure?" confirmLabel="Yes, it is paid" onConfirm={() => paid(deposit)} onClose={close}>
         {deposit && (
           <p>
             This records {deposit.label.toLowerCase()} ({deposit.number}, {fmtMoney(deposit.amount)}) as paid
@@ -142,7 +143,7 @@ export function StampBar({ jobId }: { jobId: string }) {
           </p>
         )}
       </ConfirmDialog>
-      <ConfirmDialog open={which === 'final'} title="Are you sure?" confirmLabel="Yes, it is paid" onConfirm={() => paid(final)} onClose={close}>
+      <ConfirmDialog open={which === 'final'} action="record-payment" title="Are you sure?" confirmLabel="Yes, it is paid" onConfirm={() => paid(final)} onClose={close}>
         {final && (
           <p>
             This records {final.label.toLowerCase()} ({final.number}, {fmtMoney(final.amount)}) as paid. Nothing is sent to the customer.
@@ -184,7 +185,7 @@ export function StampBar({ jobId }: { jobId: string }) {
         title="Log a phone call"
         footer={
           <>
-            <button type="button" className="btn btn-quiet btn-lg" onClick={close}>
+            <button type="button" className="btn btn-neutral btn-lg" onClick={close}>
               Cancel
             </button>
             <button type="button" className="btn btn-primary btn-lg" onClick={saveCall}>

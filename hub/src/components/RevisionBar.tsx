@@ -5,7 +5,7 @@ import { quotesForRecipient, useStore } from '../lib/store'
 import type { Quote } from '../types'
 
 /** Rev 1, Rev 2... for this customer on the job, as links, with a plain line about what changed. */
-export default function RevisionBar({ quote }: { quote: Quote }) {
+export default function RevisionBar({ quote, quoteHref = href.edit }: { quote: Quote; quoteHref?: (id: string) => string }) {
   const s = useStore()
   const revisions = quotesForRecipient(quote.jobId, quote.recipient, s)
     .slice()
@@ -19,7 +19,7 @@ export default function RevisionBar({ quote }: { quote: Quote }) {
             return (
               <li key={r.id}>
                 <a
-                  href={href.edit(r.id)}
+                  href={quoteHref(r.id)}
                   className={`chip min-h-[44px] ${current ? 'font-bold' : ''}`}
                   aria-current={current ? 'page' : undefined}
                   title={`${r.number}, ${effectiveStatus(r)}`}

@@ -108,7 +108,7 @@ function AddItemDialog({ open, onClose, defaultProduct }: { open: boolean; onClo
       title="Add an item"
       footer={
         <>
-          <button type="button" className="btn btn-quiet btn-lg" onClick={onClose}>
+          <button type="button" className="btn btn-neutral" onClick={onClose}>
             Cancel
           </button>
           <button type="button" className="btn btn-primary btn-lg" onClick={save}>
@@ -213,10 +213,10 @@ export default function PriceBook() {
             Show prices
           </p>
           <div className="flex flex-wrap gap-3">
-            <button type="button" className={`btn btn-lg ${incMode ? 'btn-quiet' : 'btn-primary'}`} aria-pressed={!incMode} onClick={() => setIncMode(false)}>
+            <button type="button" className={`btn btn-lg ${incMode ? 'btn-neutral' : 'btn-primary'}`} aria-pressed={!incMode} onClick={() => setIncMode(false)}>
               Excluding GST
             </button>
-            <button type="button" className={`btn btn-lg ${incMode ? 'btn-primary' : 'btn-quiet'}`} aria-pressed={incMode} onClick={() => setIncMode(true)}>
+            <button type="button" className={`btn btn-lg ${incMode ? 'btn-primary' : 'btn-neutral'}`} aria-pressed={incMode} onClick={() => setIncMode(true)}>
               Including GST
             </button>
           </div>
@@ -291,8 +291,8 @@ export default function PriceBook() {
       </TabPanel>
 
       <div>
-        <button type="button" className="btn btn-quiet btn-lg" onClick={() => setResetOpen(true)}>
-          <RotateCcw size={18} aria-hidden="true" />
+        <button type="button" className="btn btn-warn" onClick={() => setResetOpen(true)}>
+          <RotateCcw size={16} aria-hidden="true" />
           Put back the demo prices
         </button>
       </div>
@@ -301,6 +301,7 @@ export default function PriceBook() {
 
       <ConfirmDialog
         open={!!toDelete}
+        action="delete-other"
         onClose={() => setToDelete(null)}
         title="Delete this item?"
         confirmLabel="Delete item"

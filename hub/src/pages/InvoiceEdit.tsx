@@ -1,5 +1,8 @@
+import './quoteInvoice.css'
+import './invoiceEdit.css'
 import { useEffect, useId, useRef, useState, type ReactNode } from 'react'
-import { ArrowDown, ArrowLeft, ArrowUp, Copy, PackagePlus, Plus, Save, Search, Send, Trash2, X } from 'lucide-react'
+import { createPortal } from 'react-dom'
+import { ArrowDown, ArrowLeft, ArrowUp, Copy, Plus, Save, Search, Send, Trash2, X } from 'lucide-react'
 import ContactCard from '../components/ContactCard'
 import InvoiceSheet from '../components/InvoiceSheet'
 import JobDetailsPanel from '../components/JobDetailsPanel'
@@ -31,46 +34,49 @@ const fieldsOf = (i: Invoice) => ({ kind: i.kind, items: i.items, discount: i.di
 
 const timeFmt = (d: Date) => d.toLocaleTimeString('en-AU', { hour: 'numeric', minute: '2-digit' })
 
-export default function InvoiceEdit() {
+/** `ws`: the invoice editor inside the job page (Round 8): form in the middle, preview portalled into the right panel slot. */
+export type InvoiceWs = { id: string; jobId: string; slot: HTMLElement | null }
+
+export default function InvoiceEdit({ ws }: { ws?: InvoiceWs } = {}) {
   const route = useRoute()
   const s = useStore()
-  if (route.name === 'invoiceNew') return <NewInvoicePage jobId={route.jobId} />
-  if (route.name !== 'invoiceEdit') return null
-  const inv = getInvoice(route.id, s)
+  if (!ws && route.name === 'invoiceNew') return <NewInvoicePage jobId={route.jobId} />
+  if (!ws && route.name !== 'invoiceEdit') return null
+  const inv = getInvoice(ws ? ws.id : route.name === 'invoiceEdit' ? route.id : '', s)
   if (!inv) {
     return (
-      <div className="mx-auto max-w-lg py-10 text-center">
-        <h1 className="t-page">We could not find that invoice</h1>
+      <div className={ws ? 'ws-missing' : 'mx-auto max-w-lg py-10 text-center'} data-ws-missing={ws ? '' : undefined}>
+        {ws ? <p className="t-body font-bold">We could not find that invoice</p> : <h1 className="t-page">We could not find that invoice</h1>}
         <p className="t-body mt-2 text-muted">It may have been deleted, or the link is not quite right.</p>
-        <a href={href.invoices()} className="btn btn-primary btn-lg mt-5">
+        <a href={ws ? href.job(ws.jobId) : href.invoices()} className="btn btn-primary btn-lg mt-5">
           <ArrowLeft size={20} aria-hidden="true" />
-          Back to all invoices
+          {ws ? 'Back to activity' : 'Back to all invoices'}
         </a>
       </div>
     )
   }
   if (inv.status !== 'draft') {
     return (
-      <div className="mx-auto max-w-lg py-10">
+      <div className={ws ? 'ws-missing' : 'mx-auto max-w-lg py-10'}>
         <Notice tone="info">
           <p className="font-bold">
             Invoice {inv.number} is {statusLabel(inv, todayISO()).toLowerCase()}, so it cannot be changed here.
           </p>
         </Notice>
-        <a href={href.invoice(inv.id)} className="btn btn-primary btn-lg mt-5">
+        <a href={ws ? href.jobInvoice(ws.jobId, inv.id) : href.invoice(inv.id)} className="btn btn-primary btn-lg mt-5">
           Open invoice {inv.number}
         </a>
       </div>
     )
   }
-  return <InvoiceEditor key={inv.id} initial={inv} />
+  return <InvoiceEditor key={inv.id} initial={inv} ws={ws} />
 }
 
 function Section({ title, children, id }: { title: string; children: ReactNode; id?: string }) {
   const hid = useId()
   return (
-    <section className="panel min-w-0 p-4" aria-labelledby={hid} id={id}>
-      <h2 id={hid} className="t-section mb-3">
+    <section className="panel ie-sec min-w-0 p-4" aria-labelledby={hid} id={id}>
+      <h2 id={hid} className="t-section ie-sec-title mb-3">
         {title}
       </h2>
       {children}
@@ -80,7 +86,7 @@ function Section({ title, children, id }: { title: string; children: ReactNode; 
 
 const numOrZero = (v: string): number => (v === '' || Number.isNaN(Number(v)) ? 0 : Math.max(0, Number(v)))
 
-function InvoiceEditor({ initial }: { initial: Invoice }) {
+function InvoiceEditor({ initial, ws }: { initial: Invoice; ws?: InvoiceWs }) {
   const store = useStore()
   const ids = useId()
   const [inv, setInv] = useState<Invoice>(initial)
@@ -199,8 +205,10 @@ function InvoiceEditor({ initial }: { initial: Invoice }) {
     sendInvoice(inv.id)
     setSendOpen(false)
     toast(`Invoice ${inv.number} marked as sent`)
-    go(href.invoice(inv.id))
+    go(ws ? href.jobInvoice(ws.jobId, inv.id) : href.invoice(inv.id))
   }
+
+  const toEdit = (id: string) => (ws ? href.jobInvoiceEdit(ws.jobId, id) : href.invoiceEdit(id))
 
   function duplicate() {
     if (dirtyRef.current && !persist()) return
@@ -209,7 +217,7 @@ function InvoiceEditor({ initial }: { initial: Invoice }) {
         (copy) => {
           if (!copy) return
           toast(`Made a copy: invoice ${copy.number}`)
-          go(href.invoiceEdit(copy.id))
+          go(toEdit(copy.id))
         },
         () => toast('The copy could not be made. Nothing was saved.'),
       )
@@ -218,7 +226,7 @@ function InvoiceEditor({ initial }: { initial: Invoice }) {
     const copy = duplicateInvoice(inv.id)
     if (copy) {
       toast(`Made a copy: invoice ${copy.number}`)
-      go(href.invoiceEdit(copy.id))
+      go(toEdit(copy.id))
     }
   }
 
@@ -296,6 +304,7 @@ function InvoiceEditor({ initial }: { initial: Invoice }) {
 
   const form = (
     <div className="no-print min-w-0 space-y-5">
+      {!ws && (
       <Section title="Customer and job">
         <dl className="t-body space-y-2">
           <div className="grid grid-cols-[6rem_minmax(0,1fr)] gap-3">
@@ -325,10 +334,11 @@ function InvoiceEditor({ initial }: { initial: Invoice }) {
           </div>
         </dl>
       </Section>
+      )}
 
       <Section title="Type and dates">
-        <div className="space-y-4">
-          <div>
+        <div className="ie-dates space-y-4">
+          <div className="ie-kind">
             <label className="label" htmlFor={`${ids}-kind`}>
               Type of invoice
             </label>
@@ -340,7 +350,7 @@ function InvoiceEditor({ initial }: { initial: Invoice }) {
               ))}
             </select>
           </div>
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="ie-datepair grid gap-4 sm:grid-cols-2">
             <div>
               <label className="label" htmlFor={`${ids}-issue`}>
                 Invoice date
@@ -356,14 +366,14 @@ function InvoiceEditor({ initial }: { initial: Invoice }) {
               {err(`${ids}-due`)}
             </div>
           </div>
-          <div role="group" aria-label="Quick choices" className="flex flex-wrap gap-2">
+          <div role="group" aria-label="Quick choices" className="ie-quick flex flex-wrap items-center gap-2">
             {[
               { n: 0, label: 'On receipt' },
               { n: 7, label: '7 days' },
               { n: 14, label: '14 days' },
               { n: 30, label: '30 days' },
             ].map((o) => (
-              <button key={o.n} type="button" className={`btn min-h-[44px] ${dueDays === o.n ? 'btn-primary' : 'btn-quiet'}`} aria-pressed={dueDays === o.n} onClick={() => quickDue(o.n)}>
+              <button key={o.n} type="button" className={`btn min-h-[44px] ${dueDays === o.n ? 'btn-primary' : 'btn-neutral'}`} aria-pressed={dueDays === o.n} onClick={() => quickDue(o.n)}>
                 {o.label}
               </button>
             ))}
@@ -373,21 +383,40 @@ function InvoiceEditor({ initial }: { initial: Invoice }) {
 
       <Section title="Items" id={`${ids}-add`}>
         <div className="space-y-3">
-          {inv.items.length === 0 && (
-            <EmptyState title="No lines yet">Add an item from the price list, or write your own line. Each line has a quantity and a price before GST.</EmptyState>
-          )}
+          {inv.items.length === 0 && <EmptyState title="No lines yet">Add an item from the price list, or write your own line. Each line has a quantity and a price before GST.</EmptyState>}
           {inv.items.map((l, index) => {
             const f = (n: string) => `${ids}-${l.id}-${n}`
             const label = l.description.trim() || `line ${index + 1}`
+            const tools = (
+              <span className="flex items-center gap-1">
+                <button id={f('up')} type="button" className="btn btn-ghost btn-icon" onClick={() => moveLine(index, -1)} disabled={index === 0} aria-label={`Move ${label} up`} title="Move up">
+                  <ArrowUp size={18} aria-hidden="true" />
+                </button>
+                <button id={f('down')} type="button" className="btn btn-ghost btn-icon" onClick={() => moveLine(index, 1)} disabled={index === inv.items.length - 1} aria-label={`Move ${label} down`} title="Move down">
+                  <ArrowDown size={18} aria-hidden="true" />
+                </button>
+                <button type="button" className="btn btn-ghost btn-icon text-hot-ink hover:bg-hot-wash" onClick={() => removeLine(l.id)} aria-label={`Remove ${label}`} title="Remove line">
+                  <Trash2 size={18} aria-hidden="true" />
+                </button>
+              </span>
+            )
+            const gstBox = (
+              <label htmlFor={f('gst')} className="ie-gst t-body flex min-h-[44px] cursor-pointer items-center gap-3">
+                <input id={f('gst')} type="checkbox" className="h-5 w-5 shrink-0 accent-[rgb(var(--c-navy))]" checked={l.gst} onChange={(e) => updateLine(l.id, { gst: e.target.checked })} />
+                GST applies to this line
+              </label>
+            )
             return (
-              <div key={l.id} className="rounded-md border p-3" style={{ borderColor: 'rgb(var(--c-control))' }} role="group" aria-label={`Line ${index + 1}`}>
-                <div className="grid min-w-0 grid-cols-2 gap-3">
-                  <div className="col-span-2 min-w-0">
-                    <label className="label" htmlFor={f('desc')}>
-                      What it is for
-                    </label>
-                    <input id={f('desc')} className="field" value={l.description} onChange={(e) => updateLine(l.id, { description: e.target.value })} autoComplete="off" aria-invalid={bad(f('desc'))} aria-describedby={bad(f('desc')) ? `${f('desc')}-err` : undefined} />
-                    {err(f('desc'))}
+              <div key={l.id} className="ie-line rounded-md border p-3" style={{ borderColor: 'rgb(var(--c-control))' }} role="group" aria-label={`Line ${index + 1}`}>
+                <div className="ie-line-grid grid min-w-0 grid-cols-2 gap-3">
+                  <div className="ie-desc col-span-2 min-w-0">
+                    <div className="ie-desc-in min-w-0">
+                      <label className="label" htmlFor={f('desc')}>
+                        What it is for
+                      </label>
+                      <input id={f('desc')} className="field" value={l.description} onChange={(e) => updateLine(l.id, { description: e.target.value })} autoComplete="off" aria-invalid={bad(f('desc'))} aria-describedby={bad(f('desc')) ? `${f('desc')}-err` : undefined} />
+                      {err(f('desc'))}
+                    </div>
                   </div>
                   <div className="min-w-0">
                     <label className="label" htmlFor={f('qty')}>
@@ -425,21 +454,8 @@ function InvoiceEditor({ initial }: { initial: Invoice }) {
                   </div>
                 </div>
                 <div className="mt-3 flex flex-wrap items-center justify-between gap-2 border-t rule pt-3">
-                  <label htmlFor={f('gst')} className="t-body flex min-h-[44px] cursor-pointer items-center gap-3">
-                    <input id={f('gst')} type="checkbox" className="h-5 w-5 shrink-0 accent-[rgb(var(--c-navy))]" checked={l.gst} onChange={(e) => updateLine(l.id, { gst: e.target.checked })} />
-                    GST applies to this line
-                  </label>
-                  <span className="flex items-center gap-1">
-                    <button id={f('up')} type="button" className="btn btn-ghost btn-icon" onClick={() => moveLine(index, -1)} disabled={index === 0} aria-label={`Move ${label} up`}>
-                      <ArrowUp size={18} aria-hidden="true" />
-                    </button>
-                    <button id={f('down')} type="button" className="btn btn-ghost btn-icon" onClick={() => moveLine(index, 1)} disabled={index === inv.items.length - 1} aria-label={`Move ${label} down`}>
-                      <ArrowDown size={18} aria-hidden="true" />
-                    </button>
-                    <button type="button" className="btn btn-ghost btn-icon text-hot-ink hover:bg-hot-wash" onClick={() => removeLine(l.id)} aria-label={`Remove ${label}`}>
-                      <Trash2 size={18} aria-hidden="true" />
-                    </button>
-                  </span>
+                  {gstBox}
+                  {tools}
                 </div>
               </div>
             )
@@ -447,7 +463,7 @@ function InvoiceEditor({ initial }: { initial: Invoice }) {
           {err(`${ids}-add`)}
 
           {picking && (
-            <div className="rounded-md border p-3" style={{ borderColor: 'rgb(var(--c-control))' }} role="region" aria-label="Price list">
+            <div className="ie-pick rounded-md border p-3" style={{ borderColor: 'rgb(var(--c-control))' }} role="region" aria-label="Price list">
               <div className="flex items-end gap-2">
                 <div className="min-w-0 flex-1">
                   <label className="label" htmlFor={`${ids}-search`}>
@@ -478,13 +494,13 @@ function InvoiceEditor({ initial }: { initial: Invoice }) {
             </div>
           )}
 
-          <div className="flex flex-wrap items-center gap-2">
-            <button type="button" className="btn btn-quiet" onClick={() => setPicking((v) => !v)} aria-expanded={picking}>
-              <PackagePlus size={18} aria-hidden="true" />
+          <div className="ie-add flex flex-wrap items-center gap-2">
+            <button type="button" className="btn btn-add" onClick={() => setPicking((v) => !v)} aria-expanded={picking}>
+              <Plus size={16} aria-hidden="true" />
               Add from price list
             </button>
-            <button type="button" className="btn btn-quiet" onClick={() => addLine()}>
-              <Plus size={18} aria-hidden="true" />
+            <button type="button" className="btn btn-add" onClick={() => addLine()}>
+              <Plus size={16} aria-hidden="true" />
               Add your own line
             </button>
           </div>
@@ -535,44 +551,44 @@ function InvoiceEditor({ initial }: { initial: Invoice }) {
     )
 
   return (
-    <div>
-      <div className="no-print mb-4">
-        <a href={job ? href.job(job.id) : href.invoices()} className="btn btn-ghost -ml-3">
+    <div className={ws ? 'qi-page qi-ws' : 'qi-page'} data-invoice-editor={ws ? 'workspace' : 'page'}>
+      <div className="no-print ie-head mb-4">
+        <a href={job ? href.job(job.id) : href.invoices()} className="btn btn-ghost -ml-3" data-back-to={ws ? 'activity' : 'job'}>
           <ArrowLeft size={20} aria-hidden="true" />
-          {job ? 'Back to the job' : 'All invoices'}
+          {ws ? 'Back to activity' : job ? 'Back to the job' : 'All invoices'}
         </a>
-        <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-3">
-          <h1 className="t-page min-w-0 break-words">Invoice {inv.number}</h1>
+        <div className="ie-titlerow mt-2 flex flex-wrap items-center gap-x-4 gap-y-3">
+          {ws ? <h2 className="t-section min-w-0 break-words">Invoice {inv.number}</h2> : <h1 className="t-page min-w-0 break-words">Invoice {inv.number}</h1>}
           <span className="badge st-slate">Draft</span>
+          <p className="t-small -mt-2 w-full text-muted" role="status" aria-live="polite">
+            {KIND_LABEL[inv.kind]}
+            {savedText ? `. ${savedText}` : ''}
+          </p>
         </div>
-        <p className="t-small mt-1 text-muted" role="status" aria-live="polite">
-          {KIND_LABEL[inv.kind]}
-          {savedText ? `. ${savedText}` : ''}
-        </p>
       </div>
 
-      <div className="no-print mb-5 flex flex-wrap items-center gap-3">
-        <button type="button" className="btn btn-primary btn-lg" onClick={openSend} disabled={sendBlocked} aria-describedby={sendBlocked ? `${ids}-sendwhy` : undefined}>
+      <div className="no-print ie-actions mb-5 flex flex-wrap items-center gap-3">
+        <button type="button" className="btn btn-primary btn-lg is-primary-here" onClick={openSend} disabled={sendBlocked} aria-describedby={sendBlocked ? `${ids}-sendwhy` : undefined}>
           <Send size={20} aria-hidden="true" />
           Send
         </button>
-        <button type="button" className="btn btn-quiet" onClick={saveDraft}>
-          <Save size={20} aria-hidden="true" />
+        <button type="button" className="btn btn-good" onClick={saveDraft}>
+          <Save size={16} aria-hidden="true" />
           Save draft
         </button>
-        <button type="button" className="btn btn-quiet" onClick={duplicate}>
-          <Copy size={20} aria-hidden="true" />
+        <button type="button" className="btn btn-neutral" onClick={duplicate}>
+          <Copy size={16} aria-hidden="true" />
           Duplicate
         </button>
         <button type="button" className="btn btn-danger" onClick={() => setDeleteOpen(true)}>
-          <Trash2 size={20} aria-hidden="true" />
+          <Trash2 size={16} aria-hidden="true" />
           Delete draft
         </button>
         {sendBlocked && (
           <p className="t-small text-muted" id={`${ids}-sendwhy`} role="status" data-invoice-sync={liveSync === 'failed' ? 'failed' : 'saving'}>
             {liveSync === 'failed' ? 'Last change did not reach the CRM: try again' : 'Saving changes to the CRM'}
             {liveSync === 'failed' && (
-              <button type="button" className="btn btn-quiet ml-3" onClick={retry}>
+              <button type="button" className="btn btn-neutral ml-3" onClick={retry}>
                 Retry
               </button>
             )}
@@ -581,30 +597,45 @@ function InvoiceEditor({ initial }: { initial: Invoice }) {
       </div>
 
       {/* Totals: always on screen */}
-      <section className="no-print panel mb-5 p-4" aria-label="Totals" data-testid="totals">
-        <dl className="t-body grid grid-cols-[minmax(0,1fr)_auto] gap-x-6 gap-y-1">
-          <dt className="text-muted">Subtotal before GST</dt>
-          <dd className="num text-right" data-testid="t-sub">
-            {fmtMoney(sumEx)}
-          </dd>
+      <section className="no-print panel ie-totals mb-5 p-4" aria-label="Totals" data-testid="totals">
+        <dl className="ie-totals-dl t-body grid grid-cols-[minmax(0,1fr)_auto] gap-x-6 gap-y-1">
+          <div className="ie-pair contents">
+            <dt className="text-muted">Subtotal before GST</dt>
+            <dd className="num text-right" data-testid="t-sub">
+              {fmtMoney(sumEx)}
+            </dd>
+          </div>
           {inv.discount > 0 && (
-            <>
+            <div className="ie-pair contents">
               <dt className="text-muted">Discount</dt>
               <dd className="num text-right">{fmtMoney(-Math.min(inv.discount, sumEx))}</dd>
-            </>
+            </div>
           )}
-          <dt className="text-muted">GST</dt>
-          <dd className="num text-right" data-testid="t-gst">
-            {fmtMoney(totals.gst)}
-          </dd>
-          <dt className="font-bold">Total with GST</dt>
-          <dd className="num text-right text-xl font-bold" data-testid="t-total">
-            {fmtMoney(totals.total)}
-          </dd>
+          <div className="ie-pair contents">
+            <dt className="text-muted">GST</dt>
+            <dd className="num text-right" data-testid="t-gst">
+              {fmtMoney(totals.gst)}
+            </dd>
+          </div>
+          <div className="ie-pair ie-pair-total contents">
+            <dt className="font-bold">Total with GST</dt>
+            <dd className="num text-right text-xl font-bold" data-testid="t-total">
+              {fmtMoney(totals.total)}
+            </dd>
+          </div>
         </dl>
         {quoteNote && <p className="t-small mt-2 text-muted">{quoteNote}</p>}
       </section>
 
+      {ws ? (
+        <>
+          <div className="min-w-0">{form}</div>
+          <div className="hidden print:block">
+            <InvoiceSheet invoice={inv} />
+          </div>
+          {ws.slot && createPortal(<InvoiceSheet invoice={inv} />, ws.slot)}
+        </>
+      ) : (
       <SplitPane
         storageKey="hub.invoice.split"
         leftLabel="Edit the invoice"
@@ -616,8 +647,9 @@ function InvoiceEditor({ initial }: { initial: Invoice }) {
         left={form}
         right={rightBody}
       />
+      )}
 
-      <ConfirmDialog open={sendOpen} title={`Send invoice ${inv.number}?`} confirmLabel="Yes, send it" onConfirm={confirmSend} onClose={() => setSendOpen(false)}>
+      <ConfirmDialog open={sendOpen} action="send-invoice" title={`Send invoice ${inv.number}?`} confirmLabel="Yes, send it" onConfirm={confirmSend} onClose={() => setSendOpen(false)}>
         <div className="space-y-3">
           {DEMO && DATA_SOURCE !== 'live' && <Notice>Nothing is sent in this demo. The invoice just shows as Sent in this browser.</Notice>}
           <p className="t-body">
@@ -629,7 +661,7 @@ function InvoiceEditor({ initial }: { initial: Invoice }) {
         </div>
       </ConfirmDialog>
 
-      <ConfirmDialog open={deleteOpen} title="Delete this draft?" confirmLabel="Yes, delete it" tone="danger" onConfirm={confirmDelete} onClose={() => setDeleteOpen(false)}>
+      <ConfirmDialog open={deleteOpen} action="delete-invoice" title="Delete this draft?" confirmLabel="Yes, delete it" tone="danger" onConfirm={confirmDelete} onClose={() => setDeleteOpen(false)}>
         <p className="t-body">Invoice {inv.number} will be removed for good. This cannot be undone.</p>
       </ConfirmDialog>
     </div>

@@ -1,6 +1,7 @@
 import { seedAll, seedCompanies, seedContacts, seedTerms } from '../data/mock'
-import type { Invoice, Job, JobAppointment, Quote } from '../types'
+import type { Invoice, Job, Quote } from '../types'
 import { quoteTotals } from './calc'
+import { daysOverdue, invoiceTotals } from './invoices'
 import { whatChanged } from './family'
 import { addDaysISO, daysSince, localDay, stall, toISODate } from './format'
 import { allInvoices, currentOwnerId, getState, invoiceState, invoicesForJob, todoQueue, type State } from './store'
@@ -43,7 +44,6 @@ export interface WeeklySummary {
   overdueTotal: number
   expiring: ExpiryNudge[]
   stuckJobs: Job[]
-  upcoming: { job: Job; appt: JobAppointment }[]
 }
 
 const WON_DAYS = 30
@@ -98,6 +98,43 @@ export function expiryNudges(s: State = getState(), now: Date = new Date()): Exp
   })
 }
 
+export interface MoneyToChase {
+  invoice: Invoice
+  job: Job | undefined
+  /** overdue: late. part: part paid, balance still owed. unsent: made but not sent to the customer yet. */
+  reason: 'overdue' | 'part' | 'unsent'
+  /** Whole days past the due date (0 unless overdue). */
+  daysLate: number
+  /** What is still owed, inc GST. */
+  owing: number
+}
+
+const CHASE_ORDER = { overdue: 0, part: 1, unsent: 2 } as const
+
+/**
+ * Money to chase: invoices that are late, part paid with a balance, or made but never sent. Not only the overdue ones,
+ * because a deposit that was never sent is money nobody is asking for. Late ones first, the longest late at the top.
+ */
+export function moneyToChase(s: State = getState(), now: Date = new Date()): MoneyToChase[] {
+  const today = toISODate(now)
+  const out: MoneyToChase[] = []
+  for (const invoice of s.invoices) {
+    if (invoice.status === 'paid' || invoice.status === 'void') continue
+    const owing = invoiceTotals(invoice).due
+    if (owing <= 0) continue
+    const late = daysOverdue(invoice, today)
+    const reason: MoneyToChase['reason'] | undefined = late > 0 ? 'overdue' : invoice.status === 'part' ? 'part' : invoice.status === 'draft' ? 'unsent' : undefined
+    if (!reason) continue
+    out.push({ invoice, job: s.jobs.find((j) => j.id === invoice.jobId), reason, daysLate: late, owing })
+  }
+  return out.sort((a, b) => CHASE_ORDER[a.reason] - CHASE_ORDER[b.reason] || b.daysLate - a.daysLate || b.owing - a.owing)
+}
+
+/** Sent quotes the customer has not answered (still open), the ones waiting longest first. */
+export function sentQuotesWaiting(s: State = getState(), now: Date = new Date()): Quote[] {
+  return openSent(s, now).sort((a, b) => (a.sentAt ?? '').localeCompare(b.sentAt ?? ''))
+}
+
 /** The last 7 days and the next 7. */
 export function weeklySummary(s: State = getState(), now: Date = new Date()): WeeklySummary {
   const today = isoDay(now)
@@ -108,9 +145,6 @@ export function weeklySummary(s: State = getState(), now: Date = new Date()): We
   const accepted = s.quotes.filter((q) => q.status === 'Accepted' && inPast(q.acceptedAt))
   const overdue = s.invoices.filter((i) => invoiceState(i, now) === 'Overdue')
   const sum = (n: number[]) => Math.round(n.reduce((a, b) => a + b, 0) * 100) / 100
-  const upcoming = s.jobs
-    .flatMap((job) => job.appointments.filter((appt) => appt.date >= today && appt.date <= to).map((appt) => ({ job, appt })))
-    .sort((a, b) => (a.appt.date + a.appt.time).localeCompare(b.appt.date + b.appt.time))
   const t = todoSummary(s, now)
   return {
     from,
@@ -126,7 +160,6 @@ export function weeklySummary(s: State = getState(), now: Date = new Date()): We
     overdueTotal: sum(overdue.map((i) => i.amount)),
     expiring: expiryNudges(s, now),
     stuckJobs: s.jobs.filter((j) => stall(j, now).level === 'stuck'),
-    upcoming,
   }
 }
 

@@ -1,5 +1,6 @@
 import { useId, useState } from 'react'
 import { CheckCircle2, ChevronDown, Circle } from 'lucide-react'
+import { eventDay, eventTime, useCalendar, useCalendarSync, visitsForJob } from '../lib/calendar'
 import { fmtDate, fmtMoneyWhole } from '../lib/format'
 import { getOwner } from '../lib/store'
 import { href } from '../lib/router'
@@ -13,19 +14,23 @@ function timeText(t: string): string {
 }
 
 /** Collapsible read-only summary of the job, shown beside the quote form. */
-export default function JobDetailsPanel({ job, defaultOpen = false }: { job: Job | undefined; defaultOpen?: boolean }) {
-  const [open, setOpen] = useState(defaultOpen)
+export default function JobDetailsPanel({ job }:{ job: Job | undefined; defaultOpen?: boolean }) {
+  const [open, setOpen] = useState(true)
   const id = useId()
+  const cal = useCalendar()
+  useCalendarSync()
   if (!job) return null
+  const visits = visitsForJob(cal.events, job).sort((a, b) => Date.parse(a.start) - Date.parse(b.start))
   const rows: [string, string][] = [
-    ['Address', job.address || 'Not set'],
+    ['Job site address', job.address || 'Not set'],
+    ['Job notes', job.notes?.trim() || 'No job notes yet'],
     ['Where it came from', job.source || 'Not set'],
     ['Value (before GST)', fmtMoneyWhole(job.value)],
     ['Looked after by', getOwner(job.ownerId)],
     ['Stage', job.stage],
   ]
   return (
-    <section className="panel p-4 sm:p-5" aria-labelledby={`${id}-h`}>
+    <section className="panel qi-sec" aria-labelledby={`${id}-h`}>
       <h2 id={`${id}-h`} className="t-section">
         <button
           type="button"
@@ -38,7 +43,7 @@ export default function JobDetailsPanel({ job, defaultOpen = false }: { job: Job
             <span className="block break-words">About this job</span>
             {!open && (
               <span className="block break-words text-base font-normal text-muted" style={{ letterSpacing: 'normal', fontFamily: 'var(--font-body)' }}>
-                {job.name}, {job.stage}
+                {job.address ? `${job.address}. ` : ''}{job.notes?.trim() ? `Notes: ${job.notes.trim().slice(0, 60)}${job.notes.trim().length > 60 ? '...' : ''}` : job.stage}
               </span>
             )}
           </span>
@@ -51,7 +56,7 @@ export default function JobDetailsPanel({ job, defaultOpen = false }: { job: Job
             {rows.map(([k, v]) => (
               <div key={k} className="grid grid-cols-[8.5rem_minmax(0,1fr)] gap-3">
                 <dt className="text-muted">{k}</dt>
-                <dd className="min-w-0 break-words">{v}</dd>
+                <dd className="min-w-0 whitespace-pre-line break-words">{v}</dd>
               </div>
             ))}
           </dl>
@@ -78,23 +83,23 @@ export default function JobDetailsPanel({ job, defaultOpen = false }: { job: Job
           </div>
           <div>
             <h3 className="t-body font-bold">Appointments</h3>
-            {job.appointments.length === 0 ? (
+            {visits.length === 0 ? (
               <p className="t-body text-muted">No appointments.</p>
             ) : (
               <ul className="t-body mt-1 space-y-1">
-                {job.appointments.map((a) => (
-                  <li key={a.id} className="min-w-0 break-words">
-                    {a.title}
+                {visits.map((e) => (
+                  <li key={e.id} className="min-w-0 break-words">
+                    {e.title || e.kind}
                     <span className="text-muted">
-                      , {fmtDate(a.date)} at {timeText(a.time)}
+                      , {fmtDate(eventDay(e))} at {timeText(eventTime(e))}
                     </span>
                   </li>
                 ))}
               </ul>
             )}
           </div>
-          <a href={href.job(job.id)} className="btn btn-quiet">
-            Open the job
+          <a href={href.job(job.id)} className="btn btn-neutral">
+            Back to the job
           </a>
         </div>
       )}

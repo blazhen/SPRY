@@ -1,0 +1,17 @@
+/* InlineField: looks like plain text until you hover or focus it, then it is an input. Sizes follow the layout density tokens. */
+.inline-field-wrap { display: flex; flex-direction: column; gap: 0.1rem; min-width: 0; }
+.inline-field-label { font-size: var(--d-small, 1rem); font-weight: 700; color: rgb(var(--c-muted)); }
+.inline-field {
+  display: block; width: 100%; min-height: var(--d-field-h, 44px); padding: 0.4rem 0.65rem; margin-inline: -0.65rem; width: calc(100% + 1.3rem);
+  font: inherit; font-size: var(--d-field, 1.125rem); font-weight: 600; color: rgb(var(--c-ink)); background: transparent;
+  border: 1px dashed transparent; border-radius: 10px; resize: vertical; overflow-wrap: anywhere;
+}
+.inline-field::placeholder { font-weight: 400; color: rgb(var(--c-muted)); }
+.inline-field:hover { border-color: rgb(var(--c-control)); background: rgb(var(--c-surface)); }
+.inline-field:focus-visible { outline: 3px solid rgb(var(--c-navy)); outline-offset: 1px; background: rgb(var(--c-surface)); border-color: rgb(var(--c-control)); }
+.inline-field-dirty { border-style: solid; border-color: rgb(var(--c-amber)); background: rgb(var(--c-amber-wash)); }
+.inline-field-hint { margin: 0; font-size: var(--d-small, 1rem); color: rgb(var(--c-muted)); }
+.inline-field-state { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; min-height: 0; }
+.inline-field-state:empty { display: none; }
+.inline-field-unsaved { font-size: var(--d-small, 1rem); font-weight: 700; color: rgb(var(--c-amber)); }
+.inline-field-saved { display: inline-flex; align-items: center; gap: 0.25rem; font-size: var(--d-small, 1rem); color: rgb(var(--c-muted)); }

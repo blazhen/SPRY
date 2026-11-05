@@ -1,0 +1,21 @@
+/* Contacts, Quotes, Invoices lists and the Contact page. */
+/* One filter row: search, selects and the clear button sit side by side and wrap on a phone. */
+.lp-filter-row { display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--d-gap); }
+.lp-filter-row > div { min-width: min(14rem, 100%); flex: 1 1 14rem; max-width: 22rem; }
+.lp-filter-row > .btn { flex: 0 0 auto; }
+.lp-search-grid { display: grid; gap: var(--d-gap); grid-template-columns: minmax(0, 1fr); align-items: end; }
+@media (min-width: 640px) {
+  :root .lp-search-grid { grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); }
+}
+/* Tables are roomy. */
+:root .lp .tbl th,
+:root .lp .tbl td { padding-top: 0.875rem; padding-bottom: 0.875rem; }
+/* Contact page: the person's jobs table and the two-column Advanced page. */
+.cp-jobs .tbl th,
+.cp-jobs .tbl td { vertical-align: middle; }
+.cp-cols { display: grid; gap: var(--d-gap); grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 1024px) {
+  :root .cp-cols { grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.4fr); align-items: start; gap: calc(var(--d-gap) * 1.5); }
+}
+.cp-col { min-width: 0; display: grid; gap: var(--d-gap); align-content: start; }
+.cp-sections > .sec { background: rgb(var(--c-card, 255 255 255)); border: 1px solid rgb(var(--c-line)); border-radius: var(--d-radius); padding: 0 var(--d-pad); }

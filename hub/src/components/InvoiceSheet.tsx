@@ -1,5 +1,5 @@
 import { BUSINESS, GST_RATE } from '../config'
-import logo from '../assets/logo.png'
+const logo = 'https://vibe.filesafe.space/1792617879857668669/assets/3769dd19-d4f3-4485-b0dd-960502b82b99.png'
 import { roundHalfUp } from '../lib/calc'
 import { fmtDate, fmtMoney, fmtQty, todayISO } from '../lib/format'
 import { invoiceTotals, isOverdue, daysOverdue, lineExGst, KIND_LABEL, METHOD_LABEL, UNIT_LABEL } from '../lib/invoices'
@@ -46,7 +46,7 @@ export default function InvoiceSheet({ invoice, compact = false }: { invoice: In
   if (invoice.status === 'paid') stamps.push({ text: 'PAID', tone: 'ok' })
   if (invoice.status === 'void') stamps.push({ text: 'VOID', tone: 'bad' })
   if (overdue) stamps.push({ text: `OVERDUE ${late} ${late === 1 ? 'DAY' : 'DAYS'}`, tone: 'warn' })
-  const stampCls = { ok: 'text-green-ink', bad: 'text-hot', warn: 'text-ink' }
+  const stampCls = { ok: 'text-green-ink', bad: 'text-hot-ink', warn: 'text-ink' }
 
   return (
     <article className="sheet theme-light" aria-label={`Invoice ${invoice.number}`} data-invoice-sheet>

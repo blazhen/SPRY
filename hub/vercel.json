@@ -1,0 +1,32 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": null,
+  "installCommand": "npm install --no-audit --no-fund && npm run server:build",
+  "buildCommand": "npm run build:vercel",
+  "outputDirectory": "dist",
+  "regions": ["syd1"],
+  "functions": {
+    "api/**/*.js": { "maxDuration": 30, "includeFiles": "server/.build/**" },
+    "api/page.js": { "includeFiles": "dist/app.html" }
+  },
+  "rewrites": [
+    { "source": "/oauth/callback", "destination": "/api/hub-install/oauth-callback" },
+    { "source": "/webhooks/platform", "destination": "/api/hub-install/webhooks-platform" },
+    { "source": "/auth/user-context", "destination": "/api/hub-install/auth-user-context" },
+    { "source": "/((?!api/|assets/).*)", "destination": "/api/page" }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
+        { "key": "X-Robots-Tag", "value": "noindex, nofollow" }
+      ]
+    },
+    {
+      "source": "/assets/(.*)",
+      "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }]
+    }
+  ]
+}

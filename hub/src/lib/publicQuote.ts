@@ -14,6 +14,8 @@ export interface PublicQuote {
   recipientName: string
   jobName: string
   jobAddress: string
+  /** Inspection photos staff put on the quote: signed picture addresses, caption and part only. Absent on the answers to ticks, accept and decline. */
+  photos?: { id: string; caption: string; sub: string; url: string }[]
 }
 
 export type PublicResult =

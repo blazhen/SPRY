@@ -3,6 +3,7 @@ import { AlertCircle, CheckCircle2, Plus, Trash2 } from 'lucide-react'
 import type { DueRule, PaymentKind, PaymentPresetId, PaymentRow, Quote } from '../types'
 import { DUE_OPTIONS, PAYMENT_PRESETS, paymentRowsFor } from '../lib/due'
 import { fmtMoney, uid } from '../lib/format'
+import './quoteSections.css'
 import { paymentAmounts, paymentPercentTotal, paymentsBalance, quoteTotals, round2 } from '../lib/calc'
 
 /** Rows follow the width of the editor pane (container "pane" set by SplitPane), not the window. */
@@ -15,6 +16,8 @@ const ROW_CSS = `
   .pay-grid { grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) minmax(0, 1.2fr) auto; }
 }
 `
+
+const OTHER_HINT = 'Say when it is due in the label, for example "Final payment, before the job report is sent".'
 
 export default function PaymentsEditor({ quote, onChange }: { quote: Quote; onChange: (patch: Partial<Quote>) => void }) {
   const base = useId()
@@ -66,14 +69,14 @@ export default function PaymentsEditor({ quote, onChange }: { quote: Quote; onCh
   }
 
   return (
-    <div className="min-w-0 space-y-3">
+    <div className="min-w-0 space-y-3 qs-root">
       <style>{ROW_CSS}</style>
       <div className="sr-only" role="status" aria-live="polite">
         {announce}
       </div>
 
-      <fieldset>
-        <legend className="label">Quick plans</legend>
+      <fieldset className="qs-plans">
+        <legend className="label qs-lbl">Quick plans</legend>
         <div className="flex flex-wrap gap-2">
           {PAYMENT_PRESETS.filter((p) => p.rows).map((p) => (
             <button key={p.id} type="button" className="chip" aria-pressed={quote.paymentPreset === p.id} onClick={() => applyPreset(p.id)}>
@@ -107,21 +110,21 @@ export default function PaymentsEditor({ quote, onChange }: { quote: Quote; onCh
           const fid = (f: string) => `${base}-${p.id}-${f}`
           const label = p.label.trim() || `row ${index + 1}`
           return (
-            <tr key={p.id} role="row" className="panel block p-3 sm:p-4" aria-label={`Payment ${index + 1}`}><td role="cell" className="block">
+            <tr key={p.id} role="row" className="panel block p-3 sm:p-4 qs-row" aria-label={`Payment ${index + 1}`}><td role="cell" className="block">
               <div className="pay-grid">
-                <div className="pay-wide">
-                  <label className="label" htmlFor={fid('label')}>Payment name</label>
+                <div className="pay-wide pay-name">
+                  <label className="label qs-lbl" htmlFor={fid('label')}>Payment name</label>
                   <input id={fid('label')} className="field" value={p.label} onChange={(e) => update(p.id, { label: e.target.value })} autoComplete="off" />
                 </div>
-                <div>
-                  <label className="label" htmlFor={fid('kind')}>How it is worked out</label>
+                <div className="pay-kind">
+                  <label className="label qs-lbl" htmlFor={fid('kind')}>How it is worked out</label>
                   <select id={fid('kind')} className="field" value={p.kind} onChange={(e) => update(p.id, { kind: e.target.value as PaymentKind })}>
                     <option value="percent">Percent of total</option>
                     <option value="fixed">Fixed amount</option>
                   </select>
                 </div>
-                <div>
-                  <label className="label" htmlFor={fid('value')}>{p.kind === 'percent' ? 'Percent' : 'Amount ($)'}</label>
+                <div className="pay-value">
+                  <label className="label qs-lbl" htmlFor={fid('value')}>{p.kind === 'percent' ? 'Percent' : 'Amount ($)'}</label>
                   <input
                     id={fid('value')}
                     className="field num"
@@ -138,19 +141,19 @@ export default function PaymentsEditor({ quote, onChange }: { quote: Quote; onCh
                     }}
                   />
                 </div>
-                <div className="flex flex-col justify-end text-right">
-                  <span className="label !mb-1 text-muted" id={fid('amt-l')}>Amount inc GST</span>
+                <div className="flex flex-col justify-end text-right pay-amt">
+                  <span className="label !mb-1 text-muted qs-lbl" id={fid('amt-l')}>Amount inc GST</span>
                   <output aria-labelledby={fid('amt-l')} className="num flex min-h-[44px] items-center justify-end font-bold">
                     {fmtMoney(amounts[index] ?? 0)}
                   </output>
                 </div>
-                <div className="flex items-end justify-end">
-                  <button type="button" className="btn btn-ghost btn-icon text-hot-ink hover:bg-hot-wash" onClick={() => remove(index)} aria-label={`Remove ${label}`}>
+                <div className="flex items-end justify-end pay-del">
+                  <button type="button" className="btn btn-ghost btn-icon qs-ibtn text-hot-ink hover:bg-hot-wash" onClick={() => remove(index)} aria-label={`Remove ${label}`}>
                     <Trash2 size={18} aria-hidden="true" />
                   </button>
                 </div>
-                <div className="pay-wide">
-                  <label className="label" htmlFor={fid('due')}>When it is due</label>
+                <div className="pay-wide pay-due">
+                  <label className="label qs-lbl" htmlFor={fid('due')}>When it is due</label>
                   <select id={fid('due')} className="field" value={p.dueRule} onChange={(e) => update(p.id, { dueRule: e.target.value as DueRule })}>
                     {DUE_OPTIONS.map((o) => (
                       <option key={o.id} value={o.id}>
@@ -158,7 +161,7 @@ export default function PaymentsEditor({ quote, onChange }: { quote: Quote; onCh
                       </option>
                     ))}
                   </select>
-                  {p.dueRule === 'other' && <p className="hint">Say when it is due in the label, for example "Final payment, before the job report is sent".</p>}
+                  {p.dueRule === 'other' && <p className="hint">{OTHER_HINT}</p>}
                 </div>
               </div>
             </td></tr>
@@ -168,8 +171,8 @@ export default function PaymentsEditor({ quote, onChange }: { quote: Quote; onCh
       </table>
       )}
 
-      <button id={`${base}-add`} type="button" className="btn btn-quiet" onClick={add}>
-        <Plus size={18} aria-hidden="true" />
+      <button id={`${base}-add`} type="button" className="btn btn-add qs-add" onClick={add}>
+        <Plus size={16} aria-hidden="true" />
         Add a payment
       </button>
 

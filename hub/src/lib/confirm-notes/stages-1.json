@@ -1,0 +1,69 @@
+{
+  "New Lead": {
+    "sends": false,
+    "lines": [
+      "Nothing is sent to the customer and no task is created by moving a job here by hand.",
+      "A new lead from the website form already got the new lead text when the form arrived.",
+      "Alert to the office: if no call is logged within 15 business minutes, the office gets an email. After 60 business minutes the owner gets a text and an email."
+    ],
+    "stops": [
+      "The call reminders stop when a call is logged or the job leaves New Lead."
+    ],
+    "sources": ["WF-01", "WF-02", "X-ACK-01"]
+  },
+  "Dial 1": {
+    "sends": true,
+    "lines": [
+      "Text to the customer: the missed call text, about 10 seconds after the move. It is sent once per lead, so moving the job out and back does not send it again.",
+      "Task for the office: second round of calls, due later today.",
+      "The contact's call attempts go up by 2 and the time of the attempt is saved."
+    ],
+    "stops": [
+      "A reply from the customer or an answered call closes the second round of calls task."
+    ],
+    "sources": ["WF-05", "DIAL-01"]
+  },
+  "Dial 2": {
+    "sends": true,
+    "lines": [
+      "Email to the customer on day 2: the day 2 follow-up.",
+      "Email to the customer on day 4: pick a time to talk, with the booking link. Task for the office on day 4: one more call.",
+      "Email to the customer on day 7: closing this one off.",
+      "Day 8: if the job is still here with no reply, it is set to Lost with the reason Unreachable.",
+      "Emails go out between 8am and 8pm, Monday to Saturday."
+    ],
+    "stops": [
+      "The emails stop when the customer replies on any channel, books a phone call, or the job leaves Dial 2."
+    ],
+    "sources": ["WF-06", "DIAL-02", "DIAL-03", "DIAL-04"]
+  },
+  "Quoting": {
+    "sends": false,
+    "lines": [
+      "Nothing is sent to the customer.",
+      "The job is assigned to the owner. Alert to the owner by text and email: Assigned to you.",
+      "Task for the owner: write and send the quote. Residential is due in 2 business days. Commercial (scope and send the proposal) is due in 5 business days.",
+      "Any Dial 2 emails still waiting to go out are cancelled.",
+      "If the job is still here after the due time, it is listed under Quotes to write in the daily summary."
+    ],
+    "stops": [
+      "The reminders stop when the quote is sent, or the job moves to Follow-Up, Nurture or Lost."
+    ],
+    "sources": ["WF-09", "WF-38", "WF-06"]
+  },
+  "Quote Sent": {
+    "sends": true,
+    "lines": [
+      "Residential, now: email to the customer with the quote, and a text to the customer with the quote link.",
+      "Residential, after that, between 8am and 8pm Monday to Saturday: text on day 2, email on day 5 (why quotes differ), text on day 10, and a final close email on day 21.",
+      "Residential tasks for the office: call on day 2 to follow up the quote, and on day 21 decide: accepted, nurture or lost.",
+      "Commercial, now: email to the customer with the proposal. No text is sent.",
+      "Commercial, after that: follow-up emails on day 7 and day 21. Tasks for the owner: call within 2 days to confirm receipt, and on day 7 chase the decision date.",
+      "A revised quote (revision 2 or later) does not repeat the first quote email."
+    ],
+    "stops": [
+      "The follow-up stops when the customer replies, accepts or declines, or the job leaves Quote Sent."
+    ],
+    "sources": ["WF-10", "WF-11", "R-QUOTE-01", "R-QUOTE-02", "R-FU-01", "R-FU-02", "R-FU-03", "R-FU-04", "C-PROP-01", "C-PROP-02", "C-PROP-03"]
+  }
+}

@@ -1,0 +1,42 @@
+/* Quote screen and invoice screens. Layout density comes from the frame.css tokens; the quote sheet itself is untouched. */
+.qi-page .qi-sec { padding: calc(var(--d-pad) * 0.5); border-radius: var(--d-radius); }
+.qi-page .qi-sec-btn { min-height: calc(var(--d-row) + 0.5rem); }
+.qi-page .qi-sec-summary { font-size: var(--d-small); font-weight: 400; letter-spacing: normal; line-height: 1.4; color: rgb(var(--c-muted)); }
+.qi-page .qi-sec-body { padding: 0.5rem calc(var(--d-pad) * 0.5) var(--d-pad); }
+.qi-page .qi-actions { display: flex; flex-wrap: wrap; align-items: center; gap: calc(var(--d-gap) * 0.75); margin-bottom: var(--d-gap); }
+.qi-page .qi-more { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: var(--d-gap); }
+.qi-page .field,
+.qi-page .label { font-size: var(--d-field); }
+.qi-page .label { font-size: var(--d-text); }
+.qi-page .hint { font-size: var(--d-small); }
+/* Focus is always visible on the quote and invoice screens, also inside the section buttons. */
+.qi-page button:focus-visible,
+.qi-page a:focus-visible,
+.qi-page select:focus-visible,
+.qi-page input:focus-visible,
+.qi-page textarea:focus-visible { outline: 3px solid rgb(var(--c-blue)); outline-offset: 2px; }
+@media (max-width: 639px) {
+  .qi-page .qi-actions .btn,
+.qi-page .qi-more .btn { min-height: 44px; }
+  .qi-page .qi-actions { gap: 0.5rem; }
+  .qi-page .qi-actions .btn-lg { flex: 1 1 100%; }
+}
+@media print {
+  .qi-page .qi-sec,
+.qi-page .qi-actions,
+.qi-page .qi-more { display: none; }
+}
+/* Stage 4 quote chrome */
+.qi-page .qi-ib { min-height: 2rem; min-width: 2rem; padding: 0; }
+.qi-page .qi-actions .qi-ib,
+.qi-page .qi-titlerow .qi-ib { min-height: 2rem; min-width: 2rem; }
+@media (pointer: coarse) {
+  .qi-page .qi-ib,
+.qi-page .qi-actions .qi-ib,
+.qi-page .qi-titlerow .qi-ib { min-height: 44px; min-width: 44px; }
+}
+@media print {
+  .qi-page .qi-top,
+.qi-page .qi-rev,
+.qi-page .qi-sent { display: none; }
+}

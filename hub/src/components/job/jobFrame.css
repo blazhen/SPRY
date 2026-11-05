@@ -1,0 +1,130 @@
+/* The job page frame: head (fixed), three panels that scroll alone, icon rail (fixed). Under 1024px: tabs. */
+.jf { flex: 1 1 0; min-height: 0; display: flex; flex-direction: column; gap: 0.5rem; }
+.jf-missing { padding-top: 1.5rem; }
+
+/* Head */
+.jf-head { flex: none; }
+.jf-back { display: inline-flex; min-height: 32px; align-items: center; gap: 0.35rem; font-size: var(--d-small); font-weight: 700; color: rgb(var(--c-navy)); text-decoration: underline; }
+.jf-head-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.5rem 1.25rem; }
+.jf-title { min-width: 0; flex: 1 1 18rem; }
+.jf-h1 { margin: 0; font-size: clamp(1.4rem, 1.1rem + 1vw, 1.9rem); line-height: 1.15; }
+.jf-badges { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 0.75rem; margin-top: 0.35rem; }
+.jf-value { font-weight: 700; font-size: var(--d-text); }
+.jf-value-note { font-weight: 400; color: rgb(var(--c-muted)); font-size: var(--d-small); }
+.jf-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 0.75rem; }
+.jf-stage-help { margin: 0.35rem 0 0; font-size: var(--d-small); color: rgb(var(--c-muted)); max-width: 60rem; }
+
+/* Panels */
+.jf-panel {
+  min-height: 0; min-width: 0; overflow-y: auto; overflow-x: hidden; overscroll-behavior: contain;
+  background: rgb(var(--c-surface)); border: 1px solid rgb(var(--c-line)); border-radius: var(--d-radius);
+  box-shadow: 0 1px 2px rgb(11 27 58 / 0.05), 0 8px 20px -14px rgb(11 27 58 / 0.25);
+  padding: var(--d-pad); scrollbar-gutter: stable;
+  font-size: var(--d-text);
+}
+.jf-panel[data-panel='middle'] { background: rgb(var(--c-raise)); }
+.jf-panel:focus-visible { outline: 3px solid rgb(var(--c-navy)); outline-offset: -3px; border-radius: var(--d-radius); }
+
+.jf-body { flex: 1 1 0; min-height: 0; display: grid; gap: 0.75rem; padding-bottom: 0.75rem; grid-template-rows: minmax(0, 1fr); grid-template-columns: minmax(16rem, 0.9fr) minmax(0, 1.5fr) minmax(17rem, 1fr) 3.25rem; }
+
+/* Phone and tablet: one scroll column. The head scrolls away, the tabs stay at the top, the open panel is the content. */
+.jf-scroll { flex: 1 1 0; min-height: 0; overflow-y: auto; overflow-x: hidden; overscroll-behavior: contain; display: flex; flex-direction: column; gap: 0.5rem; padding-bottom: 0.75rem; }
+.jf-tabs-sticky { position: sticky; top: 0; z-index: 5; background: rgb(var(--c-ground)); padding-bottom: 0.25rem; flex: none; }
+.jf-panel-tab { flex: none; overflow: visible; }
+.jf-panel-tab:has([data-panel='middle']:not([hidden])) { background: rgb(var(--c-raise)); }
+@media (max-width: 1023px) {
+  .jf-back { min-height: 44px; }
+  .jf-actions { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); width: 100%; gap: 0.5rem; }
+  .jf-actions .jf-main { grid-column: 1 / -1; order: -1; }
+  .jf-actions .btn { min-width: 0; }
+}
+
+/* Icon rail: fixed, part of the frame, tooltips on hover and focus */
+.jf-rail {
+  display: flex; flex-direction: column; align-items: center; gap: 0.25rem; align-self: start;
+  padding: 0.35rem 0; border-radius: var(--d-radius); background: rgb(var(--c-surface)); border: 1px solid rgb(var(--c-line));
+  box-shadow: 0 1px 2px rgb(11 27 58 / 0.05);
+}
+.jf-rail-btn {
+  position: relative; display: inline-flex; align-items: center; justify-content: center;
+  width: 44px; height: 44px; border-radius: 10px; border: 0; background: transparent; color: rgb(var(--c-navy));
+}
+.jf-rail-btn:hover { background: rgb(var(--c-navy-wash)); }
+.jf-rail-btn[aria-pressed='true'] { background: rgb(var(--c-navy)); color: rgb(var(--c-on-navy, 255 255 255)); }
+.jf-rail-btn[aria-pressed='true']:hover { background: rgb(var(--c-navy-deep)); }
+.jf-rail-sep { width: 1.75rem; height: 1px; background: rgb(var(--c-line)); margin: 0.1rem 0; }
+.jf-rail-btn:focus-visible { outline: 3px solid rgb(var(--c-navy)); outline-offset: 1px; }
+.jf-rail-tip {
+  position: absolute; right: calc(100% + 0.5rem); top: 50%; transform: translateY(-50%); z-index: 40;
+  padding: 0.35rem 0.7rem; border-radius: 8px; white-space: nowrap; font-size: 0.9375rem; font-weight: 700;
+  background: rgb(var(--c-bar)); color: rgb(var(--c-on-bar)); box-shadow: var(--shadow-pop);
+  opacity: 0; visibility: hidden; pointer-events: none; transition: opacity 120ms;
+}
+.jf-rail-btn:hover .jf-rail-tip, .jf-rail-btn:focus-visible .jf-rail-tip { opacity: 1; visibility: visible; }
+@media (prefers-reduced-motion: reduce) { .jf-rail-tip { transition: none; } }
+
+/* The one primary button stays the one; buttons inside panels are quieter, except the Save of an edited field. */
+.jf-panel .btn-primary { background: rgb(var(--c-surface)); color: rgb(var(--c-ink)); border: 1px solid rgb(var(--c-control)); }
+.jf-panel .btn-primary:hover:not(:disabled) { background: rgb(var(--c-navy-wash)); }
+.jf-panel .inline-field-state .btn-primary { background: rgb(var(--c-navy)); color: rgb(var(--c-on-navy, 255 255 255)); border-color: rgb(var(--c-navy)); }
+.jf-panel .btn-primary.is-primary-here { background: rgb(var(--c-navy)); color: rgb(var(--c-on-navy, 255 255 255)); border-color: rgb(var(--c-navy)); }
+
+/* Workspace (Round 8): the builder in the middle, the live preview on the right. From 1100px up. */
+.jf-body[data-work] { grid-template-columns: minmax(13rem, 0.7fr) minmax(0, 1.35fr) minmax(0, 1.15fr) 3.25rem; }
+.ws-rightbar { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; margin-bottom: 0.5rem; }
+.ws-rightbar-title { font-weight: 700; font-size: var(--d-text); }
+.ws-preview { min-width: 0; }
+.ws-missing { padding: 0.5rem 0; }
+.qi-ws { min-width: 0; }
+[data-invoice-detail="workspace"] .tbl-wrap { max-width: 100%; }
+
+/* Stage 4 quote chrome */
+.qi-ws .qi-actions { row-gap: 0.375rem; }
+.qi-ws .qi-titlerow { min-width: 0; }
+
+/* Rail position and names (Edit layout): the rail width is one variable so every grid follows it. */
+.jf-body { --rail-w: 3.25rem; }
+.jf-body[data-rail-names] { --rail-w: 9.5rem; }
+.jf-body { grid-template-columns: minmax(16rem, 0.9fr) minmax(0, 1.5fr) minmax(17rem, 1fr) var(--rail-w); }
+.jf-body[data-work] { grid-template-columns: minmax(13rem, 0.7fr) minmax(0, 1.35fr) minmax(0, 1.15fr) var(--rail-w); }
+.jf-body[data-rail-side='left'] { grid-template-columns: var(--rail-w) minmax(16rem, 0.9fr) minmax(0, 1.5fr) minmax(17rem, 1fr); }
+.jf-body[data-rail-side='left'][data-work] { grid-template-columns: var(--rail-w) minmax(13rem, 0.7fr) minmax(0, 1.35fr) minmax(0, 1.15fr); }
+.jf-body[data-rail-side='none'] { grid-template-columns: minmax(16rem, 0.9fr) minmax(0, 1.5fr) minmax(17rem, 1fr); }
+.jf-body[data-rail-side='none'][data-work] { grid-template-columns: minmax(13rem, 0.7fr) minmax(0, 1.35fr) minmax(0, 1.15fr); }
+.jf-body.jf-body-edit { grid-template-columns: minmax(0, 1fr); }
+.jf-rail[data-names] { align-items: stretch; padding-inline: 0.25rem; }
+.jf-rail[data-names] .jf-rail-btn { width: 100%; justify-content: flex-start; gap: 0.5rem; padding-inline: 0.5rem; text-align: left; font-size: var(--d-small); font-weight: 700; }
+.jf-rail[data-names] .jf-rail-tip { position: static; transform: none; opacity: 1; visibility: visible; padding: 0; background: transparent; color: inherit; box-shadow: none; white-space: normal; font-size: inherit; text-align: left; line-height: 1.15; }
+
+/* Stage 4 history and panels */
+/* Anchor jumps and keyboard focus land below the sticky History heading, never under it. */
+.jf-panel { scroll-padding-top: 3.5rem; scroll-padding-bottom: 1rem; }
+
+/* Focus views: the rail items (Round 8) */
+.focus-back { display: inline-flex; align-items: center; gap: 0.35rem; min-height: 32px; font-size: var(--d-small); font-weight: 700; color: rgb(var(--c-navy)); text-decoration: underline; width: fit-content; }
+.focus-back:focus-visible { outline: 3px solid rgb(var(--c-navy)); outline-offset: 2px; }
+@media (pointer: coarse) { .focus-back { min-height: 44px; } }
+
+/* Stage control in the header (Round 8): one calm row */
+.jf-badges { align-items: center; gap: 0.5rem 0.75rem; flex-wrap: wrap; }
+
+/* Round 10: with the stage stepper the head is a grid, so the stepper and its detail take the full width under the title row
+   and nothing overlaps. The title, badges and stage control wrappers dissolve so their children are the grid items. */
+.jf-head-row:has([data-stage-control]) { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 0.35rem 1.25rem; }
+.jf-head-row:has([data-stage-control]) :is(.jf-title, .jf-badges, .sc) { display: contents; }
+.jf-head-row:has([data-stage-control]) .jf-h1 { grid-column: 1; grid-row: 1; min-width: 0; }
+.jf-head-row:has([data-stage-control]) .jf-actions { grid-column: 2; grid-row: 1; }
+.jf-head-row:has([data-stage-control]) .sc-row { grid-column: 1; grid-row: 2; }
+.jf-head-row:has([data-stage-control]) .jf-value { grid-column: 2; grid-row: 2; justify-self: end; white-space: nowrap; }
+.jf-head-row:has([data-stage-control]) .ss { grid-column: 1 / -1; grid-row: 3; margin-top: 0.15rem; }
+.jf-head-row:has([data-stage-control]) .ss-detail { grid-column: 1 / -1; grid-row: 4; }
+@media (max-width: 1023px) {
+  .jf-head-row:has([data-stage-control]) { grid-template-columns: minmax(0, 1fr); }
+  .jf-head-row:has([data-stage-control]) :is(.jf-h1, .sc-row, .jf-value, .ss, .ss-detail, .jf-actions) { grid-column: 1; grid-row: auto; justify-self: stretch; }
+  .jf-head-row:has([data-stage-control]) .jf-h1 { order: 1; }
+  .jf-head-row:has([data-stage-control]) .sc-row { order: 2; }
+  .jf-head-row:has([data-stage-control]) .jf-value { order: 3; }
+  .jf-head-row:has([data-stage-control]) .ss { order: 4; }
+  .jf-head-row:has([data-stage-control]) .ss-detail { order: 5; }
+  .jf-head-row:has([data-stage-control]) .jf-actions { order: 6; }
+}

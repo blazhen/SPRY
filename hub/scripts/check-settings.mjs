@@ -35,10 +35,11 @@ try {
     /** The stall badge on the j3 job page: 'ok' | 'slow' | 'stuck'. */
     const jobLevel = async () => {
       await go('#/jobs/j3')
-      const b = page.locator('.badge', { hasText: /days? here/ }).first()
+      // Round 8: the stall state is carried by the stage control in the header (words and a bar colour).
+      const b = page.locator('[data-sc-days]').first()
       if ((await b.count()) === 0) return 'ok'
       const cls = (await b.getAttribute('class')) ?? ''
-      return cls.includes('st-hot') ? 'stuck' : cls.includes('st-amber') ? 'slow' : 'ok'
+      return cls.includes('sc-stuck') ? 'stuck' : cls.includes('sc-slow') ? 'slow' : 'ok'
     }
 
     await go('#/settings')

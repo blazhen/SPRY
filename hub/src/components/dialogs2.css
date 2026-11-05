@@ -1,0 +1,103 @@
+/* Round 8 stage 4 (D2): calm, dense content for the person/company, new invoice and invoice dialogs.
+   Only the inside of a dialog; the shell (title, padding, footer) belongs to the shared dialog styles. */
+.dh-form {
+  display: grid;
+  gap: var(--d-gap);
+  min-width: 0;
+  font-size: var(--d-text);
+}
+.dh-form .label {
+  margin: 0 0 0.125rem;
+  font-size: var(--d-small);
+}
+.dh-form p {
+  margin: 0;
+}
+.dh-pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--d-gap);
+}
+@media (max-width: 30rem) {
+  .dh-pair {
+    grid-template-columns: 1fr;
+  }
+}
+.dh-note {
+  font-size: var(--d-small);
+  color: rgb(var(--c-muted));
+}
+.dh-err {
+  margin-top: 0.25rem;
+  font-size: var(--d-small);
+  font-weight: 700;
+}
+
+/* A pick-from-a-list choice: one tight row per option */
+.dh-opts {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.dh-opt {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  min-width: 0;
+  min-height: 2.25rem;
+  padding: 0 0.625rem;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.dh-opt:focus-within {
+  outline: 2px solid rgb(var(--c-navy));
+  outline-offset: -2px;
+}
+.dh-opt input[type='radio'],
+.dh-opt input[type='checkbox'] {
+  flex: none;
+  width: 1.125rem;
+  height: 1.125rem;
+  accent-color: rgb(var(--c-navy));
+}
+.dh-opt-main {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+@media (pointer: coarse) {
+  .dh-opt {
+    min-height: 2.75rem;
+  }
+}
+/* long lists get a short inner scroll area, never a scrolling dialog */
+.dh-scroll {
+  max-height: min(14rem, 32vh);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.dh-sum {
+  padding: 0.375rem 0.625rem;
+  border-radius: 8px;
+}
+/* The job page makes every primary button quiet except the header one; inside a dialog the primary button must stand out. */
+.jf-panel dialog .btn-primary,
+.jp-col dialog .btn-primary,
+.jp-narrow dialog .btn-primary {
+  background: rgb(var(--c-navy));
+  color: rgb(var(--c-on-navy, 255 255 255));
+  border-color: rgb(var(--c-navy));
+}
+.jf-panel dialog .btn-primary:hover:not(:disabled),
+.jp-col dialog .btn-primary:hover:not(:disabled),
+.jp-narrow dialog .btn-primary:hover:not(:disabled) {
+  background: rgb(var(--c-navy-deep, var(--c-navy)));
+}
+.dh-help {
+  display: inline-flex;
+  vertical-align: middle;
+}

@@ -86,7 +86,8 @@ if (!build(LIVE_DIR, { VITE_DATA_SOURCE: 'live' })) {
   console.log('FAIL live build')
   process.exit(1)
 }
-if (!build(MOCK_DIR, {})) {
+// The default data source is live, so the mock copy must ask for mock explicitly.
+if (!build(MOCK_DIR, { VITE_DATA_SOURCE: 'mock' })) {
   console.log('FAIL mock build')
   process.exit(1)
 }

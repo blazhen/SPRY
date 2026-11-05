@@ -55,7 +55,7 @@ async function run(w) {
 
   await input.fill('zzzqq')
   await page.waitForTimeout(500)
-  rec(`@${w} empty state`, await dlg.getByText('Nothing found, try fewer letters').isVisible())
+  rec(`@${w} empty state`, await dlg.getByText('Nothing found. Try fewer letters').isVisible())
 
   // Arrow plus Enter opens a result.
   await input.fill('Q-1043')

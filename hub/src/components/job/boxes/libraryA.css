@@ -1,0 +1,8 @@
+/* Library boxes A: quick actions, stage, map, quote preview. Density comes from the --d-* tokens. */
+.la-body { display: flex; flex-direction: column; gap: var(--d-gap); padding: 0.25rem calc(var(--d-pad) * 0.5); min-width: 0; }
+.la-row { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; min-width: 0; }
+.la-btn { gap: 0.4rem; min-height: 24px; }
+.la-btn:focus-visible { outline: 2px solid rgb(var(--c-navy)); outline-offset: 2px; }
+.la-address { margin: 0; font-size: var(--d-text); overflow-wrap: anywhere; }
+.la-preview { display: flex; flex-direction: column; gap: 0.5rem; padding: 0.25rem calc(var(--d-pad) * 0.5); min-width: 0; overflow-x: auto; }
+@media (pointer: coarse) { .la-btn { min-height: 44px; } }

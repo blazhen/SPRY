@@ -54,7 +54,7 @@ async function copyText(text: string): Promise<boolean> {
 export default function CustomerLinkButtons({ quote, compact = false }: { quote: Quote; compact?: boolean }) {
   const [busy, setBusy] = useState(false)
   const why = linkBlockedReason(quote)
-  const cls = compact ? 'btn btn-ghost btn-icon' : 'btn btn-quiet'
+  const cls = compact ? 'btn btn-neutral qi-ib' : 'btn btn-neutral'
 
   async function copy() {
     if (busy) return

@@ -206,7 +206,7 @@ export function SplitPane({ left, right, storageKey, leftLabel, rightLabel, righ
                   role="radio"
                   aria-checked={on}
                   tabIndex={on ? 0 : -1}
-                  className={`btn min-h-[48px] ${on ? 'btn-primary' : 'btn-quiet'}`}
+                  className={`btn min-h-[48px] ${on ? 'btn-primary' : 'btn-neutral'}`}
                   onClick={() => setMode(m.id)}
                   onKeyDown={(e) => onModeKey(e, i)}
                 >
@@ -217,8 +217,8 @@ export function SplitPane({ left, right, storageKey, leftLabel, rightLabel, righ
             })}
           </div>
           {both && (
-            <button type="button" className="btn btn-quiet min-h-[48px]" onClick={swap}>
-              <ArrowLeftRight size={20} aria-hidden="true" />
+            <button type="button" className="btn btn-neutral min-h-[48px]" onClick={swap}>
+              <ArrowLeftRight size={16} aria-hidden="true" />
               Swap sides
             </button>
           )}

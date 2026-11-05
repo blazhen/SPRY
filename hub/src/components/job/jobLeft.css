@@ -1,0 +1,30 @@
+/* LEFT panel of the job page. Density comes from the --d-* tokens in frame.css. */
+.jl-stack { display: grid; gap: var(--d-gap); min-width: 0; padding: 0 0.25rem; }
+.jl-flat { display: grid; gap: var(--d-gap); min-width: 0; }
+.jl-viewwrap { display: grid; gap: var(--d-gap); min-width: 0; align-content: start; }
+.jl-switch { display: flex; gap: 2px; padding: 2px; border: 1px solid rgb(var(--c-line)); border-radius: 0.5rem; width: fit-content; max-width: 100%; }
+.jl-switch-btn { min-height: 28px; min-width: 24px; padding: 0 0.75rem; border: 0; border-radius: 0.375rem; background: transparent; color: inherit; font: inherit; font-weight: 600; cursor: pointer; touch-action: manipulation; }
+.jl-switch-btn[aria-pressed="true"] { background: rgb(var(--c-navy)); color: rgb(var(--c-on-navy, 255 255 255)); }
+.jl-switch-btn:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
+@media (pointer: coarse) { .jl-switch-btn { min-height: 44px; } }
+.jl-key { display: grid; gap: var(--d-gap); min-width: 0; padding: 0.25rem; }
+.jl-group-body { display: grid; gap: var(--d-gap); min-width: 0; }
+.jl-field { display: grid; gap: 0.25rem; min-width: 0; }
+.jl-links { display: flex; flex-wrap: wrap; gap: 0.25rem 0.5rem; }
+.jl-links:empty { display: none; }
+.jl-links > span { display: inline-flex; flex-wrap: wrap; gap: 0.25rem 0.5rem; }
+.jl-pair { display: grid; gap: var(--d-gap); grid-template-columns: minmax(0, 1fr); min-width: 0; }
+.jl-static-text { margin: 0; min-height: var(--d-field-h); display: flex; align-items: center; font-size: var(--d-field); font-weight: 600; overflow-wrap: anywhere; }
+.jl-static .hint { margin-top: 0; font-size: var(--d-small); }
+.jl-h { margin: var(--d-gap) 0 0; font-size: var(--d-text); font-weight: 700; color: rgb(var(--c-ink)); border-top: 1px solid rgb(var(--c-line-soft)); padding-top: var(--d-gap); }
+.jl-h:first-child { margin-top: 0; border-top: 0; padding-top: 0; }
+.jl-empty { display: grid; gap: 0.25rem; justify-items: start; padding: var(--d-pad); border: 1px dashed rgb(var(--c-control)); border-radius: var(--d-radius); background: rgb(var(--c-navy-wash)); }
+.jl-empty p { margin: 0; font-size: var(--d-text); }
+.jl-others { list-style: none; margin: 0; padding: 0; display: grid; }
+.jl-other { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; align-items: center; gap: 0.5rem; min-height: var(--d-row); border-top: 1px solid rgb(var(--c-line-soft)); font-size: var(--d-text); }
+.jl-other-name { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.jl-other-phone { color: rgb(var(--c-muted)); font-size: var(--d-small); white-space: nowrap; }
+.jl-other-open { display: inline-flex; align-items: center; min-height: var(--d-row); padding: 0 0.5rem; font-weight: 700; color: rgb(var(--c-navy)); text-decoration: underline; }
+@media (max-width: 400px) { .jl-other { grid-template-columns: minmax(0, 1fr) auto; } .jl-other-phone { grid-column: 1; grid-row: 2; } .jl-other-open { grid-column: 2; grid-row: 1 / span 2; } }
+
+@media (max-width: 640px) { .jl-switch-btn { min-height: 44px; } [data-open-full-contact] { display: inline-flex; align-items: center; min-height: 44px; } }

@@ -3,6 +3,10 @@ import { CalendarCheck, CalendarDays, Check, CircleX, Clock, FileEdit, Layers, M
 import type { Job, QuoteStatus, Stage } from '../types'
 import { fmtMoney, fmtMoneyWhole } from '../lib/format'
 import { stall } from '../lib/store'
+import { MayHappen } from './confirmText'
+import { noteForAction } from '../lib/confirmNotes'
+import { closeConfirm, useConfirmEnabled, usePendingConfirm, type ConfirmKey } from '../lib/confirmActions'
+import './dialogs.css'
 
 // ---- Status badge ----------------------------------------------------------
 
@@ -64,7 +68,7 @@ export function Dialog({
       d.showModal()
       const target =
         d.querySelector<HTMLElement>('[data-autofocus]') ??
-        d.querySelector<HTMLElement>('.overflow-y-auto input:not([type=hidden]):not(:disabled), .overflow-y-auto select:not(:disabled), .overflow-y-auto textarea:not(:disabled)') ??
+        d.querySelector<HTMLElement>('.dg-body input:not([type=hidden]):not(:disabled), .dg-body select:not(:disabled), .dg-body textarea:not(:disabled)') ??
         d.querySelector<HTMLElement>('button[aria-label="Close"]')
       target?.focus()
     }
@@ -89,17 +93,17 @@ export function Dialog({
       }}
     >
       {open && (
-        <div className={`panel pop-in flex max-h-[calc(100vh-2rem)] w-full flex-col shadow-pop ${size === 'lg' ? 'max-w-2xl' : 'max-w-lg'}`}>
-          <div className="flex items-start justify-between gap-4 border-b rule px-6 py-5">
-            <h2 id={titleId} className="text-2xl">
+        <div className={`panel pop-in dg-panel shadow-pop ${size === 'lg' ? 'dg-lg' : 'dg-md'}`}>
+          <div className="dg-head">
+            <h2 id={titleId} className="dg-title">
               {title}
             </h2>
-            <button type="button" className="btn btn-ghost btn-icon -mr-2 -mt-1" onClick={onClose} aria-label="Close">
-              <X size={22} aria-hidden="true" />
+            <button type="button" className="btn btn-ghost dg-x" onClick={onClose} aria-label="Close">
+              <X size={20} aria-hidden="true" />
             </button>
           </div>
-          <div className="overflow-y-auto px-6 py-5 text-[1.125rem]">{children}</div>
-          {footer && <div className="flex flex-wrap justify-end gap-3 border-t rule px-6 py-5">{footer}</div>}
+          <div className="dg-body">{children}</div>
+          {footer && <div className="dg-foot">{footer}</div>}
         </div>
       )}
     </dialog>
@@ -391,7 +395,11 @@ export function TabPanel({ tabsId, id, children, className }: { tabsId: string; 
   )
 }
 
-/** The "Are you sure?" step before anything is recorded. Cancel has the focus. */
+/**
+ * The "Are you sure?" step before anything is recorded. Cancel has the focus, Escape cancels.
+ * `action` is the key from lib/confirmActions.ts: with "Ask me to confirm" switched off in Settings the dialog never
+ * shows and onConfirm runs at once.
+ */
 export function ConfirmDialog({
   open,
   title,
@@ -400,6 +408,7 @@ export function ConfirmDialog({
   onConfirm,
   onClose,
   tone = 'normal',
+  action,
 }: {
   open: boolean
   title: string
@@ -408,7 +417,23 @@ export function ConfirmDialog({
   onConfirm: () => void
   onClose: () => void
   tone?: 'normal' | 'danger'
+  action?: ConfirmKey
 }) {
+  const asking = useConfirmEnabled()
+  const skip = open && !!action && !asking
+  const done = useRef(false)
+  useEffect(() => {
+    if (!skip) {
+      done.current = false
+      return
+    }
+    if (done.current) return
+    done.current = true
+    onConfirm()
+    onClose()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [skip])
+  if (skip) return null
   return (
     <Dialog
       open={open}
@@ -416,17 +441,40 @@ export function ConfirmDialog({
       title={title}
       footer={
         <>
-          <button type="button" className="btn btn-quiet btn-lg" onClick={onClose} data-autofocus>
+          <button type="button" className="btn btn-quiet" onClick={onClose} data-autofocus>
             Cancel
           </button>
-          <button type="button" className={`btn btn-lg ${tone === 'danger' ? 'btn-danger' : 'btn-primary'}`} onClick={onConfirm}>
+          <button type="button" className={`btn ${tone === 'danger' ? 'btn-danger' : 'btn-primary'}`} onClick={onConfirm}>
             {confirmLabel}
           </button>
         </>
       }
     >
       {children}
+      {action && <MayHappen note={noteForAction(action)} />}
     </Dialog>
+  )
+}
+
+/** The one dialog behind confirmAction(): mounted once in the Shell. */
+export function ConfirmHost() {
+  const p = usePendingConfirm()
+  return (
+    <ConfirmDialog
+      open={!!p}
+      title={p?.title ?? ''}
+      confirmLabel={p?.confirmLabel ?? 'Yes'}
+      tone={p?.tone}
+      action={p?.key}
+      onConfirm={() => {
+        const run = p?.run
+        closeConfirm()
+        run?.()
+      }}
+      onClose={closeConfirm}
+    >
+      {p?.body}
+    </ConfirmDialog>
   )
 }
 

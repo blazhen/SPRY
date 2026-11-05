@@ -3,8 +3,8 @@ export type Rec = { id: string; data: unknown; updatedAt: string };
 /** Thrown by put() when ifUpdatedAt is older than the stored record (lost-update guard). */
 export class ConflictError extends Error {
   constructor() {
-    super('Conflict');
-    this.name = 'ConflictError';
+    super("Conflict");
+    this.name = "ConflictError";
   }
 }
 

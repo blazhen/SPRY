@@ -1,0 +1,65 @@
+/* Edit layout (Round 8 stage 5). Density from the --d-* tokens. No new colours. */
+.jf-body.jf-body-edit { grid-template-columns: minmax(0, 1fr); }
+.le { min-height: 0; min-width: 0; overflow-y: auto; overscroll-behavior: contain; display: flex; flex-direction: column; gap: var(--d-gap); padding-bottom: 0.5rem; }
+.le-bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.5rem 1rem; padding: var(--d-pad); background: rgb(var(--c-surface)); border: 1px solid rgb(var(--c-line)); border-radius: var(--d-radius); }
+.le-title { margin: 0; font-size: var(--d-head); }
+.le-hint { margin: 0; font-size: var(--d-small); color: rgb(var(--c-muted)); }
+.le-bar-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+.le-say { margin: 0; padding: 0.35rem 0.75rem; border-radius: var(--d-radius); background: rgb(var(--c-navy-wash)); font-size: var(--d-small); }
+.le-work { padding: 0.5rem var(--d-pad); border: 1px dashed rgb(var(--c-line)); border-radius: var(--d-radius); }
+.le-check { display: inline-flex; align-items: center; gap: 0.5rem; min-height: 32px; font-size: var(--d-text); cursor: pointer; }
+.le-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.75rem; align-items: start; }
+.le-panel { min-width: 0; background: rgb(var(--c-surface)); border: 1px solid rgb(var(--c-line)); border-radius: var(--d-radius); padding: var(--d-pad); }
+.le-panel-h { margin: 0 0 0.5rem; font-size: var(--d-text); font-weight: 700; }
+.le-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.5rem; min-height: 3.5rem; border-radius: var(--d-radius); }
+.le-list.le-over { outline: 2px dashed rgb(var(--c-navy)); outline-offset: 2px; }
+.le-card { border: 1px solid rgb(var(--c-control)); border-radius: var(--d-radius); background: rgb(var(--c-raise)); padding: 0.4rem 0.5rem; cursor: grab; min-width: 0; }
+.le-card.le-over { border-color: rgb(var(--c-navy)); box-shadow: 0 -3px 0 rgb(var(--c-navy)); }
+.le-card.le-dragging { opacity: 0.55; }
+.le-card-head { display: flex; align-items: center; gap: 0.35rem; min-width: 0; flex-wrap: wrap; }
+.le-handle { display: inline-flex; color: rgb(var(--c-muted)); }
+.le-card-title { font-weight: 700; font-size: var(--d-text); min-width: 0; flex: 1 1 6rem; overflow-wrap: anywhere; }
+.le-card-about { margin: 0.15rem 0 0; font-size: var(--d-small); color: rgb(var(--c-muted)); }
+.le-tools { display: inline-flex; flex-wrap: wrap; gap: 2px; align-items: center; }
+.le-btn { display: inline-flex; align-items: center; justify-content: center; min-width: 28px; min-height: 28px; border: 1px solid transparent; border-radius: 6px; background: transparent; color: rgb(var(--c-navy)); cursor: pointer; touch-action: manipulation; }
+.le-btn:hover:not(:disabled) { background: rgb(var(--c-navy-wash)); }
+.le-btn:disabled { opacity: 0.35; cursor: default; }
+.le-btn:focus-visible, .le-card button:focus-visible { outline: 3px solid rgb(var(--c-navy)); outline-offset: 1px; }
+@media (pointer: coarse) { .le-btn { min-width: 44px; min-height: 44px; } }
+.le-empty { padding: 0.75rem; border: 1px dashed rgb(var(--c-line)); border-radius: var(--d-radius); font-size: var(--d-small); color: rgb(var(--c-muted)); }
+.le-tray { background: rgb(var(--c-surface)); border: 1px solid rgb(var(--c-line)); border-radius: var(--d-radius); padding: var(--d-pad); }
+.le-tray-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.5rem; grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr)); }
+.le-tray-item { display: flex; flex-direction: column; gap: 0.35rem; border: 1px solid rgb(var(--c-control)); border-radius: var(--d-radius); padding: 0.4rem 0.5rem; }
+.le-tray-name { display: flex; flex-direction: column; min-width: 0; }
+.le-tray-add { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+.le-pick { position: relative; display: inline-flex; }
+.le-pop { position: absolute; z-index: 40; top: calc(100% + 4px); right: 0; width: min(20rem, 80vw); max-height: 22rem; overflow-y: auto; padding: 0.6rem; background: rgb(var(--c-surface)); border: 1px solid rgb(var(--c-control)); border-radius: var(--d-radius); box-shadow: var(--shadow-pop); cursor: default; }
+.le-pop-head { margin: 0 0 0.35rem; font-weight: 700; font-size: var(--d-text); }
+.le-pop-sub { margin-top: 0.5rem; }
+.le-pop-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+.le-pop-row { display: flex; align-items: center; gap: 0.25rem; min-height: 28px; }
+.le-pop-label { display: inline-flex; align-items: center; gap: 0.5rem; flex: 1 1 auto; min-width: 0; font-size: var(--d-text); cursor: pointer; }
+.le-pop-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: space-between; margin-top: 0.6rem; }
+@media (max-width: 1279px) { .le-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } .le-card-about { display: none; } }
+@media (prefers-reduced-motion: reduce) { .le-card, .le-btn { transition: none; } }
+
+/* Workspace sides bar */
+.ws-rightbar-btns { display: inline-flex; gap: 0.35rem; flex-wrap: wrap; }
+
+/* Edit layout: rail editor, settings, tray groups */
+.le-rail { background: rgb(var(--c-surface)); border: 1px solid rgb(var(--c-line)); border-radius: var(--d-radius); padding: var(--d-pad); }
+.le-rail-opts { display: flex; flex-wrap: wrap; gap: 0.5rem 1rem; align-items: end; margin-bottom: 0.5rem; }
+.le-opt { display: grid; gap: 0.15rem; font-size: var(--d-small); }
+.le-opt .field { min-width: 11rem; }
+.le-rail-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.35rem; }
+.le-rail-row { display: flex; flex-wrap: wrap; gap: 0.35rem; align-items: center; border: 1px solid rgb(var(--c-control)); border-radius: var(--d-radius); padding: 0.3rem 0.4rem; }
+.le-rail-field { display: inline-flex; min-width: 0; flex: 1 1 9rem; }
+.le-rail-icon { flex: 0 1 9rem; }
+.le-rail-name { flex: 1 1 auto; font-weight: 700; }
+.le-menu { margin-top: 1rem; }
+.le-menu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); gap: 0.75rem; margin: 0.5rem 0; }
+.le-menu-col { min-width: 0; }
+.le-rail-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem; }
+.le-set { border: 0; margin: 0 0 0.4rem; padding: 0; min-width: 0; }
+.le-tray-group + .le-tray-group { margin-top: 0.75rem; }
+.le-tray-h { margin: 0 0 0.35rem; font-size: var(--d-small); font-weight: 700; color: rgb(var(--c-muted)); }

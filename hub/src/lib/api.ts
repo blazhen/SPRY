@@ -6,7 +6,8 @@
 
 import { PROXY_URL } from '../config'
 import { stageIndex, stageList } from './format'
-import type { Contact, Invoice, Job, JobStatus, Participant, ParticipantKind, ParticipantRole, Stage } from '../types'
+import { isPurpose, type PhotoMeta } from './photoPurposes'
+import type { Contact, Invoice, Job, JobStatus, Message, Participant, ParticipantKind, ParticipantRole, Stage } from '../types'
 
 // ---- Token -----------------------------------------------------------------
 
@@ -189,6 +190,11 @@ export interface ApiContactRow {
   phone: string
   suburb: string
   companyName?: string
+  customFields?: { id: string; name: string; value: string | number | null }[]
+  /** Kept in the CRM as contact custom fields. Missing when the server did not read them. */
+  mobile?: string
+  homeAddress?: string
+  privateNote?: string
 }
 export interface ApiJobField {
   id: string
@@ -198,8 +204,13 @@ export interface ApiJobField {
 export interface ApiJobRow {
   id: string
   contactId: string
+  /** The contact's name from the job row, '' when the server did not send one. */
+  contactName?: string
   title: string
+  /** The JOB SITE address (the CRM job field site_address). Empty when not set. */
   address: string
+  /** Access notes (the CRM job field access_notes). */
+  accessNotes?: string
   stage: string
   status: string
   monetaryValue: number
@@ -221,7 +232,11 @@ export interface ApiNote {
 export interface ApiTask {
   id: string
   title: string
+  description?: string
+  /** YYYY-MM-DD in the Hub time zone (the server converts, so the day never shifts). */
   dueDate?: string
+  /** HH:MM in the Hub time zone; missing means all day. */
+  dueTime?: string
   completed: boolean
 }
 export interface ApiParticipant {
@@ -244,13 +259,16 @@ export interface StoreRecord {
   data: unknown
   updatedAt: string
 }
-export type StoreCollection = 'quotes' | 'invoices' | 'terms' | 'templates' | 'priceItems' | 'settings' | 'followups' | 'events' | 'messages' | 'jobmeta' | 'companies'
+export type StoreCollection = 'quotes' | 'invoices' | 'terms' | 'templates' | 'priceItems' | 'settings' | 'followups' | 'events' | 'messages' | 'jobmeta' | 'companies' | 'quoteOpens' | 'inspection'
 
 // ---- Parsers and mappers ---------------------------------------------------
 
 function contactRow(r: Record<string, unknown>): ApiContactRow {
   const out: ApiContactRow = { id: str(r.id), name: str(r.name), email: str(r.email), phone: str(r.phone), suburb: str(r.suburb) }
   if (r.companyName) out.companyName = str(r.companyName)
+  if (typeof r.mobile === 'string') out.mobile = r.mobile
+  if (typeof r.homeAddress === 'string') out.homeAddress = r.homeAddress
+  if (typeof r.privateNote === 'string') out.privateNote = r.privateNote
   return out
 }
 
@@ -258,8 +276,10 @@ function jobRow(r: Record<string, unknown>): ApiJobRow {
   const out: ApiJobRow = {
     id: str(r.id),
     contactId: str(r.contactId),
+    contactName: str(r.contactName),
     title: str(r.title),
-    address: str(r.address),
+    address: str(r.siteAddress ?? r.address),
+    accessNotes: str(r.accessNotes),
     stage: str(r.stage),
     status: str(r.status),
     monetaryValue: num(r.monetaryValue),
@@ -307,25 +327,32 @@ export function jobFromApi(row: ApiJobRow, ownerId = row.ownerId): Job {
     status: jobStatus,
     businessName: '',
     productType: 'Spray foam',
-    notes: '',
+    notes: row.accessNotes ?? '',
     createdAt: row.createdAt || now,
     stageSince: (row.stageSince || row.createdAt || now).slice(0, 10),
     participants,
     tasks: [],
     appointments: [],
+    customFields: (row.customFields ?? []).map((f) => ({ id: f.id, name: f.name, value: f.value })),
     placeholder: true,
   }
 }
 
 /** Server contact row to Hub Contact. Gaps: no mobile, note or companyId (companyName is dropped), suburb goes in address. */
 export function contactFromApi(row: ApiContactRow): Contact {
-  return { id: row.id, name: row.name, email: row.email, phone: row.phone, address: row.suburb || undefined, placeholder: true }
+  const c: Contact = { id: row.id, name: row.name, email: row.email, phone: row.phone, address: row.suburb || undefined, customFields: row.customFields ?? [], placeholder: true }
+  // Only set when the CRM sent them, so a merge never wipes what the browser already holds.
+  if (row.companyName) c.companyName = row.companyName
+  if (row.mobile !== undefined) c.mobile = row.mobile
+  if (row.homeAddress !== undefined) c.address = row.homeAddress
+  if (row.privateNote !== undefined) c.note = row.privateNote
+  return c
 }
 
 const contactOf = (b: Json): ApiContactRow => contactRow(isRecord(field(b, 'contact')) ? (field(b, 'contact') as Record<string, unknown>) : {})
 const jobOf = (b: Json): ApiJobRow => jobRow(isRecord(field(b, 'job')) ? (field(b, 'job') as Record<string, unknown>) : {})
 const noteRow = (r: Record<string, unknown>): ApiNote => ({ id: str(r.id), body: str(r.body), createdAt: str(r.createdAt), createdBy: r.createdBy ? str(r.createdBy) : undefined })
-const taskRow = (r: Record<string, unknown>): ApiTask => ({ id: str(r.id), title: str(r.title), dueDate: r.dueDate ? str(r.dueDate) : undefined, completed: r.completed === true })
+const taskRow = (r: Record<string, unknown>): ApiTask => ({ id: str(r.id), title: str(r.title), description: r.description ? str(r.description) : undefined, dueDate: r.dueDate ? str(r.dueDate) : undefined, dueTime: r.dueTime ? str(r.dueTime) : undefined, completed: r.completed === true })
 const partRow = (r: Record<string, unknown>): ApiParticipant => ({
   kind: r.kind === 'company' ? 'company' : 'contact',
   id: str(r.id),
@@ -353,7 +380,7 @@ export const contactsApi = {
   async create(input: { name: string; email?: string; phone?: string; companyName?: string }): Promise<ApiContactRow> {
     return contactOf(await apiFetch('/api/contact', { method: 'POST', body: input }))
   },
-  async update(id: string, patch: { name?: string; email?: string; phone?: string }): Promise<ApiContactRow> {
+  async update(id: string, patch: { name?: string; email?: string; phone?: string; mobile?: string; homeAddress?: string; privateNote?: string }): Promise<ApiContactRow> {
     return contactOf(await apiFetch('/api/contact', { method: 'PUT', query: { id }, body: patch }))
   },
 }
@@ -364,6 +391,10 @@ export interface JobUpdate {
   name?: string
   assignedTo?: string
   status?: 'open' | 'won' | 'lost' | 'abandoned'
+  /** The job site address (CRM field site_address). An empty text clears it. */
+  siteAddress?: string
+  /** Access notes (CRM field access_notes). */
+  accessNotes?: string
   customFields?: { key?: string; id?: string; value: string | number }[]
 }
 
@@ -376,7 +407,7 @@ export const jobsApi = {
     const b = await apiFetch('/api/jobs', { query: { all: 1, page: opts.page ?? 1, pageSize: opts.pageSize, status: opts.status } })
     return { jobs: rows(field(b, 'jobs')).map(jobRow), total: optTotal(b), hasMore: field(b, 'hasMore') === true }
   },
-  async create(input: { contactId: string; title: string; monetaryValue?: number; pipelineId?: string; stage?: string }): Promise<ApiJobRow> {
+  async create(input: { contactId: string; title: string; monetaryValue?: number; pipelineId?: string; stage?: string; siteAddress?: string; accessNotes?: string }): Promise<ApiJobRow> {
     return jobOf(await apiFetch('/api/jobs', { method: 'POST', body: input }))
   },
   async update(id: string, patch: JobUpdate): Promise<ApiJobRow> {
@@ -400,10 +431,12 @@ export interface OpportunityField {
   name: string
   dataType: string
   options: string[]
+  fieldGroup?: string
+  category?: string
 }
 export const opportunityFieldsApi = {
-  /** `categories` is passed through as is (the shape is not fixed in API.md). */
-  async list(): Promise<{ fields: OpportunityField[]; categories: unknown }> {
+  /** Every job custom field definition plus the category (folder) each falls into. */
+  async list(): Promise<{ fields: OpportunityField[]; categories: string[] }> {
     const b = await apiFetch('/api/opportunity-fields')
     const fields = rows(field(b, 'fields')).map((f) => ({
       id: str(f.id),
@@ -411,8 +444,43 @@ export const opportunityFieldsApi = {
       name: str(f.name),
       dataType: str(f.dataType),
       options: Array.isArray(f.options) ? f.options.map((o) => str(o)) : [],
+      fieldGroup: f.fieldGroup ? str(f.fieldGroup) : undefined,
+      category: f.category ? str(f.category) : undefined,
     }))
-    return { fields, categories: field(b, 'categories') }
+    const rawCats = field(b, 'categories')
+    const categories = Array.isArray(rawCats)
+      ? (rawCats as unknown[]).filter((c): c is string => typeof c === 'string')
+      : []
+    return { fields, categories }
+  },
+}
+
+export interface ContactField {
+  id: string
+  key: string
+  name: string
+  dataType: string
+  options: string[]
+  fieldGroup?: string
+  category?: string
+}
+export const contactFieldsApi = {
+  /** Every contact custom field definition for this location, with its category (folder). */
+  async list(): Promise<ContactField[]> {
+    const b = await apiFetch('/api/contact-fields')
+    return rows(field(b, 'fields')).map((f) => ({
+      id: str(f.id),
+      key: str(f.key),
+      name: str(f.name),
+      dataType: str(f.dataType),
+      options: Array.isArray(f.options) ? f.options.map((o) => str(o)) : [],
+      fieldGroup: f.fieldGroup ? str(f.fieldGroup) : undefined,
+      category: f.category ? str(f.category) : undefined,
+    }))
+  },
+  /** Update one contact's custom field values. `values` is keyed by field id. */
+  async update(contactId: string, values: { id: string; value: string | number }[]): Promise<ApiContactRow> {
+    return contactOf(await apiFetch('/api/contact-fields', { method: 'PUT', query: { id: contactId }, body: { values } }))
   },
 }
 
@@ -441,15 +509,37 @@ export const notesApi = {
   },
 }
 
+export const conversationsApi = {
+  async listForContact(contactId: string): Promise<Message[]> {
+    try {
+      const b = await apiFetch('/api/notes', { query: { contactId, conversations: 1 } })
+      return rows(field(b, 'messages')).map((r) => ({
+        id: str(r.id),
+        jobId: str(r.jobId),
+        contactId: str(r.contactId),
+        channel: (str(r.channel) === 'email' || str(r.channel) === 'call' ? str(r.channel) : 'sms') as Message['channel'],
+        direction: str(r.direction) === 'in' ? 'in' : 'out',
+        at: str(r.at),
+        subject: r.subject ? str(r.subject) : undefined,
+        body: str(r.body),
+        automated: r.automated === true,
+        callMinutes: typeof r.callMinutes === 'number' ? r.callMinutes : undefined,
+      }))
+    } catch {
+      return []
+    }
+  },
+}
+
 export const tasksApi = {
   async list(contactId: string): Promise<ApiTask[]> {
     return rows(field(await apiFetch('/api/tasks', { query: { contactId } }), 'tasks')).map(taskRow)
   },
-  async add(input: { contactId: string; title: string; dueDate?: string; assignedTo?: string }): Promise<ApiTask> {
+  async add(input: { contactId: string; title: string; description?: string; dueDate?: string; dueTime?: string; assignedTo?: string }): Promise<ApiTask> {
     const b = await apiFetch('/api/tasks', { method: 'POST', body: input })
     return taskRow(isRecord(field(b, 'task')) ? (field(b, 'task') as Record<string, unknown>) : {})
   },
-  async update(contactId: string, id: string, patch: { completed?: boolean; title?: string; dueDate?: string }): Promise<ApiTask> {
+  async update(contactId: string, id: string, patch: { completed?: boolean; title?: string; description?: string; dueDate?: string; dueTime?: string }): Promise<ApiTask> {
     const b = await apiFetch('/api/tasks', { method: 'PUT', query: { contactId, id }, body: patch })
     return taskRow(isRecord(field(b, 'task')) ? (field(b, 'task') as Record<string, unknown>) : {})
   },
@@ -540,5 +630,100 @@ export const storeApi = {
   },
   async remove(collection: StoreCollection, id: string): Promise<void> {
     await apiFetch('/api/store', { method: 'DELETE', query: { collection, id } })
+  },
+}
+
+// ---- Job files (private bucket, behind the Hub server) -----------------------------------------------------------
+
+export interface ApiFileRow {
+  id: string
+  jobId: string
+  source: 'file' | 'link'
+  name: string
+  kind: string
+  size: number
+  type: string
+  uploadedBy: string
+  uploadedAt: string
+  url: string
+  status: string
+  /** Site photos only. */
+  photo?: PhotoMeta
+}
+const photoOf = (v: unknown): PhotoMeta | undefined => {
+  if (!isRecord(v) || !isPurpose(v.purpose)) return undefined
+  const g = isRecord(v.geo) && typeof v.geo.lat === 'number' && typeof v.geo.lng === 'number' ? { lat: v.geo.lat, lng: v.geo.lng, acc: num(v.geo.acc) } : undefined
+  return { purpose: v.purpose, sub: str(v.sub), caption: str(v.caption), takenAt: str(v.takenAt), takenBy: str(v.takenBy), width: num(v.width), height: num(v.height), onQuote: v.onQuote === true, ...(g ? { geo: g } : {}) }
+}
+const fileRow = (r: Record<string, unknown>): ApiFileRow => ({
+  photo: photoOf(r.photo),
+  id: str(r.id),
+  jobId: str(r.jobId),
+  source: r.source === 'link' ? 'link' : 'file',
+  name: str(r.name),
+  kind: str(r.kind, 'Other'),
+  size: num(r.size),
+  type: str(r.type),
+  uploadedBy: str(r.uploadedBy),
+  uploadedAt: str(r.uploadedAt),
+  url: str(r.url),
+  status: str(r.status, 'ready'),
+})
+const fileOf = (b: Json): ApiFileRow => fileRow(isRecord(field(b, 'file')) ? (field(b, 'file') as Record<string, unknown>) : {})
+
+/** A PUT with upload progress (fetch cannot report it). Resolves with the HTTP status; rejects when the network fails. */
+function putWithProgress(url: string, headers: Record<string, string>, file: Blob, onProgress: (fraction: number) => void): Promise<number> {
+  return new Promise((resolve, reject) => {
+    const x = new XMLHttpRequest()
+    x.open('PUT', url)
+    for (const [k, v] of Object.entries(headers)) x.setRequestHeader(k, v)
+    x.upload.onprogress = (e) => e.lengthComputable && onProgress(e.loaded / e.total)
+    x.onload = () => resolve(x.status)
+    x.onerror = () => reject(new Error('network'))
+    x.onabort = () => reject(new Error('network'))
+    x.send(file)
+  })
+}
+
+/** /api/files: the server checks the token and the file rules. The browser sends the bytes straight to the signed upload address. */
+export const filesApi = {
+  async list(jobId: string): Promise<ApiFileRow[]> {
+    return rows(field(await apiFetch('/api/files', { query: { jobId } }), 'files')).map(fileRow)
+  },
+  async link(input: { jobId: string; name: string; url: string; kind: string; uploadedBy: string }): Promise<ApiFileRow> {
+    return fileOf(await apiFetch('/api/files', { method: 'POST', body: { op: 'link', ...input } }))
+  },
+  /** Asks for a signed upload address, sends the bytes to it, then confirms. Throws ApiError with the server's plain message. */
+  async upload(input: { jobId: string; file: File; kind: string; uploadedBy: string; photo?: PhotoMeta; onProgress?: (fraction: number) => void }): Promise<ApiFileRow> {
+    const { jobId, file, kind, uploadedBy, photo, onProgress } = input
+    const b = await apiFetch('/api/files', { method: 'POST', body: { op: 'upload', jobId, name: file.name, size: file.size, type: file.type, kind, uploadedBy, ...(photo ? { photo } : {}) } })
+    const row = fileOf(b)
+    const uploadUrl = str(field(b, 'uploadUrl'))
+    const hdr = field(b, 'uploadHeaders')
+    if (!row.id || !uploadUrl) throw new ApiError(502, 'The upload could not be started.')
+    const headers: Record<string, string> = isRecord(hdr) ? Object.fromEntries(Object.entries(hdr).map(([k, v]) => [k, String(v)])) : {}
+    let status: number
+    try {
+      status = onProgress ? await putWithProgress(uploadUrl, headers, file, onProgress) : (await fetch(uploadUrl, { method: 'PUT', headers, body: file })).status
+    } catch {
+      throw new NetworkError()
+    }
+    if (status < 200 || status > 299) throw new ApiError(status, 'The file could not be sent. Please try again.')
+    return fileOf(await apiFetch('/api/files', { method: 'POST', body: { op: 'confirm', id: row.id } }))
+  },
+  async rename(id: string, name: string): Promise<ApiFileRow> {
+    return fileOf(await apiFetch('/api/files', { method: 'POST', body: { op: 'rename', id, name } }))
+  },
+  /** Change a photo's purpose, label, caption or quote flag. */
+  async photo(id: string, edit: Partial<Pick<PhotoMeta, 'purpose' | 'sub' | 'caption' | 'onQuote'>>): Promise<ApiFileRow> {
+    return fileOf(await apiFetch('/api/files', { method: 'POST', body: { op: 'photo', id, edit } }))
+  },
+  /** A short-lived signed address. inline: show it in the tab; otherwise it downloads. */
+  async address(id: string, inline: boolean): Promise<string> {
+    const b = await apiFetch('/api/files', { query: { id, download: 1, inline: inline ? 1 : undefined } })
+    return str(field(b, 'url'))
+  },
+  async remove(id: string): Promise<void> {
+    await apiFetch('/api/files', { method: 'DELETE', query: { id } })
   },
 }

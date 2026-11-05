@@ -1,0 +1,103 @@
+/* The stage popover: a compact picker under its trigger, a bottom sheet on a phone. Existing tokens only. */
+
+.sp-chip {
+  position: relative;
+  z-index: 2; /* above a row link's stretched ::after */
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  cursor: pointer;
+  border-radius: 999px;
+}
+.sp-chip:focus-visible { outline: 3px solid rgb(var(--c-navy)); outline-offset: 2px; }
+.sp-chip:hover .badge { filter: brightness(0.96); }
+.sp-caret {
+  width: 0; height: 0;
+  border-left: 4px solid transparent; border-right: 4px solid transparent; border-top: 5px solid rgb(var(--c-muted));
+}
+
+.sp {
+  position: fixed;
+  z-index: 90;
+  width: min(34rem, calc(100vw - 16px));
+  max-height: calc(100vh - 16px);
+  overflow-y: auto;
+  background: rgb(var(--c-surface));
+  color: rgb(var(--c-ink));
+  border: 1px solid rgb(var(--c-control));
+  border-radius: var(--d-radius);
+  box-shadow: var(--shadow-pop);
+  padding: 0.625rem 0.75rem 0.75rem;
+  font-size: var(--d-small);
+}
+.sp-head { display: grid; gap: 0.5rem; padding: 0.125rem 0.25rem 0.5rem; border-bottom: 1px solid rgb(var(--c-control)); margin-bottom: 0.25rem; }
+.sp-now { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; flex-wrap: wrap; }
+.sp-days { font-weight: 700; font-size: var(--d-small); }
+
+.sp-steps { display: flex; gap: 3px; align-items: center; }
+.sp-step {
+  position: relative; flex: 1 1 0; min-width: 0; height: 22px; padding: 0; border: 0; background: none; cursor: pointer;
+}
+.sp-step::before {
+  content: ''; position: absolute; left: 0; right: 0; top: 50%; height: 6px; transform: translateY(-50%);
+  border-radius: 3px; background: rgb(var(--c-control));
+}
+.sp-step.sp-past::before { background: rgb(var(--c-navy) / 0.45); }
+.sp-step.sp-cur::before { height: 10px; background: rgb(var(--c-navy)); }
+.sp-step.sp-cur.sp-slow::before { background: rgb(var(--c-amber)); }
+.sp-step.sp-cur.sp-stuck::before { background: rgb(var(--c-hot)); }
+.sp-step:hover::before { background: rgb(var(--c-navy) / 0.8); }
+.sp-step:focus-visible { outline: 3px solid rgb(var(--c-navy)); outline-offset: 1px; border-radius: 4px; }
+
+.sp-groups { display: grid; grid-template-columns: 1fr 1fr; gap: 0.25rem 0.75rem; }
+.sp-gname { margin: 0.375rem 0.25rem 0.125rem; font-size: 0.8125rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: rgb(var(--c-muted)); }
+
+.sp-row {
+  display: grid; grid-template-columns: 1.25rem 1fr auto; align-items: center; gap: 0.25rem;
+  width: 100%; min-height: 2.25rem; padding: 0.25rem 0.5rem; border: 0; border-radius: 8px;
+  background: none; color: inherit; text-align: left; cursor: pointer; font-size: var(--d-text); font-weight: 600;
+}
+.sp-adv .sp-row { min-height: 2.5rem; }
+.sp-row:hover { background: rgb(var(--c-navy-wash)); }
+.sp-row:focus-visible { outline: 3px solid rgb(var(--c-navy)); outline-offset: -2px; }
+.sp-row-now { background: rgb(var(--c-navy-wash)); }
+.sp-tick { display: inline-flex; color: rgb(var(--c-navy)); }
+.sp-name { display: grid; min-width: 0; }
+.sp-help { font-size: 0.8125rem; font-weight: 400; color: rgb(var(--c-muted)); line-height: 1.25; }
+.sp-nowword { font-size: 0.8125rem; font-weight: 700; color: rgb(var(--c-navy)); }
+
+.sp-backdrop { position: fixed; inset: 0; z-index: 89; background: rgb(var(--c-ink) / 0.4); }
+.sp-sheet {
+  left: 0; right: 0; bottom: 0; top: auto; width: auto; max-height: 85vh;
+  border-radius: var(--d-radius) var(--d-radius) 0 0; padding-bottom: calc(0.75rem + env(safe-area-inset-bottom, 0px));
+}
+.sp-sheet .sp-groups { grid-template-columns: 1fr; }
+.sp-sheet .sp-row { min-height: 2.75rem; }
+.sp-sheet .sp-step { height: 32px; }
+
+@media (pointer: coarse) {
+  .sp-row, .sp-adv .sp-row { min-height: 2.75rem; }
+  .sp-step { height: 32px; }
+}
+
+.sp-toast { position: fixed; left: 0; right: 0; bottom: 1rem; z-index: 95; display: flex; justify-content: center; padding: 0 1rem; pointer-events: none; }
+.sp-toast-box {
+  pointer-events: auto; display: flex; align-items: center; gap: 0.75rem; padding: 0.625rem 0.75rem 0.625rem 1.25rem;
+  border-radius: 8px; background: rgb(var(--c-ink)); color: rgb(var(--c-ground)); font-weight: 700; font-size: 1.0625rem; box-shadow: var(--shadow-pop);
+}
+.sp-toast-undo {
+  min-height: 2.75rem; padding: 0 1rem; border: 2px solid currentColor; border-radius: 8px; background: none; color: inherit; font-weight: 700; cursor: pointer;
+}
+.sp-toast-undo:hover { background: rgb(var(--c-ground) / 0.15); }
+.sp-toast-undo:focus-visible { outline: 3px solid rgb(var(--c-ground)); outline-offset: 2px; }
+@media (max-width: 639px) { .sp-toast { bottom: 6rem; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .sp, .sp-toast-box { animation: none; }
+}
+
+@media (max-width: 640px) { .sp-chip { min-height: 44px; } .sp-row, .sp-adv .sp-row { min-height: 2.75rem; } .sp-step { height: 44px; } }

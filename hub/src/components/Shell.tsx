@@ -1,8 +1,11 @@
 import { useEffect, useId, useRef, useState, type ReactNode } from 'react'
-import { Briefcase, CalendarDays, FileText, ListChecks, Loader2, MoreHorizontal, Moon, Receipt, RefreshCw, Sun, Users, X } from 'lucide-react'
+import { openTakePhotos } from './photos/TakePhotosDialog'
+import { Briefcase, Camera, CalendarDays, FileText, ListChecks, Loader2, MoreHorizontal, Receipt, RefreshCw, Users, X } from 'lucide-react'
 import { DATA_SOURCE } from '../config'
 import { jobText } from '../lib/format'
-import { href, type Route } from '../lib/router'
+import { useMenu } from '../lib/jobLayout'
+import { menuDef, type MenuConfig, type MenuId } from '../lib/menuConfig'
+import type { Route } from '../lib/router'
 import { retryLive, startLive, useLive } from '../lib/live'
 import { stageWarnings, todoQueue, useStore } from '../lib/store'
 import { startSync, useSync } from '../lib/sync'
@@ -10,26 +13,9 @@ import { clearWriteError, useWriteError } from '../lib/writeError'
 import { recordFromHash } from '../lib/recent'
 import { GlobalSearch } from './GlobalSearch'
 import { SyncStatus } from './SyncStatus'
-import { Notice } from './ui'
+import { ConfirmHost, Notice } from './ui'
 
-function useTheme() {
-  const [theme, setTheme] = useState<'light' | 'dark'>(() => (document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light'))
-  useEffect(() => {
-    document.documentElement.setAttribute('data-theme', theme)
-  }, [theme])
-  const toggle = () => {
-    const next = theme === 'dark' ? 'light' : 'dark'
-    setTheme(next)
-    try {
-      localStorage.setItem('sq.theme', next)
-    } catch {
-      /* storage blocked: the choice lasts for this visit only */
-    }
-  }
-  return { theme, toggle }
-}
-
-type TabId = 'todo' | 'jobs' | 'quotes' | 'invoices' | 'contacts' | 'week' | 'templates' | 'terms' | 'prices' | 'settings'
+type TabId = MenuId
 
 /** Which menu item a route belongs to. */
 function tabFor(route: Route): TabId | null {
@@ -46,29 +32,30 @@ function tabFor(route: Route): TabId | null {
     case 'contacts':
     case 'contact': return 'contacts'
     case 'week': return 'week'
+    case 'calendar': return 'calendar'
     case 'templates': return 'templates'
     case 'terms': return 'terms'
     case 'prices': return 'prices'
     case 'settings': return 'settings'
+    case 'foam': return 'foam'
     default: return null
   }
 }
 
-const MORE: { id: TabId; label: string; to: string }[] = [
-  { id: 'templates', label: 'Templates', to: href.templates() },
-  { id: 'terms', label: 'Terms', to: href.terms() },
-  { id: 'prices', label: 'Price list', to: href.prices() },
-  { id: 'settings', label: 'Settings', to: href.settings() },
-]
+/** The phone bottom bar keeps these five tabs at a readable size. Everything else visible in the menu is in its More. */
+const BOTTOM_TABS: TabId[] = ['todo', 'jobs', 'quotes', 'invoices', 'contacts']
 
 /** The More menu: a button that opens a short list. Escape and outside clicks close it. */
-function MoreMenu({ current, theme, onToggleTheme, placement, variant }: { current: TabId | null; theme: 'light' | 'dark'; onToggleTheme: () => void; placement: 'below' | 'above'; variant: 'top' | 'bottom' }) {
+function MoreMenu({ current, placement, variant, menu: cfg }: { current: TabId | null; placement: 'below' | 'above'; variant: 'top' | 'bottom'; menu: MenuConfig }) {
   const [open, setOpen] = useState(false)
   const wrap = useRef<HTMLDivElement>(null)
   const btn = useRef<HTMLButtonElement>(null)
   const id = useId()
-  // On a phone the bottom bar keeps five tabs at a readable size, so This week lives in More.
-  const menu = variant === 'bottom' ? [{ id: 'week' as TabId, label: 'This week', to: href.week() }, ...MORE] : MORE
+  // Top bar: the items Edit layout put inside More. Phone: This week first, then every visible item the bottom bar lacks.
+  const menu =
+    variant === 'bottom'
+      ? [...cfg.top, ...cfg.more].filter((m) => !BOTTOM_TABS.includes(m)).sort((a, b) => (a === 'week' ? -1 : b === 'week' ? 1 : 0)).map(menuDef)
+      : cfg.more.map(menuDef)
   const inMore = menu.some((m) => m.id === current)
 
   useEffect(() => {
@@ -94,6 +81,8 @@ function MoreMenu({ current, theme, onToggleTheme, placement, variant }: { curre
   useEffect(() => {
     setOpen(false)
   }, [current])
+
+  if (menu.length === 0) return null
 
   return (
     <div ref={wrap} className={variant === 'bottom' ? 'relative flex flex-1 basis-0' : 'relative'}>
@@ -123,13 +112,6 @@ function MoreMenu({ current, theme, onToggleTheme, placement, variant }: { curre
               </li>
             ))}
           </ul>
-          <div className="mt-2 border-t pt-3 rule px-2">
-            <p className="mb-2 text-[0.9375rem] font-bold text-muted">Display</p>
-            <button type="button" className="chip" onClick={onToggleTheme} aria-pressed={theme === 'dark'}>
-              {theme === 'dark' ? <Moon size={18} aria-hidden="true" /> : <Sun size={18} aria-hidden="true" />}
-              Dark theme
-            </button>
-          </div>
         </div>
       )}
     </div>
@@ -137,9 +119,11 @@ function MoreMenu({ current, theme, onToggleTheme, placement, variant }: { curre
 }
 
 export function Shell({ route, children }: { route: Route; children: ReactNode }) {
-  const { theme, toggle } = useTheme()
   const s = useStore()
   const current = tabFor(route)
+  const menu = useMenu()
+  // The job page is a fixed frame (window height, three panels that scroll on their own). Other pages scroll as before.
+  const framed = route.name === 'job' || route.name === 'contact'
   const waiting = todoQueue(undefined, s).length
   // Live mode: start the shared-data sync once the gate has let us in, and wait for the first load.
   const { ready, status } = useSync()
@@ -160,14 +144,9 @@ export function Shell({ route, children }: { route: Route; children: ReactNode }
     return () => window.removeEventListener('hashchange', on)
   }, [])
 
-  const items: { id: TabId; label: string; short?: string; to: string; Icon: typeof Briefcase; count?: number }[] = [
-    { id: 'todo', label: 'To do', to: href.todo(), Icon: ListChecks, count: waiting },
-    { id: 'jobs', label: 'Jobs', to: href.jobs(), Icon: Briefcase },
-    { id: 'quotes', label: 'Quotes', to: href.quotes(), Icon: FileText },
-    { id: 'invoices', label: 'Invoices', to: href.invoices(), Icon: Receipt },
-    { id: 'contacts', label: 'Contacts', to: href.contacts(), Icon: Users },
-    { id: 'week', label: 'This week', short: 'Week', to: href.week(), Icon: CalendarDays },
-  ]
+  const ICONS: Partial<Record<TabId, typeof Briefcase>> = { todo: ListChecks, jobs: Briefcase, quotes: FileText, invoices: Receipt, contacts: Users, week: CalendarDays }
+  const bottomItems = BOTTOM_TABS.map((id) => ({ ...menuDef(id), Icon: ICONS[id] as typeof Briefcase, count: id === 'todo' ? waiting : undefined }))
+  const topItems = menu.top.map((id) => ({ ...menuDef(id), count: id === 'todo' ? waiting : undefined }))
 
   return (
     <div style={{ paddingLeft: 'env(safe-area-inset-left)', paddingRight: 'env(safe-area-inset-right)' }}>
@@ -175,14 +154,14 @@ export function Shell({ route, children }: { route: Route; children: ReactNode }
         Skip to content
       </a>
       <div>
-        <div className="min-w-0">
+        <div className={framed ? 'min-w-0 app-frame' : 'min-w-0'} data-frame={framed ? 'job' : undefined}>
           <header className="topbar no-print sticky top-0 z-30" style={{ paddingTop: 'env(safe-area-inset-top)' }}>
-            <div className="mx-auto flex min-h-[64px] max-w-[100rem] items-center justify-between gap-2 px-4 sm:px-4 lg:gap-4 lg:px-6">
+            <div className="topbar-inner mx-auto flex min-h-[64px] max-w-[100rem] items-center justify-between gap-x-2 px-4 sm:px-4 lg:gap-4 lg:px-6">
               <p className="font-display text-xl lg:text-2xl" style={{ wordSpacing: '0.1em' }}>
-                Quote Hub
+                Hub
               </p>
-              <nav aria-label="Quote Hub sections" className="ml-auto hidden items-center sm:flex lg:gap-1 [&_.nav-link]:px-2 lg:[&_.nav-link]:px-4">
-                {items.map(({ id, label, short, to, count }) => (
+              <nav aria-label="Hub sections" className="ml-auto hidden items-center sm:flex lg:gap-1 [&_.nav-link]:px-2 lg:[&_.nav-link]:px-4">
+                {topItems.map(({ id, label, short, to, count }) => (
                   <a key={id} href={to} className="nav-link" aria-label={short ? label : undefined} aria-current={current === id ? 'page' : undefined}>
                     {short ? (
                       <>
@@ -200,9 +179,9 @@ export function Shell({ route, children }: { route: Route; children: ReactNode }
                     )}
                   </a>
                 ))}
-                <MoreMenu current={current} theme={theme} onToggleTheme={toggle} placement="below" variant="top" />
+                <MoreMenu current={current} placement="below" variant="top" menu={menu} />
               </nav>
-              <div className="flex items-center gap-3 max-sm:ml-auto">
+              <div className="topbar-tools flex items-center gap-3 max-sm:ml-auto">
                 <SyncStatus />
                 <GlobalSearch />
               </div>
@@ -227,10 +206,10 @@ export function Shell({ route, children }: { route: Route; children: ReactNode }
           )}
           {DATA_SOURCE === 'mock' && !s.persistent && (
             <div className="no-print mx-auto max-w-[100rem] px-4 pt-4 sm:px-6">
-              <Notice tone="warn">This browser is blocking storage, so changes are kept only until you close this page. Open the Quote Hub in its own tab to keep them.</Notice>
+              <Notice tone="warn">This browser is blocking storage, so changes are kept only until you close this page. Open the Hub in its own tab to keep them.</Notice>
             </div>
           )}
-          <main id="main" tabIndex={-1} className="page outline-none">
+          <main id="main" tabIndex={-1} className={framed ? 'page-frame outline-none' : 'page outline-none'}>
             {live.status === 'error' ? (
               <div className="card mx-auto mt-10 max-w-md text-center" role="alert">
                 <p className="mb-4 mt-0 font-bold">{jobText('The %js could not be loaded')}</p>
@@ -245,20 +224,27 @@ export function Shell({ route, children }: { route: Route; children: ReactNode }
             ) : (
               <div className="card mx-auto mt-10 max-w-md text-center" role="status">
                 <Loader2 size={32} aria-hidden="true" className="mx-auto mb-3 animate-spin text-navy motion-reduce:animate-none" />
-                <p className="m-0 text-muted">{status === 'offline' ? 'Offline, retrying' : ready ? jobText('Loading your %js') : 'Loading the Quote Hub'}</p>
+                <p className="m-0 text-muted">{status === 'offline' ? 'Offline, retrying' : ready ? jobText('Loading your %js') : 'Loading the Hub'}</p>
               </div>
             )}
           </main>
-          <nav aria-label="Quote Hub sections" className="bottombar no-print sticky bottom-0 z-30 flex sm:hidden" style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
-            {items.filter((i) => i.id !== 'week').map(({ id, label, short, to, Icon, count }) => (
+          <nav aria-label="Hub sections" data-photos={route.name === 'job' ? '' : undefined} className="bottombar no-print sticky bottom-0 z-30 flex sm:hidden" style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
+            {bottomItems.map(({ id, label, short, to, Icon, count }) => (
               <a key={id} href={to} className="bottom-item" aria-label={short ? label : undefined} aria-current={current === id ? 'page' : undefined}>
                 <Icon size={26} aria-hidden="true" />
                 <span>{short ?? label}</span>
                 {count !== undefined && count > 0 && <span className="sr-only">, {count} waiting</span>}
               </a>
             ))}
-            <MoreMenu current={current} theme={theme} onToggleTheme={toggle} placement="above" variant="bottom" />
+            {route.name === 'job' && (
+              <button type="button" className="bottom-item" data-take-photos-bottom aria-label="Take photos" onClick={() => openTakePhotos(route.id)}>
+                <Camera size={26} aria-hidden="true" />
+                <span>Photos</span>
+              </button>
+            )}
+            <MoreMenu current={current} placement="above" variant="bottom" menu={menu} />
           </nav>
+          <ConfirmHost />
         </div>
       </div>
     </div>

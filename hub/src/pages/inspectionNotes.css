@@ -1,0 +1,43 @@
+/* Inspection notes box and the draft review (quote from notes). Sizes come from the --d-* tokens of the job page. */
+.nq { display: flex; flex-direction: column; gap: var(--d-gap, 0.75rem); min-width: 0; }
+.nq-text { width: 100%; min-width: 0; resize: vertical; line-height: 1.45; }
+.nq-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 0.75rem; }
+.nq-inline { margin: 0; }
+.nq-h { margin: 0; font-size: var(--d-text, 1rem); font-weight: 700; }
+.nq-review { display: flex; flex-direction: column; gap: var(--d-gap, 0.75rem); min-width: 0; }
+.nq-tidy { margin: 0; }
+
+.nq-empty { border: 1px dashed rgb(var(--c-control)); border-radius: var(--radius-md); padding: 0.75rem 1rem; display: flex; flex-direction: column; gap: 0.375rem; overflow-wrap: anywhere; }
+.nq-empty p { margin: 0; }
+
+.nq-lines { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.75rem; min-width: 0; }
+.nq-line { border: 1px solid rgb(var(--c-line)); border-radius: var(--radius-md); background: rgb(var(--c-surface)); padding: 0.75rem; display: flex; flex-direction: column; gap: 0.5rem; min-width: 0; }
+.nq-line[data-checked='false'] { background: rgb(var(--c-raise)); }
+.nq-line-head { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 0.25rem 0.75rem; min-width: 0; }
+.nq-check { display: inline-flex; align-items: flex-start; gap: 0.5rem; min-width: 0; cursor: pointer; }
+.nq-check input { width: 1.25rem; height: 1.25rem; margin-top: 0.125rem; flex: none; }
+.nq-name { font-weight: 700; overflow-wrap: anywhere; min-width: 0; }
+.nq-money { font-weight: 700; flex: none; font-variant-numeric: tabular-nums; }
+.nq-src { margin: 0; font-size: var(--d-small, 0.875rem); color: rgb(var(--c-muted)); overflow-wrap: anywhere; }
+.nq-src-tag { display: inline-block; padding: 0 0.375rem; border-radius: var(--radius-sm); background: rgb(var(--c-navy-wash)); color: rgb(var(--c-navy)); font-weight: 700; margin-right: 0.25rem; }
+
+.nq-fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(8.5rem, 1fr)); gap: 0.5rem 0.75rem; min-width: 0; }
+.nq-f { min-width: 0; display: flex; flex-direction: column; gap: 0.125rem; }
+.nq-f .field { width: 100%; min-width: 0; }
+.nq-wide { grid-column: 1 / -1; }
+.nq-lab { font-size: var(--d-small, 0.875rem); color: rgb(var(--c-muted)); }
+
+.nq-flags { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0.25rem 0.375rem; }
+.nq-flag { font-size: var(--d-small, 0.875rem); padding: 0.0625rem 0.5rem; border-radius: 999px; background: rgb(var(--c-amber-wash)); color: rgb(var(--c-ink)); border: 1px solid rgb(var(--c-amber)); }
+.nq-flag-placeholderFoam, .nq-flag-priceDiffers { background: rgb(var(--c-raise)); border-color: rgb(var(--c-control)); }
+.nq-calc { margin: 0; font-size: var(--d-small, 0.875rem); color: rgb(var(--c-muted)); }
+
+.nq-total { margin: 0; overflow-wrap: anywhere; }
+.nq-box { border: 1px solid rgb(var(--c-line)); border-radius: var(--radius-md); padding: 0.5rem 0.75rem; min-width: 0; }
+.nq-box ul { margin: 0.25rem 0 0; padding-left: 1.25rem; display: flex; flex-direction: column; gap: 0.25rem; overflow-wrap: anywhere; }
+.nq-box summary { cursor: pointer; font-weight: 700; min-height: 24px; }
+
+@media (pointer: coarse) {
+  .nq-check input { width: 1.5rem; height: 1.5rem; }
+  .nq-box summary { min-height: 44px; display: flex; align-items: center; }
+}

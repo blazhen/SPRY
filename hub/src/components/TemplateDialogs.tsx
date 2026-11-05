@@ -34,7 +34,7 @@ export function SaveTemplateDialog({ open, onClose, quote }: { open: boolean; on
       title="Save as template"
       footer={
         <>
-          <button type="button" className="btn btn-quiet" onClick={onClose}>
+          <button type="button" className="btn btn-neutral" onClick={onClose}>
             Cancel
           </button>
           <button type="button" className="btn btn-primary" onClick={save}>
@@ -44,17 +44,17 @@ export function SaveTemplateDialog({ open, onClose, quote }: { open: boolean; on
       }
     >
       <form
-        className="space-y-4"
+        className="dg-stack"
         onSubmit={(e) => {
           e.preventDefault()
           save()
         }}
         noValidate
       >
-        <Notice>Saved: sections, products, upgrade options and wording. Not saved: customer, job, prices.</Notice>
         <div>
           <label className="label" htmlFor={`${id}-n`}>
-            Template name
+            Name
+            <span className="sr-only"> Template name</span>
           </label>
           <input
             id={`${id}-n`}
@@ -79,8 +79,9 @@ export function SaveTemplateDialog({ open, onClose, quote }: { open: boolean; on
           <label className="label" htmlFor={`${id}-d`}>
             Description <span className="font-normal text-muted">(optional)</span>
           </label>
-          <textarea id={`${id}-d`} className="field" value={description} onChange={(e) => setDescription(e.target.value)} maxLength={240} />
+          <textarea id={`${id}-d`} className="field" rows={2} value={description} onChange={(e) => setDescription(e.target.value)} maxLength={240} />
         </div>
+        <p className="dg-muted">Keeps sections, products, upgrades and wording. Not the customer, job or prices.</p>
         <button type="submit" className="sr-only" tabIndex={-1}>
           Save template
         </button>
@@ -103,24 +104,24 @@ export function WriteTermsDialog({
   const [text, setText] = useState('')
   const [name, setName] = useState('')
   const [keep, setKeep] = useState(false)
-  const [err, setErr] = useState('')
+  const [err, setErr] = useState<{ field: 't' | 'n'; text: string } | null>(null)
 
   useEffect(() => {
     if (open) {
       setText('')
       setName('')
       setKeep(false)
-      setErr('')
+      setErr(null)
     }
   }, [open])
 
   function save() {
     if (!text.trim()) {
-      setErr('Write the terms first.')
+      setErr({ field: 't', text: 'Write the terms first.' })
       return
     }
     if (keep && !name.trim()) {
-      setErr('Give the template a name.')
+      setErr({ field: 'n', text: 'Give the template a name.' })
       return
     }
     onSave(text.trim(), keep, name.trim())
@@ -133,7 +134,7 @@ export function WriteTermsDialog({
       title="Write new terms"
       footer={
         <>
-          <button type="button" className="btn btn-quiet" onClick={onClose}>
+          <button type="button" className="btn btn-neutral" onClick={onClose}>
             Cancel
           </button>
           <button type="button" className="btn btn-primary" onClick={save}>
@@ -142,30 +143,52 @@ export function WriteTermsDialog({
         </>
       }
     >
-      <div className="space-y-4">
+      <div className="dg-stack">
         <div>
           <label className="label" htmlFor={`${id}-t`}>
-            Terms text
+            Terms <span className="sr-only">Terms text</span>
           </label>
-          <textarea id={`${id}-t`} className="field" rows={8} value={text} onChange={(e) => { setText(e.target.value); setErr('') }} />
-          <p className="hint">Text only. Size and layout are set for you.</p>
+          <textarea
+            id={`${id}-t`}
+            className="field"
+            rows={6}
+            value={text}
+            onChange={(e) => { setText(e.target.value); setErr(null) }}
+            aria-invalid={err?.field === 't' ? true : undefined}
+            aria-describedby={err?.field === 't' ? `${id}-te` : undefined}
+          />
+          {err?.field === 't' && (
+            <p id={`${id}-te`} className="err" role="alert">
+              {err.text}
+            </p>
+          )}
+          <p className="dg-muted dg-adv mt-1">Text only. Size and layout are set for you.</p>
         </div>
-        <label htmlFor={`${id}-k`} className="flex min-h-[44px] cursor-pointer items-center gap-3">
-          <input id={`${id}-k`} type="checkbox" className="check" checked={keep} onChange={(e) => { setKeep(e.target.checked); setErr('') }} />
+        <label htmlFor={`${id}-k`} className="dg-row dg-check" style={{ paddingLeft: 0 }}>
+          <input id={`${id}-k`} type="checkbox" className="check" checked={keep} onChange={(e) => { setKeep(e.target.checked); setErr(null) }} />
           <span className="font-bold">Save as a template for next time?</span>
         </label>
         {keep && (
           <div>
             <label className="label" htmlFor={`${id}-n`}>
-              Template name
+              Name <span className="sr-only">Template name</span>
             </label>
-            <input id={`${id}-n`} className="field" value={name} maxLength={80} autoComplete="off" onChange={(e) => { setName(e.target.value); setErr('') }} />
+            <input
+              id={`${id}-n`}
+              className="field"
+              value={name}
+              maxLength={80}
+              autoComplete="off"
+              onChange={(e) => { setName(e.target.value); setErr(null) }}
+              aria-invalid={err?.field === 'n' ? true : undefined}
+              aria-describedby={err?.field === 'n' ? `${id}-ne` : undefined}
+            />
+            {err?.field === 'n' && (
+              <p id={`${id}-ne`} className="err" role="alert">
+                {err.text}
+              </p>
+            )}
           </div>
-        )}
-        {err && (
-          <p className="err" role="alert">
-            {err}
-          </p>
         )}
       </div>
     </Dialog>
@@ -198,11 +221,11 @@ export function LoadTemplateDialog({
     <Dialog
       open={open}
       onClose={onClose}
-      title="Load a template"
+      title="Use a template"
       size="lg"
       footer={
         <>
-          <button type="button" className="btn btn-quiet" onClick={onClose}>
+          <button type="button" className="btn btn-neutral" onClick={onClose}>
             Cancel
           </button>
           <button type="button" className="btn btn-primary" disabled={!chosen} onClick={() => chosen && onPick(chosen)}>
@@ -212,46 +235,28 @@ export function LoadTemplateDialog({
       }
     >
       {willReplace && (
-        <Notice tone="warn" className="mb-4">
-          This quote already has line items. Loading a template replaces its line items, upgrades, payment stages and terms. The customer, job and title stay.
+        <Notice tone="warn" className="mb-3">
+          This replaces the quote's line items, upgrades, payment stages and terms. Customer, job and title stay.
         </Notice>
       )}
-      <fieldset>
-        <legend className="label">Choose a template</legend>
-        <div className="grid gap-3 sm:grid-cols-2">
+      <fieldset className="dg-fs">
+        <legend className="sr-only">Choose a template</legend>
+        <div className="dg-list dg-scroll" title="Templates carry no prices. You set them on each line after loading.">
           {templates.map((t) => {
-            const on = t.id === sel
+            const n = `${t.lines.length} ${t.lines.length === 1 ? 'line' : 'lines'}`
             return (
-              <label
-                key={t.id}
-                htmlFor={`${id}-${t.id}`}
-                className="flex min-w-0 cursor-pointer items-start gap-3 rounded-md bg-raise p-3.5 hover:bg-navy-wash"
-                style={{ border: `2px solid ${on ? 'rgb(var(--c-navy))' : 'rgb(var(--c-line))'}` }}
-              >
-                <input
-                  id={`${id}-${t.id}`}
-                  type="radio"
-                  name={`${id}-tpl`}
-                  className="mt-1 h-5 w-5 shrink-0 accent-[rgb(var(--c-navy))]"
-                  checked={on}
-                  onChange={() => setSel(t.id)}
-                />
-                <span className="min-w-0 flex-1">
-                  <span className="flex flex-wrap items-center gap-2">
-                    <span className="break-words font-bold">{t.name}</span>
-                    {t.builtIn && <span className="badge bg-soft text-ink">Built-in</span>}
-                  </span>
-                  {t.description && <span className="mt-0.5 block break-words text-sm text-muted">{t.description}</span>}
-                  <span className="mt-1 block text-sm text-muted">
-                    {t.lines.length} {t.lines.length === 1 ? 'line item' : 'line items'}
-                  </span>
-                </span>
+              <label key={t.id} htmlFor={`${id}-${t.id}`} className="dg-row" title={[t.description, n].filter(Boolean).join('. ')}>
+                <input id={`${id}-${t.id}`} type="radio" name={`${id}-tpl`} checked={t.id === sel} onChange={() => setSel(t.id)} />
+                <span className="dg-name">{t.name}</span>
+                {t.builtIn && <span className="dg-tag">Built-in</span>}
+                {t.description && <span className="dg-sub dg-adv">{t.description}</span>}
+                <span className="dg-end">{n}</span>
               </label>
             )
           })}
         </div>
       </fieldset>
-      <p className="hint">Templates carry no prices. You set them on each line after loading.</p>
+      <p className="dg-muted dg-adv mt-2">Templates carry no prices. You set them on each line after loading.</p>
     </Dialog>
   )
 }

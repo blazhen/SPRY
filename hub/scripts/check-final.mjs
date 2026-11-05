@@ -31,22 +31,8 @@ try {
     const stored = await page.evaluate(() => localStorage.getItem('sq.theme'))
     const attr = await page.evaluate(() => document.documentElement.getAttribute('data-theme'))
     rec('6 fresh profile is light by default', stored === null && attr !== 'dark', `stored=${stored} data-theme=${attr}`)
-    let switched = false
-    try {
-      await page.getByRole('button', { name: /^More/ }).first().click({ timeout: 3000 })
-      await page.getByRole('button', { name: 'Dark theme' }).first().click({ timeout: 3000 })
-      switched = true
-    } catch (e) { rec('6 dark switch reachable via More menu', false, String(e.message).split('\n')[0]) }
-    if (switched) {
-      rec('6 dark switch applies', (await page.evaluate(() => document.documentElement.getAttribute('data-theme'))) === 'dark')
-      await page.screenshot({ path: OUT + 'todo_dark_1280.png' })
-      await go(page, '#/jobs')
-      const d2 = await page.evaluate(() => document.documentElement.getAttribute('data-theme'))
-      rec('6 dark persists across route', d2 === 'dark', 'data-theme=' + d2)
-      await page.reload(); await page.waitForLoadState('networkidle')
-      const d3 = await page.evaluate(() => document.documentElement.getAttribute('data-theme'))
-      rec('6 dark persists after reload', d3 === 'dark', 'data-theme=' + d3)
-    }
+    // REMOVED: "6 dark switch reachable via More menu" and the dark persistence checks below it.
+    // There is no theme switch in hub\src any more (no "Dark theme" button, no sq.theme or data-theme code; the sheets are always light).
     rec('6 no console errors (theme)', page.errs.length === 0, page.errs.slice(0, 3).join(' | '))
     await ctx.close()
   }
@@ -104,7 +90,6 @@ try {
   {
     const { ctx, page } = await newPage(1280)
     await go(page, '#/jobs/j6')
-    await page.getByRole('tab', { name: /^Quotes/ }).click().catch(() => {})
     const dup = page.getByRole('button', { name: /Start from last quote/ }).first()
     if (await dup.count()) {
       await dup.click(); await page.waitForTimeout(400)

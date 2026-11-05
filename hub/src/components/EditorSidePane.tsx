@@ -8,12 +8,15 @@ import { AppointmentsPanel } from './job/AppointmentsPanel'
 import { ConversationsPanel } from './job/ConversationsPanel'
 import { PaymentsPanel } from './job/PaymentsPanel'
 import { TasksPanel } from './job/TasksPanel'
+import { AttachmentsPanel } from './job/AttachmentsPanel'
+import { QuotePhotos } from './photos/QuotePhotos'
+import { SiteAddress } from './job/JobFacts'
 import { Notice } from './ui'
 import { fmtMoneyWhole } from '../lib/format'
 import { STAGE_HELP } from '../lib/store'
 import type { Job, Quote } from '../types'
 
-export type PaneView = 'preview' | 'contact' | 'job' | 'notes' | 'messages' | 'payments' | 'visits' | 'todo'
+export type PaneView = 'preview' | 'contact' | 'job' | 'notes' | 'messages' | 'payments' | 'visits' | 'todo' | 'documents'
 
 export const PANE_VIEWS: { id: PaneView; label: string; short: string }[] = [
   { id: 'preview', label: 'Quote preview', short: 'Preview' },
@@ -24,6 +27,7 @@ export const PANE_VIEWS: { id: PaneView; label: string; short: string }[] = [
   { id: 'payments', label: 'Payments', short: 'Payments' },
   { id: 'visits', label: 'Visits', short: 'Visits' },
   { id: 'todo', label: 'To do', short: 'To do' },
+  { id: 'documents', label: 'Documents', short: 'Documents' },
 ]
 
 export const paneLabel = (v: PaneView) => PANE_VIEWS.find((p) => p.id === v)?.label ?? 'Quote preview'
@@ -65,7 +69,7 @@ export function PaneBody({ view, quote, job, contactId }: { view: PaneView; quot
           <h2 id={`pv-job-${job.id}`} className="t-section">
             {job.name}
           </h2>
-          <p className="t-body">{job.address || 'No address yet'}</p>
+          <SiteAddress job={job} />
           <p className="t-body">
             <span className="text-muted">Stage: </span>
             <strong>{job.stage}</strong>. {STAGE_HELP[job.stage]}
@@ -91,5 +95,6 @@ export function PaneBody({ view, quote, job, contactId }: { view: PaneView; quot
   if (view === 'messages') return <ConversationsPanel jobId={job.id} />
   if (view === 'payments') return <PaymentsPanel jobId={job.id} />
   if (view === 'visits') return <AppointmentsPanel jobId={job.id} />
+  if (view === 'documents') return <><AttachmentsPanel jobId={job.id} /><QuotePhotos jobId={job.id} /></>
   return <TasksPanel jobId={job.id} />
 }
