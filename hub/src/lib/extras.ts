@@ -21,7 +21,7 @@ export const SEND_EXTRAS: { label: string; help: string }[] = [
   { label: 'Chase reminder texts and emails', help: 'Spec only. Nothing is sent from the Hub.' },
   { label: 'Morning summary text', help: 'Spec only. Nothing is sent from the Hub.' },
   { label: 'Review request after a job', help: 'Spec only. Nothing is sent from the Hub.' },
-  { label: 'Automatic deposit invoice and payment link', help: 'Spec only. Nothing is sent from the Hub.' },
+  { label: 'Automatic deposit invoice and payment link', help: 'The Hub works out the deposit amount and due date (Settings, Deposit) and only shows them. The invoice and payment link are spec only, nothing is sent.' },
 ]
 
 /** Every extra is on by default (in Advanced). The sending ones are not switches at all. */
@@ -40,14 +40,16 @@ export interface FoamType {
   wastePct: number
   /** R-value of 100 mm of this foam (the completion certificate multiplies it by the thickness). Missing = not known. */
   rPer100mm?: number
+  /** Deposit asked for jobs with this foam, in percent of the quote (Settings, Deposit). Missing = the rule's fixed percent. */
+  depositPct?: number
   /** True until Glenn gives the real number. Listed in the README. */
   placeholder: boolean
 }
 
 /** PLACEHOLDER numbers (not Glenn's). Listed in the README until he provides real ones. */
 export const DEFAULT_FOAM: FoamType[] = [
-  { id: 'foam-open', name: 'Open cell', yieldBdFtPerSet: 14000, pricePerM3: 350, costPerM3: 150, wastePct: 10, rPer100mm: 3.6, placeholder: true },
-  { id: 'foam-closed', name: 'Closed cell', yieldBdFtPerSet: 4500, pricePerM3: 1200, costPerM3: 520, wastePct: 8, rPer100mm: 6, placeholder: true },
+  { id: 'foam-open', name: 'Open cell', yieldBdFtPerSet: 14000, pricePerM3: 350, costPerM3: 150, wastePct: 10, rPer100mm: 3.6, depositPct: 20, placeholder: true },
+  { id: 'foam-closed', name: 'Closed cell', yieldBdFtPerSet: 4500, pricePerM3: 1200, costPerM3: 520, wastePct: 8, rPer100mm: 6, depositPct: 30, placeholder: true },
 ]
 
 /** Days after sending a quote when you chase it (the 1st, 2nd and 3rd time). PLACEHOLDER defaults from the brief. */
@@ -64,7 +66,31 @@ export interface ExtrasSettings {
   leadSources?: string[]
   /** The completion certificate's warranty wording (Settings). confirmed = Glenn has approved the text. */
   certificate?: { warranty: string; confirmed: boolean }
+  /** The deposit rule (Settings, Deposit). Missing = the defaults, off. */
+  deposit?: DepositSettings
 }
+
+export type DepositMixed = 'larger' | 'average' | 'fixed'
+export type DepositBasis = 'withGst' | 'beforeGst'
+export interface DepositSettings {
+  /** "Ask for a deposit". Off means no deposit amount is worked out. */
+  enabled: boolean
+  /** A job with more than one foam type: use the larger percent, the average of the foam types on the quote, or the fixed percent. */
+  mixed: DepositMixed
+  /** Percent used for the fixed rule, and when no foam line is found on a quote. */
+  fixedPct: number
+  /** Days after the customer accepts that the deposit is due. */
+  dueDays: number
+  /** Smallest deposit in dollars (0 = none). */
+  minAmount: number
+  /** Does the percent apply to the total with GST or before GST. */
+  basis: DepositBasis
+  /** False until Glenn confirms the rule: shown as "Example, not confirmed". */
+  confirmed: boolean
+}
+/** PLACEHOLDER rule (not Glenn's). Off until he switches it on. */
+export const DEFAULT_DEPOSIT: DepositSettings = { enabled: false, mixed: 'larger', fixedPct: 25, dueDays: 7, minAmount: 0, basis: 'withGst', confirmed: false }
+export const depositOf = (s: ExtrasSettings | undefined): DepositSettings => ({ ...DEFAULT_DEPOSIT, ...(s?.deposit ?? {}) })
 
 const isRec = (x: unknown): x is Record<string, unknown> => !!x && typeof x === 'object' && !Array.isArray(x)
 const finite = (n: unknown): n is number => typeof n === 'number' && Number.isFinite(n)
@@ -98,6 +124,7 @@ export function fixExtras(raw: unknown): ExtrasSettings {
         costPerM3: num('costPerM3', 0, 1e6, 0),
         wastePct: num('wastePct', 0, 100, 0),
         ...(finite(f.rPer100mm) && f.rPer100mm >= 0 && f.rPer100mm <= 30 ? { rPer100mm: f.rPer100mm } : {}),
+        ...(finite(f.depositPct) && f.depositPct >= 0 && f.depositPct <= 100 ? { depositPct: f.depositPct } : {}),
         placeholder: f.placeholder !== false,
       })
     }
@@ -105,6 +132,20 @@ export function fixExtras(raw: unknown): ExtrasSettings {
   }
   if (isRec(d.certificate) && typeof d.certificate.warranty === 'string' && d.certificate.warranty.trim()) {
     out.certificate = { warranty: d.certificate.warranty.slice(0, 3000), confirmed: d.certificate.confirmed === true }
+  }
+  if (isRec(d.deposit)) {
+    const dp = d.deposit
+    const pick = <T extends string>(v: unknown, ok: T[], dflt: T): T => (ok.includes(v as T) ? (v as T) : dflt)
+    const n = (v: unknown, lo: number, hi: number, dflt: number) => (finite(v) && v >= lo && v <= hi ? v : dflt)
+    out.deposit = {
+      enabled: dp.enabled === true,
+      mixed: pick<DepositMixed>(dp.mixed, ['larger', 'average', 'fixed'], DEFAULT_DEPOSIT.mixed),
+      fixedPct: n(dp.fixedPct, 0, 100, DEFAULT_DEPOSIT.fixedPct),
+      dueDays: Math.round(n(dp.dueDays, 0, 365, DEFAULT_DEPOSIT.dueDays)),
+      minAmount: n(dp.minAmount, 0, 1e7, 0),
+      basis: pick<DepositBasis>(dp.basis, ['withGst', 'beforeGst'], DEFAULT_DEPOSIT.basis),
+      confirmed: dp.confirmed === true,
+    }
   }
   const lost = cleanList(d.lostReasons)
   if (lost) out.lostReasons = lost
@@ -263,6 +304,90 @@ export function foamLine(i: FoamInput, f: Pick<FoamType, 'name'>, r: FoamResult)
     unit: 'm²',
     unitPrice: round(r.price / i.areaM2, 2),
   }
+}
+
+// ---- Deposit ---------------------------------------------------------------------
+
+export interface DepositResult {
+  /** Dollars, rounded to the cent. 0 when no deposit is asked for. */
+  amount: number
+  /** ISO date the deposit is due (acceptance day plus the days in the rule), or '' when none. */
+  dueDate: string
+  /** Percent used, or 0. */
+  percentUsed: number
+  /** One plain sentence saying how the amount was worked out. */
+  reason: string
+}
+
+/** The two fields the Hub would write to the opportunity on acceptance (HX-4 reads them). Nothing is written to the CRM from here. */
+export const depositCrmFields = (d: DepositResult): { deposit_amount: number; deposit_due_date: string } | null => (d.amount > 0 ? { deposit_amount: d.amount, deposit_due_date: d.dueDate } : null)
+
+// Money to the cent, half up, without importing calc.ts (this file stays free of the app settings file).
+const cents = (n: number): number => {
+  if (!Number.isFinite(n)) return 0
+  const t = String(Math.abs(n))
+  const v = Math.round(t.includes('e') ? Math.abs(n) * 100 : Number(t + 'e2')) / 100
+  return n < 0 ? -v : v
+}
+const addDays = (iso: string, days: number): string => {
+  const d = new Date(iso.slice(0, 10) + 'T00:00:00')
+  d.setDate(d.getDate() + days)
+  const p = (x: number) => String(x).padStart(2, '0')
+  return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`
+}
+
+/** Foam types a quote uses: a line names its foam type (foamId), or its name contains the foam's name ("Closed cell foam, 50 mm"). */
+export function foamsOnQuote(lines: { name: string; foamId?: string }[], foam: FoamType[]): FoamType[] {
+  const hit = new Set<string>()
+  for (const l of lines) {
+    const byId = l.foamId ? foam.find((f) => f.id === l.foamId) : undefined
+    const f = byId ?? foam.find((x) => l.name.toLowerCase().includes(x.name.toLowerCase()))
+    if (f) hit.add(f.id)
+  }
+  return foam.filter((f) => hit.has(f.id))
+}
+
+/**
+ * The deposit on a quote. `subtotal` is before GST, `total` is with GST (the percent applies to the one the rule's basis names).
+ * Off = amount 0. Never more than the base it is taken from. `acceptedOn` is the day the customer accepted (or today, for a preview).
+ */
+export function depositFor(
+  q: { lines: { name: string; foamId?: string }[]; subtotal: number; total: number; acceptedOn: string },
+  foam: FoamType[],
+  settings: DepositSettings | undefined,
+): DepositResult {
+  const s = { ...DEFAULT_DEPOSIT, ...(settings ?? {}) }
+  if (!s.enabled) return { amount: 0, dueDate: '', percentUsed: 0, reason: 'Deposits are switched off.' }
+  const base = s.basis === 'withGst' ? q.total : q.subtotal
+  const baseWord = s.basis === 'withGst' ? 'the total with GST' : 'the total before GST'
+  if (!(base > 0)) return { amount: 0, dueDate: '', percentUsed: 0, reason: 'The quote has no total yet.' }
+  const used = foamsOnQuote(q.lines, foam)
+  const pcts = used.map((f) => f.depositPct ?? s.fixedPct)
+  let pct: number
+  let why: string
+  if (s.mixed === 'fixed') {
+    pct = s.fixedPct
+    why = `${pct}% (the fixed percent)`
+  } else if (pcts.length === 0) {
+    pct = s.fixedPct
+    why = `${pct}% (no foam line found, so the fixed percent)`
+  } else if (pcts.length === 1) {
+    pct = pcts[0]
+    why = `${pct}% (${used[0].name})`
+  } else if (s.mixed === 'larger') {
+    pct = Math.max(...pcts)
+    why = `${pct}% (the larger of ${used.map((f, i) => `${f.name} ${pcts[i]}%`).join(' and ')})`
+  } else {
+    pct = cents(pcts.reduce((a, b) => a + b, 0) / pcts.length)
+    why = `${pct}% (the average of ${used.map((f, i) => `${f.name} ${pcts[i]}%`).join(' and ')})`
+  }
+  let amount = cents((base * pct) / 100)
+  let reason = `${why} of ${baseWord}.`
+  if (s.minAmount > 0 && amount < s.minAmount) {
+    amount = Math.min(s.minAmount, cents(base))
+    reason += ` Raised to the minimum of ${s.minAmount} dollars.`
+  }
+  return { amount, dueDate: addDays(q.acceptedOn, s.dueDays), percentUsed: pct, reason }
 }
 
 // ---- Quick enquiry: duplicate check --------------------------------------------

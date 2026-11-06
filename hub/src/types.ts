@@ -276,6 +276,8 @@ export interface LineItem {
   /** Price per unit, ex GST. null = not set yet (templates carry no prices). */
   unitPrice: number | null
   priceItemId?: string
+  /** The foam type this line is (from the calculator), used for the deposit. */
+  foamId?: string
   /** Staff only: the words in the inspection notes this line was drafted from. Never shown to the customer. */
   fromNotes?: string
 }

@@ -127,6 +127,7 @@ export default function FoamPrices() {
             <li>Price per m³ ex GST is what you charge. It is multiplied by the net volume (the area times the thickness) and by the volume with waste added.</li>
             <li>Cost per m³ ex GST is what the foam costs you. It is used the same two ways, so the quote shows the margin.</li>
             <li>Waste % is the extra foam that is lost, from 0 to 100.</li>
+            <li>Deposit percent is the share of the quote asked for as a deposit on a job with this foam. The rule itself (switch, mixed foam, days) is in Settings, Deposit.</li>
             <li>R-value per 100 mm is printed on the warranty certificate, worked out from the thickness on the quote.</li>
           </ul>
         </div>
@@ -167,6 +168,9 @@ export default function FoamPrices() {
               <th scope="col" className="fp-r">
                 R-value per 100 mm
               </th>
+              <th scope="col" className="fp-r">
+                Deposit percent
+              </th>
               <th scope="col">Real (confirmed)</th>
               <th scope="col">
                 <span className="sr-only">Remove</span>
@@ -193,6 +197,9 @@ export default function FoamPrices() {
                 </td>
                 <td data-label="R-value per 100 mm">
                   <NumField label={`R-value per 100 mm for ${f.name}`} value={f.rPer100mm ?? 0} min={0} max={30} onSave={(n) => patch(f.id, { rPer100mm: n })} />
+                </td>
+                <td data-label="Deposit percent">
+                  <NumField label={`Deposit percent for ${f.name}`} value={f.depositPct ?? 0} min={0} max={100} onSave={(n) => patch(f.id, { depositPct: n })} />
                 </td>
                 <td data-label="Real (confirmed)">
                   <label className="fp-real">

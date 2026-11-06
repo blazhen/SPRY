@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { TalkButton } from '../TalkButton'
 import { Mail, MessageSquare, Phone, Plus } from 'lucide-react'
 import { OPEN_SECTION } from '../job/Section'
 import { scrollWithin } from '../../lib/scrollIn'
@@ -136,6 +137,7 @@ export function ContactHeaderBar({ contactId, layout }: { contactId: string; lay
             Note
           </label>
           <textarea id="ch-note" className="field" rows={4} value={noteText} onChange={(e) => setNoteText(e.target.value)} />
+          <TalkButton getBox={() => document.getElementById('ch-note') as HTMLTextAreaElement | null} value={noteText} onChange={setNoteText} />
         </div>
       </Dialog>
 

@@ -6,6 +6,7 @@ import { quoteFamily } from '../../lib/family'
 import { atOrAfterRole, fmtDate, jobText, word } from '../../lib/format'
 import { quoteStage, type StageId } from '../../lib/quoteStatus'
 import { go, quoteOnJob } from '../../lib/router'
+import { DepositLine } from '../deposit/DepositLine'
 import {
   allTemplates,
   canQuoteRecipient,
@@ -187,6 +188,7 @@ export function QuoteFamily({ jobId }: { jobId: string }) {
                     <div className="jr-rich">
                       {manyGroups && <p className="jr-meta">For {it.group.label}</p>}
                       <p className="jr-meta">{it.changed}</p>
+                      {st.id === 'accepted' && <DepositLine quote={q} />}
                       {st.id === 'opened' && q.openCount ? <p className="jr-meta">Opened {q.openCount} {q.openCount === 1 ? 'time' : 'times'} by the customer</p> : null}
                     </div>
                     <div className="jr-actions">

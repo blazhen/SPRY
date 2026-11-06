@@ -2,6 +2,7 @@ import { useEffect, useId, useMemo, useRef, useState } from 'react'
 import { FileText, Wand2 } from 'lucide-react'
 import { Section } from '../components/job/Section'
 import { Notice, toast } from '../components/ui'
+import { TalkButton, talkSupported } from '../components/TalkButton'
 import { fmtMoney } from '../lib/format'
 import { getInspectionNote, setInspectionNote, useInspectionNotes } from '../lib/inspectionNotesStore'
 import { DATA_SOURCE } from '../config'
@@ -170,8 +171,10 @@ export function InspectionNotes({ jobId }: { jobId: string }) {
             onBlur={() => flush(text)}
             spellCheck
           />
+          <TalkButton getBox={() => document.getElementById(noteId) as HTMLTextAreaElement | null} value={text} onChange={onType} maxLength={MAX_NOTES_CHARS} />
+          {talkSupported() && <p className="hint">Speech is turned into text by your browser, the audio is not saved by the Hub.</p>}
           <p className="hint">
-            On your phone keyboard, tap the microphone to talk instead of typing. Do not put the customer&rsquo;s phone, email or address here. Notes save as you type
+            {talkSupported() ? 'Tap Talk to speak your notes instead of typing, or use the microphone on your phone keyboard.' : 'On your phone keyboard, tap the microphone to talk instead of typing.'} Do not put the customer&rsquo;s phone, email or address here. Notes save as you type
             {status === 'saving' ? ' (saving...)' : status === 'saved' ? ' (saved)' : ''}.
           </p>
         </div>

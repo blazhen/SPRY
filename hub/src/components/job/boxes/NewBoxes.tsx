@@ -10,6 +10,7 @@ import { openAttachment, shortName, useAttachments, type Attachment } from '../.
 import { DATA_SOURCE } from '../../../config'
 import { confirmAction } from '../../../lib/confirmActions'
 import { AddressActions } from '../../FollowUpBar'
+import { DepositLine } from '../../deposit/DepositLine'
 import { toast } from '../../ui'
 import { JobNotes } from '../JobFacts'
 import { OPEN_SECTION, Section } from '../Section'
@@ -147,6 +148,14 @@ export function MoneySummaryBox({ jobId }: { jobId: string }) {
       <dl className="bx-dl">
         <dt>{accepted ? 'Quoted (accepted, with GST)' : 'Quoted (with GST)'}</dt>
         <dd>{quoted === undefined ? 'No quote' : fmtMoney(quoted)}</dd>
+        {q && (
+          <>
+            <dt>Deposit</dt>
+            <dd>
+              <DepositLine quote={q} />
+            </dd>
+          </>
+        )}
         <dt>Invoiced</dt>
         <dd>{fmtMoney(invoiced)}</dd>
         <dt>Paid</dt>

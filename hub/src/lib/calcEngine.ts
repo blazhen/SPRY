@@ -133,6 +133,8 @@ export interface CalcLine {
   unitCost?: number
   /** Foam thickness for the quote line text. */
   thicknessMm?: number
+  /** The foam type of a foam item (the deposit rule reads it). */
+  foamId?: string
   /** Line total ex GST, rounded to the cent. */
   total: number
 }
@@ -152,6 +154,7 @@ export function buildLines(items: CalcItem[], foam: FoamType[], qtys: Qtys): Cal
         itemId: item.id, name: item.name, unit: item.unit, group: item.group, qty, unitPrice,
         ...(unitCost !== undefined ? { unitCost } : {}),
         ...(item.thicknessMm ? { thicknessMm: item.thicknessMm } : {}),
+        ...(item.foamId ? { foamId: item.foamId } : {}),
         total: round2(qty * unitPrice),
       })
     }
@@ -207,6 +210,7 @@ export function quoteLinesFrom(lines: CalcLine[], newId: () => string): LineItem
     qty: l.qty,
     unit: l.unit,
     unitPrice: l.unitPrice,
+    ...(l.foamId ? { foamId: l.foamId } : {}),
   }))
 }
 

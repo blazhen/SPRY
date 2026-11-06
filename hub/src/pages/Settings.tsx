@@ -6,6 +6,7 @@ import { getOwner, resetStallLimits, setStallLimit, useStore } from '../lib/stor
 import type { Stage } from '../types'
 import { ExtrasSettings } from '../components/ExtrasSettings'
 import { CertificateSettings } from '../components/photos/CertificateSettings'
+import { DepositSettings } from '../components/deposit/DepositSettings'
 import { OWNER } from '../config'
 import { setSendEnabled, useSendState } from '../lib/send'
 
@@ -207,6 +208,7 @@ export default function Settings() {
       <SendSwitch />
 
       <ExtrasSettings />
+      <DepositSettings />
       <CertificateSettings />
     </div>
   )

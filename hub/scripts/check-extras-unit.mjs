@@ -131,7 +131,7 @@ eq('fixExtras: good values kept and trimmed', X.fixExtras({ chaseDays: [1, 4], l
 eq('every extra is on by default', X.EXTRA_LIST.every((e) => X.isExtraOn(undefined, e.key)), true)
 eq('a switch set to off is off', X.isExtraOn({ on: { calculator: false } }, 'calculator'), false)
 eq('default foam types are all flagged placeholder', X.DEFAULT_FOAM.every((f) => f.placeholder === true), true)
-eq('sending extras are listed as spec only', X.SEND_EXTRAS.every((e) => /Spec only/.test(e.help)), true)
+eq('sending extras say they send nothing (the deposit line says what the Hub does work out)', X.SEND_EXTRAS.every((e) => /Spec only|spec only, nothing is sent/.test(e.help)), true)
 
 console.log(failed === 0 ? 'ALL PASS' : `${failed} FAILED`)
 process.exit(failed === 0 ? 0 : 1)

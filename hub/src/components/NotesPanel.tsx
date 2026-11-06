@@ -5,6 +5,7 @@ import { addNoteTo, deleteNote, editNote, ensureNotes, isAboutJob, jobTag, noteL
 import { href } from '../lib/router'
 import { getContact, getJob, useStore } from '../lib/store'
 import { PagedList } from './Pager'
+import { TalkButton } from './TalkButton'
 import { ConfirmDialog, EmptyState, Section, toast } from './ui'
 
 export function noteWhen(iso: string): string {
@@ -79,6 +80,7 @@ export function NotesPanel({ target, title = 'Notes' }: { target: NoteTarget; ti
           )
         )}
         <textarea id={`${id}-new`} className="field" rows={3} value={draft} onChange={(e) => setDraft(e.target.value)} placeholder="Write what happened or what to remember" />
+        <TalkButton getBox={() => document.getElementById(`${id}-new`) as HTMLTextAreaElement | null} value={draft} onChange={setDraft} />
         <div>
           <button type="button" className="btn btn-primary btn-lg" onClick={save} disabled={isJob ? !onId || draft.trim() === prefix.trim() : !draft.trim()}>
             <Plus size={20} aria-hidden="true" />
