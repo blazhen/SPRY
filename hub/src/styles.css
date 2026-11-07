@@ -478,8 +478,13 @@ dialog.modal[open] { display: grid; place-items: center; padding: 1rem; }
 #print-root { display: none; }
 @media print {
   html.printing-sheet #root { display: none !important; }
-  html.printing-sheet #print-root { display: block !important; }
-  html.printing-sheet #print-root .sheet { max-width: none; margin: 0; }
+  html.printing-sheet #print-root { display: block !important; width: 100%; }
+  html.printing-sheet #print-root .sheet { width: 100%; max-width: none; margin: 0; }
+}
+/* The browser's print dialog leaves "Background graphics" off by default, which drops the navy total box and leaves its white text
+   unreadable. Ask for backgrounds on the sheet whatever the dialog says. */
+@media print {
+  .sheet, .sheet * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 }
 
 /* Line item rows respond to the width of the sheet, not the window, because the

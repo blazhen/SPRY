@@ -1,5 +1,6 @@
-// Print button on a quote prints only the quote sheet (not the workspace panels). Mock build, headless Edge, test data only.
-// Build: VITE_DATA_SOURCE=mock npx vite build --outDir dist-pr ; run: HUB_DIST=dist-pr node scripts/proof-print-quote.mjs (port 4441)
+// Print button on a quote prints only the quote sheet, full width, with its colours (not the workspace panels).
+// Mock build, headless Edge, test data only. Build: VITE_DATA_SOURCE=mock npx vite build --outDir dist-pr
+// Run: HUB_DIST=dist-pr node scripts/proof-print-quote.mjs (port 4441). Writes PDFs and pictures to shots/print (delete before commit).
 import { startPreview } from './_server.mjs'
 import { chromium } from 'playwright'
 import fs from 'node:fs'
@@ -12,48 +13,58 @@ let fails = 0
 const rec = (name, ok, detail = '') => { if (!ok) fails++; console.log(`${ok ? 'PASS' : 'FAIL'} ${name}${detail ? ' :: ' + detail : ''}`) }
 fs.mkdirSync('shots/print', { recursive: true })
 
-try {
-  const context = await browser.newContext({ viewport: { width: 1440, height: 900 } })
+// A4 at 96 dpi is 794 px wide: the print layout is checked at that width.
+const A4 = { width: 794, height: 1123 }
+
+async function run(label, hash, screen) {
+  const context = await browser.newContext({ viewport: screen })
   const page = await context.newPage()
   const errs = []
   page.on('pageerror', (e) => errs.push(String(e.message).slice(0, 160)))
-  await page.goto(BASE + '#/jobs/j11')
+  await page.goto(BASE + hash)
   await page.waitForLoadState('networkidle')
-  await page.waitForTimeout(400)
-  const quoteId = await page.evaluate(() => (JSON.parse(localStorage.getItem('hub.quotes.v2') || '[]').find((q) => q.jobId === 'j11' || q.id === 'q13') || {}).id)
-  rec('found a quote on job j11', !!quoteId, String(quoteId))
-  await page.goto(BASE + `#/jobs/j11/quote/${quoteId}`)
-  await page.waitForLoadState('networkidle')
-  await page.waitForTimeout(500)
-
-  // Stand-in for the print dialog: record that it was asked, keep the page state, then render as paper.
+  await page.waitForTimeout(600)
   await page.evaluate(() => { window.__printed = 0; window.print = () => { window.__printed++ } })
   await page.locator('button.btn[aria-controls][aria-expanded="false"]', { hasText: 'More' }).first().click()
   await page.waitForTimeout(200)
   await page.getByRole('button', { name: 'Print', exact: true }).first().click()
   await page.waitForTimeout(200)
-  rec('Print asked the browser to print once', (await page.evaluate(() => window.__printed)) === 1)
-  rec('the sheet was copied into the print area', (await page.locator('#print-root article.sheet').count()) === 1)
+  rec(`[${label}] Print asked the browser to print once`, (await page.evaluate(() => window.__printed)) === 1)
+  rec(`[${label}] the sheet was copied into the print area`, (await page.locator('#print-root article.sheet').count()) === 1)
 
+  await page.setViewportSize(A4)
   await page.emulateMedia({ media: 'print' })
-  const state = await page.evaluate(() => ({
-    appHidden: getComputedStyle(document.getElementById('root')).display === 'none',
-    printShown: getComputedStyle(document.getElementById('print-root')).display !== 'none',
-    text: document.getElementById('print-root').innerText.slice(0, 200),
-  }))
-  rec('the app (menus, panels, rails) is hidden for paper', state.appHidden)
-  rec('the print area is shown for paper', state.printShown)
-  const pdf = await page.pdf({ format: 'A4', printBackground: true })
-  fs.writeFileSync('shots/print/quote.pdf', pdf)
+  await page.waitForTimeout(200)
+  const m = await page.evaluate(() => {
+    const sheet = document.querySelector('#print-root article.sheet')
+    const total = [...sheet.querySelectorAll('*')].find((e) => /Total \(inc GST\)|Total/.test(e.textContent || '') && getComputedStyle(e).backgroundColor !== 'rgba(0, 0, 0, 0)')
+    return {
+      appHidden: getComputedStyle(document.getElementById('root')).display === 'none',
+      sheetW: Math.round(sheet.getBoundingClientRect().width),
+      pageW: window.innerWidth,
+      colorAdjust: getComputedStyle(sheet).printColorAdjust || getComputedStyle(sheet).webkitPrintColorAdjust,
+      totalBg: total ? getComputedStyle(total).backgroundColor : 'none',
+    }
+  })
+  rec(`[${label}] the app (menus, panels, rails) is hidden for paper`, m.appHidden)
+  rec(`[${label}] the sheet fills the page width (not a narrow column)`, m.sheetW >= m.pageW * 0.85, `${m.sheetW} of ${m.pageW} px`)
+  rec(`[${label}] colours are forced on for paper (Background graphics off still prints the total box)`, m.colorAdjust === 'exact', `${m.colorAdjust}, total box ${m.totalBg}`)
+  const pdf = await page.pdf({ format: 'A4', printBackground: false, margin: { top: '14mm', bottom: '14mm', left: '14mm', right: '14mm' } })
+  fs.writeFileSync(`shots/print/${label}.pdf`, pdf)
   const pages = (pdf.toString('latin1').match(/\/Type\s*\/Page[^s]/g) || []).length
-  rec('the quote prints on a small number of pages (1 to 3)', pages >= 1 && pages <= 3, `${pages} page(s)`)
-  await page.screenshot({ path: 'shots/print/quote-print-view.png', fullPage: true })
-
-  // After printing the page returns to normal
+  rec(`[${label}] the quote prints on 1 to 3 pages`, pages >= 1 && pages <= 3, `${pages} page(s)`)
+  await page.screenshot({ path: `shots/print/${label}.png`, fullPage: true })
   await page.emulateMedia({ media: 'screen' })
   await page.evaluate(() => window.dispatchEvent(new Event('afterprint')))
-  rec('after printing the print area is empty and the page is back to normal', await page.evaluate(() => document.getElementById('print-root').children.length === 0 && !document.documentElement.classList.contains('printing-sheet')))
-  rec('no page errors', errs.length === 0, errs.join(' | '))
+  rec(`[${label}] after printing the page is back to normal`, await page.evaluate(() => document.getElementById('print-root').children.length === 0 && !document.documentElement.classList.contains('printing-sheet')))
+  rec(`[${label}] no page errors`, errs.length === 0, errs.join(' | '))
+  await context.close()
+}
+
+try {
+  await run('job-workspace', '#/jobs/j11/quote/q13', { width: 1440, height: 900 })
+  await run('quotes-page', '#/quote/q13', { width: 1440, height: 900 })
+  await run('job-workspace-phone', '#/jobs/j11/quote/q13', { width: 390, height: 844 })
   console.log(fails ? `${fails} FAILED` : 'ALL PASS')
 } finally {
   await browser.close()
