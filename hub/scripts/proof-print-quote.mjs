@@ -16,7 +16,7 @@ fs.mkdirSync('shots/print', { recursive: true })
 // A4 at 96 dpi is 794 px wide: the print layout is checked at that width.
 const A4 = { width: 794, height: 1123 }
 
-async function run(label, hash, screen) {
+async function run(label, hash, screen, noRoot = false) {
   const context = await browser.newContext({ viewport: screen })
   const page = await context.newPage()
   const errs = []
@@ -24,6 +24,8 @@ async function run(label, hash, screen) {
   await page.goto(BASE + hash)
   await page.waitForLoadState('networkidle')
   await page.waitForTimeout(600)
+  // The published app has no #root: the framework mounts the Hub inside its own page. Mimic that, plus a visible framework element.
+  if (noRoot) await page.evaluate(() => { document.getElementById('root').id = 'app-host'; const d = document.createElement('div'); d.textContent = 'FRAMEWORK CHROME'; d.style.height = '300px'; document.body.appendChild(d) })
   await page.evaluate(() => { window.__printed = 0; window.print = () => { window.__printed++ } })
   await page.locator('button.btn[aria-controls][aria-expanded="false"]', { hasText: 'More' }).first().click()
   await page.waitForTimeout(200)
@@ -39,7 +41,7 @@ async function run(label, hash, screen) {
     const sheet = document.querySelector('#print-root article.sheet')
     const total = [...sheet.querySelectorAll('*')].find((e) => /Total \(inc GST\)|Total/.test(e.textContent || '') && getComputedStyle(e).backgroundColor !== 'rgba(0, 0, 0, 0)')
     return {
-      appHidden: getComputedStyle(document.getElementById('root')).display === 'none',
+      appHidden: [...document.body.children].filter((e) => e.id !== 'print-root').every((e) => getComputedStyle(e).display === 'none'),
       sheetW: Math.round(sheet.getBoundingClientRect().width),
       pageW: window.innerWidth,
       colorAdjust: getComputedStyle(sheet).printColorAdjust || getComputedStyle(sheet).webkitPrintColorAdjust,
@@ -64,6 +66,7 @@ async function run(label, hash, screen) {
 try {
   await run('job-workspace', '#/jobs/j11/quote/q13', { width: 1440, height: 900 })
   await run('quotes-page', '#/quote/q13', { width: 1440, height: 900 })
+  await run('job-workspace-no-root', '#/jobs/j11/quote/q13', { width: 1440, height: 900 }, true)
   await run('job-workspace-phone', '#/jobs/j11/quote/q13', { width: 390, height: 844 })
   console.log(fails ? `${fails} FAILED` : 'ALL PASS')
 } finally {
