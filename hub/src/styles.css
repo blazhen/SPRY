@@ -474,6 +474,14 @@ dialog.modal[open] { display: grid; place-items: center; padding: 1rem; }
 }
 .print-only { display: none; }
 
+/* Print button on a quote or invoice: lib/printSheet.ts copies the sheet into #print-root and hides the app. */
+#print-root { display: none; }
+@media print {
+  html.printing-sheet #root { display: none !important; }
+  html.printing-sheet #print-root { display: block !important; }
+  html.printing-sheet #print-root .sheet { max-width: none; margin: 0; }
+}
+
 /* Line item rows respond to the width of the sheet, not the window, because the
    sheet is narrow inside the editor's preview pane and inside an iframe. */
 .sheet { container-type: inline-size; }

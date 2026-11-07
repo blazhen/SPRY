@@ -2,6 +2,7 @@ import './quoteInvoice.css'
 import './invoiceDetail.css'
 import { useState } from 'react'
 import { createPortal } from 'react-dom'
+import { printSheet } from '../lib/printSheet'
 import { ArrowLeft, Ban, Bell, Check, CircleDollarSign, Clock, Copy, Eye, FileEdit, Pencil, Printer, Send, Trash2 } from 'lucide-react'
 import InvoiceSheet from '../components/InvoiceSheet'
 import { confirmAction } from '../lib/confirmActions'
@@ -285,7 +286,7 @@ export default function InvoiceDetail({ ws }: { ws?: InvoiceWs } = {}) {
               <Copy size={16} aria-hidden="true" /> Duplicate
             </button>
           )}
-          <button type="button" className={`${btn} btn-neutral`} onClick={() => window.print()}>
+          <button type="button" className={`${btn} btn-neutral`} onClick={printSheet}>
             <Printer size={16} aria-hidden="true" /> Print
           </button>
         </div>

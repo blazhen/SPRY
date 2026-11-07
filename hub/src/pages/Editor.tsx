@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom'
 import { ArrowLeft, Check, ChevronDown, FilePlus2, Receipt, LayoutTemplate, Printer, Save, Send, Trash2, Users, Plus } from 'lucide-react'
 import LineItemsEditor from '../components/LineItemsEditor'
 import { FoamCalculator } from '../components/FoamCalculator'
+import { printSheet } from '../lib/printSheet'
 import { useExtra } from '../lib/useExtras'
 import UpgradesEditor from '../components/UpgradesEditor'
 import PaymentsEditor from '../components/PaymentsEditor'
@@ -476,7 +477,7 @@ function QuoteEditor({ initial, ws }: { initial: Quote; ws?: { slot: HTMLElement
             <LayoutTemplate size={16} aria-hidden="true" />
             Use a template
           </button>
-          <button type="button" className="btn btn-neutral" onClick={() => window.print()}>
+          <button type="button" className="btn btn-neutral" onClick={printSheet}>
             <Printer size={16} aria-hidden="true" />
             Print
           </button>
