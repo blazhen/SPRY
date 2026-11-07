@@ -1,6 +1,6 @@
-// Print button on a quote prints only the quote sheet, full width, with its colours (not the workspace panels).
+// Print button on a quote prints only the quote sheet, in its own frame, full width, with its colours.
 // Mock build, headless Edge, test data only. Build: VITE_DATA_SOURCE=mock npx vite build --outDir dist-pr
-// Run: HUB_DIST=dist-pr node scripts/proof-print-quote.mjs (port 4441). Writes PDFs and pictures to shots/print (delete before commit).
+// Run: HUB_DIST=dist-pr node scripts/proof-print-quote.mjs (port 4441). Pictures go to shots/print (delete before commit).
 import { startPreview } from './_server.mjs'
 import { chromium } from 'playwright'
 import fs from 'node:fs'
@@ -12,53 +12,68 @@ const browser = await chromium.launch({ channel: 'msedge' })
 let fails = 0
 const rec = (name, ok, detail = '') => { if (!ok) fails++; console.log(`${ok ? 'PASS' : 'FAIL'} ${name}${detail ? ' :: ' + detail : ''}`) }
 fs.mkdirSync('shots/print', { recursive: true })
-
-// A4 at 96 dpi is 794 px wide: the print layout is checked at that width.
-const A4 = { width: 794, height: 1123 }
+const A4 = { width: 794, height: 1123 } // A4 at 96 dpi
 
 async function run(label, hash, screen, noRoot = false) {
   const context = await browser.newContext({ viewport: screen })
   const page = await context.newPage()
   const errs = []
   page.on('pageerror', (e) => errs.push(String(e.message).slice(0, 160)))
+  // Stand-in for the print dialog on the print frame: count the calls and keep the frame so it can be looked at.
+  await context.addInitScript(() => {
+    window.__printed = 0
+    new MutationObserver((ms) => {
+      for (const m of ms) for (const n of m.addedNodes) {
+        if (n.tagName === 'IFRAME' && n.hasAttribute && n.hasAttribute('data-print-frame')) n.contentWindow.print = () => { window.__printed++ }
+      }
+    }).observe(document, { childList: true, subtree: true })
+  })
   await page.goto(BASE + hash)
   await page.waitForLoadState('networkidle')
   await page.waitForTimeout(600)
-  // The published app has no #root: the framework mounts the Hub inside its own page. Mimic that, plus a visible framework element.
+  // The published app has no #root: the framework mounts the Hub inside its own page. Mimic that, plus visible framework chrome.
   if (noRoot) await page.evaluate(() => { document.getElementById('root').id = 'app-host'; const d = document.createElement('div'); d.textContent = 'FRAMEWORK CHROME'; d.style.height = '300px'; document.body.appendChild(d) })
-  await page.evaluate(() => { window.__printed = 0; window.print = () => { window.__printed++ } })
   await page.locator('button.btn[aria-controls][aria-expanded="false"]', { hasText: 'More' }).first().click()
   await page.waitForTimeout(200)
   await page.getByRole('button', { name: 'Print', exact: true }).first().click()
-  await page.waitForTimeout(200)
-  rec(`[${label}] Print asked the browser to print once`, (await page.evaluate(() => window.__printed)) === 1)
-  rec(`[${label}] the sheet was copied into the print area`, (await page.locator('#print-root article.sheet').count()) === 1)
+  await page.waitForFunction(() => window.__printed >= 1, null, { timeout: 8000 }).catch(() => {})
+  rec(`[${label}] Print asked the browser to print the frame once`, (await page.evaluate(() => window.__printed)) === 1)
+  rec(`[${label}] one print frame, and the page's own print was not used`, (await page.locator('iframe[data-print-frame]').count()) === 1)
 
-  await page.setViewportSize(A4)
+  // Look at the frame as paper: A4 wide, print media, the frame made visible.
   await page.emulateMedia({ media: 'print' })
-  await page.waitForTimeout(200)
-  const m = await page.evaluate(() => {
-    const sheet = document.querySelector('#print-root article.sheet')
-    const total = [...sheet.querySelectorAll('*')].find((e) => /Total \(inc GST\)|Total/.test(e.textContent || '') && getComputedStyle(e).backgroundColor !== 'rgba(0, 0, 0, 0)')
+  await page.evaluate((w) => {
+    const f = document.querySelector('iframe[data-print-frame]')
+    f.style.cssText = `position:absolute;left:0;top:0;width:${w}px;height:1400px;border:0;visibility:visible;z-index:99999;background:#fff`
+  }, A4.width)
+  await page.setViewportSize({ width: A4.width, height: 1400 })
+  await page.waitForTimeout(300)
+  const fr = page.frames().find((f) => f !== page.mainFrame())
+  const m = await fr.evaluate(() => {
+    const sheet = document.querySelector('article.sheet')
+    const total = [...sheet.querySelectorAll('*')].find((e) => /Total/.test(e.textContent || '') && getComputedStyle(e).backgroundColor !== 'rgba(0, 0, 0, 0)')
     return {
-      appHidden: [...document.body.children].filter((e) => e.id !== 'print-root').every((e) => getComputedStyle(e).display === 'none'),
+      onlySheet: document.body.children.length === 1 && document.body.firstElementChild === sheet,
+      text: document.body.innerText,
       sheetW: Math.round(sheet.getBoundingClientRect().width),
       pageW: window.innerWidth,
+      height: Math.round(document.documentElement.scrollHeight),
       colorAdjust: getComputedStyle(sheet).printColorAdjust || getComputedStyle(sheet).webkitPrintColorAdjust,
       totalBg: total ? getComputedStyle(total).backgroundColor : 'none',
+      title: document.title,
+      hasStyles: document.querySelectorAll('link[rel=stylesheet], style').length,
     }
   })
-  rec(`[${label}] the app (menus, panels, rails) is hidden for paper`, m.appHidden)
-  rec(`[${label}] the sheet fills the page width (not a narrow column)`, m.sheetW >= m.pageW * 0.85, `${m.sheetW} of ${m.pageW} px`)
-  rec(`[${label}] colours are forced on for paper (Background graphics off still prints the total box)`, m.colorAdjust === 'exact', `${m.colorAdjust}, total box ${m.totalBg}`)
-  const pdf = await page.pdf({ format: 'A4', printBackground: false, margin: { top: '14mm', bottom: '14mm', left: '14mm', right: '14mm' } })
-  fs.writeFileSync(`shots/print/${label}.pdf`, pdf)
-  const pages = (pdf.toString('latin1').match(/\/Type\s*\/Page[^s]/g) || []).length
-  rec(`[${label}] the quote prints on 1 to 3 pages`, pages >= 1 && pages <= 3, `${pages} page(s)`)
-  await page.screenshot({ path: `shots/print/${label}.png`, fullPage: true })
-  await page.emulateMedia({ media: 'screen' })
-  await page.evaluate(() => window.dispatchEvent(new Event('afterprint')))
-  rec(`[${label}] after printing the page is back to normal`, await page.evaluate(() => document.getElementById('print-root').children.length === 0 && !document.documentElement.classList.contains('printing-sheet')))
+  rec(`[${label}] the frame holds the quote sheet and nothing else`, m.onlySheet)
+  rec(`[${label}] no menus, panels or buttons from the page are in it`, !/Mark won|Back to jobs|Take photos|Open the quote|FRAMEWORK CHROME|Swap sides/.test(m.text), m.text.slice(0, 60).replace(/\s+/g, ' '))
+  rec(`[${label}] it has the page's styles`, m.hasStyles > 0, String(m.hasStyles))
+  rec(`[${label}] the sheet fills the page width`, m.sheetW >= m.pageW * 0.85, `${m.sheetW} of ${m.pageW} px`)
+  rec(`[${label}] colours are forced on (Background graphics off still prints the navy total box)`, m.colorAdjust === 'exact', `${m.colorAdjust}, ${m.totalBg}`)
+  const usable = A4.height - 2 * Math.round((14 / 25.4) * 96)
+  const pages = Math.ceil(m.height / usable)
+  rec(`[${label}] about 1 to 3 pages`, pages >= 1 && pages <= 3, `${m.height}px high, about ${pages}`)
+  rec(`[${label}] the print title names the quote`, /Quote /.test(m.title), m.title)
+  await page.screenshot({ path: `shots/print/${label}.png`, clip: { x: 0, y: 0, width: A4.width, height: Math.min(m.height, 1400) } })
   rec(`[${label}] no page errors`, errs.length === 0, errs.join(' | '))
   await context.close()
 }

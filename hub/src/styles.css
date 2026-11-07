@@ -474,16 +474,9 @@ dialog.modal[open] { display: grid; place-items: center; padding: 1rem; }
 }
 .print-only { display: none; }
 
-/* Print button on a quote or invoice: lib/printSheet.ts copies the sheet into #print-root and hides the app. */
-#print-root { display: none; }
-@media print {
-  /* Hide everything at the top of the page except the print area. The published app has no #root (the framework mounts the Hub
-     inside its own page), so hiding #root alone is not enough there. */
-  html.printing-sheet body > *:not(#print-root) { display: none !important; }
-  html.printing-sheet body { height: auto !important; overflow: visible !important; background: #fff !important; }
-  html.printing-sheet #print-root { display: block !important; width: 100%; }
-  html.printing-sheet #print-root .sheet { width: 100%; max-width: none; margin: 0; }
-}
+/* Print button on a quote or invoice: lib/printSheet.ts prints the sheet alone in its own hidden frame (body.print-frame-body). */
+body.print-frame-body { margin: 0; background: #fff; height: auto; overflow: visible; }
+body.print-frame-body .sheet { width: 100%; max-width: none; margin: 0; }
 /* The browser's print dialog leaves "Background graphics" off by default, which drops the navy total box and leaves its white text
    unreadable. Ask for backgrounds on the sheet whatever the dialog says. */
 @media print {
